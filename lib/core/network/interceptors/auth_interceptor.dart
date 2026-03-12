@@ -1,0 +1,38 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../storage/secure_storage.dart';
+import '../../storage/storage_keys.dart';
+
+part 'auth_interceptor.g.dart';
+
+@riverpod
+AuthInterceptor authInterceptor(Ref ref) {
+  return AuthInterceptor(ref.read(secureStorageProvider));
+}
+
+class AuthInterceptor extends Interceptor {
+  final SecureStorage _secureStorage;
+
+  AuthInterceptor(this._secureStorage);
+
+  @override
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = await _secureStorage.read(StorageKeys.accessToken);
+
+    if (token != null && token.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    handler.next(err);
+  }
+}
