@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/featured/HomeCareScreen.dart';
 import 'package:service_provider_umi/featured/HomeScreen.dart';
-import 'package:service_provider_umi/featured/features/booking/presentation/screens/booking_time_screen.dart';
-import 'package:service_provider_umi/featured/filter_screen.dart';
+import 'package:service_provider_umi/featured/booking_time_screen.dart';
+import 'package:service_provider_umi/featured/features/booking/presentation/screens/weekly_schedule_screen.dart';
+import 'package:service_provider_umi/featured/features/service_discovery/presentation/screens/provider_profile_screen.dart';
 import 'package:service_provider_umi/featured/search_results_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -19,10 +19,10 @@ class _RootScreenState extends State<RootScreen> {
 
   final List<Widget> screens = const [
     BookingTimeScreen(),
-    HomeCareScreen(),
+    WeeklyScheduleScreen(),
     HomeScreen(),
     SearchResultsScreen(),
-    FilterScreen(),
+    ProviderProfileScreen(providerId: ""),
   ];
 
   void onTabTap(int index) {

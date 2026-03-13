@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
@@ -45,8 +46,8 @@ class AppChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: padding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(borderRadius ?? 24),
@@ -69,16 +70,12 @@ class AppChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) ...[
-              icon!,
-              const SizedBox(width: 6),
-            ],
+            if (icon != null) ...[icon!, const SizedBox(width: 6)],
             Text(
               label,
               style: AppTextStyles.labelMd.copyWith(
                 color: txtColor,
-                fontWeight:
-                    isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
           ],
@@ -90,11 +87,12 @@ class AppChip extends StatelessWidget {
 
 /// Day chip - compact version for day-of-week selection
 class AppDayChip extends StatelessWidget {
-  final String day;   // e.g. "Mon"
+  final String day; // e.g. "Mon"
   final String? date; // e.g. "13"
   final bool isSelected;
   final VoidCallback? onTap;
   final bool isDisabled;
+  final EdgeInsetsGeometry? padding;
 
   const AppDayChip({
     super.key,
@@ -103,6 +101,7 @@ class AppDayChip extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
     this.isDisabled = false,
+    this.padding,
   });
 
   @override
@@ -111,44 +110,44 @@ class AppDayChip extends StatelessWidget {
       onTap: isDisabled ? null : onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 44,
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        constraints: BoxConstraints(minWidth: 44),
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
                 : isDisabled
-                    ? AppColors.grey200
-                    : AppColors.border,
+                ? AppColors.grey200
+                : AppColors.border,
             width: 1.5,
           ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            AppText(
               day,
-              style: AppTextStyles.labelSm.copyWith(
+              style: AppTextStyles.labelMd.copyWith(
                 color: isSelected
                     ? AppColors.white
                     : isDisabled
-                        ? AppColors.textDisabled
-                        : AppColors.textSecondary,
+                    ? AppColors.textDisabled
+                    : AppColors.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
             if (date != null) ...[
               const SizedBox(height: 2),
-              Text(
+              AppText(
                 date!,
                 style: AppTextStyles.labelMd.copyWith(
                   color: isSelected
                       ? AppColors.white
                       : isDisabled
-                          ? AppColors.textDisabled
-                          : AppColors.textPrimary,
+                      ? AppColors.textDisabled
+                      : AppColors.textPrimary,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 ),
               ),
@@ -181,21 +180,20 @@ class AppTimeChip extends StatelessWidget {
       onTap: isAvailable ? onTap : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primary
               : isAvailable
-                  ? AppColors.white
-                  : AppColors.grey100,
+              ? AppColors.white
+              : AppColors.grey100,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
                 : isAvailable
-                    ? AppColors.border
-                    : AppColors.grey200,
+                ? AppColors.border
+                : AppColors.grey200,
           ),
         ),
         child: Text(
@@ -204,8 +202,8 @@ class AppTimeChip extends StatelessWidget {
             color: isSelected
                 ? AppColors.white
                 : isAvailable
-                    ? AppColors.textPrimary
-                    : AppColors.textDisabled,
+                ? AppColors.textPrimary
+                : AppColors.textDisabled,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),

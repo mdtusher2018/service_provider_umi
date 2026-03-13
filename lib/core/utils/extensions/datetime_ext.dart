@@ -28,8 +28,7 @@ extension DateTimeExtensions on DateTime {
   }
 
   DateTime get startOfDay => DateTime(year, month, day);
-  DateTime get endOfDay =>
-      DateTime(year, month, day, 23, 59, 59, 999, 999);
+  DateTime get endOfDay => DateTime(year, month, day, 23, 59, 59, 999, 999);
 
   DateTime get startOfWeek {
     final diff = weekday - 1;
@@ -41,7 +40,8 @@ extension DateTimeExtensions on DateTime {
 
   String get toDisplayDate => DateFormat('dd MMM yyyy').format(this);
   String get toDisplayTime => DateFormat('hh:mm a').format(this);
-  String get toDisplayDateTime => DateFormat('dd MMM yyyy, hh:mm a').format(this);
+  String get toDisplayDateTime =>
+      DateFormat('dd MMM yyyy, hh:mm a').format(this);
   String get toApiDate => DateFormat('yyyy-MM-dd').format(this);
   String get toApiDateTime => toUtc().toIso8601String();
 
@@ -65,6 +65,29 @@ extension DateTimeExtensions on DateTime {
       age--;
     }
     return age;
+  }
+
+  String get getMonth {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    return months[month - 1];
+  }
+
+  String get getDayOfWeek {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[weekday - 1];
   }
 }
 

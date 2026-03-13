@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
 import 'package:service_provider_umi/shared/widgets/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 enum BookingFrequency { once, weekly }
 
@@ -22,25 +24,32 @@ class BookingTimeScreen extends ConsumerStatefulWidget {
 class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
   BookingFrequency _frequency = BookingFrequency.once;
   StartTimeType _startTimeType = StartTimeType.flexible;
-  int _selectedDayIndex = 0;
   double _duration = 2;
   String? _selectedTimeSlot;
 
-  final List<_DayItem> _days = [
-    _DayItem('Mon', '13'),
-    _DayItem('Tue', '14'),
-    _DayItem('Wed', '15'),
-    _DayItem('Thu', '16'),
-    _DayItem('Fri', '17'),
-    _DayItem('Sat', '18'),
+  Set<String> _selectedWeekDays = {};
+
+  DateTime _selectedDate = DateTime.now();
+  late List<DateTime> _dates;
+
+  final _morningSlots = [
+    ('assets/icons/sunrise.png', '9 - 6'),
+    ('assets/icons/day.png', '9 - 12'),
+    ('assets/icons/day.png', '12 - 15'),
+  ];
+  final _eveningSlots = [
+    ('assets/icons/day.png', '15 - 18'),
+    ('assets/icons/sunset.png', '18 - 21'),
+    ('assets/icons/night.png', '21 - 00'),
   ];
 
-  final _morningSlots = [('☀️', '9 - 6'), ('☀️', '9 - 12'), ('🌤', '12 - 15')];
-  final _eveningSlots = [
-    ('🌙', '15 - 18'),
-    ('🌙', '18 - 21'),
-    ('🌙', '21 - 00'),
-  ];
+  initState() {
+    super.initState();
+    _dates = List.generate(
+      30,
+      (index) => DateTime.now().add(Duration(days: index)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +62,8 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
@@ -61,18 +71,25 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.2),
+                        color: AppColors.white,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
-                        Icons.arrow_back_ios_rounded,
-                        color: AppColors.white,
-                        size: 16,
+                        Icons.arrow_back,
+                        color: AppColors.black,
+                        size: 24,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 14),
-                  AppText.h2('When do you need it?', color: AppColors.white),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      AppText.h2(
+                        'When do you need it?',
+                        color: AppColors.white,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -82,7 +99,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.background,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               ),
               child: ClipRRect(
@@ -95,8 +112,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildFrequency(),
-                      const SizedBox(height: 24),
-                      _buildCalendar(),
+
                       const SizedBox(height: 24),
                       AppDurationSlider(
                         value: _duration,
@@ -125,47 +141,74 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       children: [
         AppText.h3('Frequency'),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _FrequencyCard(
-                title: 'Just once',
-                subtitle: 'One-Time',
-                isSelected: _frequency == BookingFrequency.once,
-                onTap: () => setState(() => _frequency = BookingFrequency.once),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _FrequencyCard(
-                title: 'Weekly',
-                subtitle: 'Recurring',
-                isSelected: _frequency == BookingFrequency.weekly,
-                onTap: () =>
-                    setState(() => _frequency = BookingFrequency.weekly),
-              ),
-            ),
-          ],
-        ),
-        if (_frequency == BookingFrequency.weekly) ...[
-          const SizedBox(height: 16),
-          AppText.h3("Day(s) of the week"),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
             children: [
-              ..._days.map(
-                (d) => AppDayChip(day: d.day, isSelected: false, onTap: () {}),
+              Expanded(
+                child: _FrequencyCard(
+                  title: 'Just once',
+                  subtitle: 'One-Time',
+                  isSelected: _frequency == BookingFrequency.once,
+                  onTap: () =>
+                      setState(() => _frequency = BookingFrequency.once),
+                ),
               ),
-              ...[
-                'Fri',
-                'Sat',
-                'Sun',
-              ].map((d) => AppDayChip(day: d, isSelected: false, onTap: () {})),
+
+              Expanded(
+                child: _FrequencyCard(
+                  title: 'Weekly',
+                  subtitle: 'Recurring',
+                  isSelected: _frequency == BookingFrequency.weekly,
+                  onTap: () =>
+                      setState(() => _frequency = BookingFrequency.weekly),
+                ),
+              ),
             ],
           ),
-        ],
+        ),
+        AppDivider(height: 40),
+        if (_frequency == BookingFrequency.weekly) ...[_buildWeekDaySelector()],
+        if (_frequency == BookingFrequency.once) ...[_buildCalendar()],
+      ],
+    );
+  }
+
+  Widget _buildWeekDaySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.h3("Day(s) of the week"),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              .map(
+                (day) => AppDayChip(
+                  day: day,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  isSelected: _selectedWeekDays.contains(day),
+                  onTap: () {
+                    setState(() {
+                      if (_selectedWeekDays.contains(day)) {
+                        _selectedWeekDays.remove(day);
+                      } else {
+                        _selectedWeekDays.add(day);
+                      }
+                    });
+                  },
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }
@@ -176,10 +219,40 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       children: [
         Row(
           children: [
-            AppText.h3('January'),
+            AppText.h3(_selectedDate.getMonth),
             const Spacer(),
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2030),
+                  builder: (context, child) {
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: ColorScheme.light(
+                          primary: AppColors.primary,
+                          onPrimary: Colors.white,
+                          onSurface: AppColors.textPrimary,
+                        ),
+                      ),
+                      child: child!,
+                    );
+                  },
+                );
+
+                if (picked != null) {
+                  setState(() {
+                    _selectedDate = picked;
+
+                    _dates = List.generate(
+                      30,
+                      (index) => picked.add(Duration(days: index)),
+                    );
+                  });
+                }
+              },
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -197,19 +270,55 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
             ),
           ],
         ),
+
         const SizedBox(height: 12),
+
         SizedBox(
-          height: 62,
+          height: 70,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: _days.length,
+            itemCount: _dates.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (_, i) => AppDayChip(
-              day: _days[i].day,
-              date: _days[i].date,
-              isSelected: _selectedDayIndex == i,
-              onTap: () => setState(() => _selectedDayIndex = i),
-            ),
+            itemBuilder: (context, index) {
+              final date = _dates[index];
+              final isSelected = date.isSameDay(_selectedDate);
+
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedDate = date;
+                  });
+                },
+                child: Container(
+                  width: 58,
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.primary : AppColors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isSelected ? AppColors.primary : AppColors.border,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppText.labelSm(
+                        date.getDayOfWeek,
+                        color: isSelected
+                            ? AppColors.white
+                            : AppColors.textSecondary,
+                      ),
+                      const SizedBox(height: 4),
+                      AppText.h3(
+                        date.day.toString(),
+                        color: isSelected
+                            ? AppColors.white
+                            : AppColors.textPrimary,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -222,30 +331,36 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       children: [
         AppText.h3('Start time'),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    setState(() => _startTimeType = StartTimeType.flexible),
-                child: _StartTypeCard(
-                  label: 'Flexible start',
-                  isSelected: _startTimeType == StartTimeType.flexible,
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () =>
+                      setState(() => _startTimeType = StartTimeType.flexible),
+                  child: _StartTypeCard(
+                    label: 'Flexible start',
+                    isSelected: _startTimeType == StartTimeType.flexible,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    setState(() => _startTimeType = StartTimeType.exact),
-                child: _StartTypeCard(
-                  label: 'Exact start',
-                  isSelected: _startTimeType == StartTimeType.exact,
+
+              Expanded(
+                child: GestureDetector(
+                  onTap: () =>
+                      setState(() => _startTimeType = StartTimeType.exact),
+                  child: _StartTypeCard(
+                    label: 'Exact start',
+                    isSelected: _startTimeType == StartTimeType.exact,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -256,49 +371,57 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_startTimeType == StartTimeType.flexible) ...[
-          AppText.labelLg('Morning', color: AppColors.textSecondary),
-          const SizedBox(height: 10),
-          Row(
-            children: _morningSlots
-                .map(
-                  (s) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _TimeRangeCard(
-                        emoji: s.$1,
-                        range: s.$2,
-                        isSelected: _selectedTimeSlot == s.$2,
-                        onTap: () => setState(() => _selectedTimeSlot = s.$2),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-          AppText.labelLg('Evening', color: AppColors.textSecondary),
-          const SizedBox(height: 10),
-          Row(
-            children: _eveningSlots
-                .map(
-                  (s) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _TimeRangeCard(
-                        emoji: s.$1,
-                        range: s.$2,
-                        isSelected: _selectedTimeSlot == s.$2,
-                        onTap: () => setState(() => _selectedTimeSlot = s.$2),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
+          _flexibleTimeSlot(),
         ] else ...[
-          // Exact time picker
           _buildExactTimePicker(),
         ],
+      ],
+    );
+  }
+
+  Widget _flexibleTimeSlot() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.labelLg('Morning', color: AppColors.textSecondary),
+        const SizedBox(height: 10),
+        Row(
+          children: _morningSlots
+              .map(
+                (s) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: _TimeRangeCard(
+                      emoji: s.$1,
+                      range: s.$2,
+                      isSelected: _selectedTimeSlot == s.$2,
+                      onTap: () => setState(() => _selectedTimeSlot = s.$2),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+        const SizedBox(height: 16),
+        AppText.labelLg('Evening', color: AppColors.textSecondary),
+        const SizedBox(height: 10),
+        Row(
+          children: _eveningSlots
+              .map(
+                (s) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: _TimeRangeCard(
+                      emoji: s.$1,
+                      range: s.$2,
+                      isSelected: _selectedTimeSlot == s.$2,
+                      onTap: () => setState(() => _selectedTimeSlot = s.$2),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }
@@ -346,7 +469,6 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
         ),
         const SizedBox(width: 14),
         Expanded(
-          flex: 2,
           child: AppButton.primary(
             label: 'Search',
             onPressed: () {
@@ -357,12 +479,6 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       ],
     );
   }
-}
-
-class _DayItem {
-  final String day;
-  final String date;
-  const _DayItem(this.day, this.date);
 }
 
 class _FrequencyCard extends StatelessWidget {
@@ -386,14 +502,9 @@ class _FrequencyCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.secondary : AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? AppColors.secondary : AppColors.border,
-            width: 1.5,
-          ),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText.labelLg(
               title,
@@ -424,20 +535,18 @@ class _StartTypeCard extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.secondary : AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isSelected ? AppColors.secondary : AppColors.border,
-          width: 1.5,
-        ),
+        color: isSelected ? AppColors.white : Colors.transparent,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          if (isSelected)
+            BoxShadow(
+              color: AppColors.secondary.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+        ],
       ),
-      child: Center(
-        child: AppText.labelLg(
-          label,
-          color: isSelected ? AppColors.white : AppColors.textPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: Center(child: AppText.labelLg(label, fontWeight: FontWeight.w600)),
     );
   }
 }
@@ -470,11 +579,12 @@ class _TimeRangeCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 18)),
+            Image.asset(emoji, width: 24, height: 24),
             const SizedBox(height: 4),
-            AppText.labelSm(
+            AppText.labelMd(
               range,
               color: isSelected ? AppColors.white : AppColors.textPrimary,
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
             ),
           ],
         ),

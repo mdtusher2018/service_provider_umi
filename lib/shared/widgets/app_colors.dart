@@ -56,9 +56,9 @@ class AppColors {
   static const Color textDisabled = Color(0xFFC7C7CC);
 
   // ─── Border ──────────────────────────────────────────────
-  static const Color border = Color(0xFFE5E5EA);
+  static const Color border = Color(0xFF00BFA5);
   static const Color borderFocus = Color(0xFF00BFA5);
-  static const Color divider = Colors.black45;
+  static const Color divider = Colors.black38;
 
   // ─── Map / Location ──────────────────────────────────────
 

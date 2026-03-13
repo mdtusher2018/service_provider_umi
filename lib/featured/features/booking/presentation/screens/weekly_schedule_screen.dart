@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
@@ -11,13 +12,8 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 class WeeklyScheduleScreen extends ConsumerStatefulWidget {
   final double pricePerHour;
-  final bool isWeekly;
 
-  const WeeklyScheduleScreen({
-    super.key,
-    this.pricePerHour = 10.0,
-    this.isWeekly = true,
-  });
+  const WeeklyScheduleScreen({super.key, this.pricePerHour = 10.0});
 
   @override
   ConsumerState<WeeklyScheduleScreen> createState() =>
@@ -25,7 +21,6 @@ class WeeklyScheduleScreen extends ConsumerStatefulWidget {
 }
 
 class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
-  bool _isWeekly = true;
   final Map<String, _DaySchedule?> _schedule = {
     'Monday': const _DaySchedule('14:15', '15:15'),
     'Tuesday': null,
@@ -42,7 +37,6 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    _isWeekly = widget.isWeekly;
   }
 
   @override
@@ -127,9 +121,9 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
           GestureDetector(
             onTap: () {},
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primaryLight,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: AppColors.primary.withOpacity(0.3)),
               ),
@@ -143,15 +137,9 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
                   ),
                   const SizedBox(width: 6),
                   AppText.labelMd(
-                    _isWeekly ? 'Weekly' : 'Just once',
+                    'Weekly',
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.primary,
-                    size: 16,
                   ),
                 ],
               ),
@@ -159,7 +147,9 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
           ),
           const Spacer(),
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () {
+              context.pop();
+            },
             child: const Icon(
               Icons.close_rounded,
               color: AppColors.textSecondary,
@@ -196,7 +186,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
       ),
       child: AppButton.primary(
         label: hasAnyDay
-            ? 'Continue for \$${totalCost.toStringAsFixed(2)}/${_isWeekly ? "week" : "booking"}'
+            ? 'Continue for \$${totalCost.toStringAsFixed(2)}/week'
             : 'Set up at least one day',
         onPressed: hasAnyDay
             ? () {
