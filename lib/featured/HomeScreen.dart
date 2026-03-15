@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/featured/HomeCareScreen.dart';
 import 'package:service_provider_umi/featured/search_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -9,9 +11,14 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                 height: 50,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(

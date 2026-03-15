@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class ServiceProviderOnboardingScreen extends StatefulWidget {
@@ -133,24 +134,12 @@ class _ServiceProviderOnboardingScreenState
 
             /// Next button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: nextPage,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    currentIndex == onboardingData.length - 1
-                        ? "Finish"
-                        : "Next",
-                  ),
-                ),
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 24),
+              child: AppButton(
+                label: currentIndex == onboardingData.length - 1
+                    ? "Finish"
+                    : "Next",
+                onPressed: nextPage,
               ),
             ),
 

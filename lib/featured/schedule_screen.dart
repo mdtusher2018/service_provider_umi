@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 
@@ -290,7 +291,7 @@ class _DaySchedule {
 }
 
 // ─── Individual day row ───────────────────────────────────────
-class _DayRow extends StatelessWidget {
+class _DayRow extends ConsumerWidget {
   final String day;
   final _DaySchedule? schedule;
   final bool isExpanded;
@@ -308,7 +309,7 @@ class _DayRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasSchedule = schedule != null;
 
     return AnimatedContainer(
@@ -352,7 +353,7 @@ class _DayRow extends StatelessWidget {
                     onTap: onAdd,
                     child: Icon(
                       isExpanded ? Icons.remove_rounded : Icons.add_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                       size: 22,
                     ),
                   ),

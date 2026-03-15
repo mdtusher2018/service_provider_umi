@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -23,8 +25,7 @@ class AppDurationSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = labelBuilder?.call(value) ??
-        '${value.toStringAsFixed(0)}h';
+    final label = labelBuilder?.call(value) ?? '${value.toStringAsFixed(0)}h';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +70,7 @@ class AppDurationSlider extends StatelessWidget {
 }
 
 /// Price range slider
-class AppPriceSlider extends StatelessWidget {
+class AppPriceSlider extends ConsumerWidget {
   final RangeValues values;
   final double min;
   final double max;
@@ -86,7 +87,7 @@ class AppPriceSlider extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -97,7 +98,7 @@ class AppPriceSlider extends StatelessWidget {
             Text(
               '$currency${values.start.toStringAsFixed(0)} - $currency${values.end.toStringAsFixed(0)}/Maximum',
               style: AppTextStyles.labelMd.copyWith(
-                color: AppColors.primary,
+                color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -107,9 +108,9 @@ class AppPriceSlider extends StatelessWidget {
         SliderTheme(
           data: SliderThemeData(
             trackHeight: 4,
-            activeTrackColor: AppColors.primary,
+            activeTrackColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             inactiveTrackColor: AppColors.grey200,
-            thumbColor: AppColors.primary,
+            thumbColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             rangeThumbShape: const RoundRangeSliderThumbShape(
               enabledThumbRadius: 10,
               elevation: 3,

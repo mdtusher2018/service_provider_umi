@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/featured/HomeScreen.dart';
 import 'package:service_provider_umi/featured/favourites/presentation/screens/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication/presentation/screens/inbox_screen.dart';
@@ -7,14 +9,14 @@ import 'package:service_provider_umi/featured/service/presentation/screens/servi
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class RootScreen extends StatefulWidget {
+class RootScreen extends ConsumerStatefulWidget {
   const RootScreen({super.key});
 
   @override
-  State<RootScreen> createState() => _RootScreenState();
+  ConsumerState<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> {
+class _RootScreenState extends ConsumerState<RootScreen> {
   int currentIndex = 0;
 
   final List<Widget> screens = const [
@@ -34,7 +36,7 @@ class _RootScreenState extends State<RootScreen> {
   Widget _homeButton() {
     return FloatingActionButton(
       onPressed: () => onTabTap(2), // FIXED: call the method in state
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
       child: const Icon(Icons.home, color: Colors.white),

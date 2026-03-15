@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -60,10 +62,7 @@ class AppCheckboxTile extends StatelessWidget {
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
-                    Text(
-                      subtitle!,
-                      style: AppTextStyles.bodySm,
-                    ),
+                    Text(subtitle!, style: AppTextStyles.bodySm),
                   ],
                 ],
               ),
@@ -76,7 +75,7 @@ class AppCheckboxTile extends StatelessWidget {
 }
 
 /// Toggle switch row - as seen in filter (Palliative care, Qualified carer, Driving licence)
-class AppToggleTile extends StatelessWidget {
+class AppToggleTile extends ConsumerWidget {
   final String label;
   final String? subtitle;
   final bool value;
@@ -91,7 +90,7 @@ class AppToggleTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -111,7 +110,7 @@ class AppToggleTile extends StatelessWidget {
           value: value,
           onChanged: onChanged,
           activeColor: AppColors.primary,
-          activeTrackColor: AppColors.primaryLight,
+          activeTrackColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
           inactiveThumbColor: AppColors.grey300,
           inactiveTrackColor: AppColors.grey200,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

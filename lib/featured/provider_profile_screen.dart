@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/featured/schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -161,7 +162,10 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
         const SizedBox(height: 12),
         AppText.h2(_mockProvider.name),
         const SizedBox(height: 4),
-        AppText.labelLg(_mockProvider.specialty, color: AppColors.primary),
+        AppText.labelLg(
+          _mockProvider.specialty,
+          color: AppColors.primaryFor(ref.watch(appRoleProvider)),
+        ),
         const SizedBox(height: 16),
 
         const SizedBox(height: 16),
@@ -177,7 +181,9 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
               AppAvatar(
                 imageUrl: "assets/icons/chat_icon.png",
                 size: AvatarSize.md,
-                backgroundColor: AppColors.primary,
+                backgroundColor: AppColors.primaryFor(
+                  ref.watch(appRoleProvider),
+                ),
               ),
               _StatDivider(),
               _StatItem(
@@ -194,7 +200,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
                 value: '',
                 icon: Icon(Icons.verified, color: AppColors.info),
                 label: 'Verified',
-                valueColor: AppColors.primary,
+                valueColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
               ),
             ],
           ),
@@ -297,13 +303,13 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
             itemBuilder: (_, i) => Container(
               width: 90,
               decoration: BoxDecoration(
-                color: AppColors.primaryLight,
+                color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.image_outlined,
-                color: AppColors.primary,
+                color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                 size: 32,
               ),
             ),
@@ -462,12 +468,12 @@ class _StatDivider extends StatelessWidget {
   }
 }
 
-class _CommentTile extends StatelessWidget {
+class _CommentTile extends ConsumerWidget {
   final _CommentData comment;
   const _CommentTile({required this.comment});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Column(
@@ -486,15 +492,19 @@ class _CommentTile extends StatelessWidget {
                       AppText.bodySm(comment.timeAgo),
                       if (comment.isVerified) ...[
                         const SizedBox(width: 6),
-                        const Icon(
+                        Icon(
                           Icons.check_circle_rounded,
-                          color: AppColors.primary,
+                          color: AppColors.primaryFor(
+                            ref.watch(appRoleProvider),
+                          ),
                           size: 12,
                         ),
                         const SizedBox(width: 2),
                         AppText.bodySm(
                           'Verified service',
-                          color: AppColors.primary,
+                          color: AppColors.primaryFor(
+                            ref.watch(appRoleProvider),
+                          ),
                         ),
                       ],
                     ],
@@ -603,7 +613,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
   }
 }
 
-class _FreqOption extends StatelessWidget {
+class _FreqOption extends ConsumerWidget {
   final IconData icon;
   final String title, subtitle;
   final List<String> bullets;
@@ -620,7 +630,7 @@ class _FreqOption extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -629,21 +639,28 @@ class _FreqOption extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.grey50,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary, width: 1.5),
+          border: Border.all(
+            color: AppColors.primaryFor(ref.watch(appRoleProvider)),
+            width: 1.5,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, color: AppColors.primary, size: 22),
+                Icon(
+                  icon,
+                  color: AppColors.primaryFor(ref.watch(appRoleProvider)),
+                  size: 22,
+                ),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.labelLg(
                       title,
-                      color: AppColors.primary,
+                      color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                       fontWeight: FontWeight.w700,
                     ),
                     AppText.bodySm(subtitle),
@@ -661,9 +678,9 @@ class _FreqOption extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.check_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                         size: 14,
                       ),
                       const SizedBox(width: 8),

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/featured/provider/profile_picture_screen.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
@@ -91,15 +95,19 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                     onTap: () => Navigator.of(context).pop(),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.arrow_back_ios_rounded,
-                          color: AppColors.primary,
+                          color: AppColors.primaryFor(
+                            ref.watch(appRoleProvider),
+                          ),
                           size: 18,
                         ),
                         SizedBox(width: 8),
                         AppText.h1(
                           'Back',
-                          color: AppColors.primary,
+                          color: AppColors.primaryFor(
+                            ref.watch(appRoleProvider),
+                          ),
                           fontWeight: FontWeight.w700,
                         ),
                       ],
@@ -215,20 +223,44 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                     ),
                     const SizedBox(height: 32),
 
+                    AppText.h4("Image"),
+                    if (ref.watch(appRoleProvider) == AppRole.provider) ...[
+                      SizedBox(height: 8),
+                      AppTextField(
+                        prefixIcon: Icon(Icons.image),
+                        hint: "Browse Image",
+                        enabled: false,
+                      ),
+                      SizedBox(height: 16),
+                    ],
                     // ─── Apply button ────────────────────
                     AppButton.primary(
                       label: 'Update',
-                      onPressed: () => Navigator.of(context).pop({
-                        'palliativeCare': _palliativeCare,
-                        'drivingLicence': _drivingLicence,
-                        'qualifiedCarer': _qualifiedCarer,
-                        'businessProfile': _businessProfile,
-                        'priceMin': _priceRange.start,
-                        'priceMax': _priceRange.end,
-                        'tasks': _selectedTasks.toList(),
-                        'conditions': _selectedConditions.toList(),
-                        'experiences': _selectedExperiences.toList(),
-                      }),
+                      onPressed: () {
+                        if (ref.watch(appRoleProvider) == AppRole.provider) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ProfilePictureScreen();
+                              },
+                            ),
+                          );
+                          return;
+                        }
+
+                        Navigator.of(context).pop({
+                          'palliativeCare': _palliativeCare,
+                          'drivingLicence': _drivingLicence,
+                          'qualifiedCarer': _qualifiedCarer,
+                          'businessProfile': _businessProfile,
+                          'priceMin': _priceRange.start,
+                          'priceMax': _priceRange.end,
+                          'tasks': _selectedTasks.toList(),
+                          'conditions': _selectedConditions.toList(),
+                          'experiences': _selectedExperiences.toList(),
+                        });
+                      },
                     ),
                   ],
                 ),

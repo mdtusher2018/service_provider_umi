@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -11,14 +13,14 @@ import 'payments_screen.dart';
 import 'about_us_screen.dart';
 import 'static_page_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final String _name = 'Mr. Raju';
   final String _phone = '+880 1840-560614';
 
@@ -171,9 +173,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.swap_horiz_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryFor(ref.watch(appRoleProvider)),
               size: 20,
             ),
             const SizedBox(width: 12),
@@ -202,12 +204,12 @@ class _Item {
   const _Item(this.icon, this.label, this.onTap, {this.showArrow = true});
 }
 
-class _MenuCard extends StatelessWidget {
+class _MenuCard extends ConsumerWidget {
   final List<_Item> items;
   const _MenuCard({required this.items});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: items.asMap().entries.map((e) {
         final isLast = e.key == items.length - 1;
@@ -224,7 +226,20 @@ class _MenuCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Row(
                   children: [
-                    Icon(item.icon, color: AppColors.primary, size: 24),
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryFor(
+                          ref.watch(appRoleProvider),
+                        ).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Icon(
+                        item.icon,
+                        color: AppColors.primaryFor(ref.watch(appRoleProvider)),
+                        size: 24,
+                      ),
+                    ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: AppText.bodyMd(

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:intl/intl.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/featured/communication/presentation/screens/audio_call_screen.dart';
 import 'package:service_provider_umi/featured/communication/presentation/screens/video_call_screen.dart';
@@ -460,7 +462,7 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 // ─── Message Bubble ───────────────────────────────────────────
-class _MessageBubble extends StatelessWidget {
+class _MessageBubble extends ConsumerStatefulWidget {
   final ChatMessage message;
   final bool isMine;
   final String contactName;
@@ -474,25 +476,30 @@ class _MessageBubble extends StatelessWidget {
   });
 
   @override
+  ConsumerState<_MessageBubble> createState() => _MessageBubbleState();
+}
+
+class _MessageBubbleState extends ConsumerState<_MessageBubble> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
-        mainAxisAlignment: isMine
+        mainAxisAlignment: widget.isMine
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isMine) ...[
+          if (!widget.isMine) ...[
             AppAvatar(
-              name: contactName,
-              imageUrl: contactImageUrl,
+              name: widget.contactName,
+              imageUrl: widget.contactImageUrl,
               size: AvatarSize.xs,
             ),
             const SizedBox(width: 8),
           ],
           Column(
-            crossAxisAlignment: isMine
+            crossAxisAlignment: widget.isMine
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
@@ -505,36 +512,40 @@ class _MessageBubble extends StatelessWidget {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: isMine ? AppColors.primary : AppColors.white,
+                  color: widget.isMine
+                      ? AppColors.primaryFor(ref.watch(appRoleProvider))
+                      : AppColors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(18),
                     topRight: const Radius.circular(18),
-                    bottomLeft: Radius.circular(isMine ? 18 : 4),
-                    bottomRight: Radius.circular(isMine ? 4 : 18),
+                    bottomLeft: Radius.circular(widget.isMine ? 18 : 4),
+                    bottomRight: Radius.circular(widget.isMine ? 4 : 18),
                   ),
                 ),
                 child: Column(
-                  crossAxisAlignment: isMine
+                  crossAxisAlignment: widget.isMine
                       ? CrossAxisAlignment.end
                       : CrossAxisAlignment.start,
 
                   spacing: 4,
                   children: [
                     AppText.bodyMd(
-                      message.text,
-                      color: isMine ? AppColors.white : AppColors.textPrimary,
+                      widget.message.text,
+                      color: widget.isMine
+                          ? AppColors.white
+                          : AppColors.textPrimary,
                     ),
 
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AppText.bodyXs(
-                          message.timestamp.toDisplayTime,
+                          widget.message.timestamp.toDisplayTime,
                           color: AppColors.textgrey,
                         ),
-                        if (isMine) ...[
+                        if (widget.isMine) ...[
                           const SizedBox(width: 4),
-                          _StatusIcon(status: message.status),
+                          _StatusIcon(status: widget.message.status),
                         ],
                       ],
                     ),

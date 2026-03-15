@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/featured/communication/presentation/screens/chat_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
@@ -208,17 +209,17 @@ class _InboxScreenState extends ConsumerState<InboxScreen>
 }
 
 // ─── Tab Bar ──────────────────────────────────────────────────
-class _InboxTabBar extends StatelessWidget {
+class _InboxTabBar extends ConsumerWidget {
   final TabController controller;
 
   const _InboxTabBar({required this.controller});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TabBar(
       controller: controller,
       dividerColor: AppColors.grey500,
-      indicatorColor: AppColors.primary,
+      indicatorColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
       indicatorWeight: 2,
 
       indicatorSize: TabBarIndicatorSize.label,
@@ -231,13 +232,13 @@ class _InboxTabBar extends StatelessWidget {
 }
 
 // ─── Contact Tile ─────────────────────────────────────────────
-class _ContactTile extends StatelessWidget {
+class _ContactTile extends ConsumerWidget {
   final InboxContact contact;
   final VoidCallback onTap;
   const _ContactTile({required this.contact, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -286,8 +287,8 @@ class _ContactTile extends StatelessWidget {
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                         shape: BoxShape.circle,
                       ),
                       child: Center(

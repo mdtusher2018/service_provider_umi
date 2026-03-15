@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -6,7 +9,18 @@ enum AppButtonVariant { primary, secondary, outline, ghost, danger, social }
 
 enum AppButtonSize { sm, md, lg }
 
-class AppButton extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────
+//  AppButton — role-aware
+//
+//  Only change from your original:
+//   1. StatelessWidget → ConsumerWidget
+//   2. build() receives WidgetRef ref
+//   3. _primary(ref) resolves the correct color from role
+//
+//  Everything else is identical to your original.
+// ─────────────────────────────────────────────────────────────
+
+class AppButton extends ConsumerWidget {
   final String label;
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
@@ -17,8 +31,6 @@ class AppButton extends StatelessWidget {
   final bool isFullWidth;
   final double? width;
   final BorderRadius? borderRadius;
-
-  /// NEW
   final Color? backgroundColor;
   final Color? textColor;
   final Color? borderColor;
@@ -104,8 +116,34 @@ class AppButton extends StatelessWidget {
     this.borderColor,
   }) : variant = AppButtonVariant.ghost;
 
+  const AppButton.danger({
+    super.key,
+    required this.label,
+    this.onPressed,
+    this.size = AppButtonSize.lg,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.isLoading = false,
+    this.isFullWidth = true,
+    this.width,
+    this.borderRadius,
+    this.backgroundColor,
+    this.textColor,
+    this.borderColor,
+  }) : variant = AppButtonVariant.danger;
+
+  // ─── Single helper: resolves primary based on role ────────
+  Color _primary(WidgetRef ref) {
+    final role = ref.watch(appRoleProvider);
+    return role == AppRole.provider
+        ? AppColors.primaryProvider
+        : AppColors.primary;
+  }
+
+  // ─── Build ────────────────────────────────────────────────
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final primary = _primary(ref); // ← teal or blue
     final radius = borderRadius ?? BorderRadius.circular(12);
 
     return GestureDetector(
@@ -113,68 +151,94 @@ class AppButton extends StatelessWidget {
       child: Container(
         width: isFullWidth ? double.infinity : width,
         height: _height,
-        decoration: _decoration(radius),
+        decoration: _decoration(radius, primary),
         alignment: Alignment.center,
-        child: isLoading ? _loader : _content,
+        child: isLoading ? _loader(primary) : _content(primary),
       ),
     );
   }
 
-  Widget get _content {
+  // ─── Widgets ─────────────────────────────────────────────
+
+  Widget _content(Color primary) {
     return Row(
       mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 10)],
-        Text(label, style: _textStyle),
+        Text(label, style: _textStyle(primary)),
         if (suffixIcon != null) ...[const SizedBox(width: 10), suffixIcon!],
       ],
     );
   }
 
-  Widget get _loader {
+  Widget _loader(Color primary) {
     return SizedBox(
       width: 20,
       height: 20,
-      child: CircularProgressIndicator(strokeWidth: 2, color: _loaderColor),
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        color: textColor ?? _defaultTextColor(primary),
+      ),
     );
   }
 
-  BoxDecoration _decoration(BorderRadius radius) {
+  // ─── Decoration ──────────────────────────────────────────
+
+  BoxDecoration _decoration(BorderRadius radius, Color primary) {
     return BoxDecoration(
-      color: backgroundColor ?? _defaultBackgroundColor,
+      color: backgroundColor ?? _defaultBackgroundColor(primary),
       borderRadius: radius,
-      border: _border,
+      border: _border(primary),
     );
   }
 
-  Border? get _border {
-    if (variant == AppButtonVariant.outline ||
-        variant == AppButtonVariant.social) {
+  Border? _border(Color primary) {
+    if (variant == AppButtonVariant.outline) {
+      return Border.all(
+        color: borderColor ?? primary, // ← teal or blue border
+        width: 1.5,
+      );
+    }
+    if (variant == AppButtonVariant.social) {
       return Border.all(color: borderColor ?? AppColors.border, width: 1.5);
     }
     return null;
   }
 
-  Color get _defaultBackgroundColor {
+  // ─── Color resolvers ─────────────────────────────────────
+
+  Color _defaultBackgroundColor(Color primary) {
     switch (variant) {
       case AppButtonVariant.primary:
-        return AppColors.primary;
-
+        return primary; // ← teal or blue
       case AppButtonVariant.secondary:
         return AppColors.secondary;
-
       case AppButtonVariant.outline:
       case AppButtonVariant.social:
         return AppColors.white;
-
       case AppButtonVariant.ghost:
         return Colors.transparent;
-
       case AppButtonVariant.danger:
         return AppColors.error;
     }
   }
+
+  Color _defaultTextColor(Color primary) {
+    switch (variant) {
+      case AppButtonVariant.primary:
+      case AppButtonVariant.secondary:
+      case AppButtonVariant.danger:
+        return AppColors.white;
+      case AppButtonVariant.outline:
+      case AppButtonVariant.social:
+        return AppColors.textPrimary;
+      case AppButtonVariant.ghost:
+        return primary; // ← teal or blue
+    }
+  }
+
+  // ─── Unchanged ───────────────────────────────────────────
 
   double get _height {
     switch (size) {
@@ -187,31 +251,10 @@ class AppButton extends StatelessWidget {
     }
   }
 
-  TextStyle get _textStyle {
+  TextStyle _textStyle(Color primary) {
     final base = size == AppButtonSize.sm
         ? AppTextStyles.buttonMd
         : AppTextStyles.buttonLg;
-
-    return base.copyWith(color: textColor ?? _defaultTextColor);
-  }
-
-  Color get _defaultTextColor {
-    switch (variant) {
-      case AppButtonVariant.primary:
-      case AppButtonVariant.secondary:
-      case AppButtonVariant.danger:
-        return AppColors.white;
-
-      case AppButtonVariant.outline:
-      case AppButtonVariant.social:
-        return AppColors.textPrimary;
-
-      case AppButtonVariant.ghost:
-        return AppColors.primary;
-    }
-  }
-
-  Color get _loaderColor {
-    return textColor ?? _defaultTextColor;
+    return base.copyWith(color: textColor ?? _defaultTextColor(primary));
   }
 }

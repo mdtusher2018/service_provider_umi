@@ -1,0 +1,214 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import '../../../../core/di/app_role_provider.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+
+class VerifyCodeScreen extends ConsumerStatefulWidget {
+  final String phoneNumber;
+  const VerifyCodeScreen({super.key, required this.phoneNumber});
+
+  @override
+  ConsumerState<VerifyCodeScreen> createState() => _VerifyCodeScreenState();
+}
+
+class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
+  // 4 separate controllers, one per digit box
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
+    super.dispose();
+  }
+
+  String get _code => _controllers.map((c) => c.text).join();
+
+  bool get _isComplete => _code.length == 4;
+
+  void _onDigitChanged(int index, String value) {
+    if (value.length == 1 && index < 3) {
+      // Auto-advance to next box
+      _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      // On delete, go back
+      _focusNodes[index - 1].requestFocus();
+    }
+    setState(() {});
+  }
+
+  Future<void> _done() async {
+    if (!_isComplete) return;
+    setState(() => _isLoading = true);
+
+    // Simulate verification
+    await Future.delayed(const Duration(milliseconds: 800));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    // TODO: verify code via provider, then navigate
+    // Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final role = ref.watch(appRoleProvider);
+    final primary = AppColors.primaryFor(role);
+
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+
+              // ─── Title ──────────────────────────────
+              AppText('Enter 4 digits code', style: AppTextStyles.h1),
+              const SizedBox(height: 10),
+              AppText.bodyMd(
+                'Enter the 4 digits code that you received on you\nphone number',
+
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+
+              // ─── 4 digit boxes ───────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (i) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: _DigitBox(
+                      controller: _controllers[i],
+                      focusNode: _focusNodes[i],
+                      primary: primary,
+                      onChanged: (v) => _onDigitChanged(i, v),
+                    ),
+                  );
+                }),
+              ),
+
+              const Spacer(),
+
+              // ─── Done button ─────────────────────────
+              SizedBox(
+                width: double.infinity,
+
+                child: ElevatedButton(
+                  onPressed: (!_isComplete || _isLoading) ? null : _done,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primary,
+                    disabledBackgroundColor: primary.withOpacity(0.45),
+                    foregroundColor: AppColors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : Text('Done', style: AppTextStyles.buttonLg),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // ─── Resend ─────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppText(
+                    "Didn't receive the code? ",
+                    style: AppTextStyles.bodySm,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: resend OTP
+                    },
+                    child: Text(
+                      'Resend',
+                      style: AppTextStyles.labelMd.copyWith(color: primary),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Single digit box ─────────────────────────────────────────
+class _DigitBox extends StatelessWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final Color primary;
+  final ValueChanged<String> onChanged;
+
+  const _DigitBox({
+    required this.controller,
+    required this.focusNode,
+    required this.primary,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 56,
+
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          maxLength: 1,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: onChanged,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: primary,
+          ),
+          decoration: const InputDecoration(
+            counterText: '',
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+      ),
+    );
+  }
+}
