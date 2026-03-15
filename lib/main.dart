@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
 
 import 'app.dart';
 import 'core/config/flavor_config.dart';
@@ -34,5 +35,5 @@ Future<void> main() async {
     ),
   );
 
-  runApp(const ProviderScope(child: App()));
+  runApp(const ProviderScope(child: App(role: AppRole.provider)));
 }

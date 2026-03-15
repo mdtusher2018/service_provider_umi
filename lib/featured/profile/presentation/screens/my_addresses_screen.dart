@@ -1,0 +1,227 @@
+import 'package:flutter/material.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+part 'add_address_screen.dart';
+
+class _Address {
+  final String id;
+  final String label;
+  final String street;
+  final String city;
+  final String country;
+  const _Address({
+    required this.id,
+    required this.label,
+    required this.street,
+    required this.city,
+    required this.country,
+  });
+}
+
+class MyAddressesScreen extends StatefulWidget {
+  const MyAddressesScreen({super.key});
+
+  @override
+  State<MyAddressesScreen> createState() => _MyAddressesScreenState();
+}
+
+class _MyAddressesScreenState extends State<MyAddressesScreen> {
+  final List<_Address> _addresses = [
+    const _Address(
+      id: '1',
+      label: 'Mr. Raju Home',
+      street: '1901 Thorner Rd, Allentown, New Mexico 31134',
+      city: 'New Mexico',
+      country: '(407) 555-0101',
+    ),
+  ];
+
+  void _openAddressPage({_Address? address}) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => AddressPage(address: address)),
+    );
+
+    if (result != null) {
+      setState(() {
+        if (address == null) {
+          _addresses.add(result);
+        } else {
+          final idx = _addresses.indexWhere((a) => a.id == address.id);
+          if (idx != -1) {
+            _addresses[idx] = result;
+          }
+        }
+      });
+    }
+  }
+
+  void _confirmDelete(_Address address) {
+    showDialog(
+      context: context,
+      builder: (_) => _DeleteDialog(
+        onYes: () {
+          setState(() => _addresses.removeWhere((a) => a.id == address.id));
+          Navigator.of(context).pop();
+        },
+        onNo: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: AppColors.textPrimary,
+            size: 18,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const AppText.h3('My Address'),
+        centerTitle: true,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: AppText.labelLg(
+              'Your Addresses',
+              color: AppColors.textSecondary,
+            ),
+          ),
+          Expanded(
+            child: _addresses.isEmpty
+                ? const AppEmptyState(
+                    title: 'No addresses',
+                    subtitle: 'Add your first address',
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: _addresses.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    itemBuilder: (_, i) => _AddressTile(
+                      address: _addresses[i],
+                      onEdit: () => _openAddressPage(address: _addresses[i]),
+                      onDelete: () => _confirmDelete(_addresses[i]),
+                    ),
+                  ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              12,
+              20,
+              MediaQuery.of(context).padding.bottom + 20,
+            ),
+            child: AppButton.primary(
+              label: 'Add New Address',
+              onPressed: () => _openAddressPage(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddressTile extends StatelessWidget {
+  final _Address address;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  const _AddressTile({
+    required this.address,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.location_on_outlined,
+            color: AppColors.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.labelLg(address.label, fontWeight: FontWeight.w700),
+                const SizedBox(height: 3),
+                AppText.bodySm(address.street, color: AppColors.textSecondary),
+                AppText.bodySm(address.country, color: AppColors.textSecondary),
+              ],
+            ),
+          ),
+          PopupMenuButton<String>(
+            onSelected: (v) => v == 'edit' ? onEdit() : onDelete(),
+            itemBuilder: (_) => [
+              const PopupMenuItem(value: 'edit', child: Text('Edit')),
+              const PopupMenuItem(
+                value: 'delete',
+                child: Text('Delete', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+            child: const Icon(
+              Icons.more_vert_rounded,
+              color: AppColors.grey400,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DeleteDialog extends StatelessWidget {
+  final VoidCallback onYes;
+  final VoidCallback onNo;
+  const _DeleteDialog({required this.onYes, required this.onNo});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppText.h3(
+              'Are you sure you want to delete ?',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            AppButton.primary(label: 'YES, DELETE', onPressed: onYes),
+            const SizedBox(height: 10),
+            AppButton.outline(label: "NO, DON'T DELETE", onPressed: onNo),
+          ],
+        ),
+      ),
+    );
+  }
+}

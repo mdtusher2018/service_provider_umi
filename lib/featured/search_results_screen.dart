@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/featured/filter_screen.dart';
+import 'package:service_provider_umi/featured/provider_profile_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 
@@ -131,7 +133,14 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             icon: Icons.tune_rounded,
             label: 'Filters',
             onTap: () {
-              // context.go(AppRoutes.serviceFilter);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return FilterScreen();
+                  },
+                ),
+              );
             },
           ),
         ],
@@ -179,7 +188,14 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
           hasRepeated: p.hasRepeated,
           hasUpdatedSchedule: p.hasUpdatedSchedule,
           onTap: () {
-            // context.go('/user/services/provider/${p.id}');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ProviderProfileScreen(providerId: "");
+                },
+              ),
+            );
           },
           onFavorite: () {},
         );

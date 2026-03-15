@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/featured/booking_time_screen.dart';
+import 'package:service_provider_umi/featured/search_screen.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class HomeCareScreen extends StatelessWidget {
   const HomeCareScreen({super.key});
 
+  // Dynamic list of care categories
+  final List<Map<String, dynamic>> careCategories = const [
+    {"label": "Children", "icon": Icons.child_care},
+    {"label": "Elders", "icon": Icons.elderly},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -21,31 +30,19 @@ class HomeCareScreen extends StatelessWidget {
                   // Logo
                   Image.asset("assets/logo.png", height: 60),
                   Row(
-                    spacing: 16,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.search, color: Colors.black),
-                          onPressed: () {},
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_none_sharp,
-                            color: Colors.black,
+                      _buildCircleIcon(Icons.search, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SearchScreen();
+                            },
                           ),
-                          onPressed: () {},
-                        ),
-                      ),
+                        );
+                      }),
+                      const SizedBox(width: 16),
+                      _buildCircleIcon(Icons.notifications_none_sharp, () {}),
                     ],
                   ),
                 ],
@@ -54,65 +51,89 @@ class HomeCareScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                Icon(Icons.arrow_back_ios_new),
-                AppText.h1("Care", color: AppColors.textgrey),
-              ],
+            // Header Row
+            InkWell(
+              onTap: () {
+                context.pop();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.arrow_back_ios_new),
+                  SizedBox(width: 16),
+                  AppText.h1("Care", color: AppColors.textgrey),
+                ],
+              ),
             ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.white,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.child_care,
-                          size: 28,
-                          color: AppColors.black,
+
+            const SizedBox(height: 24),
+
+            // Dynamic Categories using Wrap
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Wrap(
+                spacing: 16, // horizontal spacing
+                runSpacing: 16, // vertical spacing
+                children: careCategories.map((category) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return BookingTimeScreen();
+                          },
                         ),
-                        const SizedBox(height: 4),
-                        AppText("Children"),
-                      ],
+                      );
+                    },
+                    child: _buildCategoryItem(
+                      category["label"],
+                      category["icon"],
                     ),
-                  ),
-                ),
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.white,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.child_care,
-                          size: 28,
-                          color: AppColors.black,
-                        ),
-                        const SizedBox(height: 4),
-                        AppText("Elders"),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                  );
+                }).toList(),
+              ),
             ),
-            Spacer(flex: 3),
-            AppText(
+
+            const Spacer(flex: 3),
+
+            const AppText(
               "Tallapoosa county, east-central Alabama, U.S",
               color: AppColors.textgrey,
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
+      ),
+    );
+  }
+
+  // Helper to build CircleAvatar categories
+  Widget _buildCategoryItem(String label, IconData icon) {
+    return CircleAvatar(
+      radius: 40,
+      backgroundColor: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 28, color: AppColors.black),
+          const SizedBox(height: 4),
+          AppText(label),
+        ],
+      ),
+    );
+  }
+
+  // Helper to build top bar icons
+  Widget _buildCircleIcon(IconData icon, VoidCallback onPressed) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.black),
+        onPressed: onPressed,
       ),
     );
   }

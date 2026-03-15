@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
+import '../../core/theme/app_colors.dart';
 
 enum AvatarSize { xs, sm, md, lg, xl }
 
@@ -76,6 +76,18 @@ class AppAvatar extends StatelessWidget {
   }
 
   Widget _buildContent(double size) {
+    if (imageUrl != null &&
+        imageUrl!.isNotEmpty &&
+        imageUrl!.startsWith("assets")) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          imageUrl!,
+
+          errorBuilder: (_, __, ___) => _buildInitials(size),
+        ),
+      );
+    }
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return Image.network(
         imageUrl!,

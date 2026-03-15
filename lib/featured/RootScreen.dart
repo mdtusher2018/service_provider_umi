@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/featured/HomeScreen.dart';
-import 'package:service_provider_umi/featured/booking_time_screen.dart';
-import 'package:service_provider_umi/featured/features/booking/presentation/screens/weekly_schedule_screen.dart';
-import 'package:service_provider_umi/featured/features/service_discovery/presentation/screens/provider_profile_screen.dart';
-import 'package:service_provider_umi/featured/search_results_screen.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/featured/favourites/presentation/screens/favourites_screen.dart';
+import 'package:service_provider_umi/featured/communication/presentation/screens/inbox_screen.dart';
+import 'package:service_provider_umi/featured/profile/presentation/screens/profile_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/service_screen.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class RootScreen extends StatefulWidget {
@@ -18,11 +18,11 @@ class _RootScreenState extends State<RootScreen> {
   int currentIndex = 0;
 
   final List<Widget> screens = const [
-    BookingTimeScreen(),
-    WeeklyScheduleScreen(),
+    ServiceScreen(),
+    FavouritesScreen(),
     HomeScreen(),
-    SearchResultsScreen(),
-    ProviderProfileScreen(providerId: ""),
+    InboxScreen(),
+    ProfileScreen(),
   ];
 
   void onTabTap(int index) {

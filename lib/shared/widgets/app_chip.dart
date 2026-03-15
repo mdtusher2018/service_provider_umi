@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'app_colors.dart';
-import 'app_text_styles.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 
 /// Selection chip - as seen in frequency, day selection, time slots
 class AppChip extends StatelessWidget {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/featured/schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_rating_bar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -38,10 +39,10 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
 
   final _ratingBreakdown = const {
     'Service': 5.0,
-    'Punctuality': 5.0,
-    'Kindness': 5.0,
-    'Value for money': 5.0,
-    'Professionalism': 5.0,
+    'Punctuality': 4.0,
+    'Kindness': 3.0,
+    'Value for money': 2.0,
+    'Professionalism': 1.0,
   };
 
   final _comments = const [
@@ -77,14 +78,26 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
               _buildAppBar(),
               Expanded(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
                   child: Column(
+                    spacing: 16,
                     children: [
                       _buildProfileHeader(),
+
                       _buildAboutSection(),
-                      _buildQaSection(),
+                      AppDivider(),
                       _buildGallery(),
+                      AppDivider(),
+                      _buildQaSection(),
+
+                      AppDivider(),
                       _buildRatingSection(),
+                      AppDivider(),
                       _buildComments(),
+                      AppDivider(),
                       const SizedBox(height: 100),
                     ],
                   ),
@@ -142,33 +155,31 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
   }
 
   Widget _buildProfileHeader() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+    return Column(
+      children: [
+        AppAvatar(name: _mockProvider.name, size: AvatarSize.xl),
+        const SizedBox(height: 12),
+        AppText.h2(_mockProvider.name),
+        const SizedBox(height: 4),
+        AppText.labelLg(_mockProvider.specialty, color: AppColors.primary),
+        const SizedBox(height: 16),
+
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          AppAvatar(name: _mockProvider.name, size: AvatarSize.xl),
-          const SizedBox(height: 12),
-          AppText.h2(_mockProvider.name),
-          const SizedBox(height: 4),
-          AppText.labelLg(_mockProvider.specialty, color: AppColors.primary),
-          const SizedBox(height: 16),
-          const AppDivider(),
-          const SizedBox(height: 16),
-          Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              AppAvatar(
+                imageUrl: "assets/icons/chat_icon.png",
+                size: AvatarSize.md,
+                backgroundColor: AppColors.primary,
+              ),
+              _StatDivider(),
               _StatItem(
                 value: '${_mockProvider.rating} ⭐',
                 label: '${_mockProvider.reviewCount} reviews',
@@ -180,36 +191,31 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
               ),
               _StatDivider(),
               _StatItem(
-                value: '✓',
+                value: '',
+                icon: Icon(Icons.verified, color: AppColors.info),
                 label: 'Verified',
                 valueColor: AppColors.primary,
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildAboutSection() {
-    return _SectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.h3('About me'),
-          const SizedBox(height: 10),
-          AppText.bodyMd(_mockProvider.bio, color: AppColors.textSecondary),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () {},
-            child: AppText.labelMd(
-              '+View more',
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.h3('About me'),
+        const SizedBox(height: 10),
+        AppText.bodyMd(_mockProvider.bio),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () {},
+          child: AppText.labelMd('+View more', fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 
@@ -225,115 +231,104 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
       ),
     ];
 
-    return _SectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.h3('Some question about me'),
-          const SizedBox(height: 12),
-          ...qaItems.map(
-            (qa) => Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.labelLg(
-                    qa.$1,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  const SizedBox(height: 4),
-                  AppText.bodyMd(qa.$2, color: AppColors.textSecondary),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.textPrimary,
-                side: const BorderSide(color: AppColors.border),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.h3('Some question about me'),
+        const SizedBox(height: 12),
+        ...qaItems.map(
+          (qa) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.labelLg(
+                  qa.$1,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-              child: AppText.labelLg('View all'),
+                const SizedBox(height: 4),
+                AppText.bodyMd(qa.$2),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: () {},
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textPrimary,
+              side: const BorderSide(color: AppColors.border),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            child: AppText.labelLg('View all'),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildGallery() {
-    return _SectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText.h3('Gallery'),
-              GestureDetector(
-                onTap: () {},
-                child: AppText.labelMd(
-                  'View gallery',
-                  color: AppColors.primary,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AppText.h3('Gallery'),
+            GestureDetector(
+              onTap: () {},
+              child: AppText.labelMd('View gallery'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 90,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: 4,
+            separatorBuilder: (_, __) => const SizedBox(width: 10),
+            itemBuilder: (_, i) => Container(
+              width: 90,
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 90,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (_, i) => Container(
-                width: 90,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: const Icon(
-                  Icons.image_outlined,
-                  color: AppColors.primary,
-                  size: 32,
-                ),
+              child: const Icon(
+                Icons.image_outlined,
+                color: AppColors.primary,
+                size: 32,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildRatingSection() {
-    return _SectionCard(
-      child: AppRatingBreakdown(
-        overall: _mockProvider.rating,
-        totalReviews: _mockProvider.reviewCount,
-        breakdown: _ratingBreakdown,
-      ),
+    return AppRatingBreakdown(
+      overall: _mockProvider.rating,
+      totalReviews: _mockProvider.reviewCount,
+      breakdown: _ratingBreakdown,
     );
   }
 
   Widget _buildComments() {
-    return _SectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.h3('Comments'),
-          const SizedBox(height: 12),
-          ..._comments.map((c) => _CommentTile(comment: c)),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.h3('Comments'),
+        const SizedBox(height: 12),
+        ..._comments.map((c) => _CommentTile(comment: c)),
+      ],
     );
   }
 
@@ -358,14 +353,16 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
       ),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppText.h1(
-                '\$${_mockProvider.pricePerHour.toStringAsFixed(0)}/h',
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.h1(
+                  '\$${_mockProvider.pricePerHour.toStringAsFixed(0)}/h',
+                ),
+              ],
+            ),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -432,41 +429,25 @@ class _CommentData {
 }
 
 // ─── Supporting widgets ───────────────────────────────────────
-class _SectionCard extends StatelessWidget {
-  final Widget child;
-  const _SectionCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
 
 class _StatItem extends StatelessWidget {
   final String value, label;
   final Color? valueColor;
-  const _StatItem({required this.value, required this.label, this.valueColor});
+  final Widget? icon;
+  const _StatItem({
+    required this.value,
+    required this.label,
+    this.valueColor,
+    this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppText.h3(value, color: valueColor ?? AppColors.textPrimary),
+        if (value.isNotEmpty)
+          AppText.h3(value, color: valueColor ?? AppColors.textPrimary),
+        ?icon,
         const SizedBox(height: 2),
         AppText.bodySm(label),
       ],
@@ -543,8 +524,6 @@ class _ServiceFrequencySheet extends StatefulWidget {
 }
 
 class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
-  bool _isWeekly = true;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -588,8 +567,16 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
               'Automatic booking and weekly payment.',
               'Cancel one-time service in 1 click',
             ],
-            isSelected: _isWeekly,
-            onTap: () => setState(() => _isWeekly = true),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ScheduleScreen(bookingMode: BookingMode.weekly);
+                  },
+                ),
+              );
+            },
           ),
           const SizedBox(height: 12),
 
@@ -598,16 +585,16 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             icon: Icons.looks_one_outlined,
             title: 'Just once',
             subtitle: 'One-Time service',
-            isSelected: !_isWeekly,
-            onTap: () => setState(() => _isWeekly = false),
-          ),
-          const SizedBox(height: 24),
 
-          AppButton.primary(
-            label: 'Set up at least one day',
-            onPressed: () {
-              widget.onClose();
-              // Navigate to weekly schedule screen
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ScheduleScreen(bookingMode: BookingMode.once);
+                  },
+                ),
+              );
             },
           ),
         ],
@@ -620,7 +607,7 @@ class _FreqOption extends StatelessWidget {
   final IconData icon;
   final String title, subtitle;
   final List<String> bullets;
-  final bool isSelected;
+
   final VoidCallback onTap;
 
   const _FreqOption({
@@ -628,7 +615,7 @@ class _FreqOption extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.bullets = const [],
-    required this.isSelected,
+
     required this.onTap,
   });
 
@@ -640,34 +627,23 @@ class _FreqOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLight : AppColors.grey50,
+          color: AppColors.grey50,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-            width: 1.5,
-          ),
+          border: Border.all(color: AppColors.primary, width: 1.5),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(
-                  icon,
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
-                  size: 22,
-                ),
+                Icon(icon, color: AppColors.primary, size: 22),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.labelLg(
                       title,
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w700,
                     ),
                     AppText.bodySm(subtitle),
@@ -675,9 +651,9 @@ class _FreqOption extends StatelessWidget {
                 ),
               ],
             ),
-            if (bullets.isNotEmpty && isSelected) ...[
+            if (bullets.isNotEmpty) ...[
               const SizedBox(height: 10),
-              const AppDivider(),
+              AppDivider(color: AppColors.grey300),
               const SizedBox(height: 10),
               ...bullets.map(
                 (b) => Padding(

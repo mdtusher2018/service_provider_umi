@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
+import 'package:service_provider_umi/featured/search_results_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 
 enum BookingFrequency { once, weekly }
 
@@ -30,7 +31,6 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
   Set<String> _selectedWeekDays = {};
 
   DateTime _selectedDate = DateTime.now();
-  late List<DateTime> _dates;
 
   final _morningSlots = [
     ('assets/icons/sunrise.png', '9 - 6'),
@@ -43,12 +43,9 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
     ('assets/icons/night.png', '21 - 00'),
   ];
 
-  initState() {
+  @override
+  void initState() {
     super.initState();
-    _dates = List.generate(
-      30,
-      (index) => DateTime.now().add(Duration(days: index)),
-    );
   }
 
   @override
@@ -173,7 +170,16 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
         ),
         AppDivider(height: 40),
         if (_frequency == BookingFrequency.weekly) ...[_buildWeekDaySelector()],
-        if (_frequency == BookingFrequency.once) ...[_buildCalendar()],
+        if (_frequency == BookingFrequency.once) ...[
+          HorizontalCalendar(
+            selectedDate: _selectedDate,
+            onDateSelected: (date) {
+              setState(() {
+                _selectedDate = date;
+              });
+            },
+          ),
+        ],
       ],
     );
   }
@@ -208,118 +214,6 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
                 ),
               )
               .toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCalendar() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            AppText.h3(_selectedDate.getMonth),
-            const Spacer(),
-            GestureDetector(
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _selectedDate,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2030),
-                  builder: (context, child) {
-                    return Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: ColorScheme.light(
-                          primary: AppColors.primary,
-                          onPrimary: Colors.white,
-                          onSurface: AppColors.textPrimary,
-                        ),
-                      ),
-                      child: child!,
-                    );
-                  },
-                );
-
-                if (picked != null) {
-                  setState(() {
-                    _selectedDate = picked;
-
-                    _dates = List.generate(
-                      30,
-                      (index) => picked.add(Duration(days: index)),
-                    );
-                  });
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: AppText.labelMd(
-                  'Show month',
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 12),
-
-        SizedBox(
-          height: 70,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: _dates.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final date = _dates[index];
-              final isSelected = date.isSameDay(_selectedDate);
-
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedDate = date;
-                  });
-                },
-                child: Container(
-                  width: 58,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primary : AppColors.border,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppText.labelSm(
-                        date.getDayOfWeek,
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textSecondary,
-                      ),
-                      const SizedBox(height: 4),
-                      AppText.h3(
-                        date.day.toString(),
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textPrimary,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
         ),
       ],
     );
@@ -472,7 +366,14 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.primary(
             label: 'Search',
             onPressed: () {
-              // Navigate to results
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SearchResultsScreen();
+                  },
+                ),
+              );
             },
           ),
         ),

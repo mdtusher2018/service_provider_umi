@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'app_colors.dart';
-import 'app_text_styles.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 
 /// Unified text field matching iumi design:
 /// - Outlined with subtle border
@@ -22,6 +22,7 @@ class AppTextField extends StatefulWidget {
   final bool enabled;
   final int? maxLines;
   final int? maxLength;
+  final double borderRadious;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final VoidCallback? onTap;
@@ -50,6 +51,7 @@ class AppTextField extends StatefulWidget {
     this.enabled = true,
     this.maxLines = 1,
     this.maxLength,
+    this.borderRadious = 12.0,
     this.prefixIcon,
     this.suffixIcon,
     this.onTap,
@@ -113,13 +115,15 @@ class _AppTextFieldState extends State<AppTextField> {
           style: AppTextStyles.bodyMd.copyWith(color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: widget.hint,
-            hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.textHint),
+            hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.textgrey),
             errorText: widget.errorText,
             helperText: widget.helperText,
             filled: true,
-            fillColor: widget.fillColor ??
+            fillColor:
+                widget.fillColor ??
                 (widget.enabled ? AppColors.white : AppColors.grey100),
-            contentPadding: widget.contentPadding ??
+            contentPadding:
+                widget.contentPadding ??
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             prefixIcon: widget.prefixIcon != null
                 ? Padding(
@@ -127,26 +131,49 @@ class _AppTextFieldState extends State<AppTextField> {
                     child: widget.prefixIcon,
                   )
                 : null,
-            prefixIconConstraints:
-                const BoxConstraints(minWidth: 44, minHeight: 44),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 44,
+              minHeight: 44,
+            ),
             suffixIcon: widget.showPasswordToggle
                 ? _buildPasswordToggle()
                 : widget.suffixIcon != null
-                    ? Padding(
-                        padding: const EdgeInsets.only(right: 14),
-                        child: widget.suffixIcon,
-                      )
-                    : null,
-            suffixIconConstraints:
-                const BoxConstraints(minWidth: 44, minHeight: 44),
-            border: _border(AppColors.border),
-            enabledBorder: _border(AppColors.border),
-            focusedBorder: _border(AppColors.primary, width: 1.5),
-            errorBorder: _border(AppColors.error),
-            focusedErrorBorder: _border(AppColors.error, width: 1.5),
-            disabledBorder: _border(AppColors.grey200),
-            errorStyle:
-                AppTextStyles.bodyXs.copyWith(color: AppColors.error),
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 14),
+                    child: widget.suffixIcon,
+                  )
+                : null,
+            suffixIconConstraints: const BoxConstraints(
+              minWidth: 44,
+              minHeight: 44,
+            ),
+            border: _border(
+              AppColors.border,
+              borderRadious: widget.borderRadious,
+            ),
+            enabledBorder: _border(
+              AppColors.border,
+              borderRadious: widget.borderRadious,
+            ),
+            focusedBorder: _border(
+              AppColors.primary,
+              width: 1.5,
+              borderRadious: widget.borderRadious,
+            ),
+            errorBorder: _border(
+              AppColors.error,
+              borderRadious: widget.borderRadious,
+            ),
+            focusedErrorBorder: _border(
+              AppColors.error,
+              width: 1.5,
+              borderRadious: widget.borderRadious,
+            ),
+            disabledBorder: _border(
+              AppColors.grey200,
+              borderRadious: widget.borderRadious,
+            ),
+            errorStyle: AppTextStyles.bodyXs.copyWith(color: AppColors.error),
           ),
         ),
       ],
@@ -167,9 +194,13 @@ class _AppTextFieldState extends State<AppTextField> {
     );
   }
 
-  OutlineInputBorder _border(Color color, {double width = 1.0}) {
+  OutlineInputBorder _border(
+    Color color, {
+    double width = 1.0,
+    required double borderRadious,
+  }) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(borderRadious),
       borderSide: BorderSide(color: color, width: width),
     );
   }
@@ -183,7 +214,9 @@ class AppSearchBar extends StatelessWidget {
   final VoidCallback? onTap;
   final bool readOnly;
   final Widget? leading;
+  final Widget? suffix;
   final VoidCallback? onLeadingTap;
+  final VoidCallback? onSuffixTap;
 
   const AppSearchBar({
     super.key,
@@ -193,7 +226,9 @@ class AppSearchBar extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.leading,
+    this.suffix,
     this.onLeadingTap,
+    this.onSuffixTap,
   });
 
   @override
@@ -202,8 +237,8 @@ class AppSearchBar extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -212,39 +247,38 @@ class AppSearchBar extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          if (leading != null)
-            GestureDetector(
-              onTap: onLeadingTap,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 14, right: 4),
-                child: leading,
-              ),
-            )
-          else
-            const Padding(
-              padding: EdgeInsets.only(left: 14, right: 4),
-              child: Icon(Icons.search, color: AppColors.grey400, size: 20),
-            ),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              onTap: onTap,
-              readOnly: readOnly,
-              style: AppTextStyles.bodyMd,
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.textHint,
-                ),
-                border: InputBorder.none,
-                isDense: true,
-              ),
-            ),
-          ),
-        ],
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        onTap: onTap,
+        readOnly: readOnly,
+
+        style: AppTextStyles.bodyMd,
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: (leading != null)
+              ? GestureDetector(
+                  onTap: onLeadingTap,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 4),
+                    child: leading,
+                  ),
+                )
+              : null,
+          suffixIcon: (suffix != null)
+              ? GestureDetector(
+                  onTap: onSuffixTap,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 4),
+                    child: suffix,
+                  ),
+                )
+              : null,
+          fillColor: Colors.transparent,
+          hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.textgrey),
+
+          isDense: true,
+        ),
       ),
     );
   }

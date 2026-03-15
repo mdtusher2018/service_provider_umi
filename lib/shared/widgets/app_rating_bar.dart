@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
-import 'app_text_styles.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 
 /// Star rating display + optional interactive rating
 class AppRatingBar extends StatelessWidget {
@@ -29,10 +30,7 @@ class AppRatingBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showValue) ...[
-          Text(
-            rating.toStringAsFixed(1),
-            style: AppTextStyles.rating,
-          ),
+          Text(rating.toStringAsFixed(1), style: AppTextStyles.rating),
           const SizedBox(width: 4),
         ],
         Row(
@@ -51,10 +49,7 @@ class AppRatingBar extends StatelessWidget {
         ),
         if (showCount && reviewCount > 0) ...[
           const SizedBox(width: 4),
-          Text(
-            '($reviewCount)',
-            style: AppTextStyles.bodySm,
-          ),
+          Text('($reviewCount)', style: AppTextStyles.bodySm),
         ],
       ],
     );
@@ -62,8 +57,7 @@ class AppRatingBar extends StatelessWidget {
 
   Widget _buildStar(int index, double size) {
     final filled = (index + 1).toDouble() <= rating;
-    final halfFilled =
-        !filled && (index + 0.5).toDouble() <= rating;
+    final halfFilled = !filled && (index + 0.5).toDouble() <= rating;
 
     if (filled) {
       return Icon(Icons.star_rounded, color: AppColors.star, size: size);
@@ -71,8 +65,11 @@ class AppRatingBar extends StatelessWidget {
     if (halfFilled) {
       return Icon(Icons.star_half_rounded, color: AppColors.star, size: size);
     }
-    return Icon(Icons.star_outline_rounded,
-        color: AppColors.starEmpty, size: size);
+    return Icon(
+      Icons.star_outline_rounded,
+      color: AppColors.starEmpty,
+      size: size,
+    );
   }
 }
 
@@ -97,7 +94,7 @@ class AppRatingBreakdown extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
+            AppText(
               overall.toStringAsFixed(1),
               style: const TextStyle(
                 fontFamily: 'Poppins',
@@ -107,15 +104,16 @@ class AppRatingBreakdown extends StatelessWidget {
                 height: 1,
               ),
             ),
-            const SizedBox(width: 12),
+
+            Icon(Icons.star_rate_rounded, size: 48, color: AppColors.star),
+            const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppRatingBar(rating: overall, showCount: false),
+                AppText.h4("Outstanding"),
                 const SizedBox(height: 4),
-                Text(
-                  '$totalReviews ${totalReviews == 1 ? "rating" : "ratings"}',
-                  style: AppTextStyles.bodySm,
+                AppText.bodySm(
+                  '($totalReviews ${totalReviews == 1 ? "rating" : "ratings"})',
                 ),
               ],
             ),
@@ -143,30 +141,21 @@ class _RatingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 110,
-          child: Text(label, style: AppTextStyles.bodyMd),
-        ),
+        SizedBox(width: 110, child: Text(label, style: AppTextStyles.bodyMd)),
+        SizedBox(width: 16),
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: value / 5.0,
               backgroundColor: AppColors.grey200,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.star),
               minHeight: 6,
             ),
           ),
         ),
         const SizedBox(width: 10),
-        Text(
-          value.toStringAsFixed(1),
-          style: AppTextStyles.labelMd.copyWith(
-            color: AppColors.primary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        AppText(value.toStringAsFixed(1)),
       ],
     );
   }

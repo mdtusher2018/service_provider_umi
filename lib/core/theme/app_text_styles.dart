@@ -1,187 +1,165 @@
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
+
+// ─────────────────────────────────────────────────────────────
+//  AppTextStyles  — unchanged from your original.
+//  Static const values reference AppColors.textPrimary which
+//  is a shared colour that never changes between roles.
+// ─────────────────────────────────────────────────────────────
 
 class AppTextStyles {
   AppTextStyles._();
 
-  // ─── Font Family ─────────────────────────────────────────
-  static const String _fontFamily = 'Inter'; // Change to your chosen font
+  static const String _font = 'Poppins';
 
   // ─── Display ─────────────────────────────────────────────
-  static const TextStyle displayLarge = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 57,
+  static const TextStyle display = TextStyle(
+    fontFamily: _font,
+    fontSize: 28,
     fontWeight: FontWeight.w700,
-    letterSpacing: -0.25,
     color: AppColors.textPrimary,
-    height: 1.12,
-  );
-
-  static const TextStyle displayMedium = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 45,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0,
-    color: AppColors.textPrimary,
-    height: 1.16,
-  );
-
-  static const TextStyle displaySmall = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 36,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0,
-    color: AppColors.textPrimary,
-    height: 1.22,
+    height: 1.2,
+    letterSpacing: -0.5,
   );
 
   // ─── Headline ────────────────────────────────────────────
-  static const TextStyle headlineLarge = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 32,
+  static const TextStyle h1 = TextStyle(
+    fontFamily: _font,
+    fontSize: 24,
     fontWeight: FontWeight.w700,
-    letterSpacing: 0,
     color: AppColors.textPrimary,
     height: 1.25,
+    letterSpacing: -0.3,
   );
 
-  static const TextStyle headlineMedium = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 28,
+  static const TextStyle h2 = TextStyle(
+    fontFamily: _font,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0,
     color: AppColors.textPrimary,
-    height: 1.29,
+    height: 1.3,
+    letterSpacing: -0.2,
   );
 
-  static const TextStyle headlineSmall = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 24,
+  static const TextStyle h3 = TextStyle(
+    fontFamily: _font,
+    fontSize: 18,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0,
     color: AppColors.textPrimary,
     height: 1.33,
   );
 
-  // ─── Title ───────────────────────────────────────────────
-  static const TextStyle titleLarge = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 22,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0,
-    color: AppColors.textPrimary,
-    height: 1.27,
-  );
-
-  static const TextStyle titleMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle h4 = TextStyle(
+    fontFamily: _font,
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.15,
     color: AppColors.textPrimary,
-    height: 1.5,
-  );
-
-  static const TextStyle titleSmall = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.1,
-    color: AppColors.textPrimary,
-    height: 1.43,
+    height: 1.4,
   );
 
   // ─── Body ────────────────────────────────────────────────
-  static const TextStyle bodyLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle bodyLg = TextStyle(
+    fontFamily: _font,
     fontSize: 16,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0.5,
     color: AppColors.textPrimary,
     height: 1.5,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle bodyMd = TextStyle(
+    fontFamily: _font,
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0.25,
     color: AppColors.textPrimary,
-    height: 1.43,
+    height: 1.5,
   );
 
-  static const TextStyle bodySmall = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle bodySm = TextStyle(
+    fontFamily: _font,
     fontSize: 12,
     fontWeight: FontWeight.w400,
-    letterSpacing: 0.4,
     color: AppColors.textSecondary,
-    height: 1.33,
+    height: 1.5,
+  );
+
+  static const TextStyle bodyXs = TextStyle(
+    fontFamily: _font,
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+    height: 1.45,
   );
 
   // ─── Label ───────────────────────────────────────────────
-  static const TextStyle labelLarge = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle labelLg = TextStyle(
+    fontFamily: _font,
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    letterSpacing: 0.1,
     color: AppColors.textPrimary,
     height: 1.43,
+    letterSpacing: 0.1,
   );
 
-  static const TextStyle labelMedium = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle labelMd = TextStyle(
+    fontFamily: _font,
     fontSize: 12,
     fontWeight: FontWeight.w500,
-    letterSpacing: 0.5,
     color: AppColors.textPrimary,
     height: 1.33,
+    letterSpacing: 0.1,
   );
 
-  static const TextStyle labelSmall = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle labelSm = TextStyle(
+    fontFamily: _font,
     fontSize: 10,
     fontWeight: FontWeight.w500,
-    letterSpacing: 0.5,
     color: AppColors.textSecondary,
-    height: 1.45,
+    height: 1.4,
+    letterSpacing: 0.5,
   );
 
-  // ─── Custom ──────────────────────────────────────────────
-  static const TextStyle buttonText = TextStyle(
-    fontFamily: _fontFamily,
+  // ─── Button ──────────────────────────────────────────────
+  static const TextStyle buttonLg = TextStyle(
+    fontFamily: _font,
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.5,
+    color: AppColors.white,
     height: 1.5,
+    letterSpacing: 0.2,
   );
 
-  static const TextStyle caption = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 11,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.4,
-    color: AppColors.textSecondary,
-    height: 1.45,
-  );
-
-  static const TextStyle overline = TextStyle(
-    fontFamily: _fontFamily,
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 1.5,
-    color: AppColors.textSecondary,
-    height: 1.6,
-  );
-
-  static const TextStyle link = TextStyle(
-    fontFamily: _fontFamily,
+  static const TextStyle buttonMd = TextStyle(
+    fontFamily: _font,
     fontSize: 14,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.25,
-    color: AppColors.primary,
-    decoration: TextDecoration.underline,
-    decorationColor: AppColors.primary,
+    fontWeight: FontWeight.w600,
+    color: AppColors.white,
     height: 1.43,
+    letterSpacing: 0.2,
+  );
+
+  // ─── Price ───────────────────────────────────────────────
+  static const TextStyle price = TextStyle(
+    fontFamily: _font,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.4,
+  );
+
+  static const TextStyle priceUnit = TextStyle(
+    fontFamily: _font,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+    height: 1.4,
+  );
+
+  // ─── Rating ──────────────────────────────────────────────
+  static const TextStyle rating = TextStyle(
+    fontFamily: _font,
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+    height: 1.4,
   );
 }

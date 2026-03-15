@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/featured/HomeScreen.dart';
-import 'package:service_provider_umi/featured/RootScreen.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/featured/provider/provider_onboarding.dart';
 import 'core/di/providers.dart';
 import 'core/theme/app_theme.dart';
 
 // import 'core/localization/app_localizations.dart'; // Uncomment after generating
 
 class App extends ConsumerWidget {
-  const App({super.key});
+  final AppRole role;
+  const App({super.key, required this.role});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +31,7 @@ class App extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: RootScreen(),
+      home: ServiceProviderOnboardingScreen(),
     );
     //  MaterialApp.router(
     //   title: 'YourAppName',

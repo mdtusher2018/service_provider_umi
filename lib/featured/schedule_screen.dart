@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
-import 'package:service_provider_umi/shared/widgets/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 
-class WeeklyScheduleScreen extends ConsumerStatefulWidget {
+enum BookingMode { weekly, once }
+
+class ScheduleScreen extends ConsumerStatefulWidget {
   final double pricePerHour;
+  final BookingMode bookingMode;
 
-  const WeeklyScheduleScreen({super.key, this.pricePerHour = 10.0});
+  const ScheduleScreen({
+    super.key,
+    this.pricePerHour = 10.0,
+    required this.bookingMode,
+  });
 
   @override
-  ConsumerState<WeeklyScheduleScreen> createState() =>
-      _WeeklyScheduleScreenState();
+  ConsumerState<ScheduleScreen> createState() => _WeeklyScheduleScreenState();
 }
 
-class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
+class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
   final Map<String, _DaySchedule?> _schedule = {
     'Monday': const _DaySchedule('14:15', '15:15'),
     'Tuesday': null,
@@ -34,9 +42,17 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
 
   String? _expandedDay;
 
+  late BookingMode _mode;
+  DateTime _selectedDate = DateTime.now();
+
+  String? _singleFrom;
+  String? _singleTo;
+  bool _showSingleTimePicker = true;
+
   @override
   void initState() {
     super.initState();
+    _mode = widget.bookingMode;
   }
 
   @override
@@ -50,58 +66,9 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
             _buildHeader(),
 
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                child: Column(
-                  children: [
-                    ..._schedule.keys.map(
-                      (day) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _DayRow(
-                          day: day,
-                          schedule: _schedule[day],
-                          isExpanded: _expandedDay == day,
-                          onAdd: () => setState(
-                            () =>
-                                _expandedDay = _expandedDay == day ? null : day,
-                          ),
-                          onDelete: () => setState(() => _schedule[day] = null),
-                          onTimeSaved: (from, to) {
-                            setState(() {
-                              _schedule[day] = _DaySchedule(from, to);
-                              _expandedDay = null;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    // Unavailable days
-                    ..._unavailableDays.map(
-                      (d) => Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.grey100,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Row(
-                          children: [
-                            AppText.labelLg(d, color: AppColors.textSecondary),
-                            const Spacer(),
-                            AppText.labelSm(
-                              'Not available',
-                              color: AppColors.grey400,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: _mode == BookingMode.weekly
+                  ? _buildWeeklySchedule()
+                  : _buildSingleBooking(),
             ),
 
             // ─── Bottom CTA ────────────────────────────
@@ -112,44 +79,161 @@ class _WeeklyScheduleScreenState extends ConsumerState<WeeklyScheduleScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      child: Row(
+  Widget _buildWeeklySchedule() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      child: Column(
         children: [
-          // Frequency toggle chip
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          ..._schedule.keys.map(
+            (day) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _DayRow(
+                day: day,
+                schedule: _schedule[day],
+                isExpanded: _expandedDay == day,
+                onAdd: () => setState(
+                  () => _expandedDay = _expandedDay == day ? null : day,
+                ),
+                onDelete: () => setState(() => _schedule[day] = null),
+                onTimeSaved: (from, to) {
+                  setState(() {
+                    _schedule[day] = _DaySchedule(from, to);
+                    _expandedDay = null;
+                  });
+                },
+              ),
+            ),
+          ),
+          // Unavailable days
+          ..._unavailableDays.map(
+            (d) => Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                color: AppColors.grey100,
+                borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.refresh_rounded,
-                    color: AppColors.primary,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 6),
-                  AppText.labelMd(
-                    'Weekly',
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  AppText.labelLg(d, color: AppColors.textSecondary),
+                  const Spacer(),
+                  AppText.labelSm('Not available', color: AppColors.grey400),
                 ],
               ),
             ),
           ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () {
-              context.pop();
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSingleBooking() {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: HorizontalCalendar(
+            selectedDate: _selectedDate,
+            onDateSelected: (date) {
+              setState(() {
+                _selectedDate = date;
+                _showSingleTimePicker = true;
+              });
             },
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          child: _showSingleTimePicker
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: _TimePickerPanel(
+                    day: _selectedDate.getDayOfWeek,
+                    bgColor: Colors.transparent,
+                    onSaved: (from, to) {
+                      setState(() {
+                        _singleFrom = from;
+                        _singleTo = to;
+                        _showSingleTimePicker = false;
+                      });
+                    },
+                  ),
+                )
+              : const SizedBox(),
+        ),
+
+        if (_singleFrom != null) ...[
+          const SizedBox(height: 20),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.grey50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.schedule, size: 18),
+                const SizedBox(width: 8),
+                AppText.labelMd("$_singleFrom - $_singleTo"),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(width: 40),
+          Container(
+            width: 120,
+            height: 35,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<BookingMode>(
+                value: _mode,
+                isExpanded: true,
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                items: const [
+                  DropdownMenuItem(
+                    value: BookingMode.weekly,
+                    child: AppText.labelMd("Weekly"),
+                  ),
+                  DropdownMenuItem(
+                    value: BookingMode.once,
+                    child: AppText.labelMd("Just once"),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _mode = value;
+                    });
+                  }
+                },
+              ),
+            ),
+          ),
+
+          GestureDetector(
+            onTap: () => context.pop(),
             child: const Icon(
               Icons.close_rounded,
               color: AppColors.textSecondary,
@@ -276,7 +360,12 @@ class _DayRow extends StatelessWidget {
               ],
             ),
           ),
-          if (isExpanded) _TimePickerPanel(day: day, onSaved: onTimeSaved),
+          if (isExpanded)
+            _TimePickerPanel(
+              day: day,
+              onSaved: onTimeSaved,
+              bgColor: AppColors.white,
+            ),
         ],
       ),
     );
@@ -286,9 +375,14 @@ class _DayRow extends StatelessWidget {
 // ─── Inline time picker panel ─────────────────────────────────
 class _TimePickerPanel extends StatefulWidget {
   final String day;
+  final Color bgColor;
   final void Function(String from, String to) onSaved;
 
-  const _TimePickerPanel({required this.day, required this.onSaved});
+  const _TimePickerPanel({
+    required this.day,
+    required this.onSaved,
+    required this.bgColor,
+  });
 
   @override
   State<_TimePickerPanel> createState() => _TimePickerPanelState();
@@ -319,8 +413,8 @@ class _TimePickerPanelState extends State<_TimePickerPanel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: widget.bgColor,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(13)),
       ),
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
