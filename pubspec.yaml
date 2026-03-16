@@ -25,7 +25,6 @@ dependencies:
 
 
   # Local Storage
-  hive_flutter: 
   flutter_secure_storage: 
   shared_preferences: 
 
@@ -33,10 +32,9 @@ dependencies:
 
   # Communication
   agora_rtc_engine: 
-  cloud_firestore: 
 
-  # Payments
-  flutter_stripe:       
+
+  # Payments      
 
   # Maps
   google_maps_flutter: 
@@ -46,13 +44,13 @@ dependencies:
 
   # Media
   image_picker: 
-  cached_network_image: 
+
 
   # Utils
   freezed: 
   json_serializable: 
   intl:
-  phone_form_field:       
+    
   freezed_annotation: 
   firebase_analytics: 
   connectivity_plus: 

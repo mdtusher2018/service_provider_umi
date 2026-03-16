@@ -11,5 +11,4 @@ export '../storage/secure_storage.dart';
 export '../router/app_router.dart';
 export '../services/notification_service.dart';
 export '../services/permission_service.dart';
-export '../services/analytics_service.dart';
 export '../localization/locale_provider.dart';
