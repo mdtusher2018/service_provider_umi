@@ -1,24 +1,44 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 
-// ─────────────────────────────────────────────────────────────
-//  appRoleProvider
-//
-//  Holds the active AppRole for the session.
-//  Initialized at app start from App(role: ...).
-//  Read anywhere with: ref.watch(appRoleProvider)
-// ─────────────────────────────────────────────────────────────
-
 class AppRoleNotifier extends Notifier<AppRole> {
+  final AppRole initialRole;
+
+  AppRoleNotifier([this.initialRole = AppRole.guest]);
+
   @override
-  AppRole build() => AppRole.user; // safe default
+  AppRole build() {
+    return initialRole;
+  }
 
-  /// Called once at startup from App widget
-  void setRole(AppRole role) => state = role;
+  /// Set role manually (login / logout / switch account)
+  void setRole(AppRole role) {
+    state = role;
+  }
 
-  /// Toggle between user ↔ provider (Switch to professional)
+  /// Toggle only between USER <-> PROVIDER
+  /// Guest cannot toggle
   void switchRole() {
-    state = state == AppRole.user ? AppRole.provider : AppRole.user;
+    if (state == AppRole.user) {
+      state = AppRole.provider;
+    } else if (state == AppRole.provider) {
+      state = AppRole.user;
+    }
+  }
+
+  /// Convert guest -> user (after login)
+  void loginAsUser() {
+    state = AppRole.user;
+  }
+
+  /// Convert guest -> provider
+  void loginAsProvider() {
+    state = AppRole.provider;
+  }
+
+  /// Logout -> guest
+  void logout() {
+    state = AppRole.guest;
   }
 }
 

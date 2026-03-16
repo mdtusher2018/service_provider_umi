@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/core/theme/app_colors.dart';
+
 import 'package:service_provider_umi/featured/HomeScreen.dart';
 import 'package:service_provider_umi/featured/favourites/presentation/screens/favourites_screen.dart';
-import 'package:service_provider_umi/featured/communication/presentation/screens/inbox_screen.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/presentation/screens/communication_and_notification_screen.dart';
+import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
 import 'package:service_provider_umi/featured/profile/presentation/screens/profile_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_screen.dart';
-import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/provider_service_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/upcoming_bookings_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/user_service_screen.dart';
+
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class RootScreen extends ConsumerStatefulWidget {
@@ -17,15 +23,7 @@ class RootScreen extends ConsumerStatefulWidget {
 }
 
 class _RootScreenState extends ConsumerState<RootScreen> {
-  int currentIndex = 0;
-
-  final List<Widget> screens = const [
-    ServiceScreen(),
-    FavouritesScreen(),
-    HomeScreen(),
-    InboxScreen(),
-    ProfileScreen(),
-  ];
+  int currentIndex = 2;
 
   void onTabTap(int index) {
     setState(() {
@@ -33,26 +31,78 @@ class _RootScreenState extends ConsumerState<RootScreen> {
     });
   }
 
-  Widget _homeButton() {
+  Widget _homeButton(AppRole role) {
     return FloatingActionButton(
-      onPressed: () => onTabTap(2), // FIXED: call the method in state
-      backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
+      onPressed: () => onTabTap(2),
+      backgroundColor: AppColors.primaryFor(role),
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-      child: const Icon(Icons.home, color: Colors.white),
+      child: Image.asset(
+        (role == AppRole.provider)
+            ? "assets/icons/upcoming.png"
+            : "assets/icons/home.png",
+        width: 32,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final role = ref.watch(appRoleProvider);
+
+    /// USER SCREENS
+    final userScreens = [
+      const UserServiceScreen(),
+      const FavouritesScreen(),
+      const HomeScreen(),
+      const CommunicationAndNotificationScreen(),
+      const ProfileScreen(),
+    ];
+
+    /// PROVIDER SCREENS
+    final providerScreens = [
+      const ProviderServiceScreen(),
+      const CommunicationAndNotificationScreen(),
+      const UpcomingBookingsScreen(),
+      const CommunicationAndNotificationScreen(isNotification: true),
+      const ProfileScreen(),
+    ];
+
+    /// GUEST SCREENS (mostly browsing)
+    final guestScreens = [
+      const GuestServicesScreen(),
+      const GuestFavouritesScreen(), // could redirect to login later
+      const HomeScreen(),
+      const GuestInboxScreen(),
+      const GuestProfileScreen(), // can show login/signup
+    ];
+
+    /// Choose screens based on role
+    List<Widget> screens;
+
+    switch (role) {
+      case AppRole.guest:
+        screens = guestScreens;
+        break;
+
+      case AppRole.user:
+        screens = userScreens;
+        break;
+
+      case AppRole.provider:
+        screens = providerScreens;
+        break;
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: IndexedStack(index: currentIndex, children: screens),
       bottomNavigationBar: CustomBottomNavBar(
+        role: role,
         currentIndex: currentIndex,
         onTap: onTabTap,
       ),
-      floatingActionButton: _homeButton(),
+      floatingActionButton: _homeButton(role),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -61,15 +111,19 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final AppRole role;
 
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    required this.role,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isUserLike = role == AppRole.user || role == AppRole.guest;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       height: 90,
@@ -88,13 +142,29 @@ class CustomBottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _navItem(
-            icon: Icons.calendar_today_outlined,
-            label: "Service",
+            icon: isUserLike
+                ? Icons.calendar_today_outlined
+                : Icons.calendar_month_outlined,
+            label: isUserLike ? "Service" : "Calendar",
             index: 0,
           ),
-          _navItem(icon: Icons.favorite_border, label: "Favourites", index: 1),
-          const SizedBox(width: 32), // space for FAB
-          _navItem(icon: Icons.chat_bubble_outline, label: "Inbox", index: 3),
+          _navItem(
+            icon: isUserLike
+                ? Icons.favorite_border
+                : Icons.chat_bubble_outline,
+            label: isUserLike ? "Favourites" : "Inbox",
+            index: 1,
+          ),
+
+          const SizedBox(width: 32),
+
+          _navItem(
+            icon: isUserLike
+                ? Icons.chat_bubble_outline
+                : Icons.notifications_none,
+            label: isUserLike ? "Inbox" : "Notification",
+            index: 3,
+          ),
           _navItem(icon: Icons.person_outline, label: "Profile", index: 4),
         ],
       ),
@@ -125,7 +195,7 @@ class CustomBottomNavBar extends StatelessWidget {
             child: Icon(
               icon,
               color: active ? AppColors.black : AppColors.grey500,
-              size: active ? 26 : 22, // slightly bigger when selected
+              size: active ? 26 : 22,
             ),
           ),
           const SizedBox(height: 4),
@@ -133,7 +203,6 @@ class CustomBottomNavBar extends StatelessWidget {
             label,
             fontWeight: active ? FontWeight.bold : FontWeight.normal,
             color: active ? AppColors.black : AppColors.grey500,
-            // Optional: fontWeight: active ? FontWeight.bold : FontWeight.normal
           ),
         ],
       ),

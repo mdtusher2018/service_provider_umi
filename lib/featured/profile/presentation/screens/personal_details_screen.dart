@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 
-class PersonalDetailsScreen extends StatefulWidget {
+class PersonalDetailsScreen extends ConsumerStatefulWidget {
   const PersonalDetailsScreen({super.key});
 
   @override
-  State<PersonalDetailsScreen> createState() => _PersonalDetailsScreenState();
+  ConsumerState<PersonalDetailsScreen> createState() =>
+      _PersonalDetailsScreenState();
 }
 
-class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
+class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   final _nameController = TextEditingController(text: 'Mr. Raju');
   final _phoneController = TextEditingController(text: '+880 1840-560614');
   bool _isSaving = false;
@@ -53,20 +58,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: AppColors.textPrimary,
-            size: 18,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const AppText.h3('Personal details'),
-        centerTitle: true,
-      ),
+      appBar: AppAppBar(title: "Personal details"),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -101,6 +94,14 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             // Name
             AppTextField(hint: "Full name"),
             const SizedBox(height: 12),
+            if (ref.watch(appRoleProvider) == AppRole.provider) ...[
+              // About me
+              AppTextField(hint: "About me", maxLines: 3),
+              const SizedBox(height: 12),
+              // Address
+              AppTextField(hint: "Address"),
+              const SizedBox(height: 12),
+            ],
 
             // Phone
             AppTextField(hint: "Phone number"),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+class GuestOnboardingScreen extends StatefulWidget {
+  const GuestOnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  State<GuestOnboardingScreen> createState() => _GuestOnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
   final PageController _controller = PageController();
   int currentIndex = 0;
 
@@ -36,7 +37,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void nextPage() {
     if (currentIndex == onboardingData.length - 1) {
-      // Navigate to login/home
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return RootScreen();
+          },
+        ),
+      );
     } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),

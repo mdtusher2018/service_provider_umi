@@ -104,7 +104,7 @@ class AppColors {
 
   // ─── Rating (shared) ─────────────────────────────────────
   static const Color star = Color(0xFFFFCC00);
-  static const Color starEmpty = Color(0xFFE5E5EA);
+  static const Color starEmpty = Colors.black;
 
   // ─── Backgrounds (shared) ────────────────────────────────
   static const Color background = Color(0xFFF2F2F2);

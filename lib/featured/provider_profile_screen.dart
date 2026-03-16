@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/featured/authentication/WelcomeScreen.dart';
 import 'package:service_provider_umi/featured/schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -374,7 +377,38 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
           Expanded(
             child: AppButton.primary(
               label: 'View availability',
-              onPressed: () => setState(() => _showFrequencySheet = true),
+              onPressed: () {
+                if (ref.watch(appRoleProvider) == AppRole.guest) {
+                  // Show dialog so guest understands they need to login
+                  GuestLoginDialog.show(
+                    context,
+                    onLogin: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return WelcomeScreen();
+                          },
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    onRegister: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return WelcomeScreen();
+                          },
+                        ),
+                        (route) => false,
+                      );
+                    },
+                  );
+                  return;
+                }
+                setState(() => _showFrequencySheet = true);
+              },
             ),
           ),
         ],
@@ -690,6 +724,108 @@ class _FreqOption extends ConsumerWidget {
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  GuestLoginDialog
+//
+//  Shows when a guest tries to tap a protected action.
+//  Two CTAs: Log In → goes to login screen
+//            Create Account → goes to register screen
+// ─────────────────────────────────────────────────────────────
+
+class GuestLoginDialog extends StatelessWidget {
+  final VoidCallback? onLogin;
+  final VoidCallback? onRegister;
+
+  const GuestLoginDialog({super.key, this.onLogin, this.onRegister});
+
+  /// Convenience: show from anywhere
+  static Future<void> show(
+    BuildContext context, {
+    VoidCallback? onLogin,
+    VoidCallback? onRegister,
+  }) {
+    return showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.45),
+      builder: (_) =>
+          GuestLoginDialog(onLogin: onLogin, onRegister: onRegister),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ─── Close ────────────────────────────────
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: AppColors.grey400,
+                  size: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+
+            // ─── Icon ─────────────────────────────────
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.lock_outline_rounded,
+                color: AppColors.primary,
+                size: 32,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // ─── Title ────────────────────────────────
+            AppText(
+              'Login Required',
+              style: AppTextStyles.h3,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+
+            // ─── Subtitle ─────────────────────────────
+            AppText(
+              'You need to be logged in to view availability '
+              'and book a service. Please log in or create a '
+              'free account.',
+              style: AppTextStyles.bodyMd.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+
+            // ─── Log In button ────────────────────────
+            AppButton.primary(label: "Log In"),
+            const SizedBox(height: 10),
+
+            // ─── Create Account button ────────────────
+            AppButton.outline(label: "Create Account"),
           ],
         ),
       ),

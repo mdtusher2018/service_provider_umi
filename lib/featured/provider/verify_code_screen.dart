@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -59,8 +60,15 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    // TODO: verify code via provider, then navigate
-    // Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return RootScreen();
+        },
+      ),
+      (route) => false,
+    );
   }
 
   @override

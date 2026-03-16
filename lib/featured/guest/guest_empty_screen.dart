@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/featured/authentication/WelcomeScreen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -123,11 +124,37 @@ class _ChatGuestTab extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          AppButton.outline(label: "LOGIN", onPressed: () {}),
+          AppButton.outline(
+            label: "LOGIN",
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WelcomeScreen();
+                  },
+                ),
+                (route) => false,
+              );
+            },
+          ),
 
           const SizedBox(height: 12),
 
-          AppButton.primary(label: "Create Account", onPressed: () {}),
+          AppButton.primary(
+            label: "Create Account",
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WelcomeScreen();
+                  },
+                ),
+                (route) => false,
+              );
+            },
+          ),
 
           const SizedBox(height: 80),
         ],

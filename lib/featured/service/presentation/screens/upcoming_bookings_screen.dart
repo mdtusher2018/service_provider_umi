@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:service_provider_umi/featured/provider/booking_details_screen.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen.dart';
 
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import '../../../../core/di/app_role_provider.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
+import '../../../../../../core/di/app_role_provider.dart';
+import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/theme/app_text_styles.dart';
 
 // ─── Screen ───────────────────────────────────────────────────
 class UpcomingBookingsScreen extends ConsumerStatefulWidget {
@@ -26,7 +27,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
       imageUrl: '',
       timeRange: 'From 16:30 to 18:30',
       date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.accepted,
+      status: BookingStatus.ongoing,
     ),
     BookingItem(
       id: '2',
@@ -34,7 +35,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
       imageUrl: '',
       timeRange: 'From 10:00 to 12:00',
       date: 'Tuesday, 2 Feb 2025',
-      status: BookingStatus.upcoming,
+      status: BookingStatus.accepted,
     ),
   ];
 
@@ -70,19 +71,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Calendar icon
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: primary,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.calendar_today_rounded,
-              color: AppColors.white,
-              size: 18,
-            ),
-          ),
+          Icon(Icons.timer, color: AppColors.primaryFor(AppRole.provider)),
           const SizedBox(width: 10),
           AppText('Upcoming Bookings', style: AppTextStyles.h3),
           const Spacer(),

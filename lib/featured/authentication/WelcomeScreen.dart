@@ -1,5 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/featured/RootScreen.dart';
+import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
@@ -7,9 +13,14 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
+  @override
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,13 +67,31 @@ class WelcomeScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            AppButton.secondary(label: "Log in", onPressed: () {}),
+            AppButton.secondary(
+              label: "Log in",
+              onPressed: () {
+                showLoginAccountDialog(context);
+              },
+            ),
 
             const SizedBox(height: 16),
 
-            const AppText.bodySm(
-              "Continue as a guest",
-              color: AppColors.textSecondary,
+            InkWell(
+              onTap: () {
+                log(ref.watch(appRoleProvider).name);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return GuestOnboardingScreen();
+                    },
+                  ),
+                );
+              },
+              child: const AppText.bodySm(
+                "Continue as a guest",
+                color: AppColors.textSecondary,
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -149,7 +178,7 @@ class WelcomeScreen extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     context.pop();
-                    showLoginBottomSheet(context);
+                    showAuthBottomSheet(context);
                   },
                   child: _categoryCard(
                     "Book a service",
@@ -173,7 +202,7 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  void showLoginBottomSheet(BuildContext context) {
+  void showAuthBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -337,12 +366,7 @@ class WelcomeScreen extends StatelessWidget {
                         print("Open Terms");
                       },
                     ),
-                    AppTextLink(
-                      label: "Privacy Policy",
-                      onTap: () {
-                     
-                      },
-                    ),
+                    AppTextLink(label: "Privacy Policy", onTap: () {}),
                   ],
                 ),
               ],
@@ -398,32 +422,22 @@ class WelcomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                Container(
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: AppText.labelLg("Login", color: AppColors.white),
-                  ),
+                AppButton.primary(
+                  label: "Log in",
+                  onPressed: () {
+                    ref.read(appRoleProvider.notifier).loginAsUser();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return RootScreen();
+                        },
+                      ),
+                      (route) => false,
+                    );
+                  },
                 ),
 
-                const SizedBox(height: 16),
-                AppLinkText(
-                  "Don't have an account?  Sign Up",
-                  textColor: AppColors.textPrimary,
-                  links: [
-                    AppTextLink(
-                      label: "Sign Up",
-                      onTap: () {
-                        context.pop();
-                        showCreateAccountDialog(context);
-                      },
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 16),
               ],
             ),

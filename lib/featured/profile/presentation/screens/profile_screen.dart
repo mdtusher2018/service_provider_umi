@@ -1,8 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/featured/RootScreen.dart';
+import 'package:service_provider_umi/featured/profile/presentation/screens/my_balance_screen.dart';
+import 'package:service_provider_umi/featured/profile/presentation/screens/provider_listing_screen.dart';
+import 'package:service_provider_umi/featured/profile/presentation/screens/preferences_screen.dart';
+import 'package:service_provider_umi/featured/profile/presentation/screens/reviews_screen.dart';
+import 'package:service_provider_umi/featured/provider/provider_onboarding.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'personal_details_screen.dart';
@@ -60,7 +70,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     _buildUserCard(),
                     const SizedBox(height: 16),
                     // Switch to professional
-                    _buildSwitchTile(),
+                    _buildSwitchTile(ref),
                     const SizedBox(height: 20),
                     // Section label
                     AppText.labelLg(
@@ -77,28 +87,54 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           'Personal details',
                           () => _push(const PersonalDetailsScreen()),
                         ),
-                        _Item(
-                          Icons.location_on_outlined,
-                          'My addresses',
-                          () => _push(const MyAddressesScreen()),
-                        ),
-                        _Item(
-                          Icons.credit_card_outlined,
-                          'Payments and refunds',
-                          () => _push(const PaymentsScreen()),
-                        ),
+                        if (ref.watch(appRoleProvider) == AppRole.user) ...[
+                          _Item(
+                            Icons.location_on_outlined,
+                            'My addresses',
+                            () => _push(const MyAddressesScreen()),
+                          ),
+
+                          _Item(
+                            Icons.credit_card_outlined,
+                            'Payments and refunds',
+                            () => _push(const PaymentsScreen()),
+                          ),
+                        ],
+                        if (ref.watch(appRoleProvider) == AppRole.provider) ...[
+                          _Item(
+                            Icons.credit_card,
+                            'My balance',
+                            () => _push(const MyBalanceScreen()),
+                          ),
+
+                          _Item(
+                            Icons.campaign,
+                            'My listing',
+                            () => _push(const ProviderListingScreen()),
+                          ),
+                          _Item(
+                            Icons.tune,
+                            'Booking preferences',
+                            () => _push(const PreferencesScreen()),
+                          ),
+                          _Item(
+                            Icons.star_border,
+                            'My Review',
+                            () => _push(const ReviewsScreen()),
+                          ),
+                        ],
                         _Item(
                           Icons.lock_outline_rounded,
                           'Change password',
                           () => _push(const ChangePasswordScreen()),
                         ),
                         _Item(
-                          Icons.language_rounded,
+                          Icons.g_translate_outlined,
                           'Language',
                           () => _push(const LanguageScreen()),
                         ),
                         _Item(
-                          Icons.info_outline_rounded,
+                          Icons.info_sharp,
                           'About Us',
                           () => _push(const AboutUsScreen()),
                         ),
@@ -113,7 +149,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                         ),
                         _Item(
-                          Icons.shield_outlined,
+                          Icons.privacy_tip_outlined,
                           'Privacy policy',
                           () => _push(
                             const StaticPageScreen(
@@ -154,18 +190,52 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText.h3(_name),
-            AppText.bodySm(_phone, color: AppColors.textSecondary),
+            if (ref.watch(appRoleProvider) == AppRole.user)
+              AppText.bodySm(_phone, color: AppColors.textSecondary),
+            if (ref.watch(appRoleProvider) == AppRole.provider)
+              AppLinkText(
+                links: [AppTextLink(label: "Not verified", onTap: () {})],
+                "Verification : Not verified",
+                linkColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
+              ),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildSwitchTile() {
+  Widget _buildSwitchTile(WidgetRef ref) {
+    final currentRole = ref.watch(appRoleProvider);
+    final isProvider = currentRole == AppRole.provider;
+
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        ref.read(appRoleProvider.notifier).switchRole();
+        if (ref.read(appRoleProvider) == AppRole.provider) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return ServiceProviderOnboardingScreen();
+              },
+            ),
+            (route) => false,
+          );
+          return;
+        }
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return RootScreen();
+            },
+          ),
+          (route) => false,
+        );
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(16),
@@ -173,19 +243,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.swap_horiz_rounded,
-              color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-              size: 20,
-            ),
+            Icon(Icons.sync),
             const SizedBox(width: 12),
-            const Expanded(
-              child: AppText.bodyMd('Switch to professional version'),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: AppColors.grey400,
-              size: 14,
+            Expanded(
+              child: Text(
+                isProvider
+                    ? 'Switch to user version'
+                    : 'Switch to professional version',
+              ),
             ),
           ],
         ),
@@ -237,7 +302,7 @@ class _MenuCard extends ConsumerWidget {
                       child: Icon(
                         item.icon,
                         color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                        size: 24,
+                        size: 28,
                       ),
                     ),
                     const SizedBox(width: 14),

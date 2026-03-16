@@ -1,17 +1,14 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 // ─── Models ───────────────────────────────────────────────────
-enum BookingStatus {
-  upcoming,
-  past,
-  cancelled,
-  accepted,
-  inProgress,
-  completed,
-}
+enum BookingStatus { pending, accepted, ongoing, completed, cancelled }
 
 class BookingItem {
   final String id;
@@ -35,7 +32,7 @@ class BookingItem {
   });
 }
 
-class BookingCard extends StatelessWidget {
+class BookingCard extends ConsumerWidget {
   final BookingItem item;
   final VoidCallback? onTap;
   final VoidCallback? onRatingTap;
@@ -48,7 +45,8 @@ class BookingCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(appRoleProvider);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -117,7 +115,7 @@ class BookingCard extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     // ─── Status badges ───────────────
-                    _buildStatusRow(),
+                    _buildStatusRow(role),
                   ],
                 ),
               ),
@@ -128,52 +126,85 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusRow() {
+  Widget _buildStatusRow(AppRole role) {
     switch (item.status) {
-      case BookingStatus.upcoming:
+      case BookingStatus.pending:
+        if (role == AppRole.provider) {
+          return Row(
+            children: [
+              _StatusBadge(
+                label: 'Accept',
+                color: AppColors.success,
+                backgroundColor: AppColors.successLight,
+                isInteractive: true,
+              ),
+              const SizedBox(width: 8),
+              const _StatusBadge(
+                label: 'Cancel',
+                color: AppColors.error,
+                backgroundColor: AppColors.errorLight,
+              ),
+            ],
+          );
+        }
+
         return const _StatusBadge(
           label: 'Pending acceptance',
           color: AppColors.primary,
           backgroundColor: AppColors.primaryLight,
         );
+
       case BookingStatus.accepted:
         return const _StatusBadge(
-          label: 'Accepted by provider',
+          label: 'Accepted',
           color: AppColors.success,
           backgroundColor: AppColors.successLight,
         );
-      case BookingStatus.inProgress:
+
+      case BookingStatus.ongoing:
+        if (role == AppRole.provider) {
+          return const _StatusBadge(
+            label: 'Ongoing',
+            color: AppColors.info,
+            backgroundColor: AppColors.infoLight,
+          );
+        }
+
         return const _StatusBadge(
-          label: 'In Progress',
+          label: 'Service in progress',
           color: AppColors.info,
           backgroundColor: AppColors.infoLight,
         );
+
       case BookingStatus.completed:
+        if (role == AppRole.user) {
+          return Row(
+            children: [
+              GestureDetector(
+                onTap: onRatingTap,
+                child: const _StatusBadge(
+                  label: 'Rating',
+                  color: AppColors.primary,
+                  backgroundColor: AppColors.primaryLight,
+                  isInteractive: true,
+                ),
+              ),
+              const SizedBox(width: 8),
+              _StatusBadge(
+                label: 'Need Support Immediately',
+                color: AppColors.textSecondary,
+                backgroundColor: AppColors.info.withOpacity(0.3),
+              ),
+            ],
+          );
+        }
+
         return const _StatusBadge(
           label: 'Completed',
           color: AppColors.success,
           backgroundColor: AppColors.successLight,
         );
-      case BookingStatus.past:
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: onRatingTap,
-              child: const _StatusBadge(
-                label: 'Rating',
-                color: AppColors.primary,
-                backgroundColor: AppColors.primaryLight,
-                isInteractive: true,
-              ),
-            ),
-            const SizedBox(width: 8),
-            _StatusBadge(
-              label: 'Need Support Immediately',
-              color: AppColors.textSecondary,
-              backgroundColor: AppColors.info.withOpacity(0.3),
-            ),
-          ],
-        );
+
       case BookingStatus.cancelled:
         return const _StatusBadge(
           label: 'Cancelled',
@@ -209,6 +240,57 @@ class _StatusBadge extends StatelessWidget {
             : null,
       ),
       child: AppText.bodySm(label, color: color, fontWeight: FontWeight.w500),
+    );
+  }
+}
+
+// ─── Booking List ─────────────────────────────────────────────
+class BookingList extends StatelessWidget {
+  final List<BookingItem> items;
+  final String emptyMessage;
+  final String emptySubtitle;
+  final void Function(BookingItem) onCardTap;
+  final void Function(BookingItem)? onRatingTap;
+
+  const BookingList({
+    required this.items,
+    required this.emptyMessage,
+    required this.emptySubtitle,
+    required this.onCardTap,
+    this.onRatingTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return AppEmptyState(
+        title: emptyMessage,
+        subtitle: emptySubtitle,
+        icon: Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.calendar_today_outlined,
+            color: AppColors.primary,
+            size: 32,
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+      itemCount: items.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (_, i) => BookingCard(
+        item: items[i],
+        onTap: () => onCardTap(items[i]),
+        onRatingTap: onRatingTap != null ? () => onRatingTap!(items[i]) : null,
+      ),
     );
   }
 }

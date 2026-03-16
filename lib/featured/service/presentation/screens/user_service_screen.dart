@@ -7,16 +7,15 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
-
 // ─── Screen ───────────────────────────────────────────────────
-class ServiceScreen extends ConsumerStatefulWidget {
-  const ServiceScreen({super.key});
+class UserServiceScreen extends ConsumerStatefulWidget {
+  const UserServiceScreen({super.key});
 
   @override
-  ConsumerState<ServiceScreen> createState() => _ServiceScreenState();
+  ConsumerState<UserServiceScreen> createState() => _ServiceScreenState();
 }
 
-class _ServiceScreenState extends ConsumerState<ServiceScreen>
+class _ServiceScreenState extends ConsumerState<UserServiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -28,7 +27,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
       imageUrl: '',
       timeRange: 'From 16:30 to 18:30',
       date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.upcoming,
+      status: BookingStatus.accepted,
     ),
   ];
 
@@ -39,7 +38,7 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
       imageUrl: '',
       timeRange: 'From 16:30 to 18:30',
       date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.past,
+      status: BookingStatus.completed,
       needsRating: true,
       needsSupport: true,
     ),
@@ -95,20 +94,20 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _BookingList(
+                  BookingList(
                     items: _upcoming,
                     emptyMessage: 'No upcoming bookings',
                     emptySubtitle: 'Book a service to see it here',
                     onCardTap: _onCardTap,
                   ),
-                  _BookingList(
+                  BookingList(
                     items: _past,
                     emptyMessage: 'No past bookings',
                     emptySubtitle: 'Your completed services will appear here',
                     onCardTap: _onCardTap,
                     onRatingTap: _showRatingDialog,
                   ),
-                  _BookingList(
+                  BookingList(
                     items: _cancelled,
                     emptyMessage: 'No cancelled bookings',
                     emptySubtitle: 'Cancelled services will appear here',
@@ -204,58 +203,6 @@ class _SegmentedTabBar extends StatelessWidget {
     );
   }
 }
-
-// ─── Booking List ─────────────────────────────────────────────
-class _BookingList extends StatelessWidget {
-  final List<BookingItem> items;
-  final String emptyMessage;
-  final String emptySubtitle;
-  final void Function(BookingItem) onCardTap;
-  final void Function(BookingItem)? onRatingTap;
-
-  const _BookingList({
-    required this.items,
-    required this.emptyMessage,
-    required this.emptySubtitle,
-    required this.onCardTap,
-    this.onRatingTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return AppEmptyState(
-        title: emptyMessage,
-        subtitle: emptySubtitle,
-        icon: Container(
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.calendar_today_outlined,
-            color: AppColors.primary,
-            size: 32,
-          ),
-        ),
-      );
-    }
-
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-      itemCount: items.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (_, i) => BookingCard(
-        item: items[i],
-        onTap: () => onCardTap(items[i]),
-        onRatingTap: onRatingTap != null ? () => onRatingTap!(items[i]) : null,
-      ),
-    );
-  }
-}
-
 
 // ─── Rating Dialog ────────────────────────────────────────────
 class RatingDialog extends StatefulWidget {

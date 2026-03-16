@@ -35,7 +35,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: backgroundColor ?? AppColors.white,
+      backgroundColor: backgroundColor ?? AppColors.background,
       foregroundColor: foregroundColor ?? AppColors.textPrimary,
       elevation: elevation,
       centerTitle: centerTitle,
@@ -45,18 +45,14 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       leading: showBackButton
           ? (leading ??
-              IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_rounded,
-                  size: 18,
-                ),
-                onPressed: onBack ?? () => Navigator.of(context).pop(),
-              ))
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_rounded, size: 18),
+                  onPressed: onBack ?? () => Navigator.of(context).pop(),
+                ))
           : null,
-      title: titleWidget ??
-          (title != null
-              ? Text(title!, style: AppTextStyles.h3)
-              : null),
+      title:
+          titleWidget ??
+          (title != null ? Text(title!, style: AppTextStyles.h3) : null),
       actions: actions,
       bottom: bottom,
     );
@@ -165,8 +161,11 @@ class AppTealAppBar extends StatelessWidget implements PreferredSizeWidget {
         statusBarIconBrightness: Brightness.light,
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded,
-            color: AppColors.white, size: 18),
+        icon: const Icon(
+          Icons.arrow_back_ios_rounded,
+          color: AppColors.white,
+          size: 18,
+        ),
         onPressed: onBack ?? () => Navigator.of(context).pop(),
       ),
       title: Text(
