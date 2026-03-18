@@ -8,7 +8,7 @@ import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-import '../../../../core/config/flavor_config.dart';
+import '../../../core/config/flavor_config.dart';
 
 // ─── Screen ───────────────────────────────────────────────────
 class VideoCallScreen extends ConsumerStatefulWidget {

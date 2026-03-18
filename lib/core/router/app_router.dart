@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:service_provider_umi/core/theme/app_role.dart';
 
 import 'app_routes.dart';
 import 'guards/auth_guard.dart';
 import 'guards/role_guard.dart';
-import '../../shared/enums/user_role.dart';
-
-// Import screens (update paths as you build features)
-// import '../../features/splash/presentation/splash_screen.dart';
-// ... etc
 
 part 'app_router.g.dart';
 
@@ -21,9 +17,6 @@ final _providerShellKey = GlobalKey<NavigatorState>(
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  // final authState = ref.watch(authNotifierProvider);
-  // final activeRole = ref.watch(activeRoleProvider);
-
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.splash,
@@ -34,7 +27,7 @@ GoRouter appRouter(Ref ref) {
       if (authRedirect != null) return authRedirect;
 
       // 2. Role guard
-      const activeRole = UserRole.user; // replace with real provider
+      const activeRole = AppRole.user; // replace with real provider
       final roleRedirect = RoleGuard.redirect(activeRole, state);
       if (roleRedirect != null) return roleRedirect;
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/presentation/screens/chat_screen.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/screens/chat_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
