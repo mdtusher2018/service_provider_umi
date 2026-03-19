@@ -10,10 +10,8 @@ extension NumExtensions on num {
 
   // ─── EdgeInsets ──────────────────────────────────────────
   EdgeInsets get paddingAll => EdgeInsets.all(toDouble());
-  EdgeInsets get paddingH =>
-      EdgeInsets.symmetric(horizontal: toDouble());
-  EdgeInsets get paddingV =>
-      EdgeInsets.symmetric(vertical: toDouble());
+  EdgeInsets get paddingH => EdgeInsets.symmetric(horizontal: toDouble());
+  EdgeInsets get paddingV => EdgeInsets.symmetric(vertical: toDouble());
   EdgeInsets get paddingTop => EdgeInsets.only(top: toDouble());
   EdgeInsets get paddingBottom => EdgeInsets.only(bottom: toDouble());
   EdgeInsets get paddingLeft => EdgeInsets.only(left: toDouble());
@@ -32,8 +30,7 @@ extension NumExtensions on num {
   bool get isNegative => this < 0;
   bool get isZero => this == 0;
 
-  double clampBetween(double min, double max) =>
-      clamp(min, max).toDouble();
+  double clampBetween(double min, double max) => clamp(min, max).toDouble();
 
   double get toRad => this * (3.14159265358979323846 / 180);
   double get toDeg => this * (180 / 3.14159265358979323846);

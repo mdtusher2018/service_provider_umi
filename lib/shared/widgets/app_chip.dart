@@ -1,89 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-
-/// Selection chip - as seen in frequency, day selection, time slots
-class AppChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback? onTap;
-  final Color? selectedColor;
-  final Color? unselectedColor;
-  final Color? selectedTextColor;
-  final Color? unselectedTextColor;
-  final EdgeInsetsGeometry? padding;
-  final double? borderRadius;
-  final Widget? icon;
-  final bool showBorder;
-
-  const AppChip({
-    super.key,
-    required this.label,
-    this.isSelected = false,
-    this.onTap,
-    this.selectedColor,
-    this.unselectedColor,
-    this.selectedTextColor,
-    this.unselectedTextColor,
-    this.padding,
-    this.borderRadius,
-    this.icon,
-    this.showBorder = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = isSelected
-        ? (selectedColor ?? AppColors.secondary)
-        : (unselectedColor ?? AppColors.white);
-
-    final txtColor = isSelected
-        ? (selectedTextColor ?? AppColors.white)
-        : (unselectedTextColor ?? AppColors.textPrimary);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding:
-            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(borderRadius ?? 24),
-          border: showBorder
-              ? Border.all(
-                  color: isSelected ? AppColors.secondary : AppColors.border,
-                  width: 1.5,
-                )
-              : null,
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.secondary.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : [],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[icon!, const SizedBox(width: 6)],
-            Text(
-              label,
-              style: AppTextStyles.labelMd.copyWith(
-                color: txtColor,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 /// Day chip - compact version for day-of-week selection
 class AppDayChip extends StatelessWidget {
@@ -139,7 +58,7 @@ class AppDayChip extends StatelessWidget {
               ),
             ),
             if (date != null) ...[
-              const SizedBox(height: 2),
+              2.verticalSpace,
               AppText(
                 date!,
                 style: AppTextStyles.labelMd.copyWith(

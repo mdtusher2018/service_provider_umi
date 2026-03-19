@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_theme.dart';
-import 'package:service_provider_umi/featured/authentication/WelcomeScreen.dart';
+import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
 import 'core/di/providers.dart';
 
 // import 'core/localization/app_localizations.dart'; // Uncomment after generating

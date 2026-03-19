@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
@@ -78,7 +79,7 @@ class _MyListingScreenState extends ConsumerState<ProviderListingScreen> {
               : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
                   itemCount: _listings.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, __) => 12.verticalSpace,
                   itemBuilder: (_, i) => _ListingCard(
                     listing: _listings[i],
                     primary: primary,
@@ -168,7 +169,7 @@ class _ListingCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          12.horizontalSpace,
 
           // Info
           Expanded(
@@ -181,7 +182,7 @@ class _ListingCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 3),
+                3.verticalSpace,
                 Text(
                   '\$${listing.pricePerHour.toStringAsFixed(2)} hrs',
                   style: AppTextStyles.labelMd.copyWith(color: primary),
@@ -235,7 +236,7 @@ class _DeleteDialog extends StatelessWidget {
               style: AppTextStyles.h3,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -255,7 +256,7 @@ class _DeleteDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            10.verticalSpace,
             SizedBox(
               width: double.infinity,
               height: 48,

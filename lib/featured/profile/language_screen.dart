@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -51,7 +52,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
               'Change language',
               color: AppColors.textSecondary,
             ),
-            const SizedBox(height: 10),
+            10.verticalSpace,
             // Dropdown
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -200,13 +201,13 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
               pulseController: _pulseController,
               isConnected: _callState == CallState.connected,
             ),
-            const SizedBox(height: 20),
+            20.verticalSpace,
 
             // ─── Name & number ────────────────────
             AppText.h2(widget.contactName),
-            const SizedBox(height: 6),
+            6.verticalSpace,
             AppText.bodyMd(widget.contactId, color: AppColors.textSecondary),
-            const SizedBox(height: 12),
+            12.verticalSpace,
 
             // ─── Status / timer ───────────────────
             AppText.bodyLg(
@@ -233,7 +234,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
             else
               _buildOutgoingControl(),
 
-            const SizedBox(height: 48),
+            48.verticalSpace,
           ],
         ),
       ),
@@ -283,7 +284,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
           color: AppColors.error,
           onTap: _endCall,
         ),
-        const SizedBox(width: 60),
+        60.horizontalSpace,
         // Accept
         _RoundCallBtn(
           icon: Icons.call_rounded,
@@ -407,7 +408,7 @@ class _CallControlBtn extends StatelessWidget {
               size: 22,
             ),
           ),
-          const SizedBox(height: 6),
+          6.verticalSpace,
           AppText.bodyXs(label, color: AppColors.textSecondary),
         ],
       ),
@@ -438,7 +439,7 @@ class _EndCallBtn extends StatelessWidget {
               size: 22,
             ),
           ),
-          const SizedBox(height: 6),
+          6.verticalSpace,
           AppText.bodyXs('End', color: AppColors.textSecondary),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
@@ -66,16 +67,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     // User card
                     _buildUserCard(),
-                    const SizedBox(height: 16),
+                    16.verticalSpace,
                     // Switch to professional
                     _buildSwitchTile(ref),
-                    const SizedBox(height: 20),
+                    20.verticalSpace,
                     // Section label
                     AppText.labelLg(
                       'Account Settings',
                       color: AppColors.textSecondary,
                     ),
-                    SizedBox(height: 16),
+                    16.verticalSpace,
                     AppDivider(),
                     // Settings menu
                     _MenuCard(
@@ -165,10 +166,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    8.verticalSpace,
 
                     // Logout
-                    const SizedBox(height: 40),
+                    40.verticalSpace,
                   ],
                 ),
               ),
@@ -183,7 +184,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Row(
       children: [
         AppAvatar(name: _name, size: AvatarSize.md),
-        const SizedBox(width: 14),
+        14.horizontalSpace,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -242,7 +243,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Row(
           children: [
             Icon(Icons.sync),
-            const SizedBox(width: 12),
+            12.horizontalSpace,
             Expanded(
               child: Text(
                 isProvider
@@ -303,7 +304,7 @@ class _MenuCard extends ConsumerWidget {
                         size: 28,
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    14.horizontalSpace,
                     Expanded(
                       child: AppText.bodyMd(
                         item.label,
@@ -358,9 +359,9 @@ class _LogoutDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             const AppText.h3('Are you sure you want to log out?'),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             Row(
               children: [
                 Expanded(
@@ -376,7 +377,7 @@ class _LogoutDialog extends StatelessWidget {
                     child: const AppText.labelLg('Cancel'),
                   ),
                 ),
-                const SizedBox(width: 12),
+                12.horizontalSpace,
                 Expanded(
                   child: ElevatedButton(
                     onPressed: onLogout,

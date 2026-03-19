@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+
 import 'app_avatar.dart';
 
 /// Base card container
@@ -118,7 +120,7 @@ class ProviderCard extends StatelessWidget {
                   child: Icon(Icons.favorite_border, size: 16),
                 ),
               ),
-              const SizedBox(width: 12),
+              12.horizontalSpace,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +135,7 @@ class ProviderCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (isVerified) ...[
-                          const SizedBox(width: 4),
+                          4.horizontalSpace,
                           const Icon(
                             Icons.verified,
                             color: AppColors.textSecondary,
@@ -142,37 +144,33 @@ class ProviderCard extends StatelessWidget {
                         ],
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    2.verticalSpace,
                     Row(
                       children: [
                         Icon(Icons.star, color: AppColors.star, size: 20),
-                        const SizedBox(width: 6),
+                        6.horizontalSpace,
                         AppText.labelMd(
                           '${rating.toStringAsFixed(1)}  (${reviewCount.toString()}) | $serviceCount Services',
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    4.verticalSpace,
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              8.horizontalSpace,
               AppText(
                 '\$${pricePerHour.toStringAsFixed(0)}/h',
                 style: AppTextStyles.price.copyWith(color: AppColors.secondary),
               ),
             ],
           ),
-          SizedBox(height: 8),
+          8.verticalSpace,
           Row(
             children: [
               if (hasRepeated)
-                _buildBadge(
-                  '${reviewCount} has repeated',
-
-                  Icons.refresh_rounded,
-                ),
-              if (hasRepeated && hasUpdatedSchedule) const SizedBox(width: 6),
+                _buildBadge('$reviewCount has repeated', Icons.refresh_rounded),
+              if (hasRepeated && hasUpdatedSchedule) 6.horizontalSpace,
               if (hasUpdatedSchedule)
                 _buildBadge('Updated Schedule', Icons.calendar_today),
             ],
@@ -193,71 +191,13 @@ class ProviderCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: AppColors.grey600),
-          const SizedBox(width: 3),
+          3.horizontalSpace,
           Text(
             text,
             style: AppTextStyles.bodyXs.copyWith(
               color: AppColors.black,
               fontWeight: FontWeight.w500,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Service category card - icon + label (home screen)
-class ServiceCategoryCard extends StatelessWidget {
-  final String label;
-  final Widget icon;
-  final VoidCallback? onTap;
-  final bool isSelected;
-
-  const ServiceCategoryCard({
-    super.key,
-    required this.label,
-    required this.icon,
-    this.onTap,
-    this.isSelected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.primaryLight : AppColors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isSelected ? AppColors.primary : AppColors.border,
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.07),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Center(child: icon),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: AppTextStyles.labelSm.copyWith(
-              color: isSelected ? AppColors.primary : AppColors.textSecondary,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),

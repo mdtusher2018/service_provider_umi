@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -268,9 +269,9 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
               imageUrl: widget.contactImageUrl,
               customSize: 120,
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             AppText.h3(widget.contactName, color: AppColors.white),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             AppText.bodyMd(
               _localUserJoined
                   ? 'Waiting for ${widget.contactName}...'
@@ -402,14 +403,14 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
             imageUrl: widget.contactImageUrl,
             customSize: 110,
           ),
-          const SizedBox(height: 16),
+          16.verticalSpace,
           AppText.h2(widget.contactName, color: AppColors.white),
-          const SizedBox(height: 8),
+          8.verticalSpace,
           AppText.bodyLg(
             'Incoming video call...',
             color: AppColors.white.withOpacity(0.7),
           ),
-          const SizedBox(height: 48),
+          48.verticalSpace,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -419,7 +420,8 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
                 color: AppColors.error,
                 onTap: _endCall,
               ),
-              const SizedBox(width: 72),
+       
+              72.horizontalSpace,
               // Accept
               _RoundVideoBtn(
                 icon: Icons.videocam_rounded,
@@ -468,7 +470,7 @@ class _VideoControlBtn extends StatelessWidget {
             ),
             child: Icon(icon, color: AppColors.white, size: 22),
           ),
-          const SizedBox(height: 6),
+          6.verticalSpace,
           AppText.bodyXs(label, color: AppColors.white.withOpacity(0.8)),
         ],
       ),

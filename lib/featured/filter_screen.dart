@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/featured/provider/profile_picture_screen.dart';
-
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -102,7 +102,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                           ),
                           size: 18,
                         ),
-                        SizedBox(width: 8),
+                        8.horizontalSpace,
                         AppText.h1(
                           'Back',
                           color: AppColors.primaryFor(
@@ -151,7 +151,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
                     // ─── Experience ──────────────────────
                     AppText.h3("Professional's experience"),
-                    const SizedBox(height: 12),
+                    12.verticalSpace,
                     ..._experiences.asMap().entries.map(
                       (e) => AppCheckboxTile(
                         label: e.value,
@@ -167,7 +167,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
                     // ─── Other tasks ─────────────────────
                     AppText.h3('Other required tasks'),
-                    const SizedBox(height: 12),
+                    12.verticalSpace,
                     ..._tasks.map(
                       (t) => AppCheckboxTile(
                         label: t,
@@ -183,7 +183,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
                     // ─── Specialists in ──────────────────
                     AppText.h3('Show specialists in:'),
-                    const SizedBox(height: 12),
+                    12.verticalSpace,
                     ..._conditions.map(
                       (c) => AppCheckboxTile(
                         label: c,
@@ -221,17 +221,17 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                       value: _qualifiedCarer,
                       onChanged: (v) => setState(() => _qualifiedCarer = v),
                     ),
-                    const SizedBox(height: 32),
+                    32.verticalSpace,
 
                     AppText.h4("Image"),
                     if (ref.watch(appRoleProvider) == AppRole.provider) ...[
-                      SizedBox(height: 8),
+                      8.verticalSpace,
                       AppTextField(
                         prefixIcon: Icon(Icons.image),
                         hint: "Browse Image",
                         enabled: false,
                       ),
-                      SizedBox(height: 16),
+                      16.verticalSpace,
                     ],
                     // ─── Apply button ────────────────────
                     AppButton.primary(

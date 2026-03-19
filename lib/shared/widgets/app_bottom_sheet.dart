@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import 'app_button.dart';
@@ -126,7 +127,7 @@ class AppPrivacyDialog extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             Container(
               width: 64,
               height: 64,
@@ -140,13 +141,13 @@ class AppPrivacyDialog extends StatelessWidget {
                 size: 32,
               ),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             Text(
               'We value your privacy',
               style: AppTextStyles.h3,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             Text(
               'Wabad uses cookies to analyse advertising campaign performance, improve app ads, and personalize the experience based on user preference.',
               style: AppTextStyles.bodyMd.copyWith(
@@ -154,7 +155,7 @@ class AppPrivacyDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             GestureDetector(
               onTap: () {},
               child: Text(
@@ -166,7 +167,7 @@ class AppPrivacyDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
             AppButton.primary(label: 'Accept', onPressed: onAccept),
           ],
         ),
@@ -249,7 +250,7 @@ class _FaqTileState extends State<_FaqTile> {
               ],
             ),
             if (_expanded && widget.answer != null) ...[
-              const SizedBox(height: 8),
+              8.verticalSpace,
               Text(
                 widget.answer!,
                 style: AppTextStyles.bodyMd.copyWith(

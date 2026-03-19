@@ -37,7 +37,7 @@ class ProviderCompletedScreen extends StatelessWidget {
           : ListView.separated(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               itemCount: _completed.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => 12.verticalSpace,
               itemBuilder: (_, i) => BookingCard(
                 item: _completed[i],
                 onTap: () => _onCardTap(_completed[i], context),

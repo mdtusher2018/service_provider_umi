@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -31,7 +32,7 @@ class AppRatingBar extends StatelessWidget {
       children: [
         if (showValue) ...[
           Text(rating.toStringAsFixed(1), style: AppTextStyles.rating),
-          const SizedBox(width: 4),
+          4.horizontalSpace,
         ],
         Row(
           children: List.generate(5, (i) {
@@ -48,7 +49,7 @@ class AppRatingBar extends StatelessWidget {
           }),
         ),
         if (showCount && reviewCount > 0) ...[
-          const SizedBox(width: 4),
+          4.horizontalSpace,
           Text('($reviewCount)', style: AppTextStyles.bodySm),
         ],
       ],
@@ -106,12 +107,12 @@ class AppRatingBreakdown extends StatelessWidget {
             ),
 
             Icon(Icons.star_rate_rounded, size: 48, color: AppColors.star),
-            const SizedBox(width: 8),
+            8.horizontalSpace,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText.h4("Outstanding"),
-                const SizedBox(height: 4),
+                4.verticalSpace,
                 AppText.bodySm(
                   '($totalReviews ${totalReviews == 1 ? "rating" : "ratings"})',
                 ),
@@ -119,7 +120,7 @@ class AppRatingBreakdown extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        16.verticalSpace,
         ...breakdown.entries.map(
           (e) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -142,7 +143,7 @@ class _RatingRow extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 110, child: Text(label, style: AppTextStyles.bodyMd)),
-        SizedBox(width: 16),
+        16.horizontalSpace,
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -154,7 +155,7 @@ class _RatingRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        10.horizontalSpace,
         AppText(value.toStringAsFixed(1)),
       ],
     );

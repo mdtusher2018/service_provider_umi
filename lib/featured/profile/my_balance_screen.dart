@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -72,7 +73,7 @@ class MyBalanceScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Balance box ──────────────────────────────
             Center(
@@ -90,22 +91,22 @@ class MyBalanceScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     AppText.h1('\$${_availableBalance.toStringAsFixed(2)}'),
-                    const SizedBox(height: 4),
+                    4.verticalSpace,
                     AppText.bodyMd('Available balance'),
                   ],
                 ),
               ),
             ),
 
-            const SizedBox(height: 24),
+            24.verticalSpace,
             const Divider(color: AppColors.grey200, height: 1),
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Transaction list ─────────────────────────
             Expanded(
               child: ListView.separated(
                 itemCount: _transactions.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, __) => 12.verticalSpace,
                 itemBuilder: (_, i) => _TransactionCard(
                   transaction: _transactions[i],
                   primary: primary,
@@ -161,7 +162,7 @@ class _TransactionCard extends StatelessWidget {
             ),
             child: Center(child: AppText.h1(isDeposit ? '💵' : '💸')),
           ),
-          const SizedBox(width: 12),
+          12.horizontalSpace,
 
           // Details
           Expanded(
@@ -169,7 +170,7 @@ class _TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText.h4(transaction.title),
-                const SizedBox(height: 2),
+                2.verticalSpace,
                 AppText.bodySm(transaction.clientName),
                 AppText.bodyXs(
                   '${transaction.serviceName} · '

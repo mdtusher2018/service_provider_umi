@@ -37,7 +37,7 @@ class AppConstants {
   static const Duration debounceDelay = Duration(milliseconds: 500);
 
   // Limits
-  static const int otpLength = 6;
+  static const int otpLength = 4;
   static const int maxFavorites = 100;
   static const int searchMinChars = 2;
   static const double maxRating = 5.0;

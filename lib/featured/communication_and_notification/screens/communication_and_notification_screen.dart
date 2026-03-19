@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/chat_screen.dart';
+import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+part '../widgets/communication_and_notification_parts/_history_tile.dart';
+part '../widgets/communication_and_notification_parts/_alert_tile.dart';
+part '../widgets/communication_and_notification_parts/_contact_tile.dart';
+part '../widgets/communication_and_notification_parts/_tab_bar.dart';
 
 // ─── Models ───────────────────────────────────────────────────
 class InboxContact {
@@ -63,10 +69,6 @@ class AlertItem {
   });
 }
 
-enum AlertType { orderAccepted, orderComplete, cancelOrder }
-
-enum CallType { audio, video }
-
 // ─── Screen ───────────────────────────────────────────────────
 class CommunicationAndNotificationScreen extends ConsumerStatefulWidget {
   const CommunicationAndNotificationScreen({
@@ -77,15 +79,15 @@ class CommunicationAndNotificationScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<CommunicationAndNotificationScreen> createState() =>
-      _InboxScreenState();
+      _CommunicationAndNotificationScreenState();
 }
 
-class _InboxScreenState
+class _CommunicationAndNotificationScreenState
     extends ConsumerState<CommunicationAndNotificationScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _searchController = TextEditingController();
-  String _searchQuery = '';
+  final String _searchQuery = '';
 
   final List<CallHistory> _history = [
     CallHistory(
@@ -182,11 +184,11 @@ class _InboxScreenState
             ),
 
             // ─── Tab Bar ────────────────────────────
-            _InboxTabBar(
+            _TabBar(
               controller: _tabController,
               isNotification: widget.isNotification,
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             Expanded(
               child: TabBarView(
@@ -223,7 +225,7 @@ class _InboxScreenState
           ),
         ),
 
-        const SizedBox(height: 12),
+        12.verticalSpace,
 
         // Contact list
         Expanded(
@@ -234,7 +236,7 @@ class _InboxScreenState
                 )
               : ListView.separated(
                   padding: EdgeInsets.zero,
-                  separatorBuilder: (context, index) => SizedBox(height: 20),
+                  separatorBuilder: (context, index) => 20.verticalSpace,
                   itemCount: _filteredContacts.length,
                   itemBuilder: (_, i) => _ContactTile(
                     contact: _filteredContacts[i],
@@ -266,7 +268,7 @@ class _InboxScreenState
                 )
               : ListView.separated(
                   padding: EdgeInsets.zero,
-                  separatorBuilder: (context, index) => SizedBox(height: 20),
+                  separatorBuilder: (context, index) => 20.verticalSpace,
                   itemCount: _history.length,
                   itemBuilder: (_, i) {
                     return _HistoryTile(
@@ -291,7 +293,7 @@ class _InboxScreenState
   Widget _buildAlertsTab() {
     return ListView.separated(
       itemCount: _alerts.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, __) => 16.verticalSpace,
       itemBuilder: (_, i) => _AlertTile(alert: _alerts[i]),
     );
   }
@@ -299,266 +301,9 @@ class _InboxScreenState
   Widget _buildLastAlertsTab() {
     return ListView.separated(
       itemCount: _alerts.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, __) => 16.verticalSpace,
       itemBuilder: (_, i) => _AlertTile(alert: _alerts[i]),
     );
   }
 }
 
-// ─── Tab Bar ──────────────────────────────────────────────────
-class _InboxTabBar extends ConsumerWidget {
-  final TabController controller;
-  final bool isNotification;
-
-  const _InboxTabBar({required this.controller, required this.isNotification});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return TabBar(
-      controller: controller,
-      dividerColor: AppColors.grey500,
-      indicatorColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
-      indicatorWeight: 2,
-
-      indicatorSize: TabBarIndicatorSize.label,
-      tabs: [
-        if (!isNotification || ref.watch(appRoleProvider) == AppRole.user)
-          Tab(child: AppText.labelLg("Chat", fontWeight: FontWeight.w600)),
-        if (isNotification || ref.watch(appRoleProvider) == AppRole.user)
-          Tab(child: AppText.labelLg("Alerts", fontWeight: FontWeight.w600)),
-        if (!isNotification && ref.watch(appRoleProvider) != AppRole.user)
-          Tab(child: AppText.labelLg("History", fontWeight: FontWeight.w600)),
-        if (isNotification)
-          Tab(
-            child: AppText.labelLg("Last Alerts", fontWeight: FontWeight.w600),
-          ),
-      ],
-    );
-  }
-}
-
-// ─── History Tile ─────────────────────────────────────────────
-class _HistoryTile extends ConsumerWidget {
-  final CallHistory history;
-  final VoidCallback onTap;
-  const _HistoryTile({required this.history, required this.onTap});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 6),
-              color: AppColors.black.withOpacity(0.1),
-              blurRadius: 5,
-            ),
-          ],
-        ),
-
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Row(
-            children: [
-              AppAvatar(
-                name: history.name,
-                imageUrl: history.imageUrl,
-                size: AvatarSize.md,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.labelLg(history.name),
-                    const SizedBox(height: 2),
-                    AppText.bodySm(
-                      history.lastTime.toRelativeTime,
-                      maxLines: 1,
-                      color: AppColors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-              (history.type == CallType.audio)
-                  ? Icon(Icons.call)
-                  : Icon(Icons.videocam_outlined),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Contact Tile ─────────────────────────────────────────────
-class _ContactTile extends ConsumerWidget {
-  final InboxContact contact;
-  final VoidCallback onTap;
-  const _ContactTile({required this.contact, required this.onTap});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 6),
-              color: AppColors.black.withOpacity(0.1),
-              blurRadius: 5,
-            ),
-          ],
-        ),
-
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Row(
-            children: [
-              AppAvatar(
-                name: contact.name,
-                imageUrl: contact.imageUrl,
-                size: AvatarSize.md,
-                isOnline: contact.isOnline,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.labelLg(contact.name),
-                    const SizedBox(height: 2),
-                    AppText.bodySm(
-                      contact.lastMessage,
-                      maxLines: 1,
-                      color: AppColors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AppText.bodyXs(contact.lastTime.toRelativeTime),
-                  const SizedBox(height: 4),
-                  if (contact.unreadCount > 0)
-                    Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${contact.unreadCount}',
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Alert Tile ───────────────────────────────────────────────
-class _AlertTile extends StatelessWidget {
-  final AlertItem alert;
-  const _AlertTile({required this.alert});
-
-  @override
-  Widget build(BuildContext context) {
-    Color iconBg;
-    Color iconColor;
-    IconData icon;
-
-    switch (alert.type) {
-      case AlertType.orderAccepted:
-        iconBg = AppColors.star;
-        iconColor = AppColors.white;
-        icon = Icons.check_circle_outline_rounded;
-        break;
-      case AlertType.orderComplete:
-        iconBg = AppColors.success;
-        iconColor = AppColors.white;
-        icon = Icons.task_alt_rounded;
-        break;
-      case AlertType.cancelOrder:
-        iconBg = AppColors.error;
-        iconColor = AppColors.white;
-        icon = Icons.cancel_outlined;
-        break;
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 6),
-            color: AppColors.black.withOpacity(0.1),
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Icon(icon, color: iconColor, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.labelLg(alert.title),
-                  const SizedBox(height: 2),
-                  AppText.bodySm(
-                    alert.description,
-                    color: AppColors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 4,
-              children: [
-                Icon(Icons.watch_later_outlined, size: 16),
-                AppText.bodySm(
-                  alert.time.toRelativeTime,
-                  color: AppColors.textgrey,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

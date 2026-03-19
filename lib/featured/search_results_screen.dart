@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/featured/filter_screen.dart';
@@ -90,7 +91,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
-          const SizedBox(width: 10),
+          10.horizontalSpace,
           Expanded(
             child: AppTextField(
               prefixIcon: Icon(Icons.arrow_back),
@@ -98,7 +99,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             ),
           ),
 
-          const SizedBox(width: 10),
+          10.horizontalSpace,
           Container(
             width: 40,
             height: 40,
@@ -128,7 +129,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             label: 'When?',
             onTap: () {},
           ),
-          const SizedBox(width: 8),
+          8.horizontalSpace,
           _FilterChip(
             icon: Icons.tune_rounded,
             label: 'Filters',
@@ -157,7 +158,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
         child: Row(
           children: [
             const Icon(Icons.info, color: AppColors.primary, size: 18),
-            const SizedBox(width: 8),
+            8.horizontalSpace,
             AppText.bodyMd(
               'How does the service work?',
               fontWeight: FontWeight.w500,
@@ -174,7 +175,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
       itemCount: _providers.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => 12.verticalSpace,
       itemBuilder: (_, i) {
         final p = _providers[i];
         return ProviderCard(
@@ -247,7 +248,7 @@ class _FilterChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 16, color: AppColors.textPrimary),
-            const SizedBox(width: 6),
+            6.horizontalSpace,
             AppText.labelLg(label),
           ],
         ),

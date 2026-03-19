@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -87,7 +88,7 @@ class _ServiceScreenState extends ConsumerState<UserServiceScreen>
               child: _SegmentedTabBar(controller: _tabController),
             ),
 
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Tab Views ────────────────────────────
             Expanded(
@@ -263,12 +264,12 @@ class _RatingDialogState extends State<RatingDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
+            6.verticalSpace,
             AppText.bodySm(
               'Are you Satisfied with the service?',
               color: AppColors.textSecondary,
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Stars ──────────────────────────────
             Row(
@@ -294,14 +295,14 @@ class _RatingDialogState extends State<RatingDialog> {
               }),
             ),
             const AppDivider(height: 20),
-            const SizedBox(height: 10),
+            10.verticalSpace,
 
             // ─── Tags ────────────────────────────────
             AppText.labelLg(
               'Tell us what can be Improved?',
               color: AppColors.textPrimary,
             ),
-            const SizedBox(height: 10),
+            10.verticalSpace,
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -340,7 +341,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Comment box ─────────────────────────
             Container(
@@ -363,7 +364,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            20.verticalSpace,
 
             // ─── Submit ──────────────────────────────
             AppButton.primary(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
@@ -89,30 +90,30 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 28),
+            28.verticalSpace,
 
             // Name
             AppTextField(hint: "Full name"),
-            const SizedBox(height: 12),
+            12.verticalSpace,
             if (ref.watch(appRoleProvider) == AppRole.provider) ...[
               // About me
               AppTextField(hint: "About me", maxLines: 3),
-              const SizedBox(height: 12),
+              12.verticalSpace,
               // Address
               AppTextField(hint: "Address"),
-              const SizedBox(height: 12),
+              12.verticalSpace,
             ],
 
             // Phone
             AppTextField(hint: "Phone number"),
-            const SizedBox(height: 80),
+            80.verticalSpace,
 
             AppButton.primary(
               label: 'Save',
               isLoading: _isSaving,
               onPressed: _isSaving ? null : _save,
             ),
-            const SizedBox(height: 40),
+            40.verticalSpace,
 
             GestureDetector(
               onTap: _confirmDeleteAccount,
@@ -152,9 +153,9 @@ class _DeleteDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.h3(title, textAlign: TextAlign.center),
-            const SizedBox(height: 24),
+            24.verticalSpace,
             AppButton.primary(label: 'YES, DELETE', onPressed: onYes),
-            const SizedBox(height: 10),
+            10.verticalSpace,
             AppButton.outline(label: "NO, DON'T DELETE", onPressed: onNo),
           ],
         ),

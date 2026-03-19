@@ -1,5 +1,6 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -79,7 +80,7 @@ class BookingCard extends ConsumerWidget {
                       : const Icon(Icons.elderly_outlined, size: 36),
                 ),
               ),
-              const SizedBox(width: 12),
+              12.horizontalSpace,
 
               // ─── Details ────────────────────────────
               Expanded(
@@ -92,27 +93,27 @@ class BookingCard extends ConsumerWidget {
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(height: 6),
+                    6.verticalSpace,
 
                     // Time
                     Row(
                       children: [
                         const Icon(Icons.access_time_rounded, size: 13),
-                        const SizedBox(width: 4),
+                        4.horizontalSpace,
                         AppText.bodySm(item.timeRange),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    4.verticalSpace,
 
                     // Date
                     Row(
                       children: [
                         const Icon(Icons.calendar_month_outlined, size: 13),
-                        const SizedBox(width: 4),
+                        4.horizontalSpace,
                         AppText.bodySm(item.date),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    10.verticalSpace,
 
                     // ─── Status badges ───────────────
                     _buildStatusRow(role),
@@ -138,7 +139,7 @@ class BookingCard extends ConsumerWidget {
                 backgroundColor: AppColors.successLight,
                 isInteractive: true,
               ),
-              const SizedBox(width: 8),
+              8.horizontalSpace,
               const _StatusBadge(
                 label: 'Cancel',
                 color: AppColors.error,
@@ -189,7 +190,7 @@ class BookingCard extends ConsumerWidget {
                   isInteractive: true,
                 ),
               ),
-              const SizedBox(width: 8),
+              8.horizontalSpace,
               _StatusBadge(
                 label: 'Need Support Immediately',
                 color: AppColors.textSecondary,
@@ -253,6 +254,7 @@ class BookingList extends StatelessWidget {
   final void Function(BookingItem)? onRatingTap;
 
   const BookingList({
+    super.key,
     required this.items,
     required this.emptyMessage,
     required this.emptySubtitle,
@@ -285,7 +287,7 @@ class BookingList extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
       itemCount: items.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => 12.verticalSpace,
       itemBuilder: (_, i) => BookingCard(
         item: items[i],
         onTap: () => onCardTap(items[i]),

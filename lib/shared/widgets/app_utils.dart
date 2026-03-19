@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -40,10 +41,7 @@ class AppDividerWithLabel extends StatelessWidget {
         const Expanded(child: AppDivider()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            label,
-            style: AppTextStyles.bodySm,
-          ),
+          child: Text(label, style: AppTextStyles.bodySm),
         ),
         const Expanded(child: AppDivider()),
       ],
@@ -90,7 +88,7 @@ class AppFullScreenLoader extends StatelessWidget {
         children: [
           const AppLoader(size: 40),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            16.verticalSpace,
             Text(message!, style: AppTextStyles.bodyMd),
           ],
         ],
@@ -135,9 +133,10 @@ class _AppShimmerState extends State<AppShimmer>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat();
-    _animation = Tween<double>(begin: -2, end: 2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: -2,
+      end: 2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -198,7 +197,7 @@ class AppEmptyState extends StatelessWidget {
           children: [
             if (icon != null) ...[
               icon!,
-              const SizedBox(height: 20),
+              20.verticalSpace,
             ] else ...[
               Container(
                 width: 72,
@@ -207,26 +206,26 @@ class AppEmptyState extends StatelessWidget {
                   color: AppColors.primaryLight,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.search_off_rounded,
-                    color: AppColors.primary, size: 36),
+                child: const Icon(
+                  Icons.search_off_rounded,
+                  color: AppColors.primary,
+                  size: 36,
+                ),
               ),
-              const SizedBox(height: 20),
+              20.verticalSpace,
             ],
-            Text(title,
-                style: AppTextStyles.h3, textAlign: TextAlign.center),
+            Text(title, style: AppTextStyles.h3, textAlign: TextAlign.center),
             if (subtitle != null) ...[
-              const SizedBox(height: 8),
+              8.verticalSpace,
               Text(
                 subtitle!,
-                style: AppTextStyles.bodyMd
-                    .copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
-              const SizedBox(height: 24),
-              action!,
-            ],
+            if (action != null) ...[24.verticalSpace, action!],
           ],
         ),
       ),

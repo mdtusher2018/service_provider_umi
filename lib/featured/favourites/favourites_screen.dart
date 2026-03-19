@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
@@ -71,7 +72,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         itemCount: _favourites.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => 12.verticalSpace,
         itemBuilder: (_, i) {
           final p = _favourites[i];
           return ProviderCard(

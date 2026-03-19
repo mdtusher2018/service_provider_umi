@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/featured/booking_time_screen.dart';
 import 'package:service_provider_umi/featured/search_screen.dart';
@@ -41,7 +42,7 @@ class HomeCareScreen extends StatelessWidget {
                           ),
                         );
                       }),
-                      const SizedBox(width: 16),
+                       16.horizontalSpace,
                       _buildCircleIcon(Icons.notifications_none_sharp, () {}),
                     ],
                   ),
@@ -49,7 +50,7 @@ class HomeCareScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 40),
+            40.verticalSpace,
 
             // Header Row
             InkWell(
@@ -58,15 +59,15 @@ class HomeCareScreen extends StatelessWidget {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children:  [
                   Icon(Icons.arrow_back_ios_new),
-                  SizedBox(width: 16),
+                  16.horizontalSpace,
                   AppText.h1("Care", color: AppColors.textgrey),
                 ],
               ),
             ),
 
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // Dynamic Categories using Wrap
             Padding(
@@ -117,7 +118,7 @@ class HomeCareScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 28, color: AppColors.black),
-          const SizedBox(height: 4),
+          4.verticalSpace,
           AppText(label),
         ],
       ),

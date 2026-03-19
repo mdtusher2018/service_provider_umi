@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/featured/authentication/WelcomeScreen.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -104,14 +105,14 @@ class _ChatGuestTab extends StatelessWidget {
                 children: [
                   AppText.h3("No messages", color: AppColors.textSecondary),
 
-                  const SizedBox(height: 20),
+                  20.verticalSpace,
 
                   Image.asset(
                     "assets/guest_images/guest_chat.png",
                     height: 180,
                   ),
 
-                  const SizedBox(height: 20),
+                  20.verticalSpace,
 
                   AppText.bodyMd(
                     "You don’t have messages from professionals yet",
@@ -122,7 +123,7 @@ class _ChatGuestTab extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 30),
+          30.verticalSpace,
 
           AppButton.outline(
             label: "LOGIN",
@@ -139,7 +140,7 @@ class _ChatGuestTab extends StatelessWidget {
             },
           ),
 
-          const SizedBox(height: 12),
+          12.verticalSpace,
 
           AppButton.primary(
             label: "Create Account",
@@ -156,7 +157,7 @@ class _ChatGuestTab extends StatelessWidget {
             },
           ),
 
-          const SizedBox(height: 80),
+          80.verticalSpace,
         ],
       ),
     );
@@ -179,13 +180,13 @@ class _AlertsGuestTab extends StatelessWidget {
                 children: [
                   AppText.h3("No Notification", color: AppColors.textSecondary),
 
-                  const SizedBox(height: 20),
+                  20.verticalSpace,
 
                   Image.asset(
                     "assets/guest_images/guest_alerts.png",
                     height: 180,
                   ),
-                  const SizedBox(height: 20),
+                  20.verticalSpace,
 
                   AppText.bodyMd(
                     "You don’t have messages from professionals yet",
@@ -196,15 +197,15 @@ class _AlertsGuestTab extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 30),
+          30.verticalSpace,
 
           AppButton.outline(label: "LOGIN", onPressed: () {}),
 
-          const SizedBox(height: 12),
+          12.verticalSpace,
 
           AppButton.primary(label: "Create Account", onPressed: () {}),
 
-          const SizedBox(height: 80),
+          80.verticalSpace,
         ],
       ),
     );
@@ -232,17 +233,17 @@ class _GuestEmptyScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
+              16.verticalSpace,
 
               /// Title
               AppText.h2(title),
 
-              const SizedBox(height: 6),
+              6.verticalSpace,
 
               /// Description
               AppText.bodyMd(description, color: AppColors.textSecondary),
 
-              const SizedBox(height: 40),
+              40.verticalSpace,
 
               /// Illustration
               Expanded(child: Center(child: Image.asset(image, height: 250))),
@@ -250,12 +251,12 @@ class _GuestEmptyScreen extends StatelessWidget {
               /// Login Button
               AppButton.outline(label: "LOGIN", onPressed: () {}),
 
-              const SizedBox(height: 12),
+              12.verticalSpace,
 
               /// Create account
               AppButton.primary(label: "Create Account", onPressed: () {}),
 
-              const SizedBox(height: 80),
+              80.verticalSpace,
             ],
           ),
         ),

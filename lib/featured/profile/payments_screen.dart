@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -76,7 +77,7 @@ class _PaymentTile extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary, size: 22),
-            const SizedBox(width: 14),
+            14.horizontalSpace,
             Expanded(child: AppText.bodyMd(label, fontWeight: FontWeight.w500)),
             const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -180,7 +181,7 @@ class _BookingCard extends StatelessWidget {
                   : Image.network(imageUrl, fit: BoxFit.cover),
             ),
           ),
-          const SizedBox(width: 12),
+          12.horizontalSpace,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +193,7 @@ class _BookingCard extends StatelessWidget {
                     AppText.labelMd(price, color: AppColors.primary),
                   ],
                 ),
-                const SizedBox(height: 4),
+                4.verticalSpace,
                 AppText.bodySm(
                   'Paid on $paidOn',
                   color: AppColors.textSecondary,
@@ -202,7 +203,7 @@ class _BookingCard extends StatelessWidget {
                   color: AppColors.textSecondary,
                 ),
                 if (cancelledBy != null) ...[
-                  const SizedBox(height: 6),
+                  6.verticalSpace,
                   AppText.bodySm(
                     cancelledBy!,
                     color: AppColors.error,

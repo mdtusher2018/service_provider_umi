@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -54,13 +55,13 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
             children: [
               // ─── Title ──────────────────────────────
               AppText('Phone number', style: AppTextStyles.h1),
-              const SizedBox(height: 8),
+              8.verticalSpace,
               AppText(
                 "Let's verify your phone number. We will send you an "
                 'SMS with the verification code',
                 style: AppTextStyles.bodySm,
               ),
-              const SizedBox(height: 32),
+              32.verticalSpace,
 
               // ─── Phone input ────────────────────────
               Container(
@@ -89,7 +90,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              40.verticalSpace,
 
               // ─── Verify button ──────────────────────
               SizedBox(
@@ -117,7 +118,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                       : Text('Verify', style: AppTextStyles.buttonLg),
                 ),
               ),
-              const SizedBox(height: 16),
+              16.verticalSpace,
 
               // ─── Phone number link ──────────────────
               Row(
@@ -139,7 +140,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                 ],
               ),
 
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
+              MediaQuery.of(context).padding.bottom.verticalSpace,
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen.dart';
 
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_card_widget.dart';
@@ -72,7 +73,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
         children: [
           // Calendar icon
           Icon(Icons.timer, color: AppColors.primaryFor(AppRole.provider)),
-          const SizedBox(width: 10),
+          10.horizontalSpace,
           AppText('Upcoming Bookings', style: AppTextStyles.h3),
           const Spacer(),
           // Date selector
@@ -93,7 +94,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  4.horizontalSpace,
                   const Icon(
                     Icons.keyboard_arrow_down_rounded,
                     color: AppColors.grey400,
@@ -113,7 +114,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
     return ListView.separated(
       padding: EdgeInsets.all(16),
       separatorBuilder: (context, index) {
-        return SizedBox(height: 16);
+        return 16.verticalSpace;
       },
       itemCount: _bookings.length,
       itemBuilder: (context, index) {
@@ -156,13 +157,12 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            // Customizing the dialog background color
-            dialogBackgroundColor: AppColors.white,
             // Customize the Date Picker's Year and Month selection
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(borderSide: BorderSide.none),
               focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
             ),
+            dialogTheme: DialogThemeData(backgroundColor: AppColors.white),
           ),
           child: child!,
         );

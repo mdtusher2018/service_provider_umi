@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen.dart';
@@ -96,7 +97,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
             onTap: _openCompleted,
             child: Icon(Icons.domain_verification_rounded),
           ),
-          SizedBox(width: 16),
+          16.horizontalSpace,
         ],
       ),
 
@@ -108,7 +109,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
               child: _ProviderTabBar(controller: _tabController),
             ),
 
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             Expanded(
               child: TabBarView(

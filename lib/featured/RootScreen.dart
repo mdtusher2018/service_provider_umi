@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
@@ -156,7 +157,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 1,
           ),
 
-          const SizedBox(width: 32),
+           32.horizontalSpace,
 
           _navItem(
             icon: isUserLike
@@ -198,7 +199,7 @@ class CustomBottomNavBar extends StatelessWidget {
               size: active ? 26 : 22,
             ),
           ),
-          const SizedBox(height: 4),
+          4.verticalSpace,
           AppText.bodyXs(
             label,
             fontWeight: active ? FontWeight.bold : FontWeight.normal,

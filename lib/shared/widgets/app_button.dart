@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -165,9 +166,9 @@ class AppButton extends ConsumerWidget {
       mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 10)],
+        if (prefixIcon != null) ...[prefixIcon!, 10.horizontalSpace],
         Text(label, style: _textStyle(primary)),
-        if (suffixIcon != null) ...[const SizedBox(width: 10), suffixIcon!],
+        if (suffixIcon != null) ...[10.horizontalSpace, suffixIcon!],
       ],
     );
   }

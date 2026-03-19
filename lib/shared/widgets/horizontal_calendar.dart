@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import '../../core/theme/app_colors.dart';
 import 'app_text.dart';
@@ -71,7 +72,7 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
           ],
         ),
 
-        const SizedBox(height: 12),
+        12.verticalSpace,
 
         /// Horizontal dates
         SizedBox(
@@ -79,7 +80,7 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _dates.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, __) => 8.horizontalSpace,
             itemBuilder: (context, index) {
               final date = _dates[index];
               final isSelected = date.isSameDay(_selectedDate);
@@ -110,7 +111,7 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
                             ? AppColors.white
                             : AppColors.textSecondary,
                       ),
-                      const SizedBox(height: 4),
+                      4.verticalSpace,
                       AppText.h3(
                         date.day.toString(),
                         color: isSelected

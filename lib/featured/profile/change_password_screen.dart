@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -72,7 +73,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 validator: (v) =>
                     v == null || v.isEmpty ? 'Enter old password' : null,
               ),
-              const SizedBox(height: 16),
+              16.verticalSpace,
               _PasswordField(
                 hint: 'Password',
                 controller: _newCtrl,
@@ -85,7 +86,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              16.verticalSpace,
               _PasswordField(
                 hint: 'Password',
                 controller: _confirmCtrl,
@@ -95,7 +96,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 validator: (v) =>
                     v != _newCtrl.text ? 'Passwords do not match' : null,
               ),
-              const SizedBox(height: 32),
+              32.verticalSpace,
               AppButton.primary(
                 label: 'Change password',
                 isLoading: _isSaving,
@@ -132,7 +133,7 @@ class _PasswordField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelMd(label, color: AppColors.textSecondary),
-        const SizedBox(height: 6),
+        6.verticalSpace,
         TextFormField(
           controller: controller,
           obscureText: !showText,

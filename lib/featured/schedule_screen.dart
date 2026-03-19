@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
-
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -131,7 +131,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
   Widget _buildSingleBooking() {
     return Column(
       children: [
-        const SizedBox(height: 10),
+        10.verticalSpace,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: HorizontalCalendar(
@@ -145,7 +145,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
           ),
         ),
 
-        const SizedBox(height: 16),
+        16.verticalSpace,
 
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
@@ -169,7 +169,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
         ),
 
         if (_singleFrom != null) ...[
-          const SizedBox(height: 20),
+          20.verticalSpace,
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.all(12),
@@ -181,7 +181,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
             child: Row(
               children: [
                 const Icon(Icons.schedule, size: 18),
-                const SizedBox(width: 8),
+                8.horizontalSpace,
                 AppText.labelMd("$_singleFrom - $_singleTo"),
               ],
             ),
@@ -197,7 +197,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(width: 40),
+          40.horizontalSpace,
           Container(
             width: 120,
             height: 35,
@@ -339,7 +339,7 @@ class _DayRow extends ConsumerWidget {
                     '${schedule!.from} - ${schedule!.to}',
                     color: AppColors.white.withOpacity(0.9),
                   ),
-                  const SizedBox(width: 12),
+                  12.horizontalSpace,
                   GestureDetector(
                     onTap: onDelete,
                     child: const Icon(
@@ -423,15 +423,15 @@ class _TimePickerPanelState extends State<_TimePickerPanel> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const AppDivider(),
-          const SizedBox(height: 14),
+          14.verticalSpace,
           // Duration
           AppDurationSlider(
             value: _duration,
             onChanged: (v) => setState(() => _duration = v),
           ),
-          const SizedBox(height: 16),
+          16.verticalSpace,
           AppText.h4('Start time'),
-          const SizedBox(height: 12),
+          12.verticalSpace,
 
           // Time grid
           ..._timeSlots.map(
@@ -456,7 +456,7 @@ class _TimePickerPanelState extends State<_TimePickerPanel> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          16.verticalSpace,
           AppButton.primary(
             label: _selectedTime == null
                 ? 'Select a time'

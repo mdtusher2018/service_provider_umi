@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/featured/HomeCareScreen.dart';
@@ -75,10 +76,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height: 40),
+            40.verticalSpace,
 
             RadialMenu(),
-            const SizedBox(height: 40),
+            40.verticalSpace,
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: TextButton.icon(
@@ -96,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    8.horizontalSpace,
                     Icon(Icons.keyboard_arrow_down_rounded),
                   ],
                 ),
@@ -155,7 +156,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
 
               const AppDivider(height: 20),
-              SizedBox(height: 16),
+              16.verticalSpace,
 
               Container(
                 height: 50,
@@ -168,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: AppText.labelLg("Add address", color: AppColors.white),
                 ),
               ),
-              SizedBox(height: 16),
+              16.verticalSpace,
             ],
           ),
         );
@@ -233,7 +234,7 @@ class RadialMenu extends StatelessWidget {
                           size: 28,
                           color: AppColors.black,
                         ),
-                        const SizedBox(height: 4),
+                        4.verticalSpace,
                         AppText(menuItems[index]['name']),
                       ],
                     ),
@@ -291,9 +292,9 @@ class RadialMenu extends StatelessWidget {
                   ),
                 ),
                 Image.asset("assets/support.png", width: 120),
-                SizedBox(height: 16),
+                16.verticalSpace,
 
-                SizedBox(height: 16),
+                16.verticalSpace,
                 AppButton.primary(
                   label: 'Call',
                   prefixIcon: Icon(Icons.call, color: AppColors.white),
@@ -303,7 +304,7 @@ class RadialMenu extends StatelessWidget {
                     print("Call pressed");
                   },
                 ),
-                SizedBox(height: 8),
+                8.verticalSpace,
                 AppButton.primary(
                   label: 'Message',
                   prefixIcon: Icon(Icons.message, color: AppColors.white),

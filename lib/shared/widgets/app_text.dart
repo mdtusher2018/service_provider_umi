@@ -35,44 +35,200 @@ class AppText extends StatelessWidget {
   });
 
   // ─── Named Constructors ──────────────────────────────────
-  const AppText.display(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.display;
+  const AppText.display(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.display;
 
-  const AppText.h1(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.h1;
+  const AppText.h1(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.h1;
 
-  const AppText.h2(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.h2;
+  const AppText.h2(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.h2;
 
-  const AppText.h3(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.h3;
+  const AppText.h3(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.h3;
 
-  const AppText.h4(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.h4;
+  const AppText.h4(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.h4;
 
-  const AppText.bodyLg(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.bodyLg;
+  const AppText.bodyLg(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.bodyLg;
 
-  const AppText.bodyMd(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.bodyMd;
+  const AppText.bodyMd(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.bodyMd;
 
-  const AppText.bodySm(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.bodySm;
+  const AppText.bodySm(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.bodySm;
 
-  const AppText.bodyXs(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.bodyXs;
+  const AppText.bodyXs(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.bodyXs;
 
-  const AppText.labelLg(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.labelLg;
+  const AppText.labelLg(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.labelLg;
 
-  const AppText.labelMd(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.labelMd;
+  const AppText.labelMd(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.labelMd;
 
-  const AppText.labelSm(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.labelSm;
+  const AppText.labelSm(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.labelSm;
 
-  const AppText.price(this.text, {super.key, this.color, this.textAlign, this.maxLines, this.overflow, this.softWrap, this.fontWeight, this.fontSize, this.decoration, this.letterSpacing, this.height})
-      : style = AppTextStyles.price;
+  const AppText.price(
+    this.text, {
+    super.key,
+    this.color,
+    this.textAlign,
+    this.maxLines,
+    this.overflow,
+    this.softWrap,
+    this.fontWeight,
+    this.fontSize,
+    this.decoration,
+    this.letterSpacing,
+    this.height,
+  }) : style = AppTextStyles.price;
 
   @override
   Widget build(BuildContext context) {

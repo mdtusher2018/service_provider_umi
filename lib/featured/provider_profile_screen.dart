@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
-import 'package:service_provider_umi/featured/authentication/WelcomeScreen.dart';
+import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
 import 'package:service_provider_umi/featured/schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -102,7 +103,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
                       AppDivider(),
                       _buildComments(),
                       AppDivider(),
-                      const SizedBox(height: 100),
+                      100.verticalSpace,
                     ],
                   ),
                 ),
@@ -162,16 +163,16 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
     return Column(
       children: [
         AppAvatar(name: _mockProvider.name, size: AvatarSize.xl),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         AppText.h2(_mockProvider.name),
-        const SizedBox(height: 4),
+        4.verticalSpace,
         AppText.labelLg(
           _mockProvider.specialty,
           color: AppColors.primaryFor(ref.watch(appRoleProvider)),
         ),
-        const SizedBox(height: 16),
+        16.verticalSpace,
 
-        const SizedBox(height: 16),
+        16.verticalSpace,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
@@ -217,9 +218,9 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3('About me'),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         AppText.bodyMd(_mockProvider.bio),
-        const SizedBox(height: 8),
+        8.verticalSpace,
         GestureDetector(
           onTap: () {},
           child: AppText.labelMd('+View more', fontWeight: FontWeight.w600),
@@ -244,7 +245,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3('Some question about me'),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         ...qaItems.map(
           (qa) => Padding(
             padding: const EdgeInsets.only(bottom: 14),
@@ -256,13 +257,13 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 4),
+                4.verticalSpace,
                 AppText.bodyMd(qa.$2),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        4.verticalSpace,
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
@@ -296,13 +297,13 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         SizedBox(
           height: 90,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: 4,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
+            separatorBuilder: (_, __) => 10.horizontalSpace,
             itemBuilder: (_, i) => Container(
               width: 90,
               decoration: BoxDecoration(
@@ -335,7 +336,7 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3('Comments'),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         ..._comments.map((c) => _CommentTile(comment: c)),
       ],
     );
@@ -373,7 +374,8 @@ class _ProviderProfileScreenState extends ConsumerState<ProviderProfileScreen>
               ],
             ),
           ),
-          const SizedBox(width: 20),
+
+          20.horizontalSpace,
           Expanded(
             child: AppButton.primary(
               label: 'View availability',
@@ -488,7 +490,7 @@ class _StatItem extends StatelessWidget {
         if (value.isNotEmpty)
           AppText.h3(value, color: valueColor ?? AppColors.textPrimary),
         ?icon,
-        const SizedBox(height: 2),
+        2.verticalSpace,
         AppText.bodySm(label),
       ],
     );
@@ -516,7 +518,8 @@ class _CommentTile extends ConsumerWidget {
           Row(
             children: [
               AppAvatar(name: comment.author, size: AvatarSize.sm),
-              const SizedBox(width: 10),
+
+              10.horizontalSpace,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -525,7 +528,7 @@ class _CommentTile extends ConsumerWidget {
                     children: [
                       AppText.bodySm(comment.timeAgo),
                       if (comment.isVerified) ...[
-                        const SizedBox(width: 6),
+                        6.horizontalSpace,
                         Icon(
                           Icons.check_circle_rounded,
                           color: AppColors.primaryFor(
@@ -533,7 +536,7 @@ class _CommentTile extends ConsumerWidget {
                           ),
                           size: 12,
                         ),
-                        const SizedBox(width: 2),
+                        2.horizontalSpace,
                         AppText.bodySm(
                           'Verified service',
                           color: AppColors.primaryFor(
@@ -547,7 +550,7 @@ class _CommentTile extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          8.verticalSpace,
           AppText.bodyMd(comment.text, color: AppColors.textSecondary),
         ],
       ),
@@ -599,7 +602,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             ],
           ),
           AppText.bodySm('How many times do you want the service?'),
-          const SizedBox(height: 16),
+          16.verticalSpace,
 
           // Weekly option
           _FreqOption(
@@ -622,7 +625,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
               );
             },
           ),
-          const SizedBox(height: 12),
+          12.verticalSpace,
 
           // Just once option
           _FreqOption(
@@ -688,7 +691,7 @@ class _FreqOption extends ConsumerWidget {
                   color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                   size: 22,
                 ),
-                const SizedBox(width: 10),
+                10.horizontalSpace,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -703,9 +706,9 @@ class _FreqOption extends ConsumerWidget {
               ],
             ),
             if (bullets.isNotEmpty) ...[
-              const SizedBox(height: 10),
+              10.verticalSpace,
               AppDivider(color: AppColors.grey300),
-              const SizedBox(height: 10),
+              10.verticalSpace,
               ...bullets.map(
                 (b) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
@@ -717,7 +720,7 @@ class _FreqOption extends ConsumerWidget {
                         color: AppColors.primaryFor(ref.watch(appRoleProvider)),
                         size: 14,
                       ),
-                      const SizedBox(width: 8),
+                      8.horizontalSpace,
                       Expanded(child: AppText.bodySm(b)),
                     ],
                   ),
@@ -782,7 +785,7 @@ class GuestLoginDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            4.verticalSpace,
 
             // ─── Icon ─────────────────────────────────
             Container(
@@ -798,7 +801,7 @@ class GuestLoginDialog extends StatelessWidget {
                 size: 32,
               ),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
 
             // ─── Title ────────────────────────────────
             AppText(
@@ -806,7 +809,7 @@ class GuestLoginDialog extends StatelessWidget {
               style: AppTextStyles.h3,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
 
             // ─── Subtitle ─────────────────────────────
             AppText(
@@ -818,11 +821,11 @@ class GuestLoginDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // ─── Log In button ────────────────────────
             AppButton.primary(label: "Log In"),
-            const SizedBox(height: 10),
+            10.verticalSpace,
 
             // ─── Create Account button ────────────────
             AppButton.outline(label: "Create Account"),

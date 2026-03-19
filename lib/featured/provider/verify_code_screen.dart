@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
@@ -88,13 +89,13 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
 
               // ─── Title ──────────────────────────────
               AppText('Enter 4 digits code', style: AppTextStyles.h1),
-              const SizedBox(height: 10),
+              10.verticalSpace,
               AppText.bodyMd(
                 'Enter the 4 digits code that you received on you\nphone number',
 
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 40),
+              40.verticalSpace,
 
               // ─── 4 digit boxes ───────────────────────
               Row(
@@ -141,7 +142,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
                       : Text('Done', style: AppTextStyles.buttonLg),
                 ),
               ),
-              const SizedBox(height: 16),
+              16.verticalSpace,
 
               // ─── Resend ─────────────────────────────
               Row(
@@ -163,7 +164,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
                 ],
               ),
 
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
+              MediaQuery.of(context).padding.bottom.verticalSpace,
             ],
           ),
         ),

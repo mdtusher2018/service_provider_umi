@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
@@ -179,7 +180,7 @@ class _WorkAreasScreenState extends ConsumerState<WorkAreasScreen> {
       //                 ),
       //               ),
       //             ),
-      //             const SizedBox(width: 12),
+      //             12.horizontalSpace,
       //             AppText(
       //               'Work areas',
       //               style: AppTextStyles.h2.copyWith(color: primary),
@@ -208,7 +209,7 @@ class _WorkAreasScreenState extends ConsumerState<WorkAreasScreen> {
       //           mainAxisSize: MainAxisSize.min,
       //           children: [
       //             Icon(Icons.near_me_rounded, color: primary, size: 14),
-      //             const SizedBox(width: 4),
+      //             4.horizontalSpace,
       //             Text(
       //               '8 KM',
       //               style: AppTextStyles.labelMd.copyWith(
@@ -306,14 +307,14 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText.h1('Minimum price'),
-            const SizedBox(height: 8),
+            8.verticalSpace,
             AppLinkText(
               "What is the minimum price a client must pay to book your service?  +info",
               links: [AppTextLink(label: "+info", onTap: () {})],
               linkColor: AppColors.primaryFor(AppRole.provider),
             ),
 
-            const SizedBox(height: 32),
+            32.verticalSpace,
 
             // ─── Price input box ──────────────────────
             Center(
@@ -331,7 +332,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                 child: Column(
                   children: [
                     AppText.bodyMd('Minimum price:'),
-                    const SizedBox(height: 8),
+                    8.verticalSpace,
                     Row(
                       spacing: 4,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -385,7 +386,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // ─── Tip banner ──────────────────────────
             Container(
@@ -399,7 +400,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('💡', style: TextStyle(fontSize: 18)),
-                  const SizedBox(width: 10),
+                  10.horizontalSpace,
                   Expanded(
                     child: Text(
                       "This will avoid being booked for a price so low that it's "

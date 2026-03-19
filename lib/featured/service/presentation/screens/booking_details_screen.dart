@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -54,15 +55,15 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildProviderRow(primary),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             _buildSection('Comment', _buildComment()),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             _buildSection('Date and time', _buildDateTime()),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             _buildSection('Address', _buildAddress()),
-            const SizedBox(height: 20),
+            20.verticalSpace,
             _buildSection('Service price', _buildPrice()),
-            SizedBox(height: 40),
+            40.verticalSpace,
             if (widget.booking.status == BookingStatus.ongoing)
               AppButton.primary(label: "Complete", onPressed: _complete),
             if (widget.booking.status == BookingStatus.pending)
@@ -100,7 +101,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
             "https://th.bing.com/th/id/OIP.zSjnJGFe_TxQyoSX48_Z6wHaHa?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
           ),
         ),
-        const SizedBox(width: 12),
+        12.horizontalSpace,
         Expanded(
           child: Column(
             spacing: 2,
@@ -139,12 +140,12 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
         Row(
           children: [
             const Icon(Icons.calendar_month_outlined, size: 18),
-            const SizedBox(width: 8),
+            8.horizontalSpace,
             AppText.bodyMd(widget.booking.date),
           ],
         ),
 
-        const SizedBox(height: 12),
+        12.verticalSpace,
         // Timeline
         _TimelineRow(startTime: '16:30', endTime: '18:30', duration: '${2}h'),
       ],
@@ -161,7 +162,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
           size: 18,
           color: AppColors.grey400,
         ),
-        const SizedBox(width: 8),
+        8.horizontalSpace,
         Expanded(
           child: Text(
             'Tallapoosa county, east-central Alabama, U.S',
@@ -228,7 +229,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
           title,
           style: AppTextStyles.h4.copyWith(color: AppColors.textPrimary),
         ),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         child,
       ],
     );
@@ -268,7 +269,7 @@ class _TimelineRow extends StatelessWidget {
         ),
         Row(
           children: [
-            const SizedBox(width: 6),
+            6.horizontalSpace,
             Container(width: 2, height: 20, color: AppColors.grey600),
           ],
         ),
@@ -287,12 +288,12 @@ class _TimelineRow extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 16),
+        16.verticalSpace,
 
         Row(
           children: [
             const Icon(Icons.access_time_rounded, size: 15),
-            const SizedBox(width: 4),
+            4.horizontalSpace,
             AppText.bodyMd(
               '(Duration: $duration)',
               color: AppColors.textPrimary,
@@ -369,14 +370,14 @@ class _CongratsDialog extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 20),
+            20.verticalSpace,
 
             Text(
               'Congratulations',
               style: AppTextStyles.h2.copyWith(color: primary, fontSize: 22),
             ),
 
-            const SizedBox(height: 10),
+            10.verticalSpace,
 
             Text(
               'Congratulations on achieving this milestone in your '
@@ -386,7 +387,7 @@ class _CongratsDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             SizedBox(
               width: double.infinity,

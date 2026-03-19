@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -47,7 +48,7 @@ class AppCheckboxTile extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
               ),
             ),
-            const SizedBox(width: 10),
+            10.horizontalSpace,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +62,7 @@ class AppCheckboxTile extends StatelessWidget {
                     ),
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: 2),
+                    2.verticalSpace,
                     Text(subtitle!, style: AppTextStyles.bodySm),
                   ],
                 ],
@@ -100,7 +101,7 @@ class AppToggleTile extends ConsumerWidget {
             children: [
               Text(label, style: AppTextStyles.h4),
               if (subtitle != null) ...[
-                const SizedBox(height: 2),
+                2.verticalSpace,
                 Text(subtitle!, style: AppTextStyles.bodySm),
               ],
             ],
@@ -109,7 +110,7 @@ class AppToggleTile extends ConsumerWidget {
         Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: AppColors.primary,
+          activeThumbColor: AppColors.primary,
           activeTrackColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
           inactiveThumbColor: AppColors.grey300,
           inactiveTrackColor: AppColors.grey200,

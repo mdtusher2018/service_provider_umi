@@ -80,7 +80,6 @@ class AppTheme {
       secondary: AppColors.secondary,
       onSecondary: AppColors.white,
       secondaryContainer: AppColors.secondaryLight,
-      background: AppColors.background,
       tertiary: AppColors.accent,
       onTertiary: AppColors.white,
       error: AppColors.error,

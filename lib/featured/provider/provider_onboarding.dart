@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -92,17 +93,17 @@ class _ServiceProviderOnboardingScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
+                        20.verticalSpace,
 
                         /// Image
                         Expanded(flex: 5, child: Image.asset(item.image)),
 
-                        const SizedBox(height: 20),
+                        20.verticalSpace,
 
                         /// Title
                         AppText.h1(item.title),
 
-                        const SizedBox(height: 10),
+                        10.verticalSpace,
 
                         /// Description
                         AppText.bodyLg(
@@ -110,7 +111,7 @@ class _ServiceProviderOnboardingScreenState
                           color: AppColors.grey500,
                         ),
 
-                        const SizedBox(height: 30),
+                        30.verticalSpace,
                         Spacer(),
                       ],
                     ),
@@ -139,7 +140,7 @@ class _ServiceProviderOnboardingScreenState
               ),
             ),
 
-            const SizedBox(height: 20),
+            20.verticalSpace,
 
             /// Next button
             Padding(
@@ -152,7 +153,7 @@ class _ServiceProviderOnboardingScreenState
               ),
             ),
 
-            const SizedBox(height: 30),
+            30.verticalSpace,
           ],
         ),
       ),

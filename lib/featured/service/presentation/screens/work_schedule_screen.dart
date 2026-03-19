@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/filter_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -101,18 +102,18 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
               'Work schedule',
               style: AppTextStyles.h1.copyWith(color: AppColors.textPrimary),
             ),
-            const SizedBox(height: 4),
+            4.verticalSpace,
             Text(
               'When are you available to offer your services?',
               style: AppTextStyles.bodySm,
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // ─── Day list ────────────────────────────────
             Expanded(
               child: ListView.separated(
                 itemCount: _days.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 16),
+                separatorBuilder: (_, __) => 16.verticalSpace,
                 itemBuilder: (_, i) => _DayRow(
                   schedule: _days[i],
                   primary: primary,
@@ -138,7 +139,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
                 );
               },
             ),
-            SizedBox(height: 24),
+            24.verticalSpace,
           ],
         ),
       ),
@@ -177,7 +178,7 @@ class _DayRow extends StatelessWidget {
             Switch(
               value: schedule.isAvailable,
               onChanged: onToggle,
-              activeColor: primary,
+              activeThumbColor: primary,
               activeTrackColor: primary.withOpacity(0.25),
               inactiveThumbColor: AppColors.grey300,
               inactiveTrackColor: AppColors.grey200,
@@ -197,7 +198,7 @@ class _DayRow extends StatelessWidget {
 
         // Time range (only shown when available)
         if (schedule.isAvailable) ...[
-          const SizedBox(height: 6),
+          6.verticalSpace,
           GestureDetector(
             onTap: onTapTime,
             child: Row(
@@ -319,7 +320,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // From / Until labels
             Row(
@@ -332,7 +333,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                16.horizontalSpace,
                 Expanded(
                   child: Text(
                     'Until',
@@ -343,7 +344,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            12.verticalSpace,
 
             // Spinners
             Row(
@@ -365,7 +366,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                16.horizontalSpace,
                 // To
                 Expanded(
                   child: _TimeSpinner(
@@ -384,7 +385,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // Confirm
             SizedBox(

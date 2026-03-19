@@ -1,16 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/shared/widgets/app_text.dart';
+part of '../../screens/chat_screen.dart';
 
 // ─── Block User Dialog ────────────────────────────────────────
-class BlockUserDialog extends StatelessWidget {
+class _BlockUserDialog extends StatelessWidget {
   final String userName;
   final VoidCallback onBlock;
   final VoidCallback onCancel;
 
-  const BlockUserDialog({
-    super.key,
+  const _BlockUserDialog({
     required this.userName,
     required this.onBlock,
     required this.onCancel,
@@ -27,18 +23,18 @@ class BlockUserDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 14),
+            14.verticalSpace,
 
             // Title
             AppText.h3(
               'Are you sure you want to\nBlock this User?',
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
 
             // Yes, Block
             AppButton.primary(label: 'Yes, Block', onPressed: onBlock),
-            const SizedBox(height: 10),
+            10.verticalSpace,
 
             // No, Don't Block
             AppButton.ghost(

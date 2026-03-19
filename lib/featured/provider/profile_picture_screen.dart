@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -54,7 +55,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 8),
+            8.verticalSpace,
             Container(
               width: 40,
               height: 4,
@@ -63,7 +64,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
               title: const Text('Choose from gallery'),
@@ -80,7 +81,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                 _pickFromCamera();
               },
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
           ],
         ),
       ),
@@ -118,7 +119,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                16.verticalSpace,
 
                 Expanded(
                   child: SingleChildScrollView(
@@ -128,13 +129,13 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                       children: [
                         // ─── Title ──────────────────────
                         AppText('Profile picture', style: AppTextStyles.h1),
-                        const SizedBox(height: 6),
+                        6.verticalSpace,
                         Text(
                           'This will be the picture that clients will see of you. '
                           'Try to make it as trustworthy as possible.',
                           style: AppTextStyles.bodySm,
                         ),
-                        const SizedBox(height: 32),
+                        32.verticalSpace,
 
                         // ─── Avatar picker ──────────────
                         Center(
@@ -168,11 +169,11 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        28.verticalSpace,
 
                         // ─── Tips card ──────────────────
                         _TipsCard(primary: primary),
-                        const SizedBox(height: 32),
+                        32.verticalSpace,
                       ],
                     ),
                   ),
@@ -257,7 +258,7 @@ class _TipsCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 24),
+          24.verticalSpace,
 
           // Example avatars
           Row(
@@ -268,7 +269,7 @@ class _TipsCard extends StatelessWidget {
                 isGood: true,
                 primary: primary,
               ),
-              const SizedBox(width: 12),
+              12.horizontalSpace,
               _ExampleAvatar(
                 assetOrEmoji: 'assets/service_provider_images/wrong_image.png',
                 isGood: false,
@@ -276,7 +277,7 @@ class _TipsCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          24.verticalSpace,
 
           // Checklist
           ...tips.map(
@@ -285,7 +286,7 @@ class _TipsCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.check_rounded, color: primary, size: 18),
-                  const SizedBox(width: 8),
+                  8.horizontalSpace,
                   Text(tip, style: AppTextStyles.bodyMd),
                 ],
               ),
@@ -381,13 +382,13 @@ class _GoBackDialog extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                8.verticalSpace,
                 Text(
                   'If you go back, any information completed in this '
                   'section will be lost',
                   style: AppTextStyles.bodySm,
                 ),
-                const SizedBox(height: 24),
+                24.verticalSpace,
                 Row(
                   children: [
                     Expanded(
@@ -409,7 +410,7 @@ class _GoBackDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    12.horizontalSpace,
                     Expanded(
                       child: ElevatedButton(
                         onPressed: onGoBack,

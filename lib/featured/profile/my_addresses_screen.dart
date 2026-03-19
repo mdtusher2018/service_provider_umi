@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -109,7 +110,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                 : ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: _addresses.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    separatorBuilder: (_, __) => 10.verticalSpace,
                     itemBuilder: (_, i) => _AddressTile(
                       address: _addresses[i],
                       onEdit: () => _openAddressPage(address: _addresses[i]),
@@ -162,13 +163,13 @@ class _AddressTile extends StatelessWidget {
             color: AppColors.primary,
             size: 20,
           ),
-          const SizedBox(width: 10),
+          10.horizontalSpace,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText.labelLg(address.label, fontWeight: FontWeight.w700),
-                const SizedBox(height: 3),
+                3.verticalSpace,
                 AppText.bodySm(address.street, color: AppColors.textSecondary),
                 AppText.bodySm(address.country, color: AppColors.textSecondary),
               ],
@@ -215,9 +216,9 @@ class _DeleteDialog extends StatelessWidget {
               'Are you sure you want to delete ?',
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            24.verticalSpace,
             AppButton.primary(label: 'YES, DELETE', onPressed: onYes),
-            const SizedBox(height: 10),
+            10.verticalSpace,
             AppButton.outline(label: "NO, DON'T DELETE", onPressed: onNo),
           ],
         ),

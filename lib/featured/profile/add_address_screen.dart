@@ -37,11 +37,11 @@ class _AddressPageState extends State<AddressPage> {
         child: Column(
           children: [
             _field('Name', 'Enter Your Name', _nameCtrl),
-            const SizedBox(height: 12),
+            12.verticalSpace,
             _field('Address', 'Enter Your Address', _addressCtrl, maxLine: 2),
-            const SizedBox(height: 12),
+            12.verticalSpace,
             _field('City', 'Enter Your City', _cityCtrl),
-            const SizedBox(height: 12),
+            12.verticalSpace,
             _field('Country', 'Enter Your Country', _countryCtrl),
             const Spacer(),
             AppButton.primary(
@@ -76,7 +76,7 @@ class _AddressPageState extends State<AddressPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelMd(label),
-        const SizedBox(height: 6),
+        6.verticalSpace,
         AppTextField(controller: ctrl, hint: hint, maxLines: maxLine),
       ],
     );

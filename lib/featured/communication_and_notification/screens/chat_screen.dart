@@ -1,23 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/audio_call_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/video_call_screen.dart';
+import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-import '../widgets/block_dialog.dart';
+part '../widgets/chat_screen_parts/_block_dialog.dart';
+part '../widgets/chat_screen_parts/_message_bubble.dart';
+part '../widgets/chat_screen_parts/_call_option_dialog.dart';
+part '../widgets/chat_screen_parts/_chat_options_sheet.dart';
 
 // ─── Models ───────────────────────────────────────────────────
-enum MessageStatus { sending, sent, delivered, read }
-
 class ChatMessage {
   final String id;
   final String senderId;
@@ -205,7 +207,7 @@ class _ChatScreenState extends State<ChatScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => ChatOptionsSheet(
+      builder: (_) => _ChatOptionsSheet(
         onBlock: () {
           Navigator.of(context).pop();
           _showBlockDialog();
@@ -217,7 +219,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _showBlockDialog() {
     showDialog(
       context: context,
-      builder: (_) => BlockUserDialog(
+      builder: (_) => _BlockUserDialog(
         userName: widget.contactName,
         onBlock: () {
           Navigator.of(context).pop();
@@ -308,7 +310,7 @@ class _ChatScreenState extends State<ChatScreen> {
               imageUrl: widget.contactImageUrl,
               size: AvatarSize.sm,
             ),
-            const SizedBox(width: 10),
+            10.horizontalSpace,
             AppText.labelLg(widget.contactName),
           ],
         ),
@@ -430,7 +432,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          8.horizontalSpace,
           GestureDetector(
             onTap: _sendMessage,
             child: Container(
@@ -457,258 +459,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-// ─── Message Bubble ───────────────────────────────────────────
-class _MessageBubble extends ConsumerStatefulWidget {
-  final ChatMessage message;
-  final bool isMine;
-  final String contactName;
-  final String? contactImageUrl;
-
-  const _MessageBubble({
-    required this.message,
-    required this.isMine,
-    required this.contactName,
-    this.contactImageUrl,
-  });
-
-  @override
-  ConsumerState<_MessageBubble> createState() => _MessageBubbleState();
-}
-
-class _MessageBubbleState extends ConsumerState<_MessageBubble> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: widget.isMine
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (!widget.isMine) ...[
-            AppAvatar(
-              name: widget.contactName,
-              imageUrl: widget.contactImageUrl,
-              size: AvatarSize.xs,
-            ),
-            const SizedBox(width: 8),
-          ],
-          Column(
-            crossAxisAlignment: widget.isMine
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
-            children: [
-              Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.68,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: widget.isMine
-                      ? AppColors.primaryFor(ref.watch(appRoleProvider))
-                      : AppColors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(18),
-                    topRight: const Radius.circular(18),
-                    bottomLeft: Radius.circular(widget.isMine ? 18 : 4),
-                    bottomRight: Radius.circular(widget.isMine ? 4 : 18),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: widget.isMine
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-
-                  spacing: 4,
-                  children: [
-                    AppText.bodyMd(
-                      widget.message.text,
-                      color: widget.isMine
-                          ? AppColors.white
-                          : AppColors.textPrimary,
-                    ),
-
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppText.bodyXs(
-                          widget.message.timestamp.toDisplayTime,
-                          color: AppColors.textgrey,
-                        ),
-                        if (widget.isMine) ...[
-                          const SizedBox(width: 4),
-                          _StatusIcon(status: widget.message.status),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 3),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusIcon extends StatelessWidget {
-  final MessageStatus status;
-  const _StatusIcon({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    switch (status) {
-      case MessageStatus.sending:
-        return const Icon(
-          Icons.access_time_rounded,
-          size: 12,
-          color: AppColors.grey400,
-        );
-      case MessageStatus.sent:
-        return const Icon(
-          Icons.check_rounded,
-          size: 12,
-          color: AppColors.grey400,
-        );
-      case MessageStatus.delivered:
-        return const Icon(
-          Icons.done_all_rounded,
-          size: 12,
-          color: AppColors.grey400,
-        );
-      case MessageStatus.read:
-        return const Icon(
-          Icons.done_all_rounded,
-          size: 12,
-          color: AppColors.primary,
-        );
-    }
-  }
-}
-
-// ─── Call Option Dialog ───────────────────────────────────────
-class _CallOptionDialog extends StatelessWidget {
-  final String contactName;
-  final String? contactImageUrl;
-  final VoidCallback onCall;
-  final VoidCallback onMessage;
-
-  const _CallOptionDialog({
-    required this.contactName,
-    this.contactImageUrl,
-    required this.onCall,
-    required this.onMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppText.h3('Choose option'),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(
-                    Icons.close_rounded,
-                    color: AppColors.textSecondary,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                color: AppColors.grey100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: AppAvatar(
-                  name: contactName,
-                  imageUrl: contactImageUrl,
-                  size: AvatarSize.lg,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            AppButton.primary(label: '📞  Call', onPressed: onCall),
-            const SizedBox(height: 10),
-            AppButton.outline(label: '💬  Message', onPressed: onMessage),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Chat Options Sheet ───────────────────────────────────────
-class ChatOptionsSheet extends StatelessWidget {
-  final VoidCallback onBlock;
-
-  const ChatOptionsSheet({super.key, required this.onBlock});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.h3("Settings"),
-
-          _OptionTile(
-            icon: Icons.block_rounded,
-            label: 'Block user',
-            color: AppColors.error,
-            onTap: onBlock,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OptionTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color? color;
-  final VoidCallback onTap;
-
-  const _OptionTile({
-    required this.icon,
-    required this.label,
-    this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: onTap,
-      leading: Icon(icon, color: color ?? AppColors.textPrimary),
-      title: AppText.bodyLg(label, color: color ?? AppColors.textPrimary),
-      contentPadding: EdgeInsets.zero,
     );
   }
 }

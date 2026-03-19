@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
@@ -15,7 +15,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
-  String _query = '';
+  final String _query = '';
 
   static const _popularServices = [
     _ServiceItem(
@@ -83,20 +83,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ─── Search bar ───────────────────────────────
+            16.verticalSpace,
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: AppTextField(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: AppSearchBar(
                 hint: "Find the service you need",
-                fillColor: AppColors.white,
-                prefixIcon: InkWell(
-                  onTap: () {
-                    context.pop();
-                  },
-                  child: Icon(Icons.arrow_back),
-                ),
+                leading: Icon(Icons.arrow_back),
               ),
             ),
-            const SizedBox(height: 24),
+
+            24.verticalSpace,
 
             // ─── Section title ────────────────────────────
             Padding(
@@ -106,7 +102,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 8),
+            8.verticalSpace,
 
             // ─── List ─────────────────────────────────────
             Expanded(
@@ -173,7 +169,7 @@ class _ServiceListTile extends StatelessWidget {
                 child: Text(item.emoji, style: const TextStyle(fontSize: 20)),
               ),
             ),
-            const SizedBox(width: 14),
+            14.horizontalSpace,
             Expanded(
               child: AppText.bodyLg(item.label, fontWeight: FontWeight.w500),
             ),

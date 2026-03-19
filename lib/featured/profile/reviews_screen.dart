@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_rating_bar.dart';
@@ -94,7 +95,7 @@ class _ReviewTile extends StatelessWidget {
                       size: 24,
                     ),
             ),
-            const SizedBox(width: 12),
+            12.horizontalSpace,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,13 +105,13 @@ class _ReviewTile extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 3),
+                3.verticalSpace,
                 AppRatingBar(rating: 3),
               ],
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         AppText.bodyMd(review.comment),
       ],
     );

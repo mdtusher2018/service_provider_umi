@@ -77,7 +77,7 @@ class _FaqSheet extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             // Illustration
             Container(
               height: 120,
@@ -87,7 +87,7 @@ class _FaqSheet extends StatelessWidget {
               ),
               child: Image.asset("assets/elderly_care.png", fit: BoxFit.cover),
             ),
-            const SizedBox(height: 16),
+            16.verticalSpace,
             ..._faqs.map((faq) => _FaqTile(question: faq.$1, answer: faq.$2)),
           ],
         ),
@@ -133,7 +133,7 @@ class _FaqTileState extends State<_FaqTile> {
               ],
             ),
             if (_expanded) ...[
-              const SizedBox(height: 8),
+              8.verticalSpace,
               AppText.bodyMd(widget.answer, color: AppColors.textSecondary),
             ],
           ],

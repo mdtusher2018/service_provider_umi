@@ -27,14 +27,12 @@ extension BuildContextExtensions on BuildContext {
   void pop<T>([T? result]) => Navigator.of(this).pop(result);
   bool canPop() => Navigator.of(this).canPop();
 
-  Future<T?> push<T>(Widget screen) => Navigator.of(this).push<T>(
-        MaterialPageRoute(builder: (_) => screen),
-      );
+  Future<T?> push<T>(Widget screen) =>
+      Navigator.of(this).push<T>(MaterialPageRoute(builder: (_) => screen));
 
-  Future<T?> pushReplacement<T>(Widget screen) =>
-      Navigator.of(this).pushReplacement<T, T>(
-        MaterialPageRoute(builder: (_) => screen),
-      );
+  Future<T?> pushReplacement<T>(Widget screen) => Navigator.of(
+    this,
+  ).pushReplacement<T, T>(MaterialPageRoute(builder: (_) => screen));
 
   // ─── Snackbar ────────────────────────────────────────────
   void showSnackBar(
@@ -48,9 +46,7 @@ extension BuildContextExtensions on BuildContext {
         content: Text(message),
         backgroundColor: isError ? colorScheme.error : colorScheme.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         duration: duration,
       ),
     );

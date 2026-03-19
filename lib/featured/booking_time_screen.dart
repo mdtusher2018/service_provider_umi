@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/featured/search_results_screen.dart';
@@ -29,7 +30,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
   double _duration = 2;
   String? _selectedTimeSlot;
 
-  Set<String> _selectedWeekDays = {};
+  final Set<String> _selectedWeekDays = {};
 
   DateTime _selectedDate = DateTime.now();
 
@@ -79,7 +80,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  8.verticalSpace,
                   Row(
                     children: [
                       AppText.h2(
@@ -111,16 +112,16 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
                     children: [
                       _buildFrequency(),
 
-                      const SizedBox(height: 24),
+                      24.verticalSpace,
                       AppDurationSlider(
                         value: _duration,
                         onChanged: (v) => setState(() => _duration = v),
                       ),
-                      const SizedBox(height: 24),
+                      24.verticalSpace,
                       _buildStartTime(),
-                      const SizedBox(height: 24),
+                      24.verticalSpace,
                       _buildTimeSlots(),
-                      const SizedBox(height: 32),
+                      32.verticalSpace,
                       _buildActions(),
                     ],
                   ),
@@ -138,7 +139,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3('Frequency'),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         Container(
           decoration: BoxDecoration(
             color: AppColors.white,
@@ -190,7 +191,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3("Day(s) of the week"),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -225,7 +226,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.h3('Start time'),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         Container(
           decoration: BoxDecoration(
             color: AppColors.white,
@@ -279,7 +280,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelLg('Morning', color: AppColors.textSecondary),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         Row(
           children: _morningSlots
               .map(
@@ -297,9 +298,9 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
               )
               .toList(),
         ),
-        const SizedBox(height: 16),
+        16.verticalSpace,
         AppText.labelLg('Evening', color: AppColors.textSecondary),
-        const SizedBox(height: 10),
+        10.verticalSpace,
         Row(
           children: _eveningSlots
               .map(
@@ -326,7 +327,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.labelLg('Select exact time'),
-        const SizedBox(height: 12),
+        12.verticalSpace,
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -342,7 +343,8 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
               ),
               AppText.h1(' : '),
               _TimeSpinner(values: ['00', '15', '30', '45']),
-              const SizedBox(width: 16),
+
+              16.horizontalSpace,
               _TimeSpinner(values: ['am', 'pm']),
             ],
           ),
@@ -362,7 +364,8 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
             },
           ),
         ),
-        const SizedBox(width: 14),
+
+        14.horizontalSpace,
         Expanded(
           child: AppButton.primary(
             label: 'Search',
@@ -482,7 +485,7 @@ class _TimeRangeCard extends StatelessWidget {
         child: Column(
           children: [
             Image.asset(emoji, width: 24, height: 24),
-            const SizedBox(height: 4),
+            4.verticalSpace,
             AppText.labelMd(
               range,
               color: isSelected ? AppColors.white : AppColors.textPrimary,
