@@ -1,16 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
-import 'package:service_provider_umi/featured/authentication/widgets/showLoginAccountDialog.dart';
-import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
-import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+part of '../welcome_screen.dart';
 
-void showCreateAccountDialog(WidgetRef ref) {
+void _showCreateAccountDialog(WidgetRef ref) {
   showDialog(
     context: ref.context,
     builder: (_) {
@@ -57,7 +47,7 @@ void showCreateAccountDialog(WidgetRef ref) {
                 label: "Create Account",
                 onPressed: () {
                   ref.context.pop();
-                  showPrivacyPolicyBottomSheet(ref.context);
+                  _showPrivacyPolicyBottomSheet(ref);
                 },
               ),
 
@@ -70,7 +60,7 @@ void showCreateAccountDialog(WidgetRef ref) {
                     label: "Log in",
                     onTap: () {
                       ref.context.pop();
-                      showLoginAccountDialog(ref);
+                      _showLoginAccountDialog(ref);
                     },
                   ),
                 ],

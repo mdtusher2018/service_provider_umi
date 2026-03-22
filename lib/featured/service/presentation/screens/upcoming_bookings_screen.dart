@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen/booking_details_screen.dart';
 
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_card_widget.dart';
+import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
+import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../core/theme/app_colors.dart';

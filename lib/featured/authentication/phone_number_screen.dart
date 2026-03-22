@@ -115,7 +115,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                             color: AppColors.white,
                           ),
                         )
-                      : Text('Verify', style: AppTextStyles.buttonLg),
+                      : AppText('Verify', style: AppTextStyles.buttonLg),
                 ),
               ),
               16.verticalSpace,
@@ -124,18 +124,10 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Phone number',
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: AppColors.grey400,
-                    ),
-                  ),
+                  AppText.bodyMd('Phone number'),
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
-                    child: Text(
-                      'OK',
-                      style: AppTextStyles.labelLg.copyWith(color: primary),
-                    ),
+                    child: AppText.labelLg('OK'),
                   ),
                 ],
               ),

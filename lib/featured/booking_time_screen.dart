@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/featured/search_results_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/service_search_results_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';

@@ -217,7 +217,7 @@ class RadialMenu extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return HomeCareScreen();
+                        return ServiceSubCategoryScreen();
                       },
                     ),
                   );
@@ -259,7 +259,7 @@ class RadialMenu extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.support_agent, size: 40),
-                  AppText('Support', textAlign: TextAlign.center),
+                  AppText.labelMd('Support', textAlign: TextAlign.center),
                 ],
               ),
             ),

@@ -1,15 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/featured/RootScreen.dart';
-import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+part of '../welcome_screen.dart';
 
-void showLoginAccountDialog(WidgetRef ref) {
+void _showLoginAccountDialog(WidgetRef ref) {
   showDialog(
     context: ref.context,
     builder: (_) {

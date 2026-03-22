@@ -3,7 +3,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_role.dart';
-import 'package:service_provider_umi/featured/provider/profile_picture_screen.dart';
+import 'package:service_provider_umi/featured/authentication/profile_picture_screen/profile_picture_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';

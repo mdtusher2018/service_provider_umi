@@ -3,6 +3,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -116,32 +117,12 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
               const Spacer(),
 
               // ─── Done button ─────────────────────────
-              SizedBox(
-                width: double.infinity,
-
-                child: ElevatedButton(
-                  onPressed: (!_isComplete || _isLoading) ? null : _done,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary,
-                    disabledBackgroundColor: primary.withOpacity(0.45),
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : Text('Done', style: AppTextStyles.buttonLg),
-                ),
+              AppButton(
+                label: "Done",
+                isLoading: _isLoading,
+                onPressed: (!_isComplete || _isLoading) ? null : _done,
               ),
+
               16.verticalSpace,
 
               // ─── Resend ─────────────────────────────
@@ -156,10 +137,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyCodeScreen> {
                     onTap: () {
                       // TODO: resend OTP
                     },
-                    child: Text(
-                      'Resend',
-                      style: AppTextStyles.labelMd.copyWith(color: primary),
-                    ),
+                    child: AppText.labelLg('Resend'),
                   ),
                 ],
               ),

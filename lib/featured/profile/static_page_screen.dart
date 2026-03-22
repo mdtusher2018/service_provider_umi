@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-enum StaticPageType { privacy, terms }
+enum StaticPageType { privacy, terms, aboutus }
 
 class StaticPageScreen extends StatelessWidget {
   final String title;

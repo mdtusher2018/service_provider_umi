@@ -9,10 +9,10 @@ import 'package:service_provider_umi/featured/HomeScreen.dart';
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
-import 'package:service_provider_umi/featured/profile/profile_screen.dart';
+import 'package:service_provider_umi/featured/profile/profile_screen/profile_screen.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/provider_service_screen.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/upcoming_bookings_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/user_service_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/user_service_screen/user_service_screen.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -157,7 +157,7 @@ class CustomBottomNavBar extends StatelessWidget {
             index: 1,
           ),
 
-           32.horizontalSpace,
+          32.horizontalSpace,
 
           _navItem(
             icon: isUserLike

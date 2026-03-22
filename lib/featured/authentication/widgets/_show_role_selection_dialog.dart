@@ -39,7 +39,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
               InkWell(
                 onTap: () {
                   ref.context.pop();
-                  _showAuthBottomSheet(ref);
+                  _showAuthBottomSheet(ref, isLogin: false);
                 },
                 child: _categoryCard(
                   "Book a service",
@@ -99,85 +99,3 @@ Widget _categoryCard(String title, String subtitle, String image) {
   );
 }
 
-void _showAuthBottomSheet(WidgetRef ref) {
-  showModalBottomSheet(
-    context: ref.context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (_) {
-      return Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const AppText.h2("Log in"),
-            24.verticalSpace,
-            AppButton(
-              label: "Continue with Apple",
-              variant: AppButtonVariant.social,
-              backgroundColor: AppColors.black,
-              textColor: AppColors.white,
-
-              prefixIcon: Icon(Icons.apple, color: AppColors.white),
-            ),
-            12.verticalSpace,
-            AppButton.outline(
-              label: "Continue with Facebook",
-              backgroundColor: Color(0xFF1877F2),
-              textColor: AppColors.white,
-              prefixIcon: Icon(Icons.facebook, color: AppColors.white),
-            ),
-            12.verticalSpace,
-            AppButton.outline(
-              label: "Continue with Google",
-              borderColor: AppColors.black,
-              prefixIcon: Icon(Icons.g_mobiledata),
-              onPressed: () {},
-            ),
-            16.verticalSpace,
-            Row(
-              spacing: 16,
-              children: [
-                Expanded(child: AppDivider()),
-                AppText.bodyLg("or"),
-                Expanded(child: AppDivider()),
-              ],
-            ),
-
-            AppButton.outline(
-              label: "Log in with email",
-              borderColor: AppColors.black,
-
-              onPressed: () {
-                ref.context.pop();
-                showCreateAccountDialog(ref);
-              },
-            ),
-            16.verticalSpace,
-            AppLinkText(
-              "By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy",
-
-              links: [
-                AppTextLink(
-                  label: "Terms and Condition",
-                  onTap: () {
-                    print("Open Terms");
-                  },
-                ),
-                AppTextLink(
-                  label: "Privacy Policy",
-                  onTap: () {
-                    print("Open Privacy Policy");
-                  },
-                ),
-              ],
-            ),
-            16.verticalSpace,
-          ],
-        ),
-      );
-    },
-  );
-}

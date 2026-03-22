@@ -6,8 +6,8 @@ import 'package:service_provider_umi/featured/search_screen.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class HomeCareScreen extends StatelessWidget {
-  const HomeCareScreen({super.key});
+class ServiceSubCategoryScreen extends StatelessWidget {
+  const ServiceSubCategoryScreen({super.key});
 
   // Dynamic list of care categories
   final List<Map<String, dynamic>> careCategories = const [
@@ -42,7 +42,7 @@ class HomeCareScreen extends StatelessWidget {
                           ),
                         );
                       }),
-                       16.horizontalSpace,
+                      16.horizontalSpace,
                       _buildCircleIcon(Icons.notifications_none_sharp, () {}),
                     ],
                   ),
@@ -59,7 +59,7 @@ class HomeCareScreen extends StatelessWidget {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children:  [
+                children: [
                   Icon(Icons.arrow_back_ios_new),
                   16.horizontalSpace,
                   AppText.h1("Care", color: AppColors.textgrey),

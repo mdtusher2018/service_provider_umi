@@ -1,8 +1,8 @@
 part of '../welcome_screen.dart';
 
-void showPrivacyPolicyBottomSheet(BuildContext context) {
+void _showPrivacyPolicyBottomSheet(WidgetRef ref) {
   showModalBottomSheet(
-    context: context,
+    context: ref.context,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -34,16 +34,19 @@ void showPrivacyPolicyBottomSheet(BuildContext context) {
 
             20.verticalSpace,
 
-            Container(
-              height: 45,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: AppText.labelLg("Accept", color: AppColors.white),
-              ),
+            AppButton.primary(
+              label: "Accept",
+              onPressed: () {
+                ref.read(appRoleProvider.notifier).loginAsUser();
+                Navigator.push(
+                  ref.context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return RootScreen();
+                    },
+                  ),
+                );
+              },
             ),
 
             10.verticalSpace,

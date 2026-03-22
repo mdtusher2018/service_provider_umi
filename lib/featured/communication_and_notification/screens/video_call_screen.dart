@@ -420,7 +420,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
                 color: AppColors.error,
                 onTap: _endCall,
               ),
-       
+
               72.horizontalSpace,
               // Accept
               _RoundVideoBtn(

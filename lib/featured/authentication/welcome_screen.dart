@@ -5,16 +5,19 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/featured/authentication/widgets/showCreateAccountDialog.dart';
-import 'package:service_provider_umi/featured/authentication/widgets/showLoginAccountDialog.dart';
+import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-part 'widgets/show_privacy_policy_bottom_sheet.dart';
+part 'widgets/_show_privacy_policy_bottom_sheet.dart';
 part 'widgets/_show_role_selection_dialog.dart';
+part 'widgets/_showAuthBottomSheet.dart';
+part 'widgets/_show_create_account_dialog.dart';
+part 'widgets/_show_login_account_dialog.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
@@ -73,7 +76,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             AppButton.secondary(
               label: "Log in",
               onPressed: () {
-                showLoginAccountDialog(ref);
+                _showAuthBottomSheet(ref, isLogin: true);
               },
             ),
 

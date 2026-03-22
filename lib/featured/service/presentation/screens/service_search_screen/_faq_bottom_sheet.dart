@@ -1,4 +1,4 @@
-part of "search_results_screen.dart";
+part of "service_search_results_screen.dart";
 
 Widget _buildFaqOverlay({
   required Function()? show,
