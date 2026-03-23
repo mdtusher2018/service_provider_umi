@@ -1,6 +1,10 @@
 part of '../welcome_screen.dart';
 
-void _showAuthBottomSheet(WidgetRef ref, {required bool isLogin}) {
+void _showAuthBottomSheet(
+  WidgetRef ref, {
+  required bool isLogin,
+  AppRole? role,
+}) {
   showModalBottomSheet(
     context: ref.context,
     isScrollControlled: true,
@@ -55,8 +59,8 @@ void _showAuthBottomSheet(WidgetRef ref, {required bool isLogin}) {
                 ref.context.pop();
                 if (isLogin) {
                   _showLoginAccountDialog(ref);
-                } else {
-                  _showCreateAccountDialog(ref);
+                } else if (role != null) {
+                  _showCreateAccountDialog(ref, role: role);
                 }
               },
             ),

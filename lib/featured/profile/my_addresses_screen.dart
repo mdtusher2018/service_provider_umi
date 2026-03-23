@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -124,7 +125,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
               20,
               12,
               20,
-              MediaQuery.of(context).padding.bottom + 20,
+              context.bottomPadding + 20,
             ),
             child: AppButton.primary(
               label: 'Add New Address',

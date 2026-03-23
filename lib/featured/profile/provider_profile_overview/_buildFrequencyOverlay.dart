@@ -50,7 +50,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom + 20,
+        bottom: context.bottomPadding + 20,
         left: 20,
         right: 20,
         top: 20,

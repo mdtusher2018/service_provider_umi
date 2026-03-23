@@ -160,9 +160,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
 
             // ─── Save button ─────────────────────────
             Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 20,
-              ),
+              padding: EdgeInsets.only(bottom: context.bottomPadding + 20),
               child: SizedBox(
                 width: double.infinity,
                 height: 52,

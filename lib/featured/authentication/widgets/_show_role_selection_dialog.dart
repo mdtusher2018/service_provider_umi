@@ -39,7 +39,11 @@ void _showRoleSelectionDialog(WidgetRef ref) {
               InkWell(
                 onTap: () {
                   ref.context.pop();
-                  _showAuthBottomSheet(ref, isLogin: false);
+                  _showAuthBottomSheet(
+                    ref,
+                    isLogin: false,
+                    role: AppRole.provider,
+                  );
                 },
                 child: _categoryCard(
                   "Book a service",
@@ -50,10 +54,16 @@ void _showRoleSelectionDialog(WidgetRef ref) {
 
               12.verticalSpace,
 
-              _categoryCard(
-                "Offer services",
-                "I am a Professional",
-                "assets/offer_service.png",
+              InkWell(
+                onTap: () {
+                  ref.context.pop();
+                  _showAuthBottomSheet(ref, isLogin: false, role: AppRole.user);
+                },
+                child: _categoryCard(
+                  "Offer services",
+                  "I am a Professional",
+                  "assets/offer_service.png",
+                ),
               ),
             ],
           ),
@@ -98,4 +108,3 @@ Widget _categoryCard(String title, String subtitle, String image) {
     ),
   );
 }
-

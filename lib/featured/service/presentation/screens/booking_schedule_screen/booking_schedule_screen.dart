@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -260,7 +261,7 @@ class _WeeklyBookingScheduleScreenState
         left: 20,
         right: 20,
         top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
+        bottom: context.bottomPadding + 12,
       ),
       decoration: BoxDecoration(
         color: AppColors.white,

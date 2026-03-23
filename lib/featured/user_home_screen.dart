@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -188,13 +189,12 @@ class RadialMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double radius = screenWidth * 0.3; // distance from center
-    double center = screenWidth / 2; // dynamically calculate center
+    double radius = context.screenWidth * 0.3; // distance from center
+    double center = context.screenWidth / 2; // dynamically calculate center
 
     return SizedBox(
-      width: screenWidth,
-      height: screenWidth,
+      width: context.screenWidth,
+      height: context.screenWidth,
 
       child: Stack(
         children: [

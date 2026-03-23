@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
@@ -53,9 +54,7 @@ class AppBottomSheetContainer extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: context.keyboardHeight),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

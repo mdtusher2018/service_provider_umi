@@ -51,9 +51,6 @@ extension BuildContextExtensions on BuildContext {
   void showErrorSnackBar(String message) =>
       showSnackBar(message, isError: true);
 
-  // ─── Focus ───────────────────────────────────────────────
-  void unfocus() => FocusScope.of(this).unfocus();
-  void requestFocus(FocusNode node) => FocusScope.of(this).requestFocus(node);
 
   // ─── Localization ────────────────────────────────────────
   // Uncomment once generated:

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/localization/locale_provider.dart';
+import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/theme/app_theme.dart';
-
-import 'core/di/providers.dart';
-
-// import 'core/localization/app_localizations.dart'; // Uncomment after generating
 
 class App extends ConsumerWidget {
   const App({super.key});

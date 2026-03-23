@@ -1,6 +1,4 @@
-
 part of '../../screens/chat_screen.dart';
-
 
 // ─── Message Bubble ───────────────────────────────────────────
 class _MessageBubble extends ConsumerStatefulWidget {
@@ -46,7 +44,7 @@ class _MessageBubbleState extends ConsumerState<_MessageBubble> {
             children: [
               Container(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.68,
+                  maxWidth: context.screenWidth * 0.68,
                 ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,

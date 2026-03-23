@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -324,10 +325,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
 
   Widget _buildControls() {
     return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom + 32,
-        top: 20,
-      ),
+      padding: EdgeInsets.only(bottom: context.bottomPadding + 32, top: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,

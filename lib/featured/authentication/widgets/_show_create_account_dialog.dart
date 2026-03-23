@@ -1,6 +1,6 @@
 part of '../welcome_screen.dart';
 
-void _showCreateAccountDialog(WidgetRef ref) {
+void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
   showDialog(
     context: ref.context,
     builder: (_) {
