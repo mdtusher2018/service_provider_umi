@@ -1,7 +1,7 @@
 part of 'my_addresses_screen.dart';
 
 class AddressPage extends StatefulWidget {
-  final _Address? address;
+  final AddressModel? address;
 
   const AddressPage({super.key, this.address});
 
@@ -44,7 +44,7 @@ class _AddressPageState extends State<AddressPage> {
             AppButton.primary(
               label: "Save",
               onPressed: () {
-                final newAddress = _Address(
+                final newAddress = AddressModel(
                   id:
                       widget.address?.id ??
                       DateTime.now().millisecondsSinceEpoch.toString(),
@@ -54,7 +54,7 @@ class _AddressPageState extends State<AddressPage> {
                   country: _countryCtrl.text,
                 );
 
-                Navigator.pop(context, newAddress);
+                context.pop(newAddress);
               },
             ),
           ],

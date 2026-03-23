@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_sub_category_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/search_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -46,14 +46,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                         child: IconButton(
                           icon: const Icon(Icons.search, color: Colors.black),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return SearchScreen();
-                                },
-                              ),
-                            );
+                            context.push(AppRoutes.search);
                           },
                         ),
                       ),
@@ -213,14 +206,7 @@ class RadialMenu extends StatelessWidget {
               top: center + y - 30,
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ServiceSubCategoryScreen();
-                      },
-                    ),
-                  );
+                  context.push(AppRoutes.serviceSubCategory);
                 },
                 child: CircleAvatar(
                   radius: 40,
@@ -286,7 +272,7 @@ class RadialMenu extends StatelessWidget {
                   alignment: AlignmentGeometry.topRight,
                   child: InkWell(
                     onTap: () {
-                      Navigator.pop(context);
+                      context.pop();
                     },
                     child: Icon(Icons.close),
                   ),
@@ -300,7 +286,7 @@ class RadialMenu extends StatelessWidget {
                   prefixIcon: Icon(Icons.call, color: AppColors.white),
                   onPressed: () {
                     // Call action
-                    Navigator.pop(context); // Close the dialog
+                    context.pop();
                     print("Call pressed");
                   },
                 ),
@@ -310,7 +296,7 @@ class RadialMenu extends StatelessWidget {
                   prefixIcon: Icon(Icons.message, color: AppColors.white),
                   onPressed: () {
                     // Message action
-                    Navigator.pop(context); // Close the dialog
+                    context.pop();
                     print("Message pressed");
                   },
                 ),

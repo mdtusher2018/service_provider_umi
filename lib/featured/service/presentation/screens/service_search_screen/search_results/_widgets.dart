@@ -82,14 +82,7 @@ Widget _buildFilterRow(WidgetRef ref) {
           icon: Icons.tune_rounded,
           label: 'Filters',
           onTap: () {
-            Navigator.push(
-              ref.context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return FilterScreen();
-                },
-              ),
-            );
+            ref.context.push(AppRoutes.filter);
           },
         ),
       ],

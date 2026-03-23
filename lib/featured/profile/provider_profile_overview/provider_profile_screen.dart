@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
-import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_schedule_screen/booking_schedule_screen.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -226,26 +226,10 @@ class _ProviderProfileOverviewScreenState
                   GuestLoginDialog.show(
                     context,
                     onLogin: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return WelcomeScreen();
-                          },
-                        ),
-                        (route) => false,
-                      );
+                      context.go(AppRoutes.login);
                     },
                     onRegister: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return WelcomeScreen();
-                          },
-                        ),
-                        (route) => false,
-                      );
+                      context.go(AppRoutes.login);
                     },
                   );
                   return;

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,7 +145,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
     _engine = null;
     if (mounted) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      Navigator.of(context).pop();
+      context.pop();
     }
   }
 
@@ -385,7 +386,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
           _VideoControlBtn(
             icon: Icons.chat_bubble_outline_rounded,
             label: 'Chat',
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => context.pop(),
           ),
         ],
       ),

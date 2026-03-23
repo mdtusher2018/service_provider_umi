@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen/booking_details_screen.dart';
+
 import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -67,21 +69,11 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return BookingDetailScreen(booking: item);
-        },
-      ),
-    );
+    context.push(AppRoutes.bookingDetail, extra: item);
   }
 
   void _openCompleted() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const ProviderCompletedScreen()),
-    );
+    context.push(AppRoutes.providerCompletedServiceScreen);
   }
 
   @override

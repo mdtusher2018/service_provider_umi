@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -31,7 +32,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: AppText('Minimum price saved successfully')),
     );
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override
@@ -45,7 +46,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_rounded, color: primary, size: 18),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
       ),
       body: Padding(

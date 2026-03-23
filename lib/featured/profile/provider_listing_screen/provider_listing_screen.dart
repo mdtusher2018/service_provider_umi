@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -53,9 +54,9 @@ class _MyListingScreenState extends ConsumerState<ProviderListingScreen> {
       builder: (_) => _DeleteDialog(
         onYes: () {
           setState(() => _listings.removeWhere((l) => l.id == listing.id));
-          Navigator.of(context).pop();
+          context.pop();
         },
-        onNo: () => Navigator.of(context).pop(),
+        onNo: () => context.pop(),
       ),
     );
   }

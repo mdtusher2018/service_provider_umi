@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,7 +137,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
     if (mounted) {
       setState(() => _callState = CallState.ended);
       await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) context.pop();
     }
   }
 

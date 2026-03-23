@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:service_provider_umi/featured/authentication/verify_code_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../core/di/app_role_provider.dart';
@@ -129,14 +130,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                   child: AppButton.primary(
                     label: "Confirm",
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return VerifyCodeScreen(phoneNumber: "");
-                          },
-                        ),
-                      );
+                      context.push(AppRoutes.verifyOtp);
                     },
                   ),
                 ),
@@ -150,7 +144,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
               onStay: () => setState(() => _showGoBackDialog = false),
               onGoBack: () {
                 setState(() => _showGoBackDialog = false);
-                Navigator.of(context).pop();
+                context.pop();
               },
             ),
         ],

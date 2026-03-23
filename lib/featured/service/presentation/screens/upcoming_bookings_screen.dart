@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen/booking_details_screen.dart';
 
 import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -121,14 +122,7 @@ class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
       itemBuilder: (context, index) {
         return InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return BookingDetailScreen(booking: _bookings[index]);
-                },
-              ),
-            );
+            context.push(AppRoutes.bookingDetail, extra: _bookings[index]);
           },
           child: BookingCard(item: _bookings[index]),
         );

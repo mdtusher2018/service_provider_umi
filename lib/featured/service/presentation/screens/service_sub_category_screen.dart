@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_time_screen/booking_time_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/search_screen.dart';
+
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -33,14 +33,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
                   Row(
                     children: [
                       _buildCircleIcon(Icons.search, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return SearchScreen();
-                            },
-                          ),
-                        );
+                        context.push(AppRoutes.search);
                       }),
                       16.horizontalSpace,
                       _buildCircleIcon(Icons.notifications_none_sharp, () {}),
@@ -78,14 +71,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
                 children: careCategories.map((category) {
                   return InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return BookingTimeScreen();
-                          },
-                        ),
-                      );
+                      context.push(AppRoutes.bookingTime);
                     },
                     child: _buildCategoryItem(
                       category["label"],

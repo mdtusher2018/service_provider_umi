@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
@@ -34,8 +35,8 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
       builder: (_) => _CongratsDialog(
         primary: primary,
         onDone: () {
-          Navigator.of(context).pop(); // close dialog
-          Navigator.of(context).pop(); // go back screen
+          context.pop(); // close dialog
+          context.pop(); // go back screen
         },
       ),
     );

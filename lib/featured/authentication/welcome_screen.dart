@@ -1,12 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/featured/RootScreen.dart';
-import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -86,14 +85,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             InkWell(
               onTap: () {
                 log(ref.watch(appRoleProvider).name);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return GuestOnboardingScreen();
-                    },
-                  ),
-                );
+                context.go(AppRoutes.guestOnboarding);
               },
               child: const AppText.bodySm(
                 "Continue as a guest",

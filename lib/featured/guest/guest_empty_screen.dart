@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/featured/authentication/welcome_screen.dart';
+
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -128,15 +130,7 @@ class _ChatGuestTab extends StatelessWidget {
           AppButton.outline(
             label: "LOGIN",
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return WelcomeScreen();
-                  },
-                ),
-                (route) => false,
-              );
+              context.go(AppRoutes.login);
             },
           ),
 
@@ -145,15 +139,7 @@ class _ChatGuestTab extends StatelessWidget {
           AppButton.primary(
             label: "Create Account",
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return WelcomeScreen();
-                  },
-                ),
-                (route) => false,
-              );
+              context.go(AppRoutes.login);
             },
           ),
 

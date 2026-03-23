@@ -55,14 +55,7 @@ Widget _buildResultsList({required WidgetRef ref, required String category}) {
         hasRepeated: p.hasRepeated,
         hasUpdatedSchedule: p.hasUpdatedSchedule,
         onTap: () {
-          Navigator.push(
-            ref.context,
-            MaterialPageRoute(
-              builder: (context) {
-                return ProviderProfileOverviewScreen(providerId: "");
-              },
-            ),
-          );
+          ref.context.push(AppRoutes.providerProfilePath("id"));
         },
         onFavorite: () {},
       );

@@ -43,7 +43,7 @@ class GuestLoginDialog extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () => context.pop(),
                 child: const Icon(
                   Icons.close_rounded,
                   color: AppColors.grey400,

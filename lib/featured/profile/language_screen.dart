@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -38,7 +39,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
             color: AppColors.textPrimary,
             size: 18,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: const AppText.h3('Change Language'),
         centerTitle: true,
@@ -89,7 +90,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: AppText('Language changed to $_selected')),
                 );
-                Navigator.of(context).pop();
+                context.pop();
               },
             ),
           ],

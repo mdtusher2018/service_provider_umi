@@ -4,71 +4,72 @@ class AppRoutes {
   // ─── General ─────────────────────────────────────────────
   static const String splash = '/';
   static const String onboarding = '/onboarding';
-  static const String roleSwitch = '/role-switch';
-
-  // ─── Auth ────────────────────────────────────────────────
+  static const String guestOnboarding = '/guest-onboarding';
   static const String login = '/login';
-  static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
-  static const String resetPassword = '/reset-password';
-  static const String verifyOtp = '/verify-otp';
 
-  // ─── User Shell ──────────────────────────────────────────
-  static const String userShell = '/user';
+  // ─── User Shell (bottom nav) ─────────────────────────────
   static const String userHome = '/user/home';
   static const String userBookings = '/user/bookings';
   static const String userFavorites = '/user/favorites';
   static const String userChat = '/user/chat';
-  static const String userProfile = '/user/profile';
 
-  // ─── Service Discovery ───────────────────────────────────
-  static const String serviceDetail = '/user/services/:id';
-  static const String serviceFilter = '/user/services/filter';
-  static const String serviceSearch = '/user/services/search';
+  // ─── Service discovery ───────────────────────────────────
+  static const String search = '/search';
+  static const String searchResults = '/search/results';
+  static const String filter = '/search/filter';
+  static const String serviceSubCategory = '/service/subcategory';
+  static const String providerProfile = '/provider/:providerId';
 
-  // ─── Booking ─────────────────────────────────────────────
-  static const String bookService = '/user/book/:serviceId';
-  static const String bookingConfirmation = '/user/booking/confirmation';
-  static const String bookingHistory = '/user/booking/history';
+  // ─── Booking flow ────────────────────────────────────────
+  static const String bookingTime = '/booking/time';
+  static const String bookingSchedule = '/booking/schedule';
+  static const String bookingDetail = '/booking/:bookingId';
+  static const String myBookings = "/booking/my-bookings";
 
-  // ─── Payments ────────────────────────────────────────────
-  static const String payment = '/user/payment';
-
-  // ─── Profile ─────────────────────────────────────────────
-  static const String editProfile = '/profile/edit';
+  // ─── Profile sub-screens ─────────────────────────────────
+  static const String personalDetails = '/profile/personal-details';
+  static const String myAddresses = '/profile/addresses';
+  static const String addAddress = '/profile/addresses/add';
+  static const String payments = '/profile/payments';
+  static const String myBalance = '/profile/balance';
+  static const String providerListing = '/profile/listing';
+  static const String preferences = '/profile/preferences';
+  static const String workAreas = '/profile/preferences/work-areas';
+  static const String workSchedule = '/profile/preferences/schedule';
+  static const String minimumPrice = '/profile/preferences/min-price';
+  static const String providerReviews = '/profile/reviews';
   static const String changePassword = '/profile/change-password';
-  static const String aboutUs = '/profile/about-us';
-  static const String termsConditions = '/profile/terms';
-  static const String privacyPolicy = '/profile/privacy';
-
-  // ─── Notifications ───────────────────────────────────────
+  static const String language = '/profile/language';
+  static const String staticPage = '/page/:type';
   static const String notifications = '/notifications';
 
-  // ─── Chat ────────────────────────────────────────────────
-  static const String chatDetail = '/chat/:conversationId';
+  // ─── Auth ────────────────────────────────────────────────
+  static const String phoneNumber = '/auth/phone';
+  static const String verifyOtp = '/auth/verify-otp';
+  static const String profilePicture = '/auth/profile-picture';
+  static const String providerOnboarding = '/provider-onboarding';
 
-  // ─── Calls ───────────────────────────────────────────────
-  static const String audioCall = '/call/audio/:channelId';
-  static const String videoCall = '/call/video/:channelId';
+  // ─── Communication ───────────────────────────────────────
+  static const String chat = '/chat/:contactId';
+  static const String audioCall = '/call/audio/:contactId';
+  static const String videoCall = '/call/video/:contactId';
 
-  // ─── Service Provider Shell ──────────────────────────────
-  static const String providerShell = '/provider';
-  static const String providerDashboard = '/provider/dashboard';
-  static const String providerServices = '/provider/services';
-  static const String providerHistory = '/provider/history';
-  static const String providerMap = '/provider/map';
-  static const String providerChat = '/provider/chat';
-  static const String providerProfile = '/provider/profile';
+  // ─── Provider Shell (bottom nav) ─────────────────────────
+  static const String providerDashboard = '/provider-dashboard';
+  static const String providerServices = '/provider-services';
+  static const String providerUpcomingBookings = '/provider-upcoming-bookings';
+  static const String providerNotification = '/provider-notification';
+  static const String providerChat = '/provider-chat';
 
-  // ─── Provider Booking Management ─────────────────────────
-  static const String providerBookingRequests = '/provider/bookings/requests';
-  static const String providerOngoingBookings = '/provider/bookings/ongoing';
-  static const String providerCancelledBookings = '/provider/bookings/cancelled';
+  static const String providerProfileRoot = '/profile';
+  static const String providerCompletedServiceScreen =
+      '/provider-completed-service-screen';
 
-  // ─── Provider Service Management ─────────────────────────
-  static const String createService = '/provider/services/create';
-  static const String editService = '/provider/services/:id/edit';
-
-  // ─── Provider Reviews ────────────────────────────────────
-  static const String providerReviews = '/provider/reviews';
+  // ─── Helpers ─────────────────────────────────────────────
+  static String providerProfilePath(String id) => '/provider/$id';
+  static String bookingDetailPath(String id) => '/booking/$id';
+  static String chatPath(String contactId) => '/chat/$contactId';
+  static String audioCallPath(String contactId) => '/call/audio/$contactId';
+  static String videoCallPath(String contactId) => '/call/video/$contactId';
+  static String staticPagePath(String type) => '/page/$type';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
@@ -80,7 +81,7 @@ class AppBottomSheetContainer extends StatelessWidget {
                   if (onClose != null)
                     IconButton(
                       icon: const Icon(Icons.close_rounded, size: 22),
-                      onPressed: onClose ?? () => Navigator.of(context).pop(),
+                      onPressed: onClose ?? () => context.pop(),
                       color: AppColors.textSecondary,
                     ),
                 ],
@@ -189,7 +190,7 @@ class AppFaqBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBottomSheetContainer(
       title: title,
-      onClose: onClose ?? () => Navigator.of(context).pop(),
+      onClose: onClose ?? () => context.pop(),
       child: Column(
         children: items
             .map(

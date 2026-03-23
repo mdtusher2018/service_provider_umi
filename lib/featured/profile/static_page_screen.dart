@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-
-
 
 class StaticPageScreen extends StatelessWidget {
   final String title;
@@ -40,7 +39,7 @@ We also store certain types of information whenever you interact with us. For ex
             color: AppColors.textPrimary,
             size: 18,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: AppText.h3(title),
         centerTitle: true,

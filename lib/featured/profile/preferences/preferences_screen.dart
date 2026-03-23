@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/featured/profile/preferences/minimum_price_screen.dart';
-import 'package:service_provider_umi/featured/profile/preferences/work_area_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen/work_schedule_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
+
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../core/di/app_role_provider.dart';
@@ -22,23 +22,19 @@ class PreferencesScreen extends ConsumerWidget {
       _PrefItem(
         icon: Icons.location_on_outlined,
         label: 'My work areas',
-        onTap: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const WorkAreasScreen())),
+        onTap: () => context.push(AppRoutes.workAreas),
       ),
+
       _PrefItem(
         icon: Icons.access_time_rounded,
         label: 'My schedule',
-        onTap: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => WorkScheduleScreen())),
+        onTap: () => context.push(AppRoutes.workSchedule),
       ),
+
       _PrefItem(
         icon: Icons.attach_money_rounded,
         label: 'Minimum booking amount',
-        onTap: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => const MinimumPriceScreen())),
+        onTap: () => context.push(AppRoutes.minimumPrice),
       ),
     ];
 

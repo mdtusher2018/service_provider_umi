@@ -90,15 +90,9 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
               'Cancel one-time service in 1 click',
             ],
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return BookingScheduleScreen(
-                      bookingMode: BookingFrequency.weekly,
-                    );
-                  },
-                ),
+              context.push(
+                AppRoutes.bookingSchedule,
+                extra: BookingFrequency.weekly,
               );
             },
           ),
@@ -111,15 +105,9 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             subtitle: 'One-Time service',
 
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return BookingScheduleScreen(
-                      bookingMode: BookingFrequency.once,
-                    );
-                  },
-                ),
+              context.push(
+                AppRoutes.bookingSchedule,
+                extra: BookingFrequency.once,
               );
             },
           ),

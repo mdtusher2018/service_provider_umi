@@ -8,26 +8,11 @@ Widget _buildSwitchTile(WidgetRef ref) {
     onTap: () {
       ref.read(appRoleProvider.notifier).switchRole();
       if (ref.read(appRoleProvider) == AppRole.provider) {
-        Navigator.pushAndRemoveUntil(
-          ref.context,
-          MaterialPageRoute(
-            builder: (context) {
-              return ServiceProviderOnboardingScreen();
-            },
-          ),
-          (route) => false,
-        );
+        ref.context.go(AppRoutes.providerOnboarding);
+
         return;
       }
-      Navigator.pushAndRemoveUntil(
-        ref.context,
-        MaterialPageRoute(
-          builder: (context) {
-            return RootScreen();
-          },
-        ),
-        (route) => false,
-      );
+      ref.context.go(AppRoutes.providerUpcomingBookings);
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

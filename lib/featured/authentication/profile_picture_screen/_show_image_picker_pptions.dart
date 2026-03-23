@@ -27,7 +27,7 @@ void _showPickerOptions(WidgetRef ref) {
             leading: const Icon(Icons.photo_library_outlined),
             title: AppText('Choose from gallery'),
             onTap: () {
-              Navigator.pop(ref.context);
+              ref.context.pop();
               _pickImage(ref);
             },
           ),
@@ -35,7 +35,7 @@ void _showPickerOptions(WidgetRef ref) {
             leading: const Icon(Icons.camera_alt_outlined),
             title: AppText('Take a photo'),
             onTap: () {
-              Navigator.pop(ref.context);
+              ref.context.pop();
               _pickFromCamera(ref);
             },
           ),

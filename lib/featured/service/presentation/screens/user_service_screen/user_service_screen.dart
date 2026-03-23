@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
@@ -137,7 +138,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
       builder: (_) => RatingDialog(
         serviceName: item.serviceTitle,
         onSubmit: (rating, tags, comment) {
-          Navigator.of(context).pop();
+          context.pop();
           // TODO: submit rating via provider
         },
       ),

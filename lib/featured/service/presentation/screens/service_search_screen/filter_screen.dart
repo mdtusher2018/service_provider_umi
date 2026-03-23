@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
-import 'package:service_provider_umi/featured/authentication/profile_picture_screen/profile_picture_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -92,7 +93,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => context.pop(),
                     child: Row(
                       children: [
                         Icon(
@@ -238,18 +239,12 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                       label: 'Update',
                       onPressed: () {
                         if (ref.watch(appRoleProvider) == AppRole.provider) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return ProfilePictureScreen();
-                              },
-                            ),
-                          );
+                          context.push(AppRoutes.profilePicture);
+
                           return;
                         }
 
-                        Navigator.of(context).pop({
+                        context.pop({
                           'palliativeCare': _palliativeCare,
                           'drivingLicence': _drivingLicence,
                           'qualifiedCarer': _qualifiedCarer,

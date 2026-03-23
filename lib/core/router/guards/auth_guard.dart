@@ -34,9 +34,7 @@ class AuthGuard {
 
   static const Set<String> _authRoutes = {
     AppRoutes.login,
-    AppRoutes.register,
-    AppRoutes.forgotPassword,
-    AppRoutes.resetPassword,
+
     AppRoutes.verifyOtp,
     AppRoutes.onboarding,
     AppRoutes.splash,
@@ -45,8 +43,8 @@ class AuthGuard {
   // Routes accessible in guest mode
   static const Set<String> _guestAllowedRoutes = {
     AppRoutes.userHome,
-    AppRoutes.serviceFilter,
-    AppRoutes.serviceSearch,
+    AppRoutes.filter,
+    AppRoutes.search,
   };
 
   static bool isGuestAllowed(String path) {

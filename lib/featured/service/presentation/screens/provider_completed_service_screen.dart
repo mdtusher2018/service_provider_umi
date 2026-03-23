@@ -1,7 +1,7 @@
 part of 'provider_service_screen.dart';
 
-class ProviderCompletedScreen extends StatelessWidget {
-  const ProviderCompletedScreen({super.key});
+class ProviderCompletedServiceScreen extends StatelessWidget {
+  const ProviderCompletedServiceScreen({super.key});
 
   final List<BookingItem> _completed = const [
     BookingItem(
@@ -15,14 +15,7 @@ class ProviderCompletedScreen extends StatelessWidget {
   ];
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return BookingDetailScreen(booking: item);
-        },
-      ),
-    );
+    context.push(AppRoutes.bookingDetail, extra: item);
   }
 
   @override

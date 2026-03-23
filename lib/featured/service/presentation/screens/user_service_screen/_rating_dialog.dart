@@ -50,7 +50,7 @@ class _RatingDialogState extends State<RatingDialog> {
               children: [
                 const Expanded(child: AppText.h3('Rate Your Experience')),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => context.pop(),
                   child: const Icon(
                     Icons.close_rounded,
                     color: AppColors.textSecondary,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/filter_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -98,7 +99,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_rounded, color: primary, size: 20),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
       ),
       body: Padding(
@@ -132,14 +133,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
             AppButton(
               label: "Confirm",
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return FilterScreen();
-                    },
-                  ),
-                );
+                context.push(AppRoutes.filter);
               },
             ),
             24.verticalSpace,

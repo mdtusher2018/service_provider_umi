@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/chat_screen.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -240,14 +241,12 @@ class _CommunicationAndNotificationScreenState
                   itemCount: _filteredContacts.length,
                   itemBuilder: (_, i) => _ContactTile(
                     contact: _filteredContacts[i],
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ChatScreen(
-                          contactId: _filteredContacts[i].id,
-                          contactName: _filteredContacts[i].name,
-                          contactImageUrl: _filteredContacts[i].imageUrl,
-                        ),
-                      ),
+                    onTap: () => context.push(
+                      AppRoutes.chatPath(_filteredContacts[i].id),
+                      extra: {
+                        'name': _filteredContacts[i].name,
+                        'imageUrl': _filteredContacts[i].imageUrl,
+                      },
                     ),
                   ),
                 ),
@@ -273,14 +272,13 @@ class _CommunicationAndNotificationScreenState
                   itemBuilder: (_, i) {
                     return _HistoryTile(
                       history: _history[i],
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => ChatScreen(
-                            contactId: _filteredContacts[i].id,
-                            contactName: _filteredContacts[i].name,
-                            contactImageUrl: _filteredContacts[i].imageUrl,
-                          ),
-                        ),
+
+                      onTap: () => context.push(
+                        AppRoutes.chatPath(_filteredContacts[i].id),
+                        extra: {
+                          'name': _filteredContacts[i].name,
+                          'imageUrl': _filteredContacts[i].imageUrl,
+                        },
                       ),
                     );
                   },

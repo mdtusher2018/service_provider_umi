@@ -25,15 +25,8 @@ extension BuildContextExtensions on BuildContext {
   bool get isTablet => screenWidth >= 600;
 
   // ─── Navigation ──────────────────────────────────────────
-  void pop<T>([T? result]) => Navigator.of(this).pop(result);
-  bool canPop() => Navigator.of(this).canPop();
 
-  Future<T?> push<T>(Widget screen) =>
-      Navigator.of(this).push<T>(MaterialPageRoute(builder: (_) => screen));
 
-  Future<T?> pushReplacement<T>(Widget screen) => Navigator.of(
-    this,
-  ).pushReplacement<T, T>(MaterialPageRoute(builder: (_) => screen));
 
   // ─── Snackbar ────────────────────────────────────────────
   void showSnackBar(

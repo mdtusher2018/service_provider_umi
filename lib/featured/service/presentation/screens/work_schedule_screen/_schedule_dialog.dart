@@ -52,7 +52,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
               children: [
                 AppText.h3('Schedule ${widget.dayName}'),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => context.pop(),
                   child: const Icon(
                     Icons.close_rounded,
                     color: AppColors.grey500,
@@ -131,7 +131,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(
+                onPressed: () => context.pop(
                   _TimeRange(
                     TimeOfDay(hour: _fromHour, minute: _fromMinute),
                     TimeOfDay(hour: _toHour, minute: _toMinute),

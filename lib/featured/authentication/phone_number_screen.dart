@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +8,6 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import 'verify_code_screen.dart';
 
 class PhoneNumberScreen extends ConsumerStatefulWidget {
   const PhoneNumberScreen({super.key});
@@ -35,9 +36,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => VerifyCodeScreen(phoneNumber: phone)),
-    );
+    context.push(AppRoutes.verifyOtp, extra: phone);
   }
 
   @override
@@ -126,7 +125,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                 children: [
                   AppText.bodyMd('Phone number'),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => context.pop(),
                     child: AppText.labelLg('OK'),
                   ),
                 ],

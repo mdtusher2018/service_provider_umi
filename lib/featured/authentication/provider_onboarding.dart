@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen/work_schedule_screen.dart';
+
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -41,15 +43,7 @@ class _ServiceProviderOnboardingScreenState
 
   void nextPage() {
     if (currentIndex == onboardingData.length - 1) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return WorkScheduleScreen();
-          },
-        ),
-        (route) => false,
-      );
+      context.go(AppRoutes.workSchedule);
     } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),

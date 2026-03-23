@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -8,13 +10,13 @@ import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 part 'add_address_screen.dart';
 
-class _Address {
+class AddressModel {
   final String id;
   final String label;
   final String street;
   final String city;
   final String country;
-  const _Address({
+  const AddressModel({
     required this.id,
     required this.label,
     required this.street,
@@ -31,8 +33,8 @@ class MyAddressesScreen extends StatefulWidget {
 }
 
 class _MyAddressesScreenState extends State<MyAddressesScreen> {
-  final List<_Address> _addresses = [
-    const _Address(
+  final List<AddressModel> _addresses = [
+    const AddressModel(
       id: '1',
       label: 'Mr. Raju Home',
       street: '1901 Thorner Rd, Allentown, New Mexico 31134',
@@ -41,11 +43,9 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
     ),
   ];
 
-  void _openAddressPage({_Address? address}) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => AddressPage(address: address)),
-    );
+  void _openAddressPage({AddressModel? address}) async {
+    final result =
+        context.push(AppRoutes.addAddress, extra: address) as AddressModel?;
 
     if (result != null) {
       setState(() {
@@ -61,15 +61,15 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
     }
   }
 
-  void _confirmDelete(_Address address) {
+  void _confirmDelete(AddressModel address) {
     showDialog(
       context: context,
       builder: (_) => _DeleteDialog(
         onYes: () {
           setState(() => _addresses.removeWhere((a) => a.id == address.id));
-          Navigator.of(context).pop();
+          context.pop();
         },
-        onNo: () => Navigator.of(context).pop(),
+        onNo: () => context.pop(),
       ),
     );
   }
@@ -87,7 +87,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
             color: AppColors.textPrimary,
             size: 18,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: const AppText.h3('My Address'),
         centerTitle: true,
@@ -138,7 +138,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
 }
 
 class _AddressTile extends StatelessWidget {
-  final _Address address;
+  final AddressModel address;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   const _AddressTile({

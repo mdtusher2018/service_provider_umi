@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -47,7 +48,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? (leading ??
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios_rounded, size: 18),
-                  onPressed: onBack ?? () => Navigator.of(context).pop(),
+                  onPressed: onBack ?? () => context.pop(),
                 ))
           : null,
       title: titleWidget ?? (title != null ? AppText.h3(title!) : null),
@@ -92,7 +93,7 @@ class IumiLogoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: AppColors.textPrimary,
                 size: 18,
               ),
-              onPressed: onBack ?? () => Navigator.of(context).pop(),
+              onPressed: onBack ?? () => context.pop(),
             )
           : null,
       title: _IumiLogo(),
@@ -164,7 +165,7 @@ class AppTealAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: AppColors.white,
           size: 18,
         ),
-        onPressed: onBack ?? () => Navigator.of(context).pop(),
+        onPressed: onBack ?? () => context.pop(),
       ),
       title: AppText.h2(title, color: AppColors.white),
       centerTitle: false,

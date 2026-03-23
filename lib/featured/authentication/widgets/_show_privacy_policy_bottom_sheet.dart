@@ -38,14 +38,7 @@ void _showPrivacyPolicyBottomSheet(WidgetRef ref) {
               label: "Accept",
               onPressed: () {
                 ref.read(appRoleProvider.notifier).loginAsUser();
-                Navigator.push(
-                  ref.context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return RootScreen();
-                    },
-                  ),
-                );
+                ref.context.go(AppRoutes.userHome);
               },
             ),
 

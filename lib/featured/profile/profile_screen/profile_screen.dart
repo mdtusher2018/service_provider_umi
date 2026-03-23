@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
-import 'package:service_provider_umi/featured/RootScreen.dart';
-import 'package:service_provider_umi/featured/profile/my_balance_screen.dart';
-import 'package:service_provider_umi/featured/profile/provider_listing_screen/provider_listing_screen.dart';
-import 'package:service_provider_umi/featured/profile/preferences/preferences_screen.dart';
-import 'package:service_provider_umi/featured/profile/reviews_screen.dart';
-import 'package:service_provider_umi/featured/authentication/provider_onboarding.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-import '../personal_details_screen.dart';
-import '../my_addresses_screen.dart';
-import '../change_password_screen.dart';
-import '../language_screen.dart';
-import '../payments_screen.dart';
-import '../static_page_screen.dart';
 part '_logout_dialog.dart';
 part '_menu_card.dart';
 part '_widget_cards.dart';
@@ -41,14 +30,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       barrierColor: Colors.black.withOpacity(0.4),
       builder: (_) => _LogoutDialog(
-        onCancel: () => Navigator.of(context).pop(),
-        onLogout: () => Navigator.of(context).pop(),
+        onCancel: () => context.pop(),
+        onLogout: () => context.pop(),
       ),
     );
   }
-
-  void _push(Widget screen) =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
 
   @override
   Widget build(BuildContext context) {
@@ -87,83 +73,71 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         _Item(
                           Icons.person_outline_rounded,
                           'Personal details',
-                          () => _push(const PersonalDetailsScreen()),
+                          () => context.push(AppRoutes.personalDetails),
                         ),
                         if (ref.watch(appRoleProvider) == AppRole.user) ...[
                           _Item(
                             Icons.location_on_outlined,
                             'My addresses',
-                            () => _push(const MyAddressesScreen()),
+                            () => context.push(AppRoutes.myAddresses),
                           ),
 
                           _Item(
                             Icons.credit_card_outlined,
                             'Payments and refunds',
-                            () => _push(const PaymentsScreen()),
+                            () => context.push(AppRoutes.payments),
                           ),
                         ],
                         if (ref.watch(appRoleProvider) == AppRole.provider) ...[
                           _Item(
                             Icons.credit_card,
                             'My balance',
-                            () => _push(const MyBalanceScreen()),
+                            () => context.push(AppRoutes.myBalance),
                           ),
 
                           _Item(
                             Icons.campaign,
                             'My listing',
-                            () => _push(const ProviderListingScreen()),
+                            () => context.push(AppRoutes.providerListing),
                           ),
                           _Item(
                             Icons.tune,
                             'Booking preferences',
-                            () => _push(const PreferencesScreen()),
+                            () => context.push(AppRoutes.preferences),
                           ),
                           _Item(
                             Icons.star_border,
                             'My Review',
-                            () => _push(const ReviewsScreen()),
+                            () => context.push(AppRoutes.providerReviews),
                           ),
                         ],
                         _Item(
                           Icons.lock_outline_rounded,
                           'Change password',
-                          () => _push(const ChangePasswordScreen()),
+                          () => context.push(AppRoutes.changePassword),
                         ),
                         _Item(
                           Icons.g_translate_outlined,
                           'Language',
-                          () => _push(const LanguageScreen()),
+                          () => context.push(AppRoutes.language),
                         ),
                         _Item(
                           Icons.info_sharp,
                           'About Us',
-                          () => _push(
-                            const StaticPageScreen(
-                              title: 'About Us',
-                              type: StaticPageType.aboutus,
-                            ),
+                          () => context.push(
+                            AppRoutes.staticPagePath('about-us'),
                           ),
                         ),
                         _Item(
                           Icons.description_outlined,
                           'Terms and conditions',
-                          () => _push(
-                            const StaticPageScreen(
-                              title: 'Terms & Condition',
-                              type: StaticPageType.terms,
-                            ),
-                          ),
+                          () => context.push(AppRoutes.staticPagePath('terms')),
                         ),
                         _Item(
                           Icons.privacy_tip_outlined,
                           'Privacy policy',
-                          () => _push(
-                            const StaticPageScreen(
-                              title: 'Privacy Policy',
-                              type: StaticPageType.privacy,
-                            ),
-                          ),
+                          () =>
+                              context.push(AppRoutes.staticPagePath('privacy')),
                         ),
                         _Item(
                           Icons.logout_rounded,

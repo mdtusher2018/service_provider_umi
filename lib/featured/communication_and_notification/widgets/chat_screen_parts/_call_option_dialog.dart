@@ -30,7 +30,7 @@ class _CallOptionDialog extends StatelessWidget {
               children: [
                 AppText.h3('Choose option'),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => context.pop(),
                   child: const Icon(
                     Icons.close_rounded,
                     color: AppColors.textSecondary,

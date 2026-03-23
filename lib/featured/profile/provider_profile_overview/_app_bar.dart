@@ -14,7 +14,7 @@ Widget _buildAppBar({
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(ref.context).pop(),
+            onTap: () => ref.context.pop(),
             child: const Icon(
               Icons.arrow_back_ios_rounded,
               color: AppColors.textPrimary,

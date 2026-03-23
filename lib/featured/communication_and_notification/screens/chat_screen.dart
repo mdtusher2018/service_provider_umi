@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/audio_call_screen.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/video_call_screen.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
@@ -210,7 +210,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       builder: (_) => _ChatOptionsSheet(
         onBlock: () {
-          Navigator.of(context).pop();
+          context.pop();
           _showBlockDialog();
         },
       ),
@@ -223,10 +223,10 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (_) => _BlockUserDialog(
         userName: widget.contactName,
         onBlock: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
+          context.pop();
+          context.pop();
         },
-        onCancel: () => Navigator.of(context).pop(),
+        onCancel: () => context.pop(),
       ),
     );
   }
@@ -239,37 +239,35 @@ class _ChatScreenState extends State<ChatScreen> {
         contactName: widget.contactName,
         contactImageUrl: widget.contactImageUrl,
         onCall: () {
-          Navigator.of(context).pop();
+          context.pop();
           _startAudioCall();
         },
-        onMessage: () => Navigator.of(context).pop(),
+        onMessage: () => context.pop(),
       ),
     );
   }
 
   void _startAudioCall() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => AudioCallScreen(
-          contactId: widget.contactId,
-          contactName: widget.contactName,
-          contactImageUrl: widget.contactImageUrl,
-          isIncoming: false,
-        ),
-      ),
+    context.push(
+      AppRoutes.audioCallPath(""),
+      extra: {
+        'name': 'John Doe',
+        'imageUrl': 'https://example.com/image.jpg',
+        'channelId': "",
+        'isIncoming': false,
+      },
     );
   }
 
   void _startVideoCall() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => VideoCallScreen(
-          contactId: widget.contactId,
-          contactName: widget.contactName,
-          contactImageUrl: widget.contactImageUrl,
-          isIncoming: false,
-        ),
-      ),
+    context.push(
+      AppRoutes.videoCallPath(""),
+      extra: {
+        'name': 'John Doe',
+        'imageUrl': 'https://example.com/image.jpg',
+        'channelId': "",
+        'isIncoming': false,
+      },
     );
   }
 
@@ -300,7 +298,7 @@ class _ChatScreenState extends State<ChatScreen> {
           color: AppColors.textPrimary,
           size: 18,
         ),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.pop(),
       ),
       title: GestureDetector(
         onTap: _showCallOptions,

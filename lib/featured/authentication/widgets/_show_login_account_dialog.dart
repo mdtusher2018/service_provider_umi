@@ -44,15 +44,7 @@ void _showLoginAccountDialog(WidgetRef ref) {
                 label: "Log in",
                 onPressed: () {
                   ref.read(appRoleProvider.notifier).loginAsUser();
-                  Navigator.pushAndRemoveUntil(
-                    ref.context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return RootScreen();
-                      },
-                    ),
-                    (route) => false,
-                  );
+                  ref.context.go(AppRoutes.userHome);
                 },
               ),
 
