@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import '../app_routes.dart';
 
 class RoleGuard {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/profile/preferences/minimum_price_screen.dart';
 import 'package:service_provider_umi/featured/profile/preferences/work_area_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen/work_schedule_screen.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../core/di/app_role_provider.dart';

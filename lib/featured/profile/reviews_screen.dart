@@ -6,7 +6,6 @@ import 'package:service_provider_umi/shared/widgets/app_rating_bar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
 
 // ─── Model ────────────────────────────────────────────────────
 class Review {
@@ -99,11 +98,10 @@ class _ReviewTile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AppText.labelLg(
                   review.reviewerName,
-                  style: AppTextStyles.labelLg.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+
+                  fontWeight: FontWeight.w600,
                 ),
                 3.verticalSpace,
                 AppRatingBar(rating: 3),

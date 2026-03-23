@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
-
-enum AvatarSize { xs, sm, md, lg, xl }
 
 /// Circular avatar with image, initials fallback, and optional verified badge
 class AppAvatar extends StatelessWidget {
@@ -107,14 +107,12 @@ class AppAvatar extends StatelessWidget {
     return Container(
       color: backgroundColor ?? AppColors.primaryLight,
       child: Center(
-        child: Text(
+        child: AppText(
           initials,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: size * 0.35,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
+
+          fontSize: size * 0.35,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primary,
         ),
       ),
     );

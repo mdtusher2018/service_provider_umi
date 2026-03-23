@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../core/di/app_role_provider.dart';
 import '../../../core/theme/app_colors.dart';

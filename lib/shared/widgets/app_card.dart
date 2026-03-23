@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -192,12 +193,11 @@ class ProviderCard extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: AppColors.grey600),
           3.horizontalSpace,
-          Text(
+          AppText.bodyXs(
             text,
-            style: AppTextStyles.bodyXs.copyWith(
-              color: AppColors.black,
-              fontWeight: FontWeight.w500,
-            ),
+
+            color: AppColors.black,
+            fontWeight: FontWeight.w500,
           ),
         ],
       ),

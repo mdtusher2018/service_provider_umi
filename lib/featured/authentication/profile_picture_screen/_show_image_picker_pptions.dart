@@ -25,7 +25,7 @@ void _showPickerOptions(WidgetRef ref) {
           16.verticalSpace,
           ListTile(
             leading: const Icon(Icons.photo_library_outlined),
-            title: const Text('Choose from gallery'),
+            title: AppText('Choose from gallery'),
             onTap: () {
               Navigator.pop(ref.context);
               _pickImage(ref);
@@ -33,7 +33,7 @@ void _showPickerOptions(WidgetRef ref) {
           ),
           ListTile(
             leading: const Icon(Icons.camera_alt_outlined),
-            title: const Text('Take a photo'),
+            title: AppText('Take a photo'),
             onTap: () {
               Navigator.pop(ref.context);
               _pickFromCamera(ref);

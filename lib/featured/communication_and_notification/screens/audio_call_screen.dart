@@ -5,14 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 import '../../../core/config/flavor_config.dart';
-
-// ─── Call state ───────────────────────────────────────────────
-enum CallState { ringing, connecting, connected, ended }
 
 // ─── Screen ───────────────────────────────────────────────────
 class AudioCallScreen extends ConsumerStatefulWidget {

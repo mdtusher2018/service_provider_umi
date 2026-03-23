@@ -26,7 +26,7 @@ class _GoBackDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Do you want to go back?', style: AppTextStyles.h3),
+                    AppText.h3('Do you want to go back?'),
                     GestureDetector(
                       onTap: onStay,
                       child: const Icon(
@@ -38,10 +38,9 @@ class _GoBackDialog extends StatelessWidget {
                   ],
                 ),
                 8.verticalSpace,
-                Text(
+                AppText.bodySm(
                   'If you go back, any information completed in this '
                   'section will be lost',
-                  style: AppTextStyles.bodySm,
                 ),
                 24.verticalSpace,
                 Row(
@@ -57,11 +56,10 @@ class _GoBackDialog extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text(
+                        child: AppText.bodyMd(
                           'Stay',
-                          style: AppTextStyles.buttonMd.copyWith(
-                            color: AppColors.textPrimary,
-                          ),
+
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -78,7 +76,10 @@ class _GoBackDialog extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text('Go back', style: AppTextStyles.buttonMd),
+                        child: AppText(
+                          'Go back',
+                          style: AppTextStyles.buttonMd,
+                        ),
                       ),
                     ),
                   ],

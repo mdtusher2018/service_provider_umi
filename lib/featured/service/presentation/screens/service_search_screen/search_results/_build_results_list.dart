@@ -59,7 +59,7 @@ Widget _buildResultsList({required WidgetRef ref, required String category}) {
             ref.context,
             MaterialPageRoute(
               builder: (context) {
-                return ProviderProfileScreen(providerId: "");
+                return ProviderProfileOverviewScreen(providerId: "");
               },
             ),
           );

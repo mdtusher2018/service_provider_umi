@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -41,7 +42,7 @@ class AppDividerWithLabel extends StatelessWidget {
         const Expanded(child: AppDivider()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(label, style: AppTextStyles.bodySm),
+          child: AppText.bodySm(label),
         ),
         const Expanded(child: AppDivider()),
       ],
@@ -87,10 +88,7 @@ class AppFullScreenLoader extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const AppLoader(size: 40),
-          if (message != null) ...[
-            16.verticalSpace,
-            Text(message!, style: AppTextStyles.bodyMd),
-          ],
+          if (message != null) ...[16.verticalSpace, AppText.bodyMd(message!)],
         ],
       ),
     );
@@ -214,14 +212,14 @@ class AppEmptyState extends StatelessWidget {
               ),
               20.verticalSpace,
             ],
-            Text(title, style: AppTextStyles.h3, textAlign: TextAlign.center),
+            AppText.h3(title, textAlign: TextAlign.center),
             if (subtitle != null) ...[
               8.verticalSpace,
-              Text(
+              AppText.bodyMd(
                 subtitle!,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+
+                color: AppColors.textSecondary,
+
                 textAlign: TextAlign.center,
               ),
             ],
@@ -250,7 +248,7 @@ class AppBadge extends StatelessWidget {
         color: color ?? AppColors.primaryLight,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
+      child: AppText(
         label,
         style: AppTextStyles.bodyXs.copyWith(
           color: textColor ?? AppColors.primary,

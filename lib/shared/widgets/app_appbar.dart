@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
 
 /// Standard app bar - transparent with teal header (search results)
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -50,9 +50,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onPressed: onBack ?? () => Navigator.of(context).pop(),
                 ))
           : null,
-      title:
-          titleWidget ??
-          (title != null ? Text(title!, style: AppTextStyles.h3) : null),
+      title: titleWidget ?? (title != null ? AppText.h3(title!) : null),
       actions: actions,
       bottom: bottom,
     );
@@ -168,10 +166,7 @@ class AppTealAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         onPressed: onBack ?? () => Navigator.of(context).pop(),
       ),
-      title: Text(
-        title,
-        style: AppTextStyles.h2.copyWith(color: AppColors.white),
-      ),
+      title: AppText.h2(title, color: AppColors.white),
       centerTitle: false,
       actions: actions,
     );

@@ -19,12 +19,11 @@ class _TipsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          AppText.labelLg(
             'What makes a good profile picture?',
-            style: AppTextStyles.labelLg.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
+
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w600,
           ),
           24.verticalSpace,
 
@@ -55,7 +54,7 @@ class _TipsCard extends StatelessWidget {
                 children: [
                   Icon(Icons.check_rounded, color: primary, size: 18),
                   8.horizontalSpace,
-                  Text(tip, style: AppTextStyles.bodyMd),
+                  AppText.bodyMd(tip),
                 ],
               ),
             ),

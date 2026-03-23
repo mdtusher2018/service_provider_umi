@@ -1,4 +1,6 @@
-enum Flavor { dev, staging, prod }
+
+
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 
 class FlavorConfig {
   final Flavor flavor;

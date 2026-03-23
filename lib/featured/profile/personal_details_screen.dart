@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
@@ -36,7 +36,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully')),
+      const SnackBar(content: AppText('Profile updated successfully')),
     );
   }
 

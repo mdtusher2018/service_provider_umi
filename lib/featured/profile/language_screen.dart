@@ -75,7 +75,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   items: _languages
                       .map(
                         (lang) =>
-                            DropdownMenuItem(value: lang, child: Text(lang)),
+                            DropdownMenuItem(value: lang, child: AppText(lang)),
                       )
                       .toList(),
                   onChanged: (v) => setState(() => _selected = v!),
@@ -87,7 +87,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
               label: 'Save',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Language changed to $_selected')),
+                  SnackBar(content: AppText('Language changed to $_selected')),
                 );
                 Navigator.of(context).pop();
               },

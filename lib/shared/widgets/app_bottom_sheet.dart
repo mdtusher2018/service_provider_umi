@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import 'app_button.dart';
@@ -75,8 +76,7 @@ class AppBottomSheetContainer extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 8, 0),
               child: Row(
                 children: [
-                  if (title != null)
-                    Expanded(child: Text(title!, style: AppTextStyles.h3)),
+                  if (title != null) Expanded(child: AppText.h3(title!)),
                   if (onClose != null)
                     IconButton(
                       icon: const Icon(Icons.close_rounded, size: 22),
@@ -115,7 +115,7 @@ class AppPrivacyDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Privacy Policy', style: AppTextStyles.h3),
+                AppText.h3('Privacy Policy'),
                 if (onClose != null)
                   GestureDetector(
                     onTap: onClose,
@@ -142,23 +142,19 @@ class AppPrivacyDialog extends StatelessWidget {
               ),
             ),
             16.verticalSpace,
-            Text(
-              'We value your privacy',
-              style: AppTextStyles.h3,
-              textAlign: TextAlign.center,
-            ),
+            AppText.h3('We value your privacy', textAlign: TextAlign.center),
             8.verticalSpace,
-            Text(
+            AppText.bodyMd(
               'Wabad uses cookies to analyse advertising campaign performance, improve app ads, and personalize the experience based on user preference.',
-              style: AppTextStyles.bodyMd.copyWith(
-                color: AppColors.textSecondary,
-              ),
+
+              color: AppColors.textSecondary,
+
               textAlign: TextAlign.center,
             ),
             8.verticalSpace,
             GestureDetector(
               onTap: () {},
-              child: Text(
+              child: AppText(
                 'Privacy Policy',
                 style: AppTextStyles.bodyMd.copyWith(
                   color: AppColors.primary,
@@ -237,9 +233,7 @@ class _FaqTileState extends State<_FaqTile> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: Text(widget.question, style: AppTextStyles.labelLg),
-                ),
+                Expanded(child: AppText.labelLg(widget.question)),
                 Icon(
                   _expanded
                       ? Icons.keyboard_arrow_up_rounded
@@ -251,12 +245,7 @@ class _FaqTileState extends State<_FaqTile> {
             ),
             if (_expanded && widget.answer != null) ...[
               8.verticalSpace,
-              Text(
-                widget.answer!,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
+              AppText.bodyMd(widget.answer!, color: AppColors.textSecondary),
             ],
           ],
         ),

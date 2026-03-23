@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -87,12 +88,11 @@ class _AppTextFieldState extends State<AppTextField> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.label != null) ...[
-          Text(
+          AppText.labelLg(
             widget.label!,
-            style: AppTextStyles.labelLg.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w500,
-            ),
+
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w500,
           ),
           6.verticalSpace,
         ],

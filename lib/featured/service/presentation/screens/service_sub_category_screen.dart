@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/featured/booking_time_screen.dart';
-import 'package:service_provider_umi/featured/search_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/booking_time_screen/booking_time_screen.dart';
+import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/search_screen.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 

@@ -71,7 +71,7 @@ class _CongratsDialog extends StatelessWidget {
 
             10.verticalSpace,
 
-            Text(
+            AppText(
               'Congratulations on achieving this milestone in your '
               'professional journey! Your dedication, expertise, and '
               'hard work are truly commendable.',
@@ -94,7 +94,7 @@ class _CongratsDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text('Done', style: AppTextStyles.buttonMd),
+                child: AppText('Done', style: AppTextStyles.buttonMd),
               ),
             ),
           ],

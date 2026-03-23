@@ -8,12 +8,18 @@ enum BookingStatus {
 
   String get displayName {
     switch (this) {
-      case BookingStatus.pending:    return 'Pending';
-      case BookingStatus.accepted:   return 'Accepted';
-      case BookingStatus.ongoing:    return 'Ongoing';
-      case BookingStatus.completed:  return 'Completed';
-      case BookingStatus.cancelled:  return 'Cancelled';
-      case BookingStatus.rejected:   return 'Rejected';
+      case BookingStatus.pending:
+        return 'Pending';
+      case BookingStatus.accepted:
+        return 'Accepted';
+      case BookingStatus.ongoing:
+        return 'Ongoing';
+      case BookingStatus.completed:
+        return 'Completed';
+      case BookingStatus.cancelled:
+        return 'Cancelled';
+      case BookingStatus.rejected:
+        return 'Rejected';
     }
   }
 
@@ -33,3 +39,7 @@ enum BookingStatus {
     );
   }
 }
+
+enum BookingFrequency { once, weekly }
+
+enum StartTimeType { flexible, exact }

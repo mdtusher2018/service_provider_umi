@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
+import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -12,24 +13,26 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
+part '_day_schedule.dart';
+part '_time_picker_panel.dart';
 
-enum BookingMode { weekly, once }
-
-class ScheduleScreen extends ConsumerStatefulWidget {
+class BookingScheduleScreen extends ConsumerStatefulWidget {
   final double pricePerHour;
-  final BookingMode bookingMode;
+  final BookingFrequency bookingMode;
 
-  const ScheduleScreen({
+  const BookingScheduleScreen({
     super.key,
     this.pricePerHour = 10.0,
     required this.bookingMode,
   });
 
   @override
-  ConsumerState<ScheduleScreen> createState() => _WeeklyScheduleScreenState();
+  ConsumerState<BookingScheduleScreen> createState() =>
+      _WeeklyBookingScheduleScreenState();
 }
 
-class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
+class _WeeklyBookingScheduleScreenState
+    extends ConsumerState<BookingScheduleScreen> {
   final Map<String, _DaySchedule?> _schedule = {
     'Monday': const _DaySchedule('14:15', '15:15'),
     'Tuesday': null,
@@ -43,7 +46,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
 
   String? _expandedDay;
 
-  late BookingMode _mode;
+  late BookingFrequency _mode;
   DateTime _selectedDate = DateTime.now();
 
   String? _singleFrom;
@@ -67,7 +70,7 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
             _buildHeader(),
 
             Expanded(
-              child: _mode == BookingMode.weekly
+              child: _mode == BookingFrequency.weekly
                   ? _buildWeeklySchedule()
                   : _buildSingleBooking(),
             ),
@@ -208,17 +211,17 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
               border: Border.all(color: AppColors.border),
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<BookingMode>(
+              child: DropdownButton<BookingFrequency>(
                 value: _mode,
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 items: const [
                   DropdownMenuItem(
-                    value: BookingMode.weekly,
+                    value: BookingFrequency.weekly,
                     child: AppText.labelMd("Weekly"),
                   ),
                   DropdownMenuItem(
-                    value: BookingMode.once,
+                    value: BookingFrequency.once,
                     child: AppText.labelMd("Just once"),
                   ),
                 ],
@@ -278,197 +281,6 @@ class _WeeklyScheduleScreenState extends ConsumerState<ScheduleScreen> {
                 // context.go(AppRoutes.bookingConfirmation);
               }
             : null,
-      ),
-    );
-  }
-}
-
-// ─── Day schedule data ────────────────────────────────────────
-class _DaySchedule {
-  final String from;
-  final String to;
-  const _DaySchedule(this.from, this.to);
-}
-
-// ─── Individual day row ───────────────────────────────────────
-class _DayRow extends ConsumerWidget {
-  final String day;
-  final _DaySchedule? schedule;
-  final bool isExpanded;
-  final VoidCallback onAdd;
-  final VoidCallback onDelete;
-  final void Function(String from, String to) onTimeSaved;
-
-  const _DayRow({
-    required this.day,
-    required this.schedule,
-    required this.isExpanded,
-    required this.onAdd,
-    required this.onDelete,
-    required this.onTimeSaved,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hasSchedule = schedule != null;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      decoration: BoxDecoration(
-        color: hasSchedule ? AppColors.secondary : AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: hasSchedule ? AppColors.secondary : AppColors.border,
-          width: 1.5,
-        ),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                AppText.labelLg(
-                  day,
-                  color: hasSchedule ? AppColors.white : AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-                const Spacer(),
-                if (hasSchedule) ...[
-                  AppText.labelMd(
-                    '${schedule!.from} - ${schedule!.to}',
-                    color: AppColors.white.withOpacity(0.9),
-                  ),
-                  12.horizontalSpace,
-                  GestureDetector(
-                    onTap: onDelete,
-                    child: const Icon(
-                      Icons.delete_outline_rounded,
-                      color: Colors.white60,
-                      size: 20,
-                    ),
-                  ),
-                ] else ...[
-                  GestureDetector(
-                    onTap: onAdd,
-                    child: Icon(
-                      isExpanded ? Icons.remove_rounded : Icons.add_rounded,
-                      color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                      size: 22,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          if (isExpanded)
-            _TimePickerPanel(
-              day: day,
-              onSaved: onTimeSaved,
-              bgColor: AppColors.white,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Inline time picker panel ─────────────────────────────────
-class _TimePickerPanel extends StatefulWidget {
-  final String day;
-  final Color bgColor;
-  final void Function(String from, String to) onSaved;
-
-  const _TimePickerPanel({
-    required this.day,
-    required this.onSaved,
-    required this.bgColor,
-  });
-
-  @override
-  State<_TimePickerPanel> createState() => _TimePickerPanelState();
-}
-
-class _TimePickerPanelState extends State<_TimePickerPanel> {
-  double _duration = 2;
-  String? _selectedTime;
-
-  static const _timeSlots = [
-    ['06:00', '12:00', '18:00'],
-    ['07:00', '13:00', '19:00'],
-    ['08:00', '14:00', '20:00'],
-    ['09:00', '15:00', '21:00'],
-    ['10:00', '16:30', '22:00'],
-    ['11:00', '17:00', '23:00'],
-  ];
-
-  String _addDuration(String time, double hours) {
-    final parts = time.split(':');
-    final totalMin =
-        int.parse(parts[0]) * 60 + int.parse(parts[1]) + (hours * 60).toInt();
-    final h = (totalMin ~/ 60) % 24;
-    final m = totalMin % 60;
-    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: widget.bgColor,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(13)),
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AppDivider(),
-          14.verticalSpace,
-          // Duration
-          AppDurationSlider(
-            value: _duration,
-            onChanged: (v) => setState(() => _duration = v),
-          ),
-          16.verticalSpace,
-          AppText.h4('Start time'),
-          12.verticalSpace,
-
-          // Time grid
-          ..._timeSlots.map(
-            (row) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: row
-                    .map(
-                      (t) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: AppTimeChip(
-                            time: t,
-                            isSelected: _selectedTime == t,
-                            onTap: () => setState(() => _selectedTime = t),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-
-          16.verticalSpace,
-          AppButton.primary(
-            label: _selectedTime == null
-                ? 'Select a time'
-                : 'Save $_selectedTime - ${_addDuration(_selectedTime!, _duration)} for \$${(_duration * 10).toStringAsFixed(0)}',
-            onPressed: _selectedTime == null
-                ? null
-                : () => widget.onSaved(
-                    _selectedTime!,
-                    _addDuration(_selectedTime!, _duration),
-                  ),
-          ),
-        ],
       ),
     );
   }

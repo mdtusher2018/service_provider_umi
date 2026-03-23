@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
+
 
 /// Checkbox row - as seen in filter screens (palliative care, qualified carer, etc.)
 class AppCheckboxTile extends StatelessWidget {
@@ -53,17 +54,16 @@ class AppCheckboxTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  AppText.bodyMd(
                     label,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: enabled
-                          ? AppColors.textPrimary
-                          : AppColors.textDisabled,
-                    ),
+
+                    color: enabled
+                        ? AppColors.textPrimary
+                        : AppColors.textDisabled,
                   ),
                   if (subtitle != null) ...[
                     2.verticalSpace,
-                    Text(subtitle!, style: AppTextStyles.bodySm),
+                    AppText.bodySm(subtitle!),
                   ],
                 ],
               ),
@@ -99,10 +99,10 @@ class AppToggleTile extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: AppTextStyles.h4),
+              AppText.h4(label),
               if (subtitle != null) ...[
                 2.verticalSpace,
-                Text(subtitle!, style: AppTextStyles.bodySm),
+                AppText.bodySm(subtitle!),
               ],
             ],
           ),

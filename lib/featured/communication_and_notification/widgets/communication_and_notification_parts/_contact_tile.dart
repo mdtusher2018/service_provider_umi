@@ -61,14 +61,11 @@ class _ContactTile extends ConsumerWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Center(
-                        child: Text(
+                        child: AppText.bodySm(
                           '${contact.unreadCount}',
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.white,
-                          ),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.white,
                         ),
                       ),
                     ),

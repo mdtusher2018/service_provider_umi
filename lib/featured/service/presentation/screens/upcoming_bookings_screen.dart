@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen/booking_details_screen.dart';
 

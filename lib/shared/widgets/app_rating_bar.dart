@@ -31,7 +31,7 @@ class AppRatingBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showValue) ...[
-          Text(rating.toStringAsFixed(1), style: AppTextStyles.rating),
+          AppText(rating.toStringAsFixed(1), style: AppTextStyles.rating),
           4.horizontalSpace,
         ],
         Row(
@@ -50,7 +50,7 @@ class AppRatingBar extends StatelessWidget {
         ),
         if (showCount && reviewCount > 0) ...[
           4.horizontalSpace,
-          Text('($reviewCount)', style: AppTextStyles.bodySm),
+          AppText.bodySm('($reviewCount)'),
         ],
       ],
     );
@@ -142,7 +142,7 @@ class _RatingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: 110, child: Text(label, style: AppTextStyles.bodyMd)),
+        SizedBox(width: 110, child: AppText.bodyMd(label)),
         16.horizontalSpace,
         Expanded(
           child: ClipRRect(

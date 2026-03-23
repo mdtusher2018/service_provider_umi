@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
+
 import '../../core/theme/app_text_styles.dart';
 
 /// A unified text widget that wraps all app text styles.
@@ -246,25 +246,6 @@ class AppText extends StatelessWidget {
         fontSize: fontSize,
         decoration: decoration,
         decorationColor: color,
-      ),
-    );
-  }
-}
-
-/// Highlighted text with teal color
-class AppTextHighlight extends StatelessWidget {
-  final String text;
-  final TextStyle? baseStyle;
-
-  const AppTextHighlight(this.text, {super.key, this.baseStyle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: (baseStyle ?? AppTextStyles.bodyMd).copyWith(
-        color: AppColors.primary,
-        fontWeight: FontWeight.w600,
       ),
     );
   }

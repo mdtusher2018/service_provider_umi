@@ -42,7 +42,7 @@ Widget _buildSwitchTile(WidgetRef ref) {
           Icon(Icons.sync),
           12.horizontalSpace,
           Expanded(
-            child: Text(
+            child: AppText(
               isProvider
                   ? 'Switch to user version'
                   : 'Switch to professional version',

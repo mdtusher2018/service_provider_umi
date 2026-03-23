@@ -28,10 +28,7 @@ class _AddressPageState extends State<AddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text("Address"),
-        backgroundColor: AppColors.background,
-      ),
+      appBar: AppAppBar(title: "Address"),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

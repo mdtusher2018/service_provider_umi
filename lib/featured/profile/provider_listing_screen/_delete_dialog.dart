@@ -17,9 +17,9 @@ class _DeleteDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            AppText.h3(
               'Are you sure you want to delete ?',
-              style: AppTextStyles.h3,
+
               textAlign: TextAlign.center,
             ),
             20.verticalSpace,
@@ -36,7 +36,7 @@ class _DeleteDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
+                child: AppText(
                   'YES, DELETE',
                   style: AppTextStyles.buttonMd.copyWith(letterSpacing: 0.5),
                 ),
@@ -55,7 +55,7 @@ class _DeleteDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
+                child: AppText(
                   "NO, DON'T DELETE",
                   style: AppTextStyles.buttonMd.copyWith(
                     color: AppColors.textPrimary,

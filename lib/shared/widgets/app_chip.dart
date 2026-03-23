@@ -115,16 +115,15 @@ class AppTimeChip extends StatelessWidget {
                 : AppColors.grey200,
           ),
         ),
-        child: Text(
+        child: AppText.labelMd(
           time,
-          style: AppTextStyles.labelMd.copyWith(
-            color: isSelected
-                ? AppColors.white
-                : isAvailable
-                ? AppColors.textPrimary
-                : AppColors.textDisabled,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          ),
+
+          color: isSelected
+              ? AppColors.white
+              : isAvailable
+              ? AppColors.textPrimary
+              : AppColors.textDisabled,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
         ),
       ),
     );

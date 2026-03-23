@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
+
 
 /// Duration slider - as seen in booking screens "Duration 2h"
 class AppDurationSlider extends StatelessWidget {
@@ -33,13 +34,12 @@ class AppDurationSlider extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Duration ', style: AppTextStyles.labelLg),
-            Text(
+            AppText.labelLg('Duration '),
+            AppText.labelLg(
               label,
-              style: AppTextStyles.labelLg.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
             ),
           ],
         ),
@@ -95,13 +95,12 @@ class AppPriceSlider extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Price/hour', style: AppTextStyles.h4),
-            Text(
+            AppText.h4('Price/hour'),
+            AppText.labelMd(
               '$currency${values.start.toStringAsFixed(0)} - $currency${values.end.toStringAsFixed(0)}/Maximum',
-              style: AppTextStyles.labelMd.copyWith(
-                color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                fontWeight: FontWeight.w600,
-              ),
+
+              color: AppColors.primaryFor(ref.watch(appRoleProvider)),
+              fontWeight: FontWeight.w600,
             ),
           ],
         ),

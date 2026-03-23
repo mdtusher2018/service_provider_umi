@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 
 class AppRoleNotifier extends Notifier<AppRole> {
   final AppRole initialRole;

@@ -54,19 +54,14 @@ class _ListingCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  listing.title,
-                  style: AppTextStyles.labelLg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                AppText.labelLg(listing.title, fontWeight: FontWeight.w700),
                 3.verticalSpace,
-                Text(
+                AppText.labelMd(
                   '\$${listing.pricePerHour.toStringAsFixed(2)} hrs',
-                  style: AppTextStyles.labelMd.copyWith(color: primary),
+                  color: primary,
                 ),
                 if (listing.hasClientProtection)
-                  Text('Client protection Free', style: AppTextStyles.bodyXs),
+                  AppText.bodyXs('Client protection Free'),
               ],
             ),
           ),
@@ -79,10 +74,10 @@ class _ListingCard extends StatelessWidget {
             },
             icon: const Icon(Icons.more_vert_rounded, color: AppColors.grey400),
             itemBuilder: (_) => [
-              const PopupMenuItem(value: 'edit', child: Text('Edit')),
+              const PopupMenuItem(value: 'edit', child: AppText('Edit')),
               const PopupMenuItem(
                 value: 'delete',
-                child: Text('Delete', style: TextStyle(color: AppColors.error)),
+                child: AppText('Delete', color: AppColors.error),
               ),
             ],
           ),

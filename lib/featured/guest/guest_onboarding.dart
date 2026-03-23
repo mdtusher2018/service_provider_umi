@@ -152,7 +152,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
+                  child: AppText(
                     currentIndex == onboardingData.length - 1
                         ? "Finish"
                         : "Next",

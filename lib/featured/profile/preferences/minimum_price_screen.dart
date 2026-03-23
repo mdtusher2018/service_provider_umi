@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
@@ -107,11 +107,9 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: Center(
-                                child: Text(
+                                child: AppText.labelLg(
                                   '\$',
-                                  style: AppTextStyles.labelLg.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
@@ -146,13 +144,12 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('💡', style: TextStyle(fontSize: 18)),
+                  const AppText('💡', fontSize: 18),
                   10.horizontalSpace,
                   Expanded(
-                    child: Text(
+                    child: AppText.bodySm(
                       "This will avoid being booked for a price so low that it's "
                       'not worth your time to commute to the service',
-                      style: AppTextStyles.bodySm,
                     ),
                   ),
                 ],
@@ -188,7 +185,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                             color: AppColors.white,
                           ),
                         )
-                      : Text('Save', style: AppTextStyles.buttonLg),
+                      : AppText('Save', style: AppTextStyles.buttonLg),
                 ),
               ),
             ),

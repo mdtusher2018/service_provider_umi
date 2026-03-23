@@ -35,7 +35,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Password changed successfully')),
+      const SnackBar(content: AppText('Password changed successfully')),
     );
     Navigator.of(context).pop();
   }

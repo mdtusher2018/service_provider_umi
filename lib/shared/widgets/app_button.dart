@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/core/theme/app_role.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-
-enum AppButtonVariant { primary, secondary, outline, ghost, danger, social }
-
-enum AppButtonSize { sm, md, lg }
 
 // ─────────────────────────────────────────────────────────────
 //  AppButton — role-aware
@@ -167,7 +164,7 @@ class AppButton extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (prefixIcon != null) ...[prefixIcon!, 10.horizontalSpace],
-        Text(label, style: _textStyle(primary)),
+        AppText(label, style: _textStyle(primary)),
         if (suffixIcon != null) ...[10.horizontalSpace, suffixIcon!],
       ],
     );

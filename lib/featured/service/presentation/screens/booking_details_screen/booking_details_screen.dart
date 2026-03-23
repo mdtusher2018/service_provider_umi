@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
@@ -167,11 +168,10 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
         ),
         8.horizontalSpace,
         Expanded(
-          child: Text(
+          child: AppText.bodyMd(
             'Tallapoosa county, east-central Alabama, U.S',
-            style: AppTextStyles.bodyMd.copyWith(
-              color: AppColors.textSecondary,
-            ),
+
+            color: AppColors.textSecondary,
           ),
         ),
       ],
@@ -195,13 +195,8 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(r.$1, style: AppTextStyles.bodyMd),
-                Text(
-                  r.$2,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+                AppText.bodyMd(r.$1),
+                AppText.bodyMd(r.$2, color: AppColors.textSecondary),
               ],
             ),
           ),
@@ -228,10 +223,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: AppTextStyles.h4.copyWith(color: AppColors.textPrimary),
-        ),
+        AppText.h4(title, color: AppColors.textPrimary),
         10.verticalSpace,
         child,
       ],

@@ -165,9 +165,7 @@ class _ServiceListTile extends StatelessWidget {
                 color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Center(
-                child: Text(item.emoji, style: const TextStyle(fontSize: 20)),
-              ),
+              child: Center(child: AppText.bodyLg(item.emoji)),
             ),
             14.horizontalSpace,
             Expanded(
