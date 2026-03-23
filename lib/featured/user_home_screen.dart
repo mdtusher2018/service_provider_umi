@@ -128,7 +128,10 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       ],
                     ),
                   ),
-                  Icon(Icons.cancel),
+                  InkWell(
+                    onTap: Navigator.of(context).pop,
+                    child: Icon(Icons.cancel),
+                  ),
                 ],
               ),
 

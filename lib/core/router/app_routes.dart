@@ -51,8 +51,8 @@ class AppRoutes {
 
   // ─── Communication ───────────────────────────────────────
   static const String chat = '/chat/:contactId';
-  static const String audioCall = '/call/audio/:contactId';
-  static const String videoCall = '/call/video/:contactId';
+  static const String audioCall = '/audio/:contactId';
+  static const String videoCall = '/video/:contactId';
 
   // ─── Provider Shell (bottom nav) ─────────────────────────
   static const String providerDashboard = '/provider-dashboard';
@@ -69,7 +69,7 @@ class AppRoutes {
   static String providerProfilePath(String id) => '/provider/$id';
   static String bookingDetailPath(String id) => '/booking/$id';
   static String chatPath(String contactId) => '/chat/$contactId';
-  static String audioCallPath(String contactId) => '/call/audio/$contactId';
-  static String videoCallPath(String contactId) => '/call/video/$contactId';
+  static String audioCallPath(String contactId) => '/audio/$contactId';
+  static String videoCallPath(String contactId) => '/video/$contactId';
   static String staticPagePath(String type) => '/page/$type';
 }

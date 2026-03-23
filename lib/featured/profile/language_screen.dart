@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -87,9 +88,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
             AppButton.primary(
               label: 'Save',
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: AppText('Language changed to $_selected')),
-                );
+                context.showSnackBar('Language changed to $_selected');
                 context.pop();
               },
             ),

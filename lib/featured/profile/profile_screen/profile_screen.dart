@@ -30,8 +30,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       barrierColor: Colors.black.withOpacity(0.4),
       builder: (_) => _LogoutDialog(
-        onCancel: () => context.pop(),
-        onLogout: () => context.pop(),
+        onCancel: () => Navigator.of(context).pop(),
+        onLogout: () => Navigator.of(context).pop(),
       ),
     );
   }

@@ -33,7 +33,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
   DateTime _selectedDate = DateTime.now();
 
   final _morningSlots = [
-    ('assets/icons/sunrise.png', '9 - 6'),
+    ('assets/icons/sunrise.png', '6 - 9'),
     ('assets/icons/day.png', '9 - 12'),
     ('assets/icons/day.png', '12 - 15'),
   ];

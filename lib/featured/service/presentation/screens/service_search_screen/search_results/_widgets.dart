@@ -34,7 +34,7 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-Widget _buildHeader() {
+Widget _buildHeader(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
     child: Row(
@@ -42,7 +42,10 @@ Widget _buildHeader() {
         10.horizontalSpace,
         Expanded(
           child: AppTextField(
-            prefixIcon: Icon(Icons.arrow_back),
+            prefixIcon: InkWell(
+              onTap: () => context.pop(),
+              child: Icon(Icons.arrow_back),
+            ),
             fillColor: AppColors.white,
           ),
         ),

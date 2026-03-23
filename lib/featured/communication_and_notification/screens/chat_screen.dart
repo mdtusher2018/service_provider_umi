@@ -249,7 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _startAudioCall() {
     context.push(
-      AppRoutes.audioCallPath(""),
+      AppRoutes.audioCallPath("1"),
       extra: {
         'name': 'John Doe',
         'imageUrl': 'https://example.com/image.jpg',
@@ -261,7 +261,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _startVideoCall() {
     context.push(
-      AppRoutes.videoCallPath(""),
+      AppRoutes.videoCallPath("1"),
       extra: {
         'name': 'John Doe',
         'imageUrl': 'https://example.com/image.jpg',

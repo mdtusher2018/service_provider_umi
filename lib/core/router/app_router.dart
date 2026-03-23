@@ -233,7 +233,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.chat,
         builder: (context, state) {
           final contactId = state.pathParameters['contactId']!;
-          final extra = state.extra as Map<String, String>?;
+          final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final imageUrl = extra?['imageUrl'] ?? '';
           return ChatScreen(
@@ -247,7 +247,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.audioCall,
         builder: (context, state) {
           final contactId = state.pathParameters['contactId']!;
-          final extra = state.extra as Map<String, String>?;
+          final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'] ?? '';
@@ -265,7 +265,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.videoCall,
         builder: (context, state) {
           final contactId = state.pathParameters['contactId']!;
-          final extra = state.extra as Map<String, String>?;
+          final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'] ?? '';

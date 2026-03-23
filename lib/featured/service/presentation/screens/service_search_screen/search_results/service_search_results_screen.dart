@@ -55,7 +55,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
           children: [
             Column(
               children: [
-                _buildHeader(),
+                _buildHeader(context),
                 _buildFilterRow(ref),
                 _buildFaqBanner(),
                 Expanded(

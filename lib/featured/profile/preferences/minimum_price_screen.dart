@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -29,9 +30,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
     await Future.delayed(const Duration(milliseconds: 700));
     if (!mounted) return;
     setState(() => _isSaving = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: AppText('Minimum price saved successfully')),
-    );
+    context.showSnackBar('Minimum price saved successfully');
     context.pop();
   }
 
