@@ -1,21 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 
-
-import '../../storage/secure_storage.dart';
-import '../../storage/storage_keys.dart';
 import '../api_endpoints.dart';
-
-
-
 
 class RefreshTokenInterceptor extends Interceptor {
   final Dio _dio;
-  final SecureStorage _secureStorage;
+  final LocalStorageService _secureStorage;
   bool _isRefreshing = false;
 
   RefreshTokenInterceptor({
     required Dio dio,
-    required SecureStorage secureStorage,
+    required LocalStorageService secureStorage,
   }) : _dio = dio,
        _secureStorage = secureStorage;
 
@@ -28,9 +24,7 @@ class RefreshTokenInterceptor extends Interceptor {
       _isRefreshing = true;
 
       try {
-        final refreshToken = await _secureStorage.read(
-          StorageKeys.refreshToken,
-        );
+        final refreshToken = await _secureStorage.read(StorageKey.refreshToken);
 
         if (refreshToken == null) {
           _isRefreshing = false;
@@ -47,11 +41,11 @@ class RefreshTokenInterceptor extends Interceptor {
         final newRefreshToken = response.data['refresh_token'] as String?;
 
         if (newAccessToken != null) {
-          await _secureStorage.write(StorageKeys.accessToken, newAccessToken);
+          await _secureStorage.write(StorageKey.accessToken, newAccessToken);
         }
 
         if (newRefreshToken != null) {
-          await _secureStorage.write(StorageKeys.refreshToken, newRefreshToken);
+          await _secureStorage.write(StorageKey.refreshToken, newRefreshToken);
         }
 
         // Retry original request
@@ -64,7 +58,7 @@ class RefreshTokenInterceptor extends Interceptor {
         return handler.resolve(retryResponse);
       } catch (e) {
         _isRefreshing = false;
-        await _secureStorage.deleteAll();
+        await _secureStorage.clearAll();
         // Trigger logout / navigate to login
         return handler.next(err);
       }

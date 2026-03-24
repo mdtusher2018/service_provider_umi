@@ -57,6 +57,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   permission_handler:
+  hive_flutter: ^1.1.0
 
 
 dev_dependencies:

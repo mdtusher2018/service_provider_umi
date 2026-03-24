@@ -19,7 +19,7 @@ class App extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.of(currentRole),
       themeMode: ThemeMode.system,
-      locale: locale,
+      locale: locale.value,
       supportedLocales: const [Locale('en'), Locale('ar'), Locale('fr')],
 
       routerConfig: router,

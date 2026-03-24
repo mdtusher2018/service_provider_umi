@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import '../../storage/secure_storage.dart';
-import '../../storage/storage_keys.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 
 class AuthInterceptor extends Interceptor {
-  final SecureStorage _secureStorage;
+  final LocalStorageService _secureStorage;
 
   AuthInterceptor(this._secureStorage);
 
@@ -12,7 +12,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await _secureStorage.read(StorageKeys.accessToken);
+    final token = await _secureStorage.read(StorageKey.accessToken);
 
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';

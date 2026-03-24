@@ -1,14 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:service_provider_umi/core/network/interceptors/auth_interceptor.dart';
-import 'package:service_provider_umi/core/network/interceptors/refresh_token_interceptor.dart';
-import 'package:service_provider_umi/core/network/network_info.dart';
+import 'package:service_provider_umi/core/services/network/interceptors/auth_interceptor.dart';
+import 'package:service_provider_umi/core/services/network/interceptors/refresh_token_interceptor.dart';
+import 'package:service_provider_umi/core/services/network/network_info.dart';
 import 'package:service_provider_umi/core/services/permission_service.dart';
-import 'package:service_provider_umi/core/storage/local_storage.dart';
-import 'package:service_provider_umi/core/storage/secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:service_provider_umi/core/services/storage/hive_service.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
 
 part 'core_providers.g.dart';
 
@@ -19,31 +18,26 @@ NetworkInfo networkInfo(Ref ref) {
 
 @riverpod
 AuthInterceptor authInterceptor(Ref ref) {
-  return AuthInterceptor(ref.read(secureStorageProvider));
+  return AuthInterceptor(ref.read(localStorageProvider));
 }
 
 @riverpod
 RefreshTokenInterceptor refreshTokenInterceptor(Ref ref, Dio dio) {
   return RefreshTokenInterceptor(
     dio: dio,
-    secureStorage: ref.read(secureStorageProvider),
+    secureStorage: ref.read(localStorageProvider),
   );
 }
 
 @riverpod
-SecureStorage secureStorage(Ref ref) {
-  return SecureStorage(
-    const FlutterSecureStorage(
-      aOptions: AndroidOptions(enforceBiometrics: true),
-      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-    ),
-  );
+LocalStorageService localStorage(Ref ref) {
+  final local = LocalStorageServiceImpl();
+  return local;
 }
 
 @riverpod
-Future<LocalStorage> localStorage(Ref ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  return LocalStorage(prefs);
+HiveService hiveStorage(Ref ref) {
+  return HiveService.instance;
 }
 
 @riverpod

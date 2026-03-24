@@ -90,7 +90,7 @@ final class AuthInterceptorProvider
   }
 }
 
-String _$authInterceptorHash() => r'f6262e7877834b7130fd7260b2fc733aef480f47';
+String _$authInterceptorHash() => r'41bbaeb2a452c0ae1791129b4a70b6c85b0f1a3a';
 
 @ProviderFor(refreshTokenInterceptor)
 final refreshTokenInterceptorProvider = RefreshTokenInterceptorFamily._();
@@ -157,7 +157,7 @@ final class RefreshTokenInterceptorProvider
 }
 
 String _$refreshTokenInterceptorHash() =>
-    r'634beca1f3001b6c34f19682374d221606c71be3';
+    r'0e5a146271f1110752611ecc3841197228f64f43';
 
 final class RefreshTokenInterceptorFamily extends $Family
     with $FunctionalFamilyOverride<RefreshTokenInterceptor, Dio> {
@@ -177,58 +177,17 @@ final class RefreshTokenInterceptorFamily extends $Family
   String toString() => r'refreshTokenInterceptorProvider';
 }
 
-@ProviderFor(secureStorage)
-final secureStorageProvider = SecureStorageProvider._();
-
-final class SecureStorageProvider
-    extends $FunctionalProvider<SecureStorage, SecureStorage, SecureStorage>
-    with $Provider<SecureStorage> {
-  SecureStorageProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'secureStorageProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$secureStorageHash();
-
-  @$internal
-  @override
-  $ProviderElement<SecureStorage> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  SecureStorage create(Ref ref) {
-    return secureStorage(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SecureStorage value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SecureStorage>(value),
-    );
-  }
-}
-
-String _$secureStorageHash() => r'0e8cd2593a23b6507098cbe1b8a070254a1602c3';
-
 @ProviderFor(localStorage)
 final localStorageProvider = LocalStorageProvider._();
 
 final class LocalStorageProvider
     extends
         $FunctionalProvider<
-          AsyncValue<LocalStorage>,
-          LocalStorage,
-          FutureOr<LocalStorage>
+          LocalStorageService,
+          LocalStorageService,
+          LocalStorageService
         >
-    with $FutureModifier<LocalStorage>, $FutureProvider<LocalStorage> {
+    with $Provider<LocalStorageService> {
   LocalStorageProvider._()
     : super(
         from: null,
@@ -245,17 +204,66 @@ final class LocalStorageProvider
 
   @$internal
   @override
-  $FutureProviderElement<LocalStorage> $createElement(
+  $ProviderElement<LocalStorageService> $createElement(
     $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  ) => $ProviderElement(pointer);
 
   @override
-  FutureOr<LocalStorage> create(Ref ref) {
+  LocalStorageService create(Ref ref) {
     return localStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LocalStorageService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LocalStorageService>(value),
+    );
   }
 }
 
-String _$localStorageHash() => r'5ca7ed888ffd89f6da9aee2a9b119dd6c7c1df6f';
+String _$localStorageHash() => r'17fa54b5b3bd06596b0bc92e3796d014abc9b681';
+
+@ProviderFor(hiveStorage)
+final hiveStorageProvider = HiveStorageProvider._();
+
+final class HiveStorageProvider
+    extends $FunctionalProvider<HiveService, HiveService, HiveService>
+    with $Provider<HiveService> {
+  HiveStorageProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'hiveStorageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$hiveStorageHash();
+
+  @$internal
+  @override
+  $ProviderElement<HiveService> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  HiveService create(Ref ref) {
+    return hiveStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(HiveService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<HiveService>(value),
+    );
+  }
+}
+
+String _$hiveStorageHash() => r'b25ecbde04fa8a8695736c4820dff8aa9cf425fb';
 
 @ProviderFor(permissionService)
 final permissionServiceProvider = PermissionServiceProvider._();

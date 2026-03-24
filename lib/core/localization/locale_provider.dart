@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
-import '../storage/storage_keys.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
+
 import '../config/app_constants.dart';
 
 part 'locale_provider.g.dart';
@@ -9,18 +10,18 @@ part 'locale_provider.g.dart';
 @riverpod
 class LocalizationNotifier extends _$LocalizationNotifier {
   @override
-  Locale build() {
-    final storage = ref.read(localStorageProvider).value;
-    final savedLocale = storage?.getString(StorageKeys.selectedLocale);
+  Future<Locale> build() async {
+    final storage = ref.read(localStorageProvider);
+    final savedLocale = await storage.read(StorageKey.selectedLocale);
     return Locale(savedLocale ?? AppConstants.defaultLocale);
   }
 
   Future<void> setLocale(String languageCode) async {
     if (!AppConstants.supportedLocales.contains(languageCode)) return;
 
-    state = Locale(languageCode);
-    final storage = await ref.read(localStorageProvider.future);
-    await storage.setString(StorageKeys.selectedLocale, languageCode);
+    state = AsyncData(Locale(languageCode));
+    final storage = ref.read(localStorageProvider);
+    await storage.write(StorageKey.selectedLocale, languageCode);
   }
 
   void setLocaleFromDevice() {
@@ -28,9 +29,9 @@ class LocalizationNotifier extends _$LocalizationNotifier {
     final languageCode = deviceLocale.languageCode;
 
     if (AppConstants.supportedLocales.contains(languageCode)) {
-      state = Locale(languageCode);
+      state = AsyncData(Locale(languageCode));
     } else {
-      state = const Locale(AppConstants.defaultLocale);
+      state = AsyncData(const Locale(AppConstants.defaultLocale));
     }
   }
 }
