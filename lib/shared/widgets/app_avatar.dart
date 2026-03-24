@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
@@ -80,7 +81,7 @@ class AppAvatar extends StatelessWidget {
         imageUrl!.isNotEmpty &&
         imageUrl!.startsWith("assets")) {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: 8.paddingAll,
         child: Image.asset(
           imageUrl!,
 

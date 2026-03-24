@@ -45,6 +45,10 @@ class AuthGuard {
     AppRoutes.userHome,
     AppRoutes.filter,
     AppRoutes.search,
+    AppRoutes.searchResults,
+    AppRoutes.serviceSubCategory,
+    AppRoutes.bookingTime,
+    AppRoutes.providerProfile,
   };
 
   static bool isGuestAllowed(String path) {

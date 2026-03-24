@@ -49,7 +49,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: 24.paddingAll,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

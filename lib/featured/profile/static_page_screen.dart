@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -45,7 +46,7 @@ We also store certain types of information whenever you interact with us. For ex
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: AppText.bodyMd(
           type == StaticPageType.privacy ? _privacyContent : _termsContent,
           color: AppColors.textSecondary,

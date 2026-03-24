@@ -40,10 +40,7 @@ class AppDividerWithLabel extends StatelessWidget {
     return Row(
       children: [
         const Expanded(child: AppDivider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: AppText.bodySm(label),
-        ),
+        Padding(padding: 12.paddingH, child: AppText.bodySm(label)),
         const Expanded(child: AppDivider()),
       ],
     );
@@ -189,7 +186,7 @@ class AppEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: 32.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

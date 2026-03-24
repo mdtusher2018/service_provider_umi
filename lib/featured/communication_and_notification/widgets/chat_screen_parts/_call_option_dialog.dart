@@ -19,9 +19,9 @@ class _CallOptionDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding: 40.paddingH,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

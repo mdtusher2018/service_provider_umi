@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
+import 'package:service_provider_umi/core/di/core_providers.dart';
 import '../config/app_config.dart';
-import 'interceptors/auth_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
-import 'interceptors/refresh_token_interceptor.dart';
 
 part 'dio_client.g.dart';
 

@@ -19,7 +19,7 @@ Widget _buildQaSection({required _ProviderData mockProvider}) {
       12.verticalSpace,
       ...qaItems.map(
         (qa) => Padding(
-          padding: const EdgeInsets.only(bottom: 14),
+          padding: 14.paddingBottom,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -45,7 +45,7 @@ Widget _buildQaSection({required _ProviderData mockProvider}) {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: 12.paddingV,
           ),
           child: AppText.labelLg('View all'),
         ),

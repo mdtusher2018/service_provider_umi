@@ -1,15 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../../storage/secure_storage.dart';
 import '../../storage/storage_keys.dart';
-
-part 'auth_interceptor.g.dart';
-
-@riverpod
-AuthInterceptor authInterceptor(Ref ref) {
-  return AuthInterceptor(ref.read(secureStorageProvider));
-}
 
 class AuthInterceptor extends Interceptor {
   final SecureStorage _secureStorage;

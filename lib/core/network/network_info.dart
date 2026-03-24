@@ -1,16 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'network_info.g.dart';
 
 abstract class NetworkInfo {
   Future<bool> get isConnected;
   Stream<bool> get onConnectivityChanged;
-}
-
-@riverpod
-NetworkInfo networkInfo(Ref ref) {
-  return NetworkInfoImpl(Connectivity());
 }
 
 class NetworkInfoImpl implements NetworkInfo {

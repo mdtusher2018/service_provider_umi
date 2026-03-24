@@ -42,7 +42,7 @@ class _AlertTile extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: 12.paddingV,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -29,7 +29,7 @@ class _MenuCard extends ConsumerWidget {
                 bottom: isLast ? const Radius.circular(16) : Radius.zero,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: 14.paddingV,
                 child: Row(
                   children: [
                     Container(

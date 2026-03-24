@@ -219,7 +219,7 @@ class _CommunicationAndNotificationScreenState
       children: [
         // Search bar
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding:  16.paddingH,
           child: AppSearchBar(
             hint: "Search friends",
             suffix: Icon(Icons.search, size: 24),

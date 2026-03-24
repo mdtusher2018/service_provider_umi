@@ -13,8 +13,8 @@ class _GoBackDialog extends StatelessWidget {
         color: Colors.black.withOpacity(0.4),
         child: Center(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 32),
-            padding: const EdgeInsets.all(24),
+            margin: 32.paddingH,
+            padding: 24.paddingAll,
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(20),
@@ -54,7 +54,7 @@ class _GoBackDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: 12.paddingV,
                         ),
                         child: AppText.bodyMd(
                           'Stay',
@@ -74,7 +74,7 @@ class _GoBackDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: 12.paddingV,
                         ),
                         child: AppText(
                           'Go back',

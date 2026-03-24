@@ -53,10 +53,7 @@ class AppCard extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: onTap,
-              child: Padding(
-                padding: padding ?? const EdgeInsets.all(16),
-                child: child,
-              ),
+              child: Padding(padding: padding ?? 16.paddingAll, child: child),
             ),
           ),
         ),
@@ -102,7 +99,7 @@ class ProviderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(12),
+      padding: 12.paddingAll,
       child: Column(
         children: [
           Row(
@@ -113,7 +110,7 @@ class ProviderCard extends StatelessWidget {
                 size: AvatarSize.md,
 
                 isFavorite: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: 4.paddingAll,
                   decoration: BoxDecoration(
                     color: AppColors.grey300,
                     shape: BoxShape.circle,

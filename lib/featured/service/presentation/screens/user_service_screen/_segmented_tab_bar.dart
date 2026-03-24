@@ -27,7 +27,7 @@ class _SegmentedTabBar extends StatelessWidget {
                   onTap: () => controller.animateTo(e.key),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.all(3),
+                    margin: 3.paddingAll,
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.grey200

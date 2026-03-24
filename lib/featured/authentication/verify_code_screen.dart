@@ -77,7 +77,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: 24.paddingAll,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -98,7 +98,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(4, (i) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: 8.paddingH,
                     child: _DigitBox(
                       controller: _controllers[i],
                       focusNode: _focusNodes[i],

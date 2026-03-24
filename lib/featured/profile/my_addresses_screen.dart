@@ -110,7 +110,7 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
                     subtitle: 'Add your first address',
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: 20.paddingH,
                     itemCount: _addresses.length,
                     separatorBuilder: (_, __) => 10.verticalSpace,
                     itemBuilder: (_, i) => _AddressTile(
@@ -151,7 +151,7 @@ class _AddressTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
@@ -208,9 +208,9 @@ class _DeleteDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      insetPadding: 32.paddingH,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: 24.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

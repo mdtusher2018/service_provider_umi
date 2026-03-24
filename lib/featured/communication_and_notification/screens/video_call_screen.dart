@@ -207,7 +207,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
                   // Top: timer
                   SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: 16.paddingAll,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

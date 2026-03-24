@@ -10,7 +10,7 @@ class _TipsCard extends StatelessWidget {
     const tips = ['Good lighting', 'Good resolution', 'Visible face', 'Smile'];
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: 16.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -49,7 +49,7 @@ class _TipsCard extends StatelessWidget {
           // Checklist
           ...tips.map(
             (tip) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: 8.paddingBottom,
               child: Row(
                 children: [
                   Icon(Icons.check_rounded, color: primary, size: 18),

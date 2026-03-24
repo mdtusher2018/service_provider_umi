@@ -42,7 +42,7 @@ class AppRatingBar extends StatelessWidget {
                   ? () => onRatingChanged?.call(starValue)
                   : null,
               child: Padding(
-                padding: const EdgeInsets.only(right: 2),
+                padding: 2.paddingRight,
                 child: _buildStar(i, starSize),
               ),
             );
@@ -123,7 +123,7 @@ class AppRatingBreakdown extends StatelessWidget {
         16.verticalSpace,
         ...breakdown.entries.map(
           (e) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: 8.paddingBottom,
             child: _RatingRow(label: e.key, value: e.value),
           ),
         ),

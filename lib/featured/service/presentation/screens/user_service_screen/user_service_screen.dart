@@ -88,7 +88,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
             // ─── Tab Bar ──────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: 20.paddingH,
               child: _SegmentedTabBar(controller: _tabController),
             ),
 

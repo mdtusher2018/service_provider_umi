@@ -78,7 +78,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
     return GestureDetector(
       onTap: () => setState(() => _showFaqSheet = true),
       child: Container(
-        margin: const EdgeInsets.all(16),
+        margin: 16.paddingAll,
 
         child: Row(
           children: [

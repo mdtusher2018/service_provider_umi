@@ -22,7 +22,7 @@ class _MessageBubbleState extends ConsumerState<_MessageBubble> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: 8.paddingBottom,
       child: Row(
         mainAxisAlignment: widget.isMine
             ? MainAxisAlignment.end

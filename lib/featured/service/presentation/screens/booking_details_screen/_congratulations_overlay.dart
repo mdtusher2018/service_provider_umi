@@ -11,9 +11,9 @@ class _CongratsDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+      insetPadding: 28.paddingH,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: 24.paddingAll,
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(24),

@@ -176,7 +176,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
           children: [
             // ─── Back button ──────────────────────
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: 16.paddingAll,
               child: Row(
                 children: [
                   GestureDetector(
@@ -242,7 +242,7 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
 
   Widget _buildConnectedControls() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: 40.paddingH,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

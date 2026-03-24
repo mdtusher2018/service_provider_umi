@@ -186,7 +186,7 @@ class CustomBottomNavBar extends StatelessWidget {
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
-            padding: const EdgeInsets.all(8),
+            padding: 8.paddingAll,
             decoration: BoxDecoration(
               color: active
                   ? AppColors.primary.withOpacity(0.2)

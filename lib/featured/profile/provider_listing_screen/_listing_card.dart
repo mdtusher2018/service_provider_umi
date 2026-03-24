@@ -33,7 +33,7 @@ class _ListingCard extends StatelessWidget {
         children: [
           // Thumbnail
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: 8.paddingAll,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(

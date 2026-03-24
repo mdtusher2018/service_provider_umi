@@ -38,9 +38,9 @@ class _RatingDialogState extends State<RatingDialog> {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      insetPadding: 24.paddingH,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 return GestureDetector(
                   onTap: () => setState(() => _rating = i + 1),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: 4.paddingH,
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: Icon(
@@ -155,7 +155,7 @@ class _RatingDialogState extends State<RatingDialog> {
                     color: AppColors.textgrey,
                   ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(14),
+                  contentPadding: 14.paddingAll,
                 ),
               ),
             ),

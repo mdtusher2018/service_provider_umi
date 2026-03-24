@@ -139,10 +139,7 @@ class _AppTextFieldState extends State<AppTextField> {
             suffixIcon: widget.showPasswordToggle
                 ? _buildPasswordToggle()
                 : widget.suffixIcon != null
-                ? Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: widget.suffixIcon,
-                  )
+                ? Padding(padding: 14.paddingRight, child: widget.suffixIcon)
                 : null,
             suffixIconConstraints: const BoxConstraints(
               minWidth: 44,
@@ -185,7 +182,7 @@ class _AppTextFieldState extends State<AppTextField> {
     return GestureDetector(
       onTap: () => setState(() => _obscure = !_obscure),
       child: Padding(
-        padding: const EdgeInsets.only(right: 14),
+        padding: 14.paddingRight,
         child: Icon(
           _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
           color: AppColors.grey500,

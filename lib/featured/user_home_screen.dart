@@ -30,7 +30,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
           children: [
             // Top Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: 16.paddingAll,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -75,7 +75,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
             RadialMenu(),
             40.verticalSpace,
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: 16.paddingV,
               child: TextButton.icon(
                 onPressed: () {
                   showAddAddress(context);
@@ -112,7 +112,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
       ),
       builder: (_) {
         return Padding(
-          padding: const EdgeInsets.all(20),
+          padding: 20.paddingAll,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -242,7 +242,7 @@ class RadialMenu extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                padding: const EdgeInsets.all(24),
+                padding: 24.paddingAll,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -267,7 +267,7 @@ class RadialMenu extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: 16.paddingAll,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

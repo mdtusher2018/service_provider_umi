@@ -1,17 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'secure_storage.g.dart';
 
-@riverpod
-SecureStorage secureStorage(Ref ref) {
-  return SecureStorage(
-    const FlutterSecureStorage(
-      aOptions: AndroidOptions(enforceBiometrics: true),
-      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-    ),
-  );
-}
+
+
 
 class SecureStorage {
   final FlutterSecureStorage _storage;

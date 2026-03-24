@@ -80,7 +80,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
                   final item = onboardingData[index];
 
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    padding: 28.paddingH,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -118,7 +118,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
                 onboardingData.length,
                 (index) => AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  margin: 4.paddingH,
                   width: currentIndex == index ? 14 : 6,
                   height: 6,
                   decoration: BoxDecoration(
@@ -135,7 +135,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
 
             /// Next button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: 24.paddingH,
               child: SizedBox(
                 width: double.infinity,
                 height: 50,

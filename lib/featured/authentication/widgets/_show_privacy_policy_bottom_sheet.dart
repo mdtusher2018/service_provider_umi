@@ -9,7 +9,7 @@ void _showPrivacyPolicyBottomSheet(WidgetRef ref) {
     ),
     builder: (_) {
       return Padding(
-        padding: const EdgeInsets.all(24),
+        padding: 24.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -60,7 +60,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
 
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: 20.paddingH,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

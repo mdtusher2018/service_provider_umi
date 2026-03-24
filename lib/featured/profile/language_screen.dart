@@ -46,7 +46,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,7 +57,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
             10.verticalSpace,
             // Dropdown
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: 16.paddingH,
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),

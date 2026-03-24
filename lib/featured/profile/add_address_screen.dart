@@ -30,7 +30,7 @@ class _AddressPageState extends State<AddressPage> {
       backgroundColor: AppColors.background,
       appBar: AppAppBar(title: "Address"),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Column(
           children: [
             _field('Name', 'Enter Your Name', _nameCtrl),

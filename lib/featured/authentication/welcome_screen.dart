@@ -33,7 +33,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: 24.paddingH,
           child: Center(
             child: Column(
               children: [

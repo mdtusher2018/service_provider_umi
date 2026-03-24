@@ -364,12 +364,12 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             // Date separator
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: 12.paddingV,
               child: Row(
                 children: [
                   const Expanded(child: AppDivider()),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: 12.paddingH,
                     child: AppText.bodyXs(
                       date == DateFormat('d MMM yyyy').format(DateTime.now())
                           ? 'Today'

@@ -17,7 +17,7 @@ class _BlockUserDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      insetPadding: 32.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
         child: Column(

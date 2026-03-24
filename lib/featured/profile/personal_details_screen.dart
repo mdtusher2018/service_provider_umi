@@ -62,7 +62,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
       appBar: AppAppBar(title: "Personal details"),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Column(
           children: [
             // Avatar with camera
@@ -146,9 +146,9 @@ class _DeleteDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      insetPadding: 32.paddingH,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: 24.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

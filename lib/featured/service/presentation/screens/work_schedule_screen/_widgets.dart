@@ -59,7 +59,7 @@ class _DayRow extends StatelessWidget {
                 // From box
                 _TimeBox(time: _fmt(schedule.from), primary: primary),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: 10.paddingH,
                   child: AppText.bodyMd('—', color: AppColors.textSecondary),
                 ),
                 // To box

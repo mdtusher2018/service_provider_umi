@@ -92,7 +92,7 @@ class _WeeklyBookingScheduleScreenState
         children: [
           ..._schedule.keys.map(
             (day) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: 10.paddingBottom,
               child: _DayRow(
                 day: day,
                 schedule: _schedule[day],
@@ -113,7 +113,7 @@ class _WeeklyBookingScheduleScreenState
           // Unavailable days
           ..._unavailableDays.map(
             (d) => Container(
-              margin: const EdgeInsets.only(bottom: 10),
+              margin: 10.paddingBottom,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: AppColors.grey100,
@@ -138,7 +138,7 @@ class _WeeklyBookingScheduleScreenState
       children: [
         10.verticalSpace,
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: 16.paddingH,
           child: HorizontalCalendar(
             selectedDate: _selectedDate,
             onDateSelected: (date) {
@@ -157,7 +157,7 @@ class _WeeklyBookingScheduleScreenState
           curve: Curves.easeInOut,
           child: _showSingleTimePicker
               ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: 20.paddingH,
                   child: _TimePickerPanel(
                     day: _selectedDate.getDayOfWeek,
                     bgColor: Colors.transparent,
@@ -176,8 +176,8 @@ class _WeeklyBookingScheduleScreenState
         if (_singleFrom != null) ...[
           20.verticalSpace,
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.all(12),
+            margin: 20.paddingH,
+            padding: 12.paddingAll,
             decoration: BoxDecoration(
               color: AppColors.grey50,
               borderRadius: BorderRadius.circular(12),
@@ -206,7 +206,7 @@ class _WeeklyBookingScheduleScreenState
           Container(
             width: 120,
             height: 35,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: 16.paddingH,
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(24),

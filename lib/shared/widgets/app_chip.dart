@@ -30,7 +30,7 @@ class AppDayChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         constraints: BoxConstraints(minWidth: 44),
-        padding: padding ?? const EdgeInsets.symmetric(vertical: 8),
+        padding: padding ?? 8.paddingV,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.white,
           borderRadius: BorderRadius.circular(8),

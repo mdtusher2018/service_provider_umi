@@ -85,7 +85,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             // ─── Search bar ───────────────────────────────
             16.verticalSpace,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: 16.paddingH,
               child: AppSearchBar(
                 hint: "Find the service you need",
                 leading: Icon(Icons.arrow_back),
@@ -96,7 +96,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
             // ─── Section title ────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: 20.paddingH,
               child: AppText.labelLg(
                 _query.isEmpty ? 'Most popular in your area' : 'Search results',
                 color: AppColors.textSecondary,
@@ -112,7 +112,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       subtitle: 'Try a different search term',
                     )
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: 20.paddingH,
                       itemCount: _filtered.length,
                       itemBuilder: (_, i) {
                         final item = _filtered[i];
@@ -155,7 +155,7 @@ class _ServiceListTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: 12.paddingV,
         child: Row(
           children: [
             Container(

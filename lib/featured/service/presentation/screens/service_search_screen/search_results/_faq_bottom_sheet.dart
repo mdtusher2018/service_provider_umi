@@ -113,7 +113,7 @@ class _FaqTileState extends State<_FaqTile> {
     return GestureDetector(
       onTap: () => setState(() => _expanded = !_expanded),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 13),
+        padding: 12.paddingV,
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: AppColors.divider)),
         ),

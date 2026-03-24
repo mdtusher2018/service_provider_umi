@@ -28,7 +28,7 @@ class PaymentsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.white,
@@ -73,7 +73,7 @@ class _PaymentTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: 16.paddingAll,
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary, size: 22),
@@ -114,7 +114,7 @@ class MyBookingScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: 20.paddingAll,
         children: const [
           _BookingCard(
             serviceTitle: 'Elderly Care',
@@ -150,7 +150,7 @@ class _BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),

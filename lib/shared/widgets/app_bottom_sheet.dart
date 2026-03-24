@@ -108,7 +108,7 @@ class AppPrivacyDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: 24.paddingAll,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -224,7 +224,7 @@ class _FaqTileState extends State<_FaqTile> {
     return GestureDetector(
       onTap: () => setState(() => _expanded = !_expanded),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: 12.paddingV,
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: AppColors.divider)),
         ),

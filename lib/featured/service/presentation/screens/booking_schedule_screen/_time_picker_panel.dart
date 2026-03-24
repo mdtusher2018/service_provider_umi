@@ -63,13 +63,13 @@ class _TimePickerPanelState extends State<_TimePickerPanel> {
           // Time grid
           ..._timeSlots.map(
             (row) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: 8.paddingBottom,
               child: Row(
                 children: row
                     .map(
                       (t) => Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 6),
+                          padding: 6.paddingRight,
                           child: AppTimeChip(
                             time: t,
                             isSelected: _selectedTime == t,

@@ -135,7 +135,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
 
             // ─── Tip banner ──────────────────────────
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: 14.paddingAll,
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),

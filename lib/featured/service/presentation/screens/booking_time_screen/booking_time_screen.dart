@@ -284,7 +284,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
               .map(
                 (s) => Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: 8.paddingRight,
                     child: _TimeRangeCard(
                       emoji: s.$1,
                       range: s.$2,
@@ -304,7 +304,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
               .map(
                 (s) => Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: 8.paddingRight,
                     child: _TimeRangeCard(
                       emoji: s.$1,
                       range: s.$2,
@@ -327,7 +327,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
         AppText.labelLg('Select exact time'),
         12.verticalSpace,
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: 16.paddingAll,
           decoration: BoxDecoration(
             color: AppColors.grey50,
             borderRadius: BorderRadius.circular(16),
@@ -429,7 +429,7 @@ class _StartTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: 12.paddingV,
       decoration: BoxDecoration(
         color: isSelected ? AppColors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(24),
@@ -465,7 +465,7 @@ class _TimeRangeCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: 12.paddingV,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.white,
           borderRadius: BorderRadius.circular(12),

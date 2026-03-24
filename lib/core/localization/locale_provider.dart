@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../storage/local_storage.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
 import '../storage/storage_keys.dart';
 import '../config/app_constants.dart';
 

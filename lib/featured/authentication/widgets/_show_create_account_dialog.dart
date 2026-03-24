@@ -9,7 +9,7 @@ void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: 24.paddingAll,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

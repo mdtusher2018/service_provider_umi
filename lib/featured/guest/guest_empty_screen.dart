@@ -97,7 +97,7 @@ class _ChatGuestTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: 20.paddingH,
       child: Column(
         children: [
           Expanded(
@@ -156,7 +156,7 @@ class _AlertsGuestTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: 20.paddingH,
       child: Column(
         children: [
           Expanded(
@@ -215,7 +215,7 @@ class _GuestEmptyScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: 20.paddingH,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

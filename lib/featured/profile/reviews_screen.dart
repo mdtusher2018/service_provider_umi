@@ -50,9 +50,9 @@ class ReviewsScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       appBar: AppAppBar(title: "Reviews"),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: 16.paddingAll,
         child: ListView.separated(
-          padding: const EdgeInsets.all(16),
+          padding: 16.paddingAll,
           itemCount: _reviews.length,
           separatorBuilder: (_, __) =>
               AppDivider(height: 20, color: AppColors.grey500),

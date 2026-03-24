@@ -24,7 +24,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
           children: [
             // Top Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: 16.paddingAll,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -64,7 +64,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
 
             // Dynamic Categories using Wrap
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: 16.paddingH,
               child: Wrap(
                 spacing: 16, // horizontal spacing
                 runSpacing: 16, // vertical spacing

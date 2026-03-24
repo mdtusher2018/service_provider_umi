@@ -5,7 +5,6 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 
-
 /// Checkbox row - as seen in filter screens (palliative care, qualified carer, etc.)
 class AppCheckboxTile extends StatelessWidget {
   final String label;
@@ -29,7 +28,7 @@ class AppCheckboxTile extends StatelessWidget {
       onTap: enabled ? () => onChanged?.call(!value) : null,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: 6.paddingV,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

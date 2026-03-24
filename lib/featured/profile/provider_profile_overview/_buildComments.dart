@@ -20,7 +20,7 @@ class _CommentTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: 14.paddingBottom,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

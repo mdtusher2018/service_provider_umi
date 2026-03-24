@@ -9,8 +9,6 @@ import '../../core/di/app_role_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
-
-
 class BalanceTransaction {
   final String id;
   final String title;
@@ -69,7 +67,7 @@ class MyBalanceScreen extends ConsumerWidget {
       appBar: AppAppBar(title: "My Balance"),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: 20.paddingH,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -137,7 +135,7 @@ class _TransactionCard extends StatelessWidget {
         : '-\$${transaction.amount.toStringAsFixed(2)}';
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),

@@ -1,12 +1,4 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'permission_service.g.dart';
-
-@riverpod
-PermissionService permissionService(Ref ref) {
-  return PermissionService();
-}
 
 class PermissionService {
   Future<bool> requestCamera() => _request(Permission.camera);

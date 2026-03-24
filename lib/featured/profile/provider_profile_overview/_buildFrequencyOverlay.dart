@@ -139,7 +139,7 @@ class _FreqOption extends ConsumerWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: 16.paddingAll,
         decoration: BoxDecoration(
           color: AppColors.grey50,
           borderRadius: BorderRadius.circular(16),
@@ -178,7 +178,7 @@ class _FreqOption extends ConsumerWidget {
               10.verticalSpace,
               ...bullets.map(
                 (b) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
+                  padding: 6.paddingBottom,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

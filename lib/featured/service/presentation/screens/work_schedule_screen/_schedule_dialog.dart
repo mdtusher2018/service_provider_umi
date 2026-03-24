@@ -39,7 +39,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding: 40.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
         child: Column(
@@ -190,7 +190,7 @@ class _TimeSpinner extends StatelessWidget {
           primary: primary,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          padding:  6.paddingH,
           child: AppText.h2(':', color: AppColors.textPrimary),
         ),
         // Minute column

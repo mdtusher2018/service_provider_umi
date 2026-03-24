@@ -98,7 +98,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: 20.paddingH,
               child: _ProviderTabBar(controller: _tabController),
             ),
 
@@ -169,7 +169,7 @@ class _ProviderTabBar extends StatelessWidget {
                   onTap: () => controller.animateTo(e.key),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.all(3),
+                    margin: 3.paddingAll,
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.grey200

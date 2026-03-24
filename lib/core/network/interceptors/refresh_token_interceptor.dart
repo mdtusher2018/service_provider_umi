@@ -1,19 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 
 import '../../storage/secure_storage.dart';
 import '../../storage/storage_keys.dart';
 import '../api_endpoints.dart';
 
-part 'refresh_token_interceptor.g.dart';
 
-@riverpod
-RefreshTokenInterceptor refreshTokenInterceptor(Ref ref, Dio dio) {
-  return RefreshTokenInterceptor(
-    dio: dio,
-    secureStorage: ref.read(secureStorageProvider),
-  );
-}
+
 
 class RefreshTokenInterceptor extends Interceptor {
   final Dio _dio;

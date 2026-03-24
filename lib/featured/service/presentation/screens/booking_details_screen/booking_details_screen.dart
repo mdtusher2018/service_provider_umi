@@ -192,7 +192,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
       children: [
         ...rows.map(
           (r) => Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding: 6.paddingBottom,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

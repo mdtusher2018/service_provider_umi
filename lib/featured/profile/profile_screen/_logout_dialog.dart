@@ -11,7 +11,7 @@ class _LogoutDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      insetPadding: 32.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 16, 16, 20),
         child: Column(
@@ -42,7 +42,7 @@ class _LogoutDialog extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: 12.paddingV,
                     ),
                     child: const AppText.labelLg('Cancel'),
                   ),
@@ -57,7 +57,7 @@ class _LogoutDialog extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: 12.paddingV,
                     ),
                     child: const AppText.labelLg(
                       'Log out',

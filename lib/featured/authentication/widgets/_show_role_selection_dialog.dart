@@ -7,9 +7,9 @@ void _showRoleSelectionDialog(WidgetRef ref) {
       return Dialog(
         backgroundColor: AppColors.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        insetPadding: 20.paddingH,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: 20.paddingAll,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -75,7 +75,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
 
 Widget _categoryCard(String title, String subtitle, String image) {
   return Container(
-    padding: const EdgeInsets.all(12),
+    padding: 12.paddingAll,
     decoration: BoxDecoration(
       color: AppColors.white,
       border: Border.all(color: AppColors.border),
