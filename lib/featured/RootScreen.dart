@@ -5,14 +5,14 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 
-import 'package:service_provider_umi/featured/user_home_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/user_home_screen.dart';
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
 import 'package:service_provider_umi/featured/profile/profile_screen/profile_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/provider_service_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/upcoming_bookings_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/user_service_screen/user_service_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/provider_service_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -64,7 +64,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
     final providerScreens = [
       const ProviderServiceScreen(),
       const CommunicationAndNotificationScreen(),
-      const UpcomingBookingsScreen(),
+      const ServiceProviderHomeScreen(),
       const CommunicationAndNotificationScreen(isNotification: true),
       const ProfileScreen(),
     ];

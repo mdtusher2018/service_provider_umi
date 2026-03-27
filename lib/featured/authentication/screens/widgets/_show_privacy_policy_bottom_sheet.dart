@@ -1,7 +1,7 @@
 part of '../welcome_screen.dart';
 
-void _showPrivacyPolicyBottomSheet(WidgetRef ref) {
-  showModalBottomSheet(
+Future<bool?> _showPrivacyPolicyBottomSheet(WidgetRef ref) {
+  return showModalBottomSheet(
     context: ref.context,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
@@ -37,8 +37,7 @@ void _showPrivacyPolicyBottomSheet(WidgetRef ref) {
             AppButton.primary(
               label: "Accept",
               onPressed: () {
-                ref.read(appRoleProvider.notifier).loginAsUser();
-                ref.context.go(AppRoutes.userHome);
+                Navigator.pop(ref.context, true);
               },
             ),
 

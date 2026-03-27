@@ -7,7 +7,6 @@ import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/core/utils/validators.dart';
 import 'package:service_provider_umi/featured/authentication/riverpod/auth_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -22,6 +21,7 @@ part 'widgets/_show_role_selection_dialog.dart';
 part 'widgets/_showAuthBottomSheet.dart';
 part 'widgets/_show_create_account_dialog.dart';
 part 'widgets/_show_login_account_dialog.dart';
+part 'widgets/_show_otp_verify_screen.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});

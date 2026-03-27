@@ -1,6 +1,4 @@
-// models/services/service_models.dart
-
-// ── Models ────────────────────────────────────────────────────────────────────
+// data/models/service_models.dart
 
 class ServiceModel {
   final int id;
@@ -16,14 +14,19 @@ class ServiceModel {
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
-        id: json['id'] as int,
-        name: json['name'] as String,
-        image: json['image'] as String,
-        hasSubCategory: json['hasSubCategory'] as bool?,
-      );
-}
+    id: json['id'] as int,
+    name: json['name'] as String,
+    image: json['image'] as String,
+    hasSubCategory: json['hasSubCategory'] as bool?,
+  );
 
-// ── Responses ─────────────────────────────────────────────────────────────────
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'image': image,
+    'hasSubCategory': hasSubCategory,
+  };
+}
 
 class HomeServicesResponse {
   final List<ServiceModel> services;
@@ -38,6 +41,11 @@ class HomeServicesResponse {
             .toList(),
         hasMore: json['hasMore'] as bool,
       );
+
+  Map<String, dynamic> toJson() => {
+    'services': services.map((s) => s.toJson()).toList(),
+    'hasMore': hasMore,
+  };
 }
 
 class AllServicesResponse {
@@ -51,9 +59,11 @@ class AllServicesResponse {
             .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
-}
 
-// ── Request ───────────────────────────────────────────────────────────────────
+  Map<String, dynamic> toJson() => {
+    'services': services.map((s) => s.toJson()).toList(),
+  };
+}
 
 class SubCategoriesRequest {
   final String serviceType;

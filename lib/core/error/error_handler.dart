@@ -28,6 +28,13 @@ class ErrorHandler {
         return const Failure.timeout();
 
       case DioExceptionType.connectionError:
+        final message = error.message ?? '';
+        if (message.contains('Failed host lookup')) {
+          return const Failure.server(
+            message: 'Server not reachable. Please try again later.',
+          );
+        }
+
         return const Failure.network();
 
       case DioExceptionType.badResponse:
@@ -50,7 +57,11 @@ class ErrorHandler {
 
     switch (statusCode) {
       case 400:
-        return Failure.server(message: message, statusCode: statusCode, data: data);
+        return Failure.server(
+          message: message,
+          statusCode: statusCode,
+          data: data,
+        );
       case 401:
         return Failure.unauthorized(message: message);
       case 403:
@@ -68,18 +79,30 @@ class ErrorHandler {
   }
 
   static Failure _handleAppException(AppException exception) {
-    if (exception is NetworkException) return Failure.network(message: exception.message);
-    if (exception is UnauthorizedException) return Failure.unauthorized(message: exception.message);
-    if (exception is ForbiddenException) return Failure.forbidden(message: exception.message);
-    if (exception is NotFoundException) return Failure.notFound(message: exception.message);
+    if (exception is NetworkException)
+      return Failure.network(message: exception.message);
+    if (exception is UnauthorizedException)
+      return Failure.unauthorized(message: exception.message);
+    if (exception is ForbiddenException)
+      return Failure.forbidden(message: exception.message);
+    if (exception is NotFoundException)
+      return Failure.notFound(message: exception.message);
     if (exception is ValidationException) {
-      return Failure.validation(message: exception.message, errors: exception.errors);
+      return Failure.validation(
+        message: exception.message,
+        errors: exception.errors,
+      );
     }
-    if (exception is TimeoutException) return Failure.timeout(message: exception.message);
-    if (exception is CacheException) return Failure.cache(message: exception.message);
-    if (exception is PaymentException) return Failure.payment(message: exception.message);
-    if (exception is UploadException) return Failure.upload(message: exception.message);
-    if (exception is LocationException) return Failure.location(message: exception.message);
+    if (exception is TimeoutException)
+      return Failure.timeout(message: exception.message);
+    if (exception is CacheException)
+      return Failure.cache(message: exception.message);
+    if (exception is PaymentException)
+      return Failure.payment(message: exception.message);
+    if (exception is UploadException)
+      return Failure.upload(message: exception.message);
+    if (exception is LocationException)
+      return Failure.location(message: exception.message);
     return Failure.server(
       message: exception.message,
       statusCode: exception.statusCode,
@@ -100,10 +123,8 @@ class ErrorHandler {
       final errorsData = data['errors'];
       if (errorsData is Map<String, dynamic>) {
         return errorsData.map(
-          (key, value) => MapEntry(
-            key,
-            (value as List).map((e) => e.toString()).toList(),
-          ),
+          (key, value) =>
+              MapEntry(key, (value as List).map((e) => e.toString()).toList()),
         );
       }
     }
@@ -112,17 +133,28 @@ class ErrorHandler {
 
   static String _defaultMessage(int statusCode) {
     switch (statusCode) {
-      case 400: return 'Bad request. Please check your input.';
-      case 401: return 'Session expired. Please login again.';
-      case 403: return 'You do not have permission to perform this action.';
-      case 404: return 'The requested resource was not found.';
-      case 408: return 'Request timed out. Please try again.';
-      case 422: return 'Validation failed. Please check your input.';
-      case 429: return 'Too many requests. Please wait and try again.';
-      case 500: return 'Internal server error. Please try again later.';
-      case 502: return 'Bad gateway. Please try again later.';
-      case 503: return 'Service unavailable. Please try again later.';
-      default:  return 'An unexpected error occurred.';
+      case 400:
+        return 'Bad request. Please check your input.';
+      case 401:
+        return 'Session expired. Please login again.';
+      case 403:
+        return 'You do not have permission to perform this action.';
+      case 404:
+        return 'The requested resource was not found.';
+      case 408:
+        return 'Request timed out. Please try again.';
+      case 422:
+        return 'Validation failed. Please check your input.';
+      case 429:
+        return 'Too many requests. Please wait and try again.';
+      case 500:
+        return 'Internal server error. Please try again later.';
+      case 502:
+        return 'Bad gateway. Please try again later.';
+      case 503:
+        return 'Service unavailable. Please try again later.';
+      default:
+        return 'An unexpected error occurred.';
     }
   }
 }
