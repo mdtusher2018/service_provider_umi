@@ -26,7 +26,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
   @override
   Widget build(BuildContext context) {
     // Listen for state changes → navigate or show error
-    ref.listen<AuthState>(authProvider, (_, state) {
+    ref.listen<AuthState>(loginProvider, (_, state) {
       state.when(
         initial: () {},
         loading: () {},
@@ -58,7 +58,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
                 children: [
                   const AppText.h2("Login"),
                   InkWell(
-                    onTap: ref.watch(authProvider) is AuthLoading
+                    onTap: ref.watch(loginProvider) is AuthLoading
                         ? null
                         : () => context.pop(),
                     child: const Icon(Icons.close),
@@ -89,7 +89,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
 
               AppButton.primary(
                 label: "Log in",
-                isLoading: ref.watch(authProvider) is AuthLoading,
+                isLoading: ref.watch(loginProvider) is AuthLoading,
                 onPressed: _onLogin,
               ),
 
@@ -104,7 +104,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
   void _onLogin() {
     if (!_formKey.currentState!.validate()) return;
     ref
-        .read(authProvider.notifier)
-        .loginWithEmail(_emailController.text.trim(), _passwordController.text);
+        .read(loginProvider.notifier)
+        .withEmail(_emailController.text.trim(), _passwordController.text);
   }
 }

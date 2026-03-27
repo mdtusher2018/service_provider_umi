@@ -12,11 +12,11 @@ class Validators {
 
   static String? password(String? value) {
     if (value == null || value.isEmpty) return 'Password is required';
-    if (value.length < 8) return 'Password must be at least 8 characters';
-    final regex = RegExp(AppConstants.passwordRegex);
-    if (!regex.hasMatch(value)) {
-      return 'Password must contain uppercase, lowercase, number and special character';
-    }
+    // if (value.length < 8) return 'Password must be at least 8 characters';
+    // final regex = RegExp(AppConstants.passwordRegex);
+    // if (!regex.hasMatch(value)) {
+    //   return 'Password must contain uppercase, lowercase, number and special character';
+    // }
     return null;
   }
 
@@ -52,7 +52,8 @@ class Validators {
     if (value.length != AppConstants.otpLength) {
       return 'OTP must be ${AppConstants.otpLength} digits';
     }
-    if (!RegExp(r'^\d+$').hasMatch(value)) return 'OTP must contain only digits';
+    if (!RegExp(r'^\d+$').hasMatch(value))
+      return 'OTP must contain only digits';
     return null;
   }
 

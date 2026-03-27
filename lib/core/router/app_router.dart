@@ -26,17 +26,17 @@ import 'package:service_provider_umi/featured/profile/provider_listing_screen/pr
 import 'package:service_provider_umi/featured/profile/provider_profile_overview/provider_profile_screen.dart';
 import 'package:service_provider_umi/featured/profile/reviews_screen.dart';
 import 'package:service_provider_umi/featured/profile/static_page_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_details_screen/booking_details_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_schedule_screen/booking_schedule_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/booking_time_screen/booking_time_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/provider_service_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/filter_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/search_results/service_search_results_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_search_screen/search_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/service_sub_category_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/upcoming_bookings_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/screens/work_schedule_screen/work_schedule_screen.dart';
-import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
+import 'package:service_provider_umi/featured/service/screens/booking_details_screen/booking_details_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/booking_schedule_screen/booking_schedule_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/booking_time_screen/booking_time_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/provider_service_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/filter_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_results/service_search_results_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_sub_category_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/work_schedule_screen/work_schedule_screen.dart';
+import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
@@ -361,7 +361,7 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.providerUpcomingBookings,
                 builder: (_, __) =>
-                    const Scaffold(body: UpcomingBookingsScreen()),
+                    const Scaffold(body: ServiceProviderHomeScreen()),
               ),
             ],
           ),

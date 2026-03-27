@@ -14,7 +14,7 @@ Future<void> main() async {
 
   FlavorConfig.initialize(
     flavor: Flavor.dev,
-    baseUrl: 'https://dev.api.com',
+    baseUrl: 'http://103.186.20.117:6000/api/v1',
     socketUrl: 'wss://dev.api.com/socket',
     googleMapsApiKey: 'YOUR_KEY',
     agoraAppId: 'AGORA_ID',

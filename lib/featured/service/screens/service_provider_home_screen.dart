@@ -6,7 +6,7 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 
-import 'package:service_provider_umi/featured/service/presentation/widgets/booking_card_widget.dart';
+import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../../core/di/app_role_provider.dart';
@@ -14,14 +14,15 @@ import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 
 // ─── Screen ───────────────────────────────────────────────────
-class UpcomingBookingsScreen extends ConsumerStatefulWidget {
-  const UpcomingBookingsScreen({super.key});
+class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
+  const ServiceProviderHomeScreen({super.key});
 
   @override
-  ConsumerState<UpcomingBookingsScreen> createState() => _CalendarScreenState();
+  ConsumerState<ServiceProviderHomeScreen> createState() =>
+      _CalendarScreenState();
 }
 
-class _CalendarScreenState extends ConsumerState<UpcomingBookingsScreen> {
+class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   DateTime _selectedDate = DateTime(2024, 6, 14);
   final List<BookingItem> _bookings = [
     BookingItem(

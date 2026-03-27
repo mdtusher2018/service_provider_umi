@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../app_routes.dart';
 
 // Inject your auth provider here
-// import '../../../features/auth/presentation/providers/auth_provider.dart';
+// import '../../../features/auth/providers/auth_provider.dart';
 
 class AuthGuard {
   static String? redirect(Ref ref, GoRouterState state) {

@@ -2,25 +2,37 @@
 
 // ── Requests ─────────────────────────────────────────────────────────────────
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class SignupRequest {
   final String role;
   final String email;
   final String password;
   final String fullName;
+  final String? phoneNumber;
+  final LatLng? location;
 
   const SignupRequest({
     required this.role,
     required this.email,
     required this.password,
     required this.fullName,
+    required this.phoneNumber,
+    required this.location,
   });
 
   Map<String, dynamic> toJson() => {
-        'role': role,
-        'email': email,
-        'password': password,
-        'fullName': fullName,
-      };
+    'role': role,
+    'email': email,
+    'password': password,
+    'name': fullName,
+    'phoneNumber': ?phoneNumber,
+    // if (location != null)
+    //   'location': {
+    //     "type": "Point",
+    //     "coordinates": [location!.latitude, location!.longitude],
+    //   },
+  };
 }
 
 class LoginEmailRequest {
@@ -39,9 +51,9 @@ class LoginGoogleRequest {
   const LoginGoogleRequest({required this.email, this.role});
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        if (role != null) 'role': role,
-      };
+    'email': email,
+    if (role != null) 'role': role,
+  };
 }
 
 class LoginAppleRequest {
@@ -51,18 +63,27 @@ class LoginAppleRequest {
   const LoginAppleRequest({required this.appleId, this.role});
 
   Map<String, dynamic> toJson() => {
-        'appleId': appleId,
-        if (role != null) 'role': role,
-      };
+    'appleId': appleId,
+    if (role != null) 'role': role,
+  };
 }
 
 // ── Response ──────────────────────────────────────────────────────────────────
 
-class AuthResponse {
+class SignInResponse {
   final String token;
 
-  const AuthResponse({required this.token});
+  const SignInResponse({required this.token});
 
-  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
-      AuthResponse(token: json['token'] as String);
+  factory SignInResponse.fromJson(Map<String, dynamic> json) =>
+      SignInResponse(token: json['accessToken'] as String);
+}
+
+class SignupResponse {
+  final String token;
+
+  const SignupResponse({required this.token});
+
+  factory SignupResponse.fromJson(Map<String, dynamic> json) =>
+      SignupResponse(token: json['otpToken']['token'] as String);
 }

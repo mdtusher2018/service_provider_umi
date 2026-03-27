@@ -17,12 +17,9 @@ class AuthRepository with SafeCall {
        _local = local;
 
   Future<Result<String, Failure>> loginWithEmail(
-    String email,
-    String password,
+    LoginEmailRequest request,
   ) async {
-    final result = await asyncGuard(
-      () => _remote.loginWithEmail(email, password),
-    );
+    final result = await asyncGuard(() => _remote.loginWithEmail(request));
     return result.when(
       success: (token) async {
         await _local.write(StorageKey.accessToken, token);
@@ -33,12 +30,9 @@ class AuthRepository with SafeCall {
   }
 
   Future<Result<String, Failure>> loginWithGoogle(
-    String email, {
-    String? role,
-  }) async {
-    final result = await asyncGuard(
-      () => _remote.loginWithGoogle(email, role: role),
-    );
+    LoginGoogleRequest request,
+  ) async {
+    final result = await asyncGuard(() => _remote.loginWithGoogle(request));
     return result.when(
       success: (token) async {
         await _local.write(StorageKey.accessToken, token);
@@ -49,12 +43,9 @@ class AuthRepository with SafeCall {
   }
 
   Future<Result<String, Failure>> loginWithApple(
-    String appleId, {
-    String? role,
-  }) async {
-    final result = await asyncGuard(
-      () => _remote.loginWithApple(appleId, role: role),
-    );
+    LoginAppleRequest request,
+  ) async {
+    final result = await asyncGuard(() => _remote.loginWithApple(request));
     return result.when(
       success: (token) async {
         await _local.write(StorageKey.accessToken, token);
@@ -66,6 +57,16 @@ class AuthRepository with SafeCall {
 
   Future<Result<String, Failure>> signup(SignupRequest request) async {
     final result = await asyncGuard(() => _remote.signup(request));
+    return result.when(
+      success: (token) async {
+        await _local.write(StorageKey.accessToken, token);
+        return Success(token);
+      },
+      failure: (f) async => Error(f),
+    );
+  }
+  Future<Result<String, Failure>> verifyOtp(String request) async {
+    final result = await asyncGuard(() => _remote.verifyOtp(request));
     return result.when(
       success: (token) async {
         await _local.write(StorageKey.accessToken, token);
