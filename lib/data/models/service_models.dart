@@ -1,74 +1,55 @@
-// data/models/service_models.dart
+// ── Service ──────────────────────────────────────────────────────────────────
 
 class ServiceModel {
-  final int id;
+  final String id;
   final String name;
-  final String image;
-  final bool? hasSubCategory;
+  final String? image;
 
   const ServiceModel({
     required this.id,
     required this.name,
-    required this.image,
-    this.hasSubCategory,
+    this.image,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    image: json['image'] as String,
-    hasSubCategory: json['hasSubCategory'] as bool?,
-  );
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'image': image,
-    'hasSubCategory': hasSubCategory,
-  };
-}
-
-class HomeServicesResponse {
-  final List<ServiceModel> services;
-  final bool hasMore;
-
-  const HomeServicesResponse({required this.services, required this.hasMore});
-
-  factory HomeServicesResponse.fromJson(Map<String, dynamic> json) =>
-      HomeServicesResponse(
-        services: (json['services'] as List)
-            .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        hasMore: json['hasMore'] as bool,
+        id: json['_id'] as String? ?? json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        image: json['image'] as String?,
       );
-
-  Map<String, dynamic> toJson() => {
-    'services': services.map((s) => s.toJson()).toList(),
-    'hasMore': hasMore,
-  };
 }
 
-class AllServicesResponse {
-  final List<ServiceModel> services;
+class CreateServiceRequest {
+  final String name;
 
-  const AllServicesResponse({required this.services});
+  const CreateServiceRequest({required this.name});
 
-  factory AllServicesResponse.fromJson(Map<String, dynamic> json) =>
-      AllServicesResponse(
-        services: (json['services'] as List)
-            .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
-            .toList(),
+  Map<String, dynamic> toJson() => {'name': name};
+}
+
+class UpdateServiceRequest {
+  final String? name;
+
+  const UpdateServiceRequest({this.name});
+
+  Map<String, dynamic> toJson() => {
+        if (name != null) 'name': name,
+      };
+}
+
+class ContentItem {
+  final String id;
+  final String type;
+  final String content;
+
+  const ContentItem({
+    required this.id,
+    required this.type,
+    required this.content,
+  });
+
+  factory ContentItem.fromJson(Map<String, dynamic> json) => ContentItem(
+        id: json['_id'] as String? ?? json['id'] as String? ?? '',
+        type: json['type'] as String? ?? '',
+        content: json['content'] as String? ?? '',
       );
-
-  Map<String, dynamic> toJson() => {
-    'services': services.map((s) => s.toJson()).toList(),
-  };
-}
-
-class SubCategoriesRequest {
-  final String serviceType;
-
-  const SubCategoriesRequest({required this.serviceType});
-
-  Map<String, dynamic> toJson() => {'service_type': serviceType};
 }

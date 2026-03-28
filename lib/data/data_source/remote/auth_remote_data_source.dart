@@ -4,12 +4,16 @@ import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<String> loginWithEmail(LoginEmailRequest request);
-  Future<String> loginWithGoogle(LoginGoogleRequest request);
-  Future<String> loginWithApple(LoginAppleRequest request);
-  Future<String> signup(SignupRequest request);
-  Future<String> verifyOtp(String request);
-  Future<void> logout();
+  Future<SignInResponse> loginWithEmail(LoginEmailRequest request);
+  Future<SignInResponse> loginWithGoogle(GoogleLoginRequest request);
+  Future<SignUpOtpTokenResponse> signup(SignupRequest request);
+  Future<OtpVerifedResponse> verifyOtp(VerifyOtpRequest request);
+  Future<ResendOtpTokenResponse> resendOtp(ResendOtpRequest request);
+  Future<ForgotPasswordOtpTokenResponse> forgotPassword(
+    ForgotPasswordRequest request,
+  );
+  Future<void> resetPassword(ResetPasswordRequest request);
+  Future<void> changePassword(ChangePasswordRequest request);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -17,85 +21,94 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl({required Dio apiService}) : _dio = apiService;
 
+  // ── POST /auth/login ─────────────────────────────────────────────────────────
   @override
-  Future<String> loginWithEmail(LoginEmailRequest request) async {
+  Future<SignInResponse> loginWithEmail(LoginEmailRequest request) async {
     final response = await _dio.post(
       ApiEndpoints.login,
-      data: {'email': request.email, 'password': request.password},
+      data: request.toJson(),
     );
-    return _extractToken<SignInResponse>(response, (data) {
-      return SignInResponse.fromJson((data ?? {}) as Map<String, dynamic>);
-    });
+    return _parse(response, SignInResponse.fromJson);
   }
 
+  // ── POST /auth/google-login ──────────────────────────────────────────────────
   @override
-  Future<String> loginWithGoogle(LoginGoogleRequest request) async {
+  Future<SignInResponse> loginWithGoogle(GoogleLoginRequest request) async {
     final response = await _dio.post(
-      ApiEndpoints.socialLogin,
-      data: {'email': request.email, 'role': ?request.role},
+      ApiEndpoints.googleLogin,
+      data: request.toJson(),
     );
-    return _extractToken<SignInResponse>(response, (data) {
-      return SignInResponse.fromJson((data ?? {}) as Map<String, dynamic>);
-    });
+    return _parse(response, SignInResponse.fromJson);
   }
 
+  // ── POST /users (register) ───────────────────────────────────────────────────
   @override
-  Future<String> loginWithApple(LoginAppleRequest request) async {
-    final response = await _dio.post(
-      ApiEndpoints.socialLogin,
-      data: {'appleId': request.appleId, 'role': ?request.role},
-    );
-    return _extractToken<SignInResponse>(response, (data) {
-      return SignInResponse.fromJson((data ?? {}) as Map<String, dynamic>);
-    });
-  }
-
-  @override
-  Future<String> signup(SignupRequest request) async {
+  Future<SignUpOtpTokenResponse> signup(SignupRequest request) async {
     final response = await _dio.post(
       ApiEndpoints.register,
       data: request.toJson(),
     );
-    return _extractToken<SignupResponse>(response, (data) {
-      return SignupResponse.fromJson((data ?? {}) as Map<String, dynamic>);
-    });
+    return _parse(response, SignUpOtpTokenResponse.fromJson);
   }
 
+  // ── POST /otp/verify-otp ─────────────────────────────────────────────────────
   @override
-  Future<String> verifyOtp(String request) async {
+  Future<OtpVerifedResponse> verifyOtp(VerifyOtpRequest request) async {
     final response = await _dio.post(
       ApiEndpoints.verifyOtp,
-      data: {'otp': request},
+      data: request.toJson(),
     );
-    return _extractToken<SignupResponse>(response, (data) {
-      return SignupResponse.fromJson((data ?? {}) as Map<String, dynamic>);
-    });
+    return _parse(response, OtpVerifedResponse.fromJson);
   }
 
+  // ── POST /otp/resend-otp ─────────────────────────────────────────────────────
   @override
-  Future<void> logout() async {
-    await _dio.post(ApiEndpoints.logout);
-  }
-
-  String _extractToken<T>(Response response, Function(dynamic) dataCasting) {
-    final apiResponse = ApiResponse<T>.fromJson(
-      response.data,
-      (data) => dataCasting(data),
+  Future<ResendOtpTokenResponse> resendOtp(ResendOtpRequest request) async {
+    final response = await _dio.post(
+      ApiEndpoints.resendOtp,
+      data: request.toJson(),
     );
 
+    return _parse(response, ResendOtpTokenResponse.fromJson);
+  }
+
+  // ── PATCH /auth/forgot-password ──────────────────────────────────────────────
+  @override
+  Future<ForgotPasswordOtpTokenResponse> forgotPassword(
+    ForgotPasswordRequest request,
+  ) async {
+    final response = await _dio.patch(
+      ApiEndpoints.forgotPassword,
+      data: request.toJson(),
+    );
+
+    return _parse(response, ForgotPasswordOtpTokenResponse.fromJson);
+  }
+
+  // ── PATCH /auth/reset-password ───────────────────────────────────────────────
+  @override
+  Future<void> resetPassword(ResetPasswordRequest request) async {
+    await _dio.patch(ApiEndpoints.resetPassword, data: request.toJson());
+  }
+
+  // ── PATCH /auth/change-password (requires bearer token) ─────────────────────
+  @override
+  Future<void> changePassword(ChangePasswordRequest request) async {
+    await _dio.patch(ApiEndpoints.changePassword, data: request.toJson());
+  }
+
+  // ── Helper ───────────────────────────────────────────────────────────────────
+  T _parse<T>(Response response, T Function(Map<String, dynamic>) fromJson) {
+    final apiResponse = ApiResponse<T>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) => fromJson(data as Map<String, dynamic>),
+    );
     if (!apiResponse.success) {
       throw Exception(
-        apiResponse.error?.message ?? apiResponse.message ?? 'Login failed',
+        apiResponse.error?.message ?? apiResponse.message ?? 'Request failed',
       );
     }
-
-    // Assuming the token is always in the data model
-    final token = (apiResponse.data as dynamic).token;
-
-    if (token == null || token.isEmpty) {
-      throw Exception('Token not found in response');
-    }
-
-    return token;
+    if (apiResponse.data == null) throw Exception('Empty response data');
+    return apiResponse.data as T;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/config/app_constants.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -22,6 +23,8 @@ part 'widgets/_showAuthBottomSheet.dart';
 part 'widgets/_show_create_account_dialog.dart';
 part 'widgets/_show_login_account_dialog.dart';
 part 'widgets/_show_otp_verify_screen.dart';
+part 'widgets/_show_forgot_password_dialog.dart';
+part 'widgets/_show_reset_password_soalog.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});

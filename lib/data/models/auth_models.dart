@@ -1,37 +1,26 @@
-// models/auth/auth_models.dart
-
-// ── Requests ─────────────────────────────────────────────────────────────────
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// ── Requests ──────────────────────────────────────────────────────────────────
 
 class SignupRequest {
-  final String role;
+  final String name;
   final String email;
   final String password;
-  final String fullName;
   final String? phoneNumber;
-  final LatLng? location;
+  final Map<String, dynamic>? location;
 
   const SignupRequest({
-    required this.role,
+    required this.name,
     required this.email,
     required this.password,
-    required this.fullName,
-    required this.phoneNumber,
-    required this.location,
+    this.phoneNumber,
+    this.location,
   });
 
   Map<String, dynamic> toJson() => {
-    'role': role,
+    'name': name,
     'email': email,
     'password': password,
-    'name': fullName,
-    'phoneNumber': ?phoneNumber,
-    // if (location != null)
-    //   'location': {
-    //     "type": "Point",
-    //     "coordinates": [location!.latitude, location!.longitude],
-    //   },
+    if (phoneNumber != null) 'phoneNumber': phoneNumber,
+    if (location != null) 'location': location,
   };
 }
 
@@ -44,46 +33,132 @@ class LoginEmailRequest {
   Map<String, dynamic> toJson() => {'email': email, 'password': password};
 }
 
-class LoginGoogleRequest {
+class GoogleLoginRequest {
+  final String token;
+
+  const GoogleLoginRequest({required this.token});
+
+  Map<String, dynamic> toJson() => {'token': token};
+}
+
+class ForgotPasswordRequest {
   final String email;
-  final String? role; // only on first login
 
-  const LoginGoogleRequest({required this.email, this.role});
+  const ForgotPasswordRequest({required this.email});
+
+  Map<String, dynamic> toJson() => {'email': email};
+}
+
+class ResetPasswordRequest {
+  final String newPassword;
+  final String confirmPassword;
+
+  const ResetPasswordRequest({
+    required this.newPassword,
+    required this.confirmPassword,
+  });
 
   Map<String, dynamic> toJson() => {
-    'email': email,
-    if (role != null) 'role': role,
+    'newPassword': newPassword,
+    'confirmPassword': confirmPassword,
   };
 }
 
-class LoginAppleRequest {
-  final String appleId;
-  final String? role; // only on first login
+class ChangePasswordRequest {
+  final String oldPassword;
+  final String newPassword;
+  final String confirmPassword;
 
-  const LoginAppleRequest({required this.appleId, this.role});
+  const ChangePasswordRequest({
+    required this.oldPassword,
+    required this.newPassword,
+    required this.confirmPassword,
+  });
 
   Map<String, dynamic> toJson() => {
-    'appleId': appleId,
-    if (role != null) 'role': role,
+    'oldPassword': oldPassword,
+    'newPassword': newPassword,
+    'confirmPassword': confirmPassword,
   };
 }
 
-// ── Response ──────────────────────────────────────────────────────────────────
+class RefreshTokenRequest {
+  final String refreshToken;
+
+  const RefreshTokenRequest({required this.refreshToken});
+
+  Map<String, dynamic> toJson() => {'refreshToken': refreshToken};
+}
+
+class VerifyOtpRequest {
+  final String otp;
+
+  const VerifyOtpRequest({required this.otp});
+
+  Map<String, dynamic> toJson() => {'otp': otp};
+}
+
+class ResendOtpRequest {
+  final String email;
+
+  const ResendOtpRequest({required this.email});
+
+  Map<String, dynamic> toJson() => {'email': email};
+}
+
+// ── Responses ─────────────────────────────────────────────────────────────────
 
 class SignInResponse {
   final String token;
-
-  const SignInResponse({required this.token});
-
-  factory SignInResponse.fromJson(Map<String, dynamic> json) =>
-      SignInResponse(token: json['accessToken'] as String);
+  final String refreshToken;
+  const SignInResponse({required this.token, required this.refreshToken});
+  factory SignInResponse.fromJson(Map<String, dynamic> json) {
+    return SignInResponse(
+      token: json['accessToken'] as String? ?? '',
+      refreshToken: json['refreshToken'] as String? ?? '',
+    );
+  }
 }
 
-class SignupResponse {
+class SignUpOtpTokenResponse {
   final String token;
 
-  const SignupResponse({required this.token});
+  const SignUpOtpTokenResponse({required this.token});
 
-  factory SignupResponse.fromJson(Map<String, dynamic> json) =>
-      SignupResponse(token: json['otpToken']['token'] as String);
+  factory SignUpOtpTokenResponse.fromJson(Map<String, dynamic> json) {
+    final otpToken = json['otpToken'] as Map<String, dynamic>?;
+    return SignUpOtpTokenResponse(token: otpToken?['token'] as String? ?? '');
+  }
+}
+
+class OtpVerifedResponse {
+  final String token;
+
+  const OtpVerifedResponse({required this.token});
+
+  factory OtpVerifedResponse.fromJson(Map<String, dynamic> json) {
+    return OtpVerifedResponse(token: json['token'] as String? ?? '');
+  }
+}
+
+class ResendOtpTokenResponse {
+  final String token;
+
+  const ResendOtpTokenResponse({required this.token});
+
+  factory ResendOtpTokenResponse.fromJson(Map<String, dynamic> json) {
+    return ResendOtpTokenResponse(token: json['token'] as String? ?? '');
+  }
+}
+
+class ForgotPasswordOtpTokenResponse {
+  final String token;
+
+  const ForgotPasswordOtpTokenResponse({required this.token});
+
+  factory ForgotPasswordOtpTokenResponse.fromJson(Map<String, dynamic> json) {
+    return ForgotPasswordOtpTokenResponse(
+      token: json['token'] as String? ?? '',
+    );
+  }
 }

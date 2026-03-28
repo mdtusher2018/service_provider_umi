@@ -1,138 +1,112 @@
-// models/user/user_models.dart
-
-// ── Profile ───────────────────────────────────────────────────────────────────
+// ── User Profile ──────────────────────────────────────────────────────────────
 
 class UserProfile {
   final String id;
   final String name;
   final String email;
-  final String phone;
-  final String profileImage;
-  final bool isProfessional;
-  final bool verified;
-  final String about;
-  final String address;
-  final String currentRole;
+  final String? phoneNumber;
+  final String? profileImage;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? address;
+  final String? bio;
+  final String? rank;
+  final bool? privacySettings;
+  final bool? businessClassTrained;
+  final List<int>? fleet;
+  final String? agreements;
+  final String? referralCode;
+  final String role;
 
   const UserProfile({
     required this.id,
     required this.name,
     required this.email,
-    required this.phone,
-    required this.profileImage,
-    required this.isProfessional,
-    required this.verified,
-    required this.about,
-    required this.address,
-    required this.currentRole,
+    this.phoneNumber,
+    this.profileImage,
+    this.gender,
+    this.dateOfBirth,
+    this.address,
+    this.bio,
+    this.rank,
+    this.privacySettings,
+    this.businessClassTrained,
+    this.fleet,
+    this.agreements,
+    this.referralCode,
+    required this.role,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        email: json['email'] as String,
-        phone: json['phone'] as String,
-        profileImage: json['profile_image'] as String,
-        isProfessional: json['is_professional'] as bool,
-        verified: json['verified'] as bool,
-        about: json['about'] as String,
-        address: json['address'] as String,
-        currentRole: json['current_role'] as String,
+        id: json['_id'] as String? ?? json['id'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+        email: json['email'] as String? ?? '',
+        phoneNumber: json['phoneNumber'] as String?,
+        profileImage: json['profile'] as String?,
+        gender: json['gender'] as String?,
+        dateOfBirth: json['dateOfBirth'] as String?,
+        address: json['address'] as String?,
+        bio: json['bio'] as String?,
+        rank: json['rank'] as String?,
+        privacySettings: json['privacySettings'] as bool?,
+        businessClassTrained: json['businessClassTrained'] as bool?,
+        fleet: (json['fleet'] as List?)?.map((e) => e as int).toList(),
+        agreements: json['agreements'] as String?,
+        referralCode: json['referralCode'] as String?,
+        role: json['role'] as String? ?? 'user',
       );
 }
 
+// ── Update Profile Request ────────────────────────────────────────────────────
+
 class UpdateProfileRequest {
   final String? name;
-  final String? phone;
-  final String? about;
+  final String? email;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? phoneNumber;
   final String? address;
-  // profile_image sent as multipart file
+  final String? customerId;
+  final bool? privacySettings;
+  final bool? businessClassTrained;
+  final String? bio;
+  final String? rank;
+  final List<int>? fleet;
+  final String? agreements;
+  final String? referralCode;
 
   const UpdateProfileRequest({
     this.name,
-    this.phone,
-    this.about,
+    this.email,
+    this.gender,
+    this.dateOfBirth,
+    this.phoneNumber,
     this.address,
+    this.customerId,
+    this.privacySettings,
+    this.businessClassTrained,
+    this.bio,
+    this.rank,
+    this.fleet,
+    this.agreements,
+    this.referralCode,
   });
 
   Map<String, dynamic> toJson() => {
         if (name != null) 'name': name,
-        if (phone != null) 'phone': phone,
-        if (about != null) 'about': about,
+        if (email != null) 'email': email,
+        if (gender != null) 'gender': gender,
+        if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
+        if (phoneNumber != null) 'phoneNumber': phoneNumber,
         if (address != null) 'address': address,
+        if (customerId != null) 'customerId': customerId,
+        if (privacySettings != null) 'privacySettings': privacySettings,
+        if (businessClassTrained != null)
+          'businessClassTrained': businessClassTrained,
+        if (bio != null) 'bio': bio,
+        if (rank != null) 'rank': rank,
+        if (fleet != null) 'fleet': fleet,
+        if (agreements != null) 'agreements': agreements,
+        if (referralCode != null) 'referralCode': referralCode,
       };
-}
-
-// ── Addresses ─────────────────────────────────────────────────────────────────
-
-class UserAddress {
-  final String id;
-  final String name;
-  final String address;
-
-  const UserAddress({
-    required this.id,
-    required this.name,
-    required this.address,
-  });
-
-  factory UserAddress.fromJson(Map<String, dynamic> json) => UserAddress(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        address: json['address'] as String,
-      );
-}
-
-class AddAddressRequest {
-  final String name;
-  final AddressLocation location;
-
-  const AddAddressRequest({required this.name, required this.location});
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'location': location.toJson(),
-      };
-}
-
-class AddressLocation {
-  final String address;
-  final List<double> coordinates;
-
-  const AddressLocation({required this.address, required this.coordinates});
-
-  Map<String, dynamic> toJson() => {
-        'address': address,
-        'coordinates': coordinates,
-      };
-}
-
-// ── Password ──────────────────────────────────────────────────────────────────
-
-class ChangePasswordRequest {
-  final String oldPassword;
-  final String newPassword;
-  final String confirmPassword;
-
-  const ChangePasswordRequest({
-    required this.oldPassword,
-    required this.newPassword,
-    required this.confirmPassword,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'old_password': oldPassword,
-        'new_password': newPassword,
-        'confirm_password': confirmPassword,
-      };
-}
-
-// ── OTP ───────────────────────────────────────────────────────────────────────
-
-class VerifyOtpRequest {
-  final int otp;
-
-  const VerifyOtpRequest({required this.otp});
-
-  Map<String, dynamic> toJson() => {'otp': otp};
 }

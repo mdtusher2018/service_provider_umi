@@ -1,66 +1,71 @@
-// featured/services/service_provider.dart
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
+import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/repository/service_repository.dart';
 
+part 'service_provider.freezed.dart';
 part 'service_provider.g.dart';
 
-// ── Home Services Notifier ────────────────────────────────────────────────────
+// ── States ────────────────────────────────────────────────────────────────────
 
-@riverpod
-class HomeServicesNotifier extends _$HomeServicesNotifier {
-  @override
-  Future<HomeServicesResponse> build() => _fetch();
-
-  Future<HomeServicesResponse> _fetch() async {
-    final result = await ref.read(serviceRepositoryProvider).getHomeServices();
-
-    return result.when(success: (data) => data, failure: (f) => throw f);
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_fetch);
-  }
+@freezed
+abstract class ServiceListState with _$ServiceListState {
+  const factory ServiceListState.initial() = ServiceListInitial;
+  const factory ServiceListState.loading() = ServiceListLoading;
+  const factory ServiceListState.success(List<ServiceModel> categories) =
+      ServiceListSuccess;
+  const factory ServiceListState.failure(Failure failure) = ServiceListFailure;
 }
 
-// ── All Services Notifier ─────────────────────────────────────────────────────
-
-@riverpod
-class AllServicesNotifier extends _$AllServicesNotifier {
-  @override
-  Future<AllServicesResponse> build() => _fetch();
-
-  Future<AllServicesResponse> _fetch() async {
-    final result = await ref.read(serviceRepositoryProvider).getAllServices();
-
-    return result.when(success: (data) => data, failure: (f) => throw f);
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_fetch);
-  }
+@freezed
+abstract class ContentListState with _$ContentListState {
+  const factory ContentListState.initial() = ContentListInitial;
+  const factory ContentListState.loading() = ContentListLoading;
+  const factory ContentListState.success(List<ContentItem> items) =
+      ContentListSuccess;
+  const factory ContentListState.failure(Failure failure) = ContentListFailure;
 }
 
-// ── Sub-Categories Notifier ───────────────────────────────────────────────────
+// ── GET /categories ───────────────────────────────────────────────────────────
 
 @riverpod
-class SubCategoriesNotifier extends _$SubCategoriesNotifier {
+class CategoriesNotifier extends _$CategoriesNotifier {
   @override
-  Future<AllServicesResponse> build(String serviceType) => _fetch(serviceType);
+  ServiceListState build() => const ServiceListState.initial();
 
-  Future<AllServicesResponse> _fetch(String serviceType) async {
-    final result = await ref
-        .read(serviceRepositoryProvider)
-        .getSubCategories(serviceType);
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-    return result.when(success: (data) => data, failure: (f) => throw f);
+  Future<void> fetch() async {
+    state = const ServiceListState.loading();
+    final result = await _repo.getAllCategories();
+    state = result.when(
+      success: ServiceListState.success,
+      failure: ServiceListState.failure,
+    );
   }
 
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetch("arg"));
+  void reset() => state = const ServiceListState.initial();
+}
+
+// ── GET /contents ─────────────────────────────────────────────────────────────
+
+@riverpod
+class ContentsNotifier extends _$ContentsNotifier {
+  @override
+  ContentListState build() => const ContentListState.initial();
+
+  ContentRepository get _repo => ref.read(contentRepositoryProvider);
+
+  Future<void> fetch() async {
+    state = const ContentListState.loading();
+    final result = await _repo.getContents();
+    state = result.when(
+      success: ContentListState.success,
+      failure: ContentListState.failure,
+    );
   }
+
+  void reset() => state = const ContentListState.initial();
 }

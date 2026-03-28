@@ -37,11 +37,15 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
       state.when(
         initial: () {},
         loading: () {},
-        success: (_) {
+        success: () {
           // ref.read(appRoleProvider.notifier).loginAsUser();
           // context.go(AppRoutes.userHome);
           Navigator.pop(context);
-          _showOTPVerifyDialog(ref);
+          _showOTPVerifyDialog(
+            ref,
+            email: _emailController.text.trim(),
+            isSignup: true,
+          );
         },
         failure: (error) {
           context.showErrorSnackBar(error.message);
@@ -159,10 +163,9 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
     ref
         .read(signupProvider.notifier)
         .signup(
-          fullName: _nameController.text.trim(),
+          name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text,
-          role: widget.role.name,
         );
   }
 }

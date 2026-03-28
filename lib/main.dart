@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/config/flavor_config.dart';
@@ -26,6 +29,22 @@ Future<void> main() async {
   await localStorage.init();
   await HiveService.init();
 
+  if (kDebugMode) {
+    /// 🔴 Flutter framework errors
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+
+      debugPrint('🔥 FLUTTER ERROR: ${details.exception}');
+      debugPrint('STACK: ${details.stack}');
+    };
+
+    /// 🔴 Platform / async errors (Flutter 3.3+)
+    PlatformDispatcher.instance.onError = (error, stack) {
+      debugPrint('🔥 PLATFORM ERROR: $error');
+      debugPrint('STACK: $stack');
+      return true;
+    };
+  }
   runApp(
     ProviderScope(
       overrides: [

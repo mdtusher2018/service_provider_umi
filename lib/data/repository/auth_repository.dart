@@ -16,73 +16,111 @@ class AuthRepository with SafeCall {
   }) : _remote = remote,
        _local = local;
 
-  Future<Result<String, Failure>> loginWithEmail(
+  // ── POST /auth/login ─────────────────────────────────────────────────────────
+  Future<Result<SignInResponse, Failure>> loginWithEmail(
     LoginEmailRequest request,
   ) async {
     final result = await asyncGuard(() => _remote.loginWithEmail(request));
     return result.when(
-      success: (token) async {
-        await _local.write(StorageKey.accessToken, token);
-        return Success(token);
+      success: (tokens) async {
+        await _saveTokens(tokens.token, refreshToken: tokens.refreshToken);
+        return Success(tokens);
       },
       failure: (f) async => Error(f),
     );
   }
 
-  Future<Result<String, Failure>> loginWithGoogle(
-    LoginGoogleRequest request,
+  // ── POST /auth/google-login ──────────────────────────────────────────────────
+  Future<Result<SignInResponse, Failure>> loginWithGoogle(
+    GoogleLoginRequest request,
   ) async {
     final result = await asyncGuard(() => _remote.loginWithGoogle(request));
     return result.when(
-      success: (token) async {
-        await _local.write(StorageKey.accessToken, token);
-        return Success(token);
+      success: (data) async {
+        await _saveTokens(data.token);
+        return Success(data);
       },
       failure: (f) async => Error(f),
     );
   }
 
-  Future<Result<String, Failure>> loginWithApple(
-    LoginAppleRequest request,
+  // ── POST /users ──────────────────────────────────────────────────────────────
+  Future<Result<SignUpOtpTokenResponse, Failure>> signup(
+    SignupRequest request,
   ) async {
-    final result = await asyncGuard(() => _remote.loginWithApple(request));
-    return result.when(
-      success: (token) async {
-        await _local.write(StorageKey.accessToken, token);
-        return Success(token);
-      },
-      failure: (f) async => Error(f),
-    );
-  }
-
-  Future<Result<String, Failure>> signup(SignupRequest request) async {
     final result = await asyncGuard(() => _remote.signup(request));
     return result.when(
-      success: (token) async {
-        await _local.write(StorageKey.accessToken, token);
-        return Success(token);
+      success: (otpResp) async {
+        // Store the short-lived OTP token so the interceptor / verify call
+        // can attach it as a bearer token.
+        await _local.write(StorageKey.accessToken, otpResp.token);
+        return Success(otpResp);
       },
       failure: (f) async => Error(f),
     );
   }
-  Future<Result<String, Failure>> verifyOtp(String request) async {
+
+  // ── POST /otp/verify-otp ─────────────────────────────────────────────────────
+  Future<Result<OtpVerifedResponse, Failure>> verifyOtp(
+    VerifyOtpRequest request,
+  ) async {
     final result = await asyncGuard(() => _remote.verifyOtp(request));
     return result.when(
-      success: (token) async {
-        await _local.write(StorageKey.accessToken, token);
-        return Success(token);
+      success: (data) async {
+        await _saveTokens(data.token);
+        return Success(data);
       },
       failure: (f) async => Error(f),
     );
   }
 
-  Future<Result<void, Failure>> logout() async {
-    await _local.clearAll();
-    return asyncGuard(() => _remote.logout());
+  // ── POST /otp/resend-otp ─────────────────────────────────────────────────────
+  Future<Result<ResendOtpTokenResponse, Failure>> resendOtp(
+    ResendOtpRequest request,
+  ) async {
+    final result = await asyncGuard(() => _remote.resendOtp(request));
+    return result.when(
+      success: (data) async {
+        await _saveTokens(data.token);
+        return Success(data);
+      },
+      failure: (f) async => Error(f),
+    );
   }
 
+  // ── PATCH /auth/forgot-password ──────────────────────────────────────────────
+  Future<Result<ForgotPasswordOtpTokenResponse, Failure>> forgotPassword(
+    ForgotPasswordRequest request,
+  ) async {
+    final result = await asyncGuard(() => _remote.forgotPassword(request));
+    return result.when(
+      success: (data) async {
+        await _saveTokens(data.token);
+        return Success(data);
+      },
+      failure: (f) async => Error(f),
+    );
+  }
+
+  // ── PATCH /auth/reset-password ───────────────────────────────────────────────
+  Future<Result<void, Failure>> resetPassword(ResetPasswordRequest request) =>
+      asyncGuard(() => _remote.resetPassword(request));
+
+  // ── PATCH /auth/change-password ──────────────────────────────────────────────
+  Future<Result<void, Failure>> changePassword(ChangePasswordRequest request) =>
+      asyncGuard(() => _remote.changePassword(request));
+
+  // ── Local helpers ────────────────────────────────────────────────────────────
   Future<bool> isLoggedIn() async {
     final token = await _local.read<String>(StorageKey.accessToken);
     return token != null && token.isNotEmpty;
+  }
+
+  Future<void> logout() async => _local.clearAll();
+
+  Future<void> _saveTokens(String accessToken, {String? refreshToken}) async {
+    await _local.write(StorageKey.accessToken, accessToken);
+
+    await _local.write(StorageKey.refreshToken, refreshToken);
   }
 }

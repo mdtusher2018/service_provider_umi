@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
@@ -9,21 +8,17 @@ import 'package:service_provider_umi/data/repository/auth_repository.dart';
 part 'auth_provider.freezed.dart';
 part 'auth_provider.g.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shared State (reused by all auth notifiers)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Shared State ──────────────────────────────────────────────────────────────
 
 @freezed
 abstract class AuthState with _$AuthState {
   const factory AuthState.initial() = AuthInitial;
   const factory AuthState.loading() = AuthLoading;
-  const factory AuthState.success(String token) = AuthSuccess;
+  const factory AuthState.success() = AuthSuccess;
   const factory AuthState.failure(Failure failure) = AuthFailure;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Login Notifier  — email / google / apple
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Login ─────────────────────────────────────────────────────────────────────
 
 @riverpod
 class LoginNotifier extends _$LoginNotifier {
@@ -32,36 +27,34 @@ class LoginNotifier extends _$LoginNotifier {
 
   AuthRepository get _repo => ref.read(authRepositoryProvider);
 
+  /// Email + password login  →  POST /auth/login
   Future<void> withEmail(String email, String password) async {
     state = const AuthState.loading();
     final result = await _repo.loginWithEmail(
       LoginEmailRequest(email: email, password: password),
     );
-    state = result.when(success: AuthState.success, failure: AuthState.failure);
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
   }
 
-  Future<void> withGoogle(String email, {String? role}) async {
+  /// Google login  →  POST /auth/google-login
+  Future<void> withGoogle(String token) async {
     state = const AuthState.loading();
     final result = await _repo.loginWithGoogle(
-      LoginGoogleRequest(email: email, role: role),
+      GoogleLoginRequest(token: token),
     );
-    state = result.when(success: AuthState.success, failure: AuthState.failure);
-  }
-
-  Future<void> withApple(String appleId, {String? role}) async {
-    state = const AuthState.loading();
-    final result = await _repo.loginWithApple(
-      LoginAppleRequest(appleId: appleId, role: role),
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
     );
-    state = result.when(success: AuthState.success, failure: AuthState.failure);
   }
 
   void reset() => state = const AuthState.initial();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Signup Notifier
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Signup ────────────────────────────────────────────────────────────────────
 
 @riverpod
 class SignupNotifier extends _$SignupNotifier {
@@ -70,33 +63,34 @@ class SignupNotifier extends _$SignupNotifier {
 
   AuthRepository get _repo => ref.read(authRepositoryProvider);
 
+  /// Register a new user  →  POST /users
   Future<void> signup({
-    required String fullName,
+    required String name,
     required String email,
     required String password,
-    LatLng? location,
-    String? phone,
-    String role = 'user',
+    String? phoneNumber,
+    Map<String, dynamic>? location,
   }) async {
     state = const AuthState.loading();
     final result = await _repo.signup(
       SignupRequest(
-        role: role,
+        name: name,
         email: email,
         password: password,
-        fullName: fullName,
+        phoneNumber: phoneNumber,
         location: location,
-        phoneNumber: phone,
       ),
     );
-    state = result.when(success: AuthState.success, failure: AuthState.failure);
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
   }
 
   void reset() => state = const AuthState.initial();
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// OTP Verify Notifier
-// ─────────────────────────────────────────────────────────────────────────────
+
+// ── OTP Verify ────────────────────────────────────────────────────────────────
 
 @riverpod
 class OtpVerifyNotifier extends _$OtpVerifyNotifier {
@@ -105,27 +99,128 @@ class OtpVerifyNotifier extends _$OtpVerifyNotifier {
 
   AuthRepository get _repo => ref.read(authRepositoryProvider);
 
-  // OTP verification function
-  Future<void> verifyOtp({required String otp}) async {
+  /// Verify OTP  →  POST /otp/verify-otp
+  Future<void> verifyOtp(String otp) async {
     state = const AuthState.loading();
-
-    // Perform the OTP verification via the repository
-    final result = await _repo.verifyOtp(otp);
-
-    // Update state based on result
+    final result = await _repo.verifyOtp(VerifyOtpRequest(otp: otp));
     state = result.when(
-      success: AuthState
-          .success, // Assuming successful verification leads to success state
-      failure: AuthState.failure, // Failure leads to failure state
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
     );
   }
 
-  // Reset the state to initial when needed
   void reset() => state = const AuthState.initial();
 }
-// ─────────────────────────────────────────────────────────────────────────────
-// Logout Notifier
-// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Resend OTP ────────────────────────────────────────────────────────────────
+
+@riverpod
+class ResendOtpNotifier extends _$ResendOtpNotifier {
+  @override
+  AuthState build() => const AuthState.initial();
+
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
+
+  /// Resend OTP  →  POST /otp/resend-otp
+  Future<void> resendOtp(String email) async {
+    state = const AuthState.loading();
+    final result = await _repo.resendOtp(ResendOtpRequest(email: email));
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
+  }
+
+  void reset() => state = const AuthState.initial();
+}
+
+// ── Forgot Password ───────────────────────────────────────────────────────────
+
+@riverpod
+class ForgotPasswordNotifier extends _$ForgotPasswordNotifier {
+  @override
+  AuthState build() => const AuthState.initial();
+
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
+
+  /// Send reset email  →  PATCH /auth/forgot-password
+  Future<void> forgotPassword(String email) async {
+    state = const AuthState.loading();
+    final result = await _repo.forgotPassword(
+      ForgotPasswordRequest(email: email),
+    );
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
+  }
+
+  void reset() => state = const AuthState.initial();
+}
+
+// ── Reset Password ────────────────────────────────────────────────────────────
+
+@riverpod
+class ResetPasswordNotifier extends _$ResetPasswordNotifier {
+  @override
+  AuthState build() => const AuthState.initial();
+
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
+
+  /// Reset password  →  PATCH /auth/reset-password
+  Future<void> resetPassword({
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    state = const AuthState.loading();
+    final result = await _repo.resetPassword(
+      ResetPasswordRequest(
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      ),
+    );
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
+  }
+
+  void reset() => state = const AuthState.initial();
+}
+
+// ── Change Password ───────────────────────────────────────────────────────────
+
+@riverpod
+class ChangePasswordNotifier extends _$ChangePasswordNotifier {
+  @override
+  AuthState build() => const AuthState.initial();
+
+  AuthRepository get _repo => ref.read(authRepositoryProvider);
+
+  /// Change password  →  PATCH /auth/change-password
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    state = const AuthState.loading();
+    final result = await _repo.changePassword(
+      ChangePasswordRequest(
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      ),
+    );
+    state = result.when(
+      success: (_) => const AuthState.success(),
+      failure: AuthState.failure,
+    );
+  }
+
+  void reset() => state = const AuthState.initial();
+}
+
+// ── Logout ────────────────────────────────────────────────────────────────────
 
 @riverpod
 class LogoutNotifier extends _$LogoutNotifier {

@@ -17,7 +17,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
                 alignment: AlignmentGeometry.topLeft,
                 child: InkWell(
                   onTap: () {
-                    ref.context.pop();
+                    Navigator.pop(ref.context);
                   },
                   child: Icon(Icons.arrow_back),
                 ),

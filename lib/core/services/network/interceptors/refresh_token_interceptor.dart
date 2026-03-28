@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
+import 'package:service_provider_umi/core/services/network/interceptors/logging_interceptor.dart';
+
 import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
 import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 
@@ -30,27 +33,36 @@ class RefreshTokenInterceptor extends Interceptor {
           _isRefreshing = false;
           return handler.next(err);
         }
-
-        final response = await _dio.post(
+        final refreshDio = await Dio(
+          BaseOptions(
+            baseUrl: AppConfig.baseUrl,
+            connectTimeout: Duration(milliseconds: AppConfig.connectTimeout),
+            receiveTimeout: Duration(milliseconds: AppConfig.receiveTimeout),
+            sendTimeout: Duration(milliseconds: AppConfig.sendTimeout),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          ),
+        );
+        refreshDio.interceptors.addAll([
+          if (!const bool.fromEnvironment('dart.vm.product'))
+            LoggingInterceptor(),
+        ]);
+        final response = await refreshDio.post(
           ApiEndpoints.refreshToken,
-          data: {'refresh_token': refreshToken},
-          options: Options(headers: {'Authorization': null}),
+          data: {'refreshToken': refreshToken},
         );
 
-        final newAccessToken = response.data['access_token'] as String?;
-        final newRefreshToken = response.data['refresh_token'] as String?;
+        final newAccessToken = response.data['data']['accessToken'] as String?;
 
         if (newAccessToken != null) {
           await _secureStorage.write(StorageKey.accessToken, newAccessToken);
         }
 
-        if (newRefreshToken != null) {
-          await _secureStorage.write(StorageKey.refreshToken, newRefreshToken);
-        }
-
         // Retry original request
         final retryOptions = err.requestOptions;
-        retryOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+        retryOptions.headers['token'] = newAccessToken;
 
         final retryResponse = await _dio.fetch(retryOptions);
         _isRefreshing = false;

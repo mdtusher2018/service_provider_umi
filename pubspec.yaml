@@ -58,6 +58,8 @@ dependencies:
     sdk: flutter
   permission_handler:
   hive_flutter: ^1.1.0
+  cookie_jar: ^4.0.9
+  dio_cookie_manager: ^3.4.0
 
 
 dev_dependencies:

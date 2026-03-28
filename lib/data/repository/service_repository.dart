@@ -1,82 +1,49 @@
-// data/repository/service_repository.dart
-
 import 'package:service_provider_umi/core/base/repository.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
-import 'package:service_provider_umi/data/data_source/local/service_local_data_source.dart';
+
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 
 class ServiceRepository with SafeCall {
   final ServiceRemoteDataSource _remote;
-  final ServiceLocalDataSource _local;
 
-  ServiceRepository({
-    required ServiceRemoteDataSource remote,
-    required ServiceLocalDataSource local,
-  })  : _remote = remote,
-        _local = local;
+  ServiceRepository({required ServiceRemoteDataSource remote})
+    : _remote = remote;
 
-  // ── Home Services ─────────────────────────────────────────────────────────
-  // Strategy: return cache immediately if available, then refresh from API.
-  // On no network, cache is the fallback.
+  // ── GET /categories ──────────────────────────────────────────────────────────
+  Future<Result<List<ServiceModel>, Failure>> getAllCategories() =>
+      asyncGuard(() => _remote.getAllCategories());
 
-  Future<Result<HomeServicesResponse, Failure>> getHomeServices() async {
-    // 1. Try API first
-    final result = await asyncGuard(() => _remote.getHomeServices());
+  // ── GET /categories/:id ──────────────────────────────────────────────────────
+  Future<Result<ServiceModel, Failure>> getServiceById(String id) =>
+      asyncGuard(() => _remote.getServiceById(id));
 
-    return result.when(
-      success: (data) async {
-        // Cache the fresh data
-        await _local.cacheHomeServices(data);
-        return Success(data);
-      },
-      failure: (failure) async {
-        // 2. API failed → try cache
-        final cached = await _local.getCachedHomeServices();
-        if (cached != null) return Success(cached);
-        // 3. No cache → surface the failure
-        return Error(failure);
-      },
-    );
-  }
+  // ── POST /categories (admin) ─────────────────────────────────────────────────
+  Future<Result<ServiceModel, Failure>> createService(
+    CreateServiceRequest data, {
+    String? imagePath,
+  }) => asyncGuard(() => _remote.createService(data, imagePath));
 
-  // ── All Services ──────────────────────────────────────────────────────────
+  // ── PATCH /categories/:id (admin) ────────────────────────────────────────────
+  Future<Result<ServiceModel, Failure>> updateService(
+    String id,
+    UpdateServiceRequest data, {
+    String? imagePath,
+  }) => asyncGuard(() => _remote.updateService(id, data, imagePath));
 
-  Future<Result<AllServicesResponse, Failure>> getAllServices() async {
-    final result = await asyncGuard(() => _remote.getAllServices());
+  // ── DELETE /categories/:id (admin) ───────────────────────────────────────────
+  Future<Result<void, Failure>> deleteService(String id) =>
+      asyncGuard(() => _remote.deleteService(id));
+}
 
-    return result.when(
-      success: (data) async {
-        await _local.cacheAllServices(data);
-        return Success(data);
-      },
-      failure: (failure) async {
-        final cached = await _local.getCachedAllServices();
-        if (cached != null) return Success(cached);
-        return Error(failure);
-      },
-    );
-  }
+class ContentRepository with SafeCall {
+  final ContentRemoteDataSource _remote;
 
-  // ── Sub-Categories ────────────────────────────────────────────────────────
+  ContentRepository({required ContentRemoteDataSource remote})
+    : _remote = remote;
 
-  Future<Result<AllServicesResponse, Failure>> getSubCategories(
-    String serviceType,
-  ) async {
-    final result =
-        await asyncGuard(() => _remote.getSubCategories(serviceType));
-
-    return result.when(
-      success: (data) async {
-        await _local.cacheSubCategories(serviceType, data);
-        return Success(data);
-      },
-      failure: (failure) async {
-        final cached = await _local.getCachedSubCategories(serviceType);
-        if (cached != null) return Success(cached);
-        return Error(failure);
-      },
-    );
-  }
+  // ── GET /contents ─────────────────────────────────────────────────────────────
+  Future<Result<List<ContentItem>, Failure>> getContents() =>
+      asyncGuard(() => _remote.getContents());
 }
