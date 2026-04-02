@@ -4,6 +4,7 @@ import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/repository/auth_repository.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 
 part 'auth_provider.freezed.dart';
 part 'auth_provider.g.dart';
@@ -70,6 +71,7 @@ class SignupNotifier extends _$SignupNotifier {
     required String password,
     String? phoneNumber,
     Map<String, dynamic>? location,
+    AppRole? role,
   }) async {
     state = const AuthState.loading();
     final result = await _repo.signup(
@@ -79,6 +81,7 @@ class SignupNotifier extends _$SignupNotifier {
         password: password,
         phoneNumber: phoneNumber,
         location: location,
+        role: AppRole.provider == role ? "service_provider" : null,
       ),
     );
     state = result.when(

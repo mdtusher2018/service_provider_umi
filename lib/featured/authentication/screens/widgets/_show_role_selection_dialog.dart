@@ -39,11 +39,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
               InkWell(
                 onTap: () {
                   ref.context.pop();
-                  _showAuthBottomSheet(
-                    ref,
-                    isLogin: false,
-                    role: AppRole.provider,
-                  );
+                  _showAuthBottomSheet(ref, isLogin: false, role: AppRole.user);
                 },
                 child: _categoryCard(
                   "Book a service",
@@ -57,7 +53,11 @@ void _showRoleSelectionDialog(WidgetRef ref) {
               InkWell(
                 onTap: () {
                   ref.context.pop();
-                  _showAuthBottomSheet(ref, isLogin: false, role: AppRole.user);
+                  _showAuthBottomSheet(
+                    ref,
+                    isLogin: false,
+                    role: AppRole.provider,
+                  );
                 },
                 child: _categoryCard(
                   "Offer services",

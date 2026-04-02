@@ -124,7 +124,7 @@ class AppColors {
   // ─── Border (shared base) ────────────────────────────────
   static const Color border = Color(0xFFE5E5EA);
   static const Color borderFocus = Color(0xFF00C0B5); // user default
-  static const Color divider = Color(0xFFF2F2F7);
+  static const Color divider = Color(0xFF00BFA5);
 
   // ─── Gradients ───────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(

@@ -4,14 +4,19 @@ class AppRoutes {
   // ─── General ─────────────────────────────────────────────
   static const String splash = '/';
   static const String onboarding = '/onboarding';
-  static const String guestOnboarding = '/guest-onboarding';
   static const String login = '/login';
+  static const String guestOnboarding = '/guest-onboarding';
 
-  // ─── User Shell (bottom nav) ─────────────────────────────
-  static const String userHome = '/user/home';
-  static const String userBookings = '/user/bookings';
-  static const String userFavorites = '/user/favorites';
-  static const String userChat = '/user/chat';
+  // ─── Main shell ──────────────────────────────────────────
+  // Single entry point for all roles (user / provider / guest).
+  // RootScreen internally switches screens via IndexedStack.
+  static const String root = '/home';
+
+  // ─── Auth ────────────────────────────────────────────────
+  static const String phoneNumber = '/auth/phone';
+  static const String verifyOtp = '/auth/verify-otp';
+  static const String profilePicture = '/auth/profile-picture';
+  static const String providerOnboarding = '/provider-onboarding';
 
   // ─── Service discovery ───────────────────────────────────
   static const String search = '/search';
@@ -24,7 +29,7 @@ class AppRoutes {
   static const String bookingTime = '/booking/time';
   static const String bookingSchedule = '/booking/schedule';
   static const String bookingDetail = '/booking/:bookingId';
-  static const String myBookings = "/booking/my-bookings";
+  static const String myBookings = '/booking/my-bookings';
 
   // ─── Profile sub-screens ─────────────────────────────────
   static const String personalDetails = '/profile/personal-details';
@@ -43,25 +48,12 @@ class AppRoutes {
   static const String staticPage = '/page/:type';
   static const String notifications = '/notifications';
 
-  // ─── Auth ────────────────────────────────────────────────
-  static const String phoneNumber = '/auth/phone';
-  static const String verifyOtp = '/auth/verify-otp';
-  static const String profilePicture = '/auth/profile-picture';
-  static const String providerOnboarding = '/provider-onboarding';
-
   // ─── Communication ───────────────────────────────────────
   static const String chat = '/chat/:contactId';
   static const String audioCall = '/audio/:contactId';
   static const String videoCall = '/video/:contactId';
 
-  // ─── Provider Shell (bottom nav) ─────────────────────────
-  static const String providerDashboard = '/provider-dashboard';
-  static const String providerServices = '/provider-services';
-  static const String providerUpcomingBookings = '/provider-upcoming-bookings';
-  static const String providerNotification = '/provider-notification';
-  static const String providerChat = '/provider-chat';
-
-  static const String providerProfileRoot = '/profile';
+  // ─── Provider-specific screens ───────────────────────────
   static const String providerCompletedServiceScreen =
       '/provider-completed-service-screen';
 

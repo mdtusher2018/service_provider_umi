@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_constants.dart';
@@ -44,13 +45,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           child: Center(
             child: Column(
               children: [
-                Spacer(flex: 3),
-                Image.asset('assets/logo.png', height: 60),
+                Image.asset('assets/logo.png', height: 200),
 
-                30.verticalSpace,
-
-                Image.asset('assets/doctor.png', height: 200),
-                Spacer(flex: 8),
+                Image.asset('assets/doctor.png',height: 300),
               ],
             ),
           ),

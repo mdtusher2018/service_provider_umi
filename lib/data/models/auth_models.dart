@@ -4,6 +4,7 @@ class SignupRequest {
   final String name;
   final String email;
   final String password;
+  final String? role;
   final String? phoneNumber;
   final Map<String, dynamic>? location;
 
@@ -11,6 +12,7 @@ class SignupRequest {
     required this.name,
     required this.email,
     required this.password,
+    this.role,
     this.phoneNumber,
     this.location,
   });
@@ -19,6 +21,7 @@ class SignupRequest {
     'name': name,
     'email': email,
     'password': password,
+    if (role != null) 'role': role,
     if (phoneNumber != null) 'phoneNumber': phoneNumber,
     if (location != null) 'location': location,
   };

@@ -106,17 +106,24 @@ void _showOTPVerifyDialog(
   WidgetRef ref, {
   required String email,
   required bool isSignup,
+  AppRole? role,
 }) {
   showDialog(
     context: ref.context,
-    builder: (_) => _OTPVerifyDialog(email: email, isSignup: isSignup),
+    builder: (_) =>
+        _OTPVerifyDialog(email: email, isSignup: isSignup, role: role),
   );
 }
 
 class _OTPVerifyDialog extends ConsumerStatefulWidget {
   final String email;
   final bool isSignup;
-  const _OTPVerifyDialog({required this.email, required this.isSignup});
+  final AppRole? role;
+  const _OTPVerifyDialog({
+    required this.email,
+    required this.isSignup,
+    required this.role,
+  });
 
   @override
   ConsumerState<_OTPVerifyDialog> createState() => _OTPVerifyDialogState();
@@ -162,8 +169,15 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
         loading: () {},
         success: () {
           if (widget.isSignup) {
-            ref.read(appRoleProvider.notifier).loginAsUser();
-            context.go(AppRoutes.userHome);
+            if (widget.role == AppRole.user) {
+              ref.read(appRoleProvider.notifier).loginAsUser();
+              context.go(AppRoutes.root);
+            } else if (widget.role == AppRole.provider) {
+              ref.read(appRoleProvider.notifier).loginAsProvider();
+              context.go(AppRoutes.providerOnboarding);
+            } else {
+              context.showSnackBar("Please select your role");
+            }
           } else {
             _showResetPasswordDialog(ref, email: widget.email);
           }

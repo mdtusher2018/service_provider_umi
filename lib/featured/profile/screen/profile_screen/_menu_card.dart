@@ -64,7 +64,7 @@ class _MenuCard extends ConsumerWidget {
                 ),
               ),
             ),
-            if (!isLast) AppDivider(),
+            AppDivider(),
           ],
         );
       }).toList(),

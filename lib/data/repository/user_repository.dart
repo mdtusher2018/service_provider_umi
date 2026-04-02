@@ -19,24 +19,10 @@ class UserRepository with SafeCall {
 
   // ── PATCH /users/update-my-profile ───────────────────────────────────────────
   Future<Result<UserProfile, Failure>> updateMyProfile(
-    UpdateProfileRequest data, {
-    String? profileImagePath,
-  }) =>
-      asyncGuard(() => _remote.updateMyProfile(data, profileImagePath));
+    UpdateProfileRequest data,
+  ) => asyncGuard(() => _remote.updateMyProfile(data));
 
   // ── DELETE /users/delete-my-account ──────────────────────────────────────────
   Future<Result<void, Failure>> deleteMyAccount() =>
       asyncGuard(() => _remote.deleteMyAccount());
-
-  // ── PATCH /users/:id (admin) ─────────────────────────────────────────────────
-  Future<Result<UserProfile, Failure>> adminUpdateUser(
-    String id,
-    UpdateProfileRequest data, {
-    String? profileImagePath,
-  }) =>
-      asyncGuard(() => _remote.adminUpdateUser(id, data, profileImagePath));
-
-  // ── DELETE /users/:id (admin) ─────────────────────────────────────────────────
-  Future<Result<void, Failure>> adminDeleteUser(String id) =>
-      asyncGuard(() => _remote.adminDeleteUser(id));
 }

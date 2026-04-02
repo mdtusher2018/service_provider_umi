@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
+
+import 'package:service_provider_umi/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/phone_number_screen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/profile_picture_screen/profile_picture_screen.dart';
@@ -12,20 +15,20 @@ import 'package:service_provider_umi/featured/communication_and_notification/scr
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/video_call_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
-import 'package:service_provider_umi/featured/profile/change_password_screen.dart';
-import 'package:service_provider_umi/featured/profile/language_screen.dart';
-import 'package:service_provider_umi/featured/profile/my_addresses_screen.dart';
-import 'package:service_provider_umi/featured/profile/my_balance_screen.dart';
-import 'package:service_provider_umi/featured/profile/payments_screen.dart';
-import 'package:service_provider_umi/featured/profile/personal_details_screen.dart';
-import 'package:service_provider_umi/featured/profile/preferences/minimum_price_screen.dart';
-import 'package:service_provider_umi/featured/profile/preferences/preferences_screen.dart';
-import 'package:service_provider_umi/featured/profile/preferences/work_area_screen.dart';
-import 'package:service_provider_umi/featured/profile/profile_screen/profile_screen.dart';
-import 'package:service_provider_umi/featured/profile/provider_listing_screen/provider_listing_screen.dart';
-import 'package:service_provider_umi/featured/profile/provider_profile_overview/provider_profile_screen.dart';
-import 'package:service_provider_umi/featured/profile/reviews_screen.dart';
-import 'package:service_provider_umi/featured/profile/static_page_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/change_password_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/language_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/my_addresses_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/my_balance_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/payments_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/personal_details_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/preferences/minimum_price_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/preferences/preferences_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/preferences/work_area_screen.dart';
+
+import 'package:service_provider_umi/featured/profile/screen/provider_listing_screen/provider_listing_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/provider_profile_overview/provider_profile_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/reviews_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/static_page_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_details_screen/booking_details_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_schedule_screen/booking_schedule_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_time_screen/booking_time_screen.dart';
@@ -34,7 +37,7 @@ import 'package:service_provider_umi/featured/service/screens/service_search_scr
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_results/service_search_results_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_sub_category_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
+
 import 'package:service_provider_umi/featured/service/screens/work_schedule_screen/work_schedule_screen.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
@@ -43,11 +46,8 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'app_routes.dart';
 part 'app_router.g.dart';
 
+// Only one navigator key needed — no shell keys required anymore
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _userShellKey = GlobalKey<NavigatorState>(debugLabel: 'userShell');
-final _providerShellKey = GlobalKey<NavigatorState>(
-  debugLabel: 'providerShell',
-);
 
 @riverpod
 GoRouter appRouter(Ref ref) {
@@ -57,13 +57,28 @@ GoRouter appRouter(Ref ref) {
     debugLogDiagnostics: true,
     routes: [
       // ── Login / Welcome ──────────────────────────────────
-      GoRoute(path: AppRoutes.login, builder: (_, __) => const WelcomeScreen()),
+      // Dead-end: no back stack → back = exit dialog
+      GoRoute(
+        path: AppRoutes.login,
+        builder: (_, __) =>
+            const ExitConfirmationWrapper(child: WelcomeScreen()),
+      ),
 
       // ── Guest Onboarding ────────────────────────────────
+      // Dead-end: no back stack → back = exit dialog
       GoRoute(
         path: AppRoutes.guestOnboarding,
+        builder: (_, __) =>
+            ExitConfirmationWrapper(child: GuestOnboardingScreen()),
+      ),
 
-        builder: (_, __) => GuestOnboardingScreen(),
+      // ── Main shell ───────────────────────────────────────
+      // RootScreen owns its own IndexedStack + bottom nav.
+      // No StatefulShellRoute needed — RootScreen handles all tab switching.
+      // Dead-end: pressing back on any tab → exit dialog
+      GoRoute(
+        path: AppRoutes.root,
+        builder: (_, __) => const ExitConfirmationWrapper(child: RootScreen()),
       ),
 
       // ── Auth flow ───────────────────────────────────────
@@ -143,15 +158,16 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: AppRoutes.providerCompletedServiceScreen,
-        builder: (_, _) {
-          return ProviderCompletedServiceScreen();
-        },
+        builder: (_, __) => ProviderCompletedServiceScreen(),
       ),
 
       // ── Profile sub-screens ──────────────────────────────
       GoRoute(
         path: AppRoutes.personalDetails,
-        builder: (_, __) => const PersonalDetailsScreen(),
+        builder: (context, state) {
+          final user = state.extra as UserProfile;
+          return PersonalDetailsScreen(user: user);
+        },
       ),
       GoRoute(
         path: AppRoutes.myAddresses,
@@ -210,7 +226,7 @@ GoRouter appRouter(Ref ref) {
           final map = {
             'privacy': StaticPageType.privacy,
             'terms': StaticPageType.terms,
-            'about-us': StaticPageType.aboutus,
+            'about-us': StaticPageType.aboutUs,
           };
           final titles = {
             'privacy': 'Privacy Policy',
@@ -219,7 +235,7 @@ GoRouter appRouter(Ref ref) {
           };
           return StaticPageScreen(
             title: titles[type] ?? type,
-            type: map[type] ?? StaticPageType.aboutus,
+            type: map[type] ?? StaticPageType.aboutUs,
           );
         },
       ),
@@ -278,112 +294,6 @@ GoRouter appRouter(Ref ref) {
             isIncoming: isIncoming,
           );
         },
-      ),
-
-      // ── User Shell (bottom nav) ──────────────────────────
-      StatefulShellRoute.indexedStack(
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state, shell) => RootScreen(),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.userBookings,
-                builder: (_, __) =>
-                    const Scaffold(body: Center(child: Text('Bookings'))),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.userFavorites,
-                builder: (_, __) =>
-                    const Scaffold(body: Center(child: Text('Favorites'))),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _userShellKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.userHome,
-                builder: (_, __) =>
-                    const Scaffold(body: Center(child: Text('Home'))),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.userChat,
-                builder: (_, __) => const CommunicationAndNotificationScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerProfileRoot,
-                builder: (_, __) => ProfileScreen(),
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      // ── Provider Shell (bottom nav) ──────────────────────
-      StatefulShellRoute.indexedStack(
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state, shell) => RootScreen(),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerDashboard,
-                builder: (_, __) =>
-                    const Scaffold(body: ProviderServiceScreen()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _providerShellKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerChat,
-                builder: (_, __) =>
-                    const Scaffold(body: CommunicationAndNotificationScreen()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerUpcomingBookings,
-                builder: (_, __) =>
-                    const Scaffold(body: ServiceProviderHomeScreen()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerNotification,
-                builder: (_, __) => const CommunicationAndNotificationScreen(
-                  isNotification: true,
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.providerProfileRoot,
-                builder: (_, __) => const Scaffold(body: ProfileScreen()),
-              ),
-            ],
-          ),
-        ],
       ),
     ],
   );

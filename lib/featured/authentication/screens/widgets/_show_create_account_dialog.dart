@@ -45,6 +45,7 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
             ref,
             email: _emailController.text.trim(),
             isSignup: true,
+            role: widget.role,
           );
         },
         failure: (error) {
@@ -166,6 +167,7 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text,
+          role: widget.role,
         );
   }
 }

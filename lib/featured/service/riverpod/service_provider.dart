@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/static_content_model.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 
 part 'service_provider.freezed.dart';
@@ -23,7 +24,7 @@ abstract class ServiceListState with _$ServiceListState {
 abstract class ContentListState with _$ContentListState {
   const factory ContentListState.initial() = ContentListInitial;
   const factory ContentListState.loading() = ContentListLoading;
-  const factory ContentListState.success(List<ContentItem> items) =
+  const factory ContentListState.success(List<StaticContentItem> items) =
       ContentListSuccess;
   const factory ContentListState.failure(Failure failure) = ContentListFailure;
 }
@@ -47,25 +48,4 @@ class CategoriesNotifier extends _$CategoriesNotifier {
   }
 
   void reset() => state = const ServiceListState.initial();
-}
-
-// ── GET /contents ─────────────────────────────────────────────────────────────
-
-@riverpod
-class ContentsNotifier extends _$ContentsNotifier {
-  @override
-  ContentListState build() => const ContentListState.initial();
-
-  ContentRepository get _repo => ref.read(contentRepositoryProvider);
-
-  Future<void> fetch() async {
-    state = const ContentListState.loading();
-    final result = await _repo.getContents();
-    state = result.when(
-      success: ContentListState.success,
-      failure: ContentListState.failure,
-    );
-  }
-
-  void reset() => state = const ContentListState.initial();
 }

@@ -93,7 +93,7 @@ final class SignupNotifierProvider
   }
 }
 
-String _$signupNotifierHash() => r'3de465519c3fb3a1c30b5870f72f34cfb22e736d';
+String _$signupNotifierHash() => r'0315df44b862af5827a858fc607116a09b3b5956';
 
 abstract class _$SignupNotifier extends $Notifier<AuthState> {
   AuthState build();
@@ -197,7 +197,7 @@ final class ResendOtpNotifierProvider
   }
 }
 
-String _$resendOtpNotifierHash() => r'0b224f837476a25dfbf1eb1316089e4e5fe0eb88';
+String _$resendOtpNotifierHash() => r'30c295351a90cf07d62c436f4556ff1777b782fa';
 
 abstract class _$ResendOtpNotifier extends $Notifier<AuthState> {
   AuthState build();

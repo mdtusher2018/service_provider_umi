@@ -18,32 +18,6 @@ class ServiceRepository with SafeCall {
   // ── GET /categories/:id ──────────────────────────────────────────────────────
   Future<Result<ServiceModel, Failure>> getServiceById(String id) =>
       asyncGuard(() => _remote.getServiceById(id));
-
-  // ── POST /categories (admin) ─────────────────────────────────────────────────
-  Future<Result<ServiceModel, Failure>> createService(
-    CreateServiceRequest data, {
-    String? imagePath,
-  }) => asyncGuard(() => _remote.createService(data, imagePath));
-
-  // ── PATCH /categories/:id (admin) ────────────────────────────────────────────
-  Future<Result<ServiceModel, Failure>> updateService(
-    String id,
-    UpdateServiceRequest data, {
-    String? imagePath,
-  }) => asyncGuard(() => _remote.updateService(id, data, imagePath));
-
-  // ── DELETE /categories/:id (admin) ───────────────────────────────────────────
-  Future<Result<void, Failure>> deleteService(String id) =>
-      asyncGuard(() => _remote.deleteService(id));
+      
 }
 
-class ContentRepository with SafeCall {
-  final ContentRemoteDataSource _remote;
-
-  ContentRepository({required ContentRemoteDataSource remote})
-    : _remote = remote;
-
-  // ── GET /contents ─────────────────────────────────────────────────────────────
-  Future<Result<List<ContentItem>, Failure>> getContents() =>
-      asyncGuard(() => _remote.getContents());
-}

@@ -12,7 +12,7 @@ Widget _buildSwitchTile(WidgetRef ref) {
 
         return;
       }
-      ref.context.go(AppRoutes.providerUpcomingBookings);
+      ref.context.go(AppRoutes.root);
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -43,10 +43,11 @@ Widget _buildUserCard(
   WidgetRef ref, {
   required String name,
   required String phone,
+  required String avaterUrl,
 }) {
   return Row(
     children: [
-      AppAvatar(name: name, size: AvatarSize.md),
+      AppAvatar(name: name, imageUrl: avaterUrl, size: AvatarSize.md),
       14.horizontalSpace,
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

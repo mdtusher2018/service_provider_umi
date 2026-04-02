@@ -65,7 +65,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    context.go(AppRoutes.providerDashboard);
+    context.go(AppRoutes.root);
   }
 
   @override

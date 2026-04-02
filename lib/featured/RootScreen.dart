@@ -9,7 +9,7 @@ import 'package:service_provider_umi/featured/service/screens/user_home_screen.d
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
-import 'package:service_provider_umi/featured/profile/profile_screen/profile_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/profile_screen/profile_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/provider_service_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';

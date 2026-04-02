@@ -40,7 +40,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
 
   void nextPage() {
     if (currentIndex == onboardingData.length - 1) {
-      context.go(AppRoutes.userHome);
+      context.go(AppRoutes.root);
     } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),

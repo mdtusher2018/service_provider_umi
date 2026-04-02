@@ -6,14 +6,8 @@ import 'package:service_provider_umi/data/models/user_models.dart';
 abstract class UserRemoteDataSource {
   Future<UserProfile> getUserById(String id);
   Future<UserProfile> getMyProfile();
-  Future<UserProfile> updateMyProfile(
-      UpdateProfileRequest data, String? profileImagePath);
+  Future<UserProfile> updateMyProfile(UpdateProfileRequest data);
   Future<void> deleteMyAccount();
-
-  // Admin only
-  Future<UserProfile> adminUpdateUser(
-      String id, UpdateProfileRequest data, String? profileImagePath);
-  Future<void> adminDeleteUser(String id);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -38,11 +32,12 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   // ── PATCH /users/update-my-profile (bearer + multipart) ─────────────────────
   @override
-  Future<UserProfile> updateMyProfile(
-      UpdateProfileRequest data, String? profileImagePath) async {
-    final formData = await _buildUpdateFormData(data, profileImagePath);
-    final response =
-        await _dio.patch(ApiEndpoints.updateMyProfile, data: formData);
+  Future<UserProfile> updateMyProfile(UpdateProfileRequest data) async {
+    final formData = await _buildUpdateFormData(data);
+    final response = await _dio.patch(
+      ApiEndpoints.updateMyProfile,
+      data: formData,
+    );
     return _parse(response, UserProfile.fromJson);
   }
 
@@ -52,32 +47,23 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     await _dio.delete(ApiEndpoints.deleteMyAccount);
   }
 
-  // ── PATCH /users/:id (admin, bearer + multipart) ─────────────────────────────
-  @override
-  Future<UserProfile> adminUpdateUser(
-      String id, UpdateProfileRequest data, String? profileImagePath) async {
-    final url = ApiEndpoints.adminUpdateUser.replaceFirst('{id}', id);
-    final formData = await _buildUpdateFormData(data, profileImagePath);
-    final response = await _dio.patch(url, data: formData);
-    return _parse(response, UserProfile.fromJson);
-  }
-
-  // ── DELETE /users/:id (admin, bearer) ────────────────────────────────────────
-  @override
-  Future<void> adminDeleteUser(String id) async {
-    final url = ApiEndpoints.adminDeleteUser.replaceFirst('{id}', id);
-    await _dio.delete(url);
-  }
-
   // ── Helpers ───────────────────────────────────────────────────────────────────
-  Future<FormData> _buildUpdateFormData(
-      UpdateProfileRequest data, String? profileImagePath) async {
-    final formMap = <String, dynamic>{
-      'data': data.toJson().toString(), // JSON string in 'data' field
-    };
-    if (profileImagePath != null) {
-      formMap['profile'] = await MultipartFile.fromFile(profileImagePath);
+  Future<FormData> _buildUpdateFormData(UpdateProfileRequest data) async {
+    // ✅ FIX: Flatten the fields directly into the FormData map instead of
+    // nesting them under a 'data' key as a Map object. Passing a raw Map as
+    // a multipart field value causes "Cannot convert object to primitive value"
+    // on the server. Each key-value pair must be a primitive (String, num, bool).
+    //
+    // If your server expects a single JSON string field instead of flat fields,
+    // replace the line below with: final formMap = {'data': jsonEncode(data.toJson())};
+    final formMap = Map<String, dynamic>.from(data.toJson());
+
+    if (data.profileImage != null) {
+      formMap['profile'] = await MultipartFile.fromFile(
+        data.profileImage!.path,
+      );
     }
+
     return FormData.fromMap(formMap);
   }
 

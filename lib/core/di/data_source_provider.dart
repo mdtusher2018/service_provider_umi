@@ -3,6 +3,7 @@ import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/data/data_source/remote/auth_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/notification_remote_data_source.dart';
+import 'package:service_provider_umi/data/data_source/remote/static_content_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
 
 part 'data_source_provider.g.dart';
@@ -24,5 +25,5 @@ ServiceRemoteDataSource serviceRemoteDataSource(Ref ref) =>
     ServiceRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
 
 @riverpod
-ContentRemoteDataSource contentRemoteDataSource(Ref ref) =>
-    ContentRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+StaticContentRemoteDataSource staticContentRemoteDataSource(Ref ref) =>
+    StaticContentRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));

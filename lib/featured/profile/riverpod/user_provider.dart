@@ -38,10 +38,7 @@ class GetUserByIdNotifier extends _$GetUserByIdNotifier {
   Future<void> fetch(String id) async {
     state = const UserState.loading();
     final result = await _repo.getUserById(id);
-    state = result.when(
-      success: UserState.success,
-      failure: UserState.failure,
-    );
+    state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
   void reset() => state = const UserState.initial();
@@ -59,10 +56,7 @@ class MyProfileNotifier extends _$MyProfileNotifier {
   Future<void> fetch() async {
     state = const UserState.loading();
     final result = await _repo.getMyProfile();
-    state = result.when(
-      success: UserState.success,
-      failure: UserState.failure,
-    );
+    state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
   void reset() => state = const UserState.initial();
@@ -77,19 +71,11 @@ class UpdateProfileNotifier extends _$UpdateProfileNotifier {
 
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
-  Future<void> update(
-    UpdateProfileRequest data, {
-    String? profileImagePath,
-  }) async {
+  Future<void> update(UpdateProfileRequest data) async {
+    if (!ref.mounted) return;
     state = const UserState.loading();
-    final result = await _repo.updateMyProfile(
-      data,
-      profileImagePath: profileImagePath,
-    );
-    state = result.when(
-      success: UserState.success,
-      failure: UserState.failure,
-    );
+    final result = await _repo.updateMyProfile(data);
+    state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
   void reset() => state = const UserState.initial();
@@ -105,58 +91,10 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
   Future<void> deleteAccount() async {
+    if (!ref.mounted) return;
     state = const ActionState.loading();
+
     final result = await _repo.deleteMyAccount();
-    state = result.when(
-      success: (_) => const ActionState.success(),
-      failure: ActionState.failure,
-    );
-  }
-
-  void reset() => state = const ActionState.initial();
-}
-
-// ── Admin: PATCH /users/:id ───────────────────────────────────────────────────
-
-@riverpod
-class AdminUpdateUserNotifier extends _$AdminUpdateUserNotifier {
-  @override
-  UserState build() => const UserState.initial();
-
-  UserRepository get _repo => ref.read(userRepositoryProvider);
-
-  Future<void> update(
-    String id,
-    UpdateProfileRequest data, {
-    String? profileImagePath,
-  }) async {
-    state = const UserState.loading();
-    final result = await _repo.adminUpdateUser(
-      id,
-      data,
-      profileImagePath: profileImagePath,
-    );
-    state = result.when(
-      success: UserState.success,
-      failure: UserState.failure,
-    );
-  }
-
-  void reset() => state = const UserState.initial();
-}
-
-// ── Admin: DELETE /users/:id ─────────────────────────────────────────────────
-
-@riverpod
-class AdminDeleteUserNotifier extends _$AdminDeleteUserNotifier {
-  @override
-  ActionState build() => const ActionState.initial();
-
-  UserRepository get _repo => ref.read(userRepositoryProvider);
-
-  Future<void> deleteUser(String id) async {
-    state = const ActionState.loading();
-    final result = await _repo.adminDeleteUser(id);
     state = result.when(
       success: (_) => const ActionState.success(),
       failure: ActionState.failure,
