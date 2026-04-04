@@ -38,7 +38,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
 
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 40.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
@@ -141,9 +141,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                   backgroundColor: primary,
                   foregroundColor: AppColors.white,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
                 child: AppText('Confirm', style: AppTextStyles.buttonMd),
               ),
@@ -190,7 +188,7 @@ class _TimeSpinner extends StatelessWidget {
           primary: primary,
         ),
         Padding(
-          padding:  6.paddingH,
+          padding: 6.paddingH,
           child: AppText.h2(':', color: AppColors.textPrimary),
         ),
         // Minute column
@@ -239,7 +237,7 @@ class _SpinColumn extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: 8.circular,
             border: Border.all(color: AppColors.grey200, width: 1.5),
           ),
           alignment: Alignment.center,

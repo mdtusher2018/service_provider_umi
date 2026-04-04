@@ -37,7 +37,7 @@ class _RatingDialogState extends State<RatingDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 24.paddingH,
       child: Padding(
         padding: 20.paddingAll,
@@ -117,7 +117,7 @@ class _RatingDialogState extends State<RatingDialog> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected ? AppColors.primary : AppColors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: 20.circular,
                       border: Border.all(
                         color: isSelected
                             ? AppColors.primary
@@ -142,7 +142,7 @@ class _RatingDialogState extends State<RatingDialog> {
             Container(
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: 12.circular,
                 border: Border.all(color: AppColors.border),
               ),
               child: TextField(

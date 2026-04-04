@@ -53,7 +53,7 @@ class BookingCard extends ConsumerWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: 16.circular,
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
@@ -70,7 +70,7 @@ class BookingCard extends ConsumerWidget {
             children: [
               // ─── Image ──────────────────────────────
               ClipRRect(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: 10.circular,
                 child: Container(
                   width: 72,
                   height: 72,
@@ -242,7 +242,7 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: 8.circular,
         border: isInteractive
             ? Border.all(color: color.withOpacity(0.3))
             : null,

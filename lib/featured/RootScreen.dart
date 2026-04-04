@@ -37,7 +37,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
       onPressed: () => onTabTap(2),
       backgroundColor: AppColors.primaryFor(role),
       elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+      shape: RoundedRectangleBorder(borderRadius: 100.circular),
       child: Image.asset(
         (role == AppRole.provider)
             ? "assets/icons/upcoming.png"
@@ -130,7 +130,7 @@ class CustomBottomNavBar extends StatelessWidget {
       height: 90,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: 30.circular,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(.05),

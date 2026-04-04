@@ -67,7 +67,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: 12.circular,
                   border: Border.all(color: AppColors.grey200),
                 ),
                 child: TextField(
@@ -102,9 +102,7 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
                     backgroundColor: primary,
                     foregroundColor: AppColors.white,
                     elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: 12.circular),
                   ),
                   child: _isLoading
                       ? const SizedBox(

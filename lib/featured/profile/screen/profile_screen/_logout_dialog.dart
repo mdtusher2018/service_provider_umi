@@ -10,7 +10,7 @@ class _LogoutDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 32.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 16, 16, 20),
@@ -39,9 +39,7 @@ class _LogoutDialog extends StatelessWidget {
                     onPressed: onCancel,
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: 10.circular),
                       padding: 12.paddingV,
                     ),
                     child: const AppText.labelLg('Cancel'),
@@ -54,9 +52,7 @@ class _LogoutDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: 10.circular),
                       padding: 12.paddingV,
                     ),
                     child: const AppText.labelLg(

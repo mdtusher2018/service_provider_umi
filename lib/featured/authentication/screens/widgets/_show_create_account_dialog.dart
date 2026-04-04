@@ -1,9 +1,11 @@
 part of '../welcome_screen.dart';
 
 void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
-  showDialog(
+  showGeneralDialog(
     context: ref.context,
-    builder: (_) => _SignupDialog(role: role),
+    transitionDuration: dialogSlidingFadeTransitionDuration,
+    transitionBuilder: dialogSlideFadeTransition,
+    pageBuilder: (_, _, _) => _SignupDialog(role: role),
   );
 }
 
@@ -58,7 +60,7 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
 
     return Dialog(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Padding(
         padding: 24.paddingAll,

@@ -60,7 +60,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
               padding: 16.paddingH,
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: 12.circular,
                 border: Border.all(color: AppColors.border),
               ),
               child: DropdownButtonHideUnderline(

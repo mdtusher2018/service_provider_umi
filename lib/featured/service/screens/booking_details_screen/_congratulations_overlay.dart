@@ -16,7 +16,7 @@ class _CongratsDialog extends StatelessWidget {
         padding: 24.paddingAll,
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: 24.circular,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.12),
@@ -55,7 +55,7 @@ class _CongratsDialog extends StatelessWidget {
                           height: 10,
                           decoration: BoxDecoration(
                             color: primary,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: 4.circular,
                           ),
                         ),
                       ),
@@ -90,9 +90,7 @@ class _CongratsDialog extends StatelessWidget {
                   backgroundColor: primary,
                   foregroundColor: AppColors.white,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
                 child: AppText('Done', style: AppTextStyles.buttonMd),
               ),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,57 +38,77 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     final state = ref.watch(categoriesProvider);
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      body: SafeArea(
+      body: Padding(
+        padding: 20.paddingTop,
         child: Column(
           children: [
-            // Top Bar
-            Padding(
-              padding: 16.paddingAll,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Logo
-                  Image.asset("assets/logo.png", height: 100),
-                  Row(
-                    spacing: 16,
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await ref.read(categoriesProvider.notifier).fetch();
+                },
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.search, color: Colors.black),
-                          onPressed: () {
-                            context.push(AppRoutes.search);
-                          },
+                      Padding(
+                        padding: 16.paddingRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Logo
+                            Image.asset("assets/logo.png", height: 120),
+                            Row(
+                              spacing: 16,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.search,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      context.push(AppRoutes.search);
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.notifications_none_sharp,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.notifications_none_sharp,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {},
-                        ),
+
+                      state.when(
+                        initial: () =>
+                            Center(child: CircularProgressIndicator()),
+                        loading: () =>
+                            Center(child: CircularProgressIndicator()),
+                        success: (categories) =>
+                            RadialMenu(menuItems: categories),
+                        failure: (failure) =>
+                            Center(child: AppText.h4(failure.message)),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-
-            40.verticalSpace,
-            state.when(
-              initial: () => Center(child: CircularProgressIndicator()),
-              loading: () => Center(child: CircularProgressIndicator()),
-              success: (categories) => RadialMenu(menuItems: categories),
-              failure: (failure) => Center(child: AppText.h4(failure.message)),
             ),
             40.verticalSpace,
             if (ref.watch(appRoleProvider) == AppRole.user)
@@ -114,6 +135,33 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                   ),
                 ),
               ),
+
+            if (ref.watch(appRoleProvider) == AppRole.guest) ...[
+              Padding(
+                padding: 20.paddingH,
+                child: AppButton.outline(
+                  label: "LOGIN",
+                  textColor: AppColors.primary,
+                  onPressed: () {
+                    context.go(AppRoutes.login);
+                  },
+                ),
+              ),
+
+              12.verticalSpace,
+
+              Padding(
+                padding: 20.paddingH,
+                child: AppButton.primary(
+                  label: "Create Account",
+                  onPressed: () {
+                    context.go(AppRoutes.login);
+                  },
+                ),
+              ),
+              20.verticalSpace,
+            ],
+            20.verticalSpace,
           ],
         ),
       ),
@@ -177,7 +225,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: 12.circular,
                 ),
                 child: const Center(
                   child: AppText.labelLg("Add address", color: AppColors.white),
@@ -282,13 +330,13 @@ class RadialMenu extends StatelessWidget {
   }
 
   void showCustomDialog(BuildContext context) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (context) {
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (context, _, _) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: 10.circular),
           child: Padding(
             padding: 16.paddingAll,
             child: Column(

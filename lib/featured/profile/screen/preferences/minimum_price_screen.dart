@@ -73,7 +73,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: 14.circular,
                   border: Border.all(color: primary, width: 1.5),
                 ),
                 child: Column(
@@ -138,7 +138,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
               padding: 14.paddingAll,
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: 12.circular,
                 border: Border.all(color: AppColors.grey200),
               ),
               child: Row(
@@ -170,9 +170,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                     backgroundColor: primary,
                     foregroundColor: AppColors.white,
                     elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: 12.circular),
                   ),
                   child: _isSaving
                       ? const SizedBox(

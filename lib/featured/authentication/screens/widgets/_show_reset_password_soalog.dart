@@ -1,9 +1,11 @@
 part of '../welcome_screen.dart';
 
 void _showResetPasswordDialog(WidgetRef ref, {required String email}) {
-  showDialog(
+  showGeneralDialog(
     context: ref.context,
-    builder: (_) => _ResetPasswordDialog(email: email),
+    transitionDuration: dialogSlidingFadeTransitionDuration,
+    transitionBuilder: dialogSlideFadeTransition,
+    pageBuilder: (_, _, _) => _ResetPasswordDialog(email: email),
   );
 }
 
@@ -70,7 +72,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
 
     return Dialog(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Padding(
         padding: 24.paddingAll,

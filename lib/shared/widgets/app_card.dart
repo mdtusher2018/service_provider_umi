@@ -35,7 +35,7 @@ class AppCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: color ?? AppColors.white,
-          borderRadius: borderRadius ?? BorderRadius.circular(16),
+          borderRadius: borderRadius ?? 16.circular,
           border: border ?? Border.all(color: AppColors.border, width: 1),
           boxShadow:
               boxShadow ??
@@ -48,7 +48,7 @@ class AppCard extends StatelessWidget {
               ],
         ),
         child: ClipRRect(
-          borderRadius: borderRadius ?? BorderRadius.circular(16),
+          borderRadius: borderRadius ?? 16.circular,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -183,7 +183,7 @@ class ProviderCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: 6.circular,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

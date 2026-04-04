@@ -146,7 +146,7 @@ class _RatingRow extends StatelessWidget {
         16.horizontalSpace,
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: 4.circular,
             child: LinearProgressIndicator(
               value: value / 5.0,
               backgroundColor: AppColors.grey200,

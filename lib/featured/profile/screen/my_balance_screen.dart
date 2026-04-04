@@ -83,7 +83,7 @@ class MyBalanceScreen extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: 14.circular,
                   border: Border.all(color: primary, width: 1.5),
                 ),
                 child: Column(
@@ -138,7 +138,7 @@ class _TransactionCard extends StatelessWidget {
       padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: 14.circular,
         border: Border.all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
@@ -156,7 +156,7 @@ class _TransactionCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: isDeposit ? AppColors.successLight : AppColors.errorLight,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: 12.circular,
             ),
             child: Center(child: AppText.h1(isDeposit ? '💵' : '💸')),
           ),

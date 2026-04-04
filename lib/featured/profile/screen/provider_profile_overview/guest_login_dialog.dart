@@ -20,10 +20,12 @@ class GuestLoginDialog extends StatelessWidget {
     VoidCallback? onLogin,
     VoidCallback? onRegister,
   }) {
-    return showDialog(
+    return showGeneralDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.45),
-      builder: (_) =>
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (_, _, _) =>
           GuestLoginDialog(onLogin: onLogin, onRegister: onRegister),
     );
   }
@@ -32,7 +34,7 @@ class GuestLoginDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 32.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),

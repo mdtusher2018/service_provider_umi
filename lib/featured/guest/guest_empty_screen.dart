@@ -129,6 +129,7 @@ class _ChatGuestTab extends StatelessWidget {
 
           AppButton.outline(
             label: "LOGIN",
+            textColor: AppColors.primary,
             onPressed: () {
               context.go(AppRoutes.login);
             },
@@ -185,11 +186,22 @@ class _AlertsGuestTab extends StatelessWidget {
 
           30.verticalSpace,
 
-          AppButton.outline(label: "LOGIN", onPressed: () {}),
+          AppButton.outline(
+            label: "LOGIN",
+            textColor: AppColors.primary,
+            onPressed: () {
+              context.go(AppRoutes.login);
+            },
+          ),
 
           12.verticalSpace,
 
-          AppButton.primary(label: "Create Account", onPressed: () {}),
+          AppButton.primary(
+            label: "Create Account",
+            onPressed: () {
+              context.go(AppRoutes.login);
+            },
+          ),
 
           80.verticalSpace,
         ],
@@ -235,7 +247,13 @@ class _GuestEmptyScreen extends StatelessWidget {
               Expanded(child: Center(child: Image.asset(image, height: 250))),
 
               /// Login Button
-              AppButton.outline(label: "LOGIN", onPressed: () {}),
+              AppButton.outline(
+                label: "LOGIN",
+                textColor: AppColors.primary,
+                onPressed: () {
+                  context.go(AppRoutes.login);
+                },
+              ),
 
               12.verticalSpace,
 

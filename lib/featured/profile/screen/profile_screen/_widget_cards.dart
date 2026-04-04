@@ -19,7 +19,7 @@ Widget _buildSwitchTile(WidgetRef ref) {
 
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: 16.circular,
         border: Border.all(color: AppColors.border),
       ),
       child: Row(

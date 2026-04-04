@@ -31,7 +31,8 @@ class ProviderProfile {
     required this.availability,
   });
 
-  factory ProviderProfile.fromJson(Map<String, dynamic> json) => ProviderProfile(
+  factory ProviderProfile.fromJson(Map<String, dynamic> json) =>
+      ProviderProfile(
         id: json['id'] as String,
         name: json['name'] as String,
         serviceTitle: json['service_title'] as String,
@@ -48,7 +49,8 @@ class ProviderProfile {
             .map((e) => ProviderComment.fromJson(e as Map<String, dynamic>))
             .toList(),
         availability: ProviderAvailability.fromJson(
-            json['availability'] as Map<String, dynamic>),
+          json['availability'] as Map<String, dynamic>,
+        ),
       );
 }
 
@@ -64,11 +66,12 @@ class ProviderRating {
   });
 
   factory ProviderRating.fromJson(Map<String, dynamic> json) => ProviderRating(
-        average: (json['average'] as num).toDouble(),
-        totalReviews: json['total_reviews'] as int,
-        breakdown: RatingBreakdown.fromJson(
-            json['breakdown'] as Map<String, dynamic>),
-      );
+    average: (json['average'] as num).toDouble(),
+    totalReviews: json['total_reviews'] as int,
+    breakdown: RatingBreakdown.fromJson(
+      json['breakdown'] as Map<String, dynamic>,
+    ),
+  );
 }
 
 class RatingBreakdown {
@@ -113,7 +116,7 @@ class ProviderComment {
   final String id;
   final String userName;
   final String userImage;
-  final int rating;
+  final num rating;
   final String comment;
   final String createdAt;
 
@@ -148,8 +151,13 @@ class ProviderAvailability {
 
   factory ProviderAvailability.fromJson(Map<String, dynamic> json) {
     const dayNames = [
-      'saturday', 'sunday', 'monday', 'tuesday',
-      'wednesday', 'thursday', 'friday'
+      'saturday',
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
     ];
     final days = <String, List<AvailabilitySlot>>{};
     for (final day in dayNames) {
@@ -189,17 +197,13 @@ class DayAvailability {
   final String? start;
   final String? end;
 
-  const DayAvailability({
-    required this.isAvailable,
-    this.start,
-    this.end,
-  });
+  const DayAvailability({required this.isAvailable, this.start, this.end});
 
   Map<String, dynamic> toJson() => {
-        'is_available': isAvailable,
-        if (start != null) 'start': start,
-        if (end != null) 'end': end,
-      };
+    'is_available': isAvailable,
+    if (start != null) 'start': start,
+    if (end != null) 'end': end,
+  };
 }
 
 class CreateProviderRequest {
@@ -231,19 +235,18 @@ class CreateProviderRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'availability':
-            availability.map((k, v) => MapEntry(k, v.toJson())),
-        'service_id': serviceId,
-        'hourly_rate': hourlyRate,
-        'tasks': tasks,
-        'specializations': specializations,
-        'experience': experience,
-        'driving_license': drivingLicense,
-        'business_profiles_only': businessProfilesOnly,
-        'qualified_only': qualifiedOnly,
-        'palliative_care': palliativeCare,
-        'phone_number': phoneNumber,
-      };
+    'availability': availability.map((k, v) => MapEntry(k, v.toJson())),
+    'service_id': serviceId,
+    'hourly_rate': hourlyRate,
+    'tasks': tasks,
+    'specializations': specializations,
+    'experience': experience,
+    'driving_license': drivingLicense,
+    'business_profiles_only': businessProfilesOnly,
+    'qualified_only': qualifiedOnly,
+    'palliative_care': palliativeCare,
+    'phone_number': phoneNumber,
+  };
 }
 
 class UpdateProviderRequest {
@@ -274,20 +277,20 @@ class UpdateProviderRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        if (availability != null)
-          'availability': availability!.map((k, v) => MapEntry(k, v.toJson())),
-        if (serviceId != null) 'service_id': serviceId,
-        if (hourlyRate != null) 'hourly_rate': hourlyRate,
-        if (minimumPrice != null) 'minimum_price': minimumPrice,
-        if (tasks != null) 'tasks': tasks,
-        if (specializations != null) 'specializations': specializations,
-        if (experience != null) 'experience': experience,
-        if (drivingLicense != null) 'driving_license': drivingLicense,
-        if (businessProfilesOnly != null)
-          'business_profiles_only': businessProfilesOnly,
-        if (qualifiedOnly != null) 'qualified_only': qualifiedOnly,
-        if (palliativeCare != null) 'palliative_care': palliativeCare,
-      };
+    if (availability != null)
+      'availability': availability!.map((k, v) => MapEntry(k, v.toJson())),
+    if (serviceId != null) 'service_id': serviceId,
+    if (hourlyRate != null) 'hourly_rate': hourlyRate,
+    if (minimumPrice != null) 'minimum_price': minimumPrice,
+    if (tasks != null) 'tasks': tasks,
+    if (specializations != null) 'specializations': specializations,
+    if (experience != null) 'experience': experience,
+    if (drivingLicense != null) 'driving_license': drivingLicense,
+    if (businessProfilesOnly != null)
+      'business_profiles_only': businessProfilesOnly,
+    if (qualifiedOnly != null) 'qualified_only': qualifiedOnly,
+    if (palliativeCare != null) 'palliative_care': palliativeCare,
+  };
 }
 
 // ── Provider OTP Response ─────────────────────────────────────────────────────
@@ -317,15 +320,15 @@ class ReviewRequest {
   const ReviewRequest({required this.rating, required this.comment});
 
   Map<String, dynamic> toJson() => {
-        'ratting': {
-          'service': rating.service,
-          'punctuality': rating.punctuality,
-          'kindness': rating.kindness,
-          'value_for_money': rating.valueForMoney,
-          'professionalism': rating.professionalism,
-        },
-        'comment': comment,
-      };
+    'ratting': {
+      'service': rating.service,
+      'punctuality': rating.punctuality,
+      'kindness': rating.kindness,
+      'value_for_money': rating.valueForMoney,
+      'professionalism': rating.professionalism,
+    },
+    'comment': comment,
+  };
 }
 
 class ReviewItem {
@@ -342,11 +345,11 @@ class ReviewItem {
   });
 
   factory ReviewItem.fromJson(Map<String, dynamic> json) => ReviewItem(
-        name: json['name'] as String,
-        rating: json['rating'] as int,
-        comment: json['comment'] as String,
-        profileImage: json['profileImage'] as String,
-      );
+    name: json['name'] as String,
+    rating: json['rating'] as int,
+    comment: json['comment'] as String,
+    profileImage: json['profileImage'] as String,
+  );
 }
 
 class ReviewsResponse {

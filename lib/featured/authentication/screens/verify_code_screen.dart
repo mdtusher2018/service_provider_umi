@@ -167,7 +167,7 @@ class _DigitBox extends StatelessWidget {
 
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: 12.circular,
       ),
       child: Center(
         child: TextField(

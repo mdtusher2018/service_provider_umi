@@ -42,9 +42,7 @@ Widget _buildQaSection({required _ProviderData mockProvider}) {
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.textPrimary,
             side: const BorderSide(color: AppColors.border),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: 12.circular),
             padding: 12.paddingV,
           ),
           child: AppText.labelLg('View all'),

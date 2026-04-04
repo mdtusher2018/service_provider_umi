@@ -1,9 +1,11 @@
 part of '../welcome_screen.dart';
 
 void _showForgotPasswordDialog(WidgetRef ref) {
-  showDialog(
+  showGeneralDialog(
     context: ref.context,
-    builder: (_) => const _ForgotPasswordDialog(),
+    transitionDuration: dialogSlidingFadeTransitionDuration,
+    transitionBuilder: dialogSlideFadeTransition,
+    pageBuilder: (_, _, _) => const _ForgotPasswordDialog(),
   );
 }
 
@@ -48,7 +50,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
 
     return Dialog(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Padding(
         padding: 24.paddingAll,

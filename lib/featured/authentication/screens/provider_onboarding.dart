@@ -128,7 +128,7 @@ class _ServiceProviderOnboardingScreenState
                     color: currentIndex == index
                         ? Colors.teal
                         : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: 10.circular,
                   ),
                 ),
               ),

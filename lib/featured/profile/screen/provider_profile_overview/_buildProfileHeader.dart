@@ -20,7 +20,7 @@ Widget _buildProfileHeader({
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: 16.circular,
           border: Border.all(color: AppColors.border),
         ),
         child: Row(

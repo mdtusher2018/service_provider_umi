@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'app_colors.dart';
 import 'app_dimensions.dart';
 import '../../shared/enums/app_enums.dart';
@@ -105,7 +106,7 @@ class AppTheme {
             AppDimensions.buttonHeightMd,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+            borderRadius: AppDimensions.radiusMd.circular,
           ),
           textStyle: AppTextStyles.buttonLg,
           elevation: 0,
@@ -122,7 +123,7 @@ class AppTheme {
             AppDimensions.buttonHeightMd,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+            borderRadius: AppDimensions.radiusMd.circular,
           ),
           side: BorderSide(color: primary),
           textStyle: AppTextStyles.buttonLg,
@@ -149,23 +150,23 @@ class AppTheme {
       vertical: AppDimensions.spaceMd,
     ),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+      borderRadius: AppDimensions.inputRadius.circular,
       borderSide: const BorderSide(color: AppColors.border),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+      borderRadius: AppDimensions.inputRadius.circular,
       borderSide: const BorderSide(color: AppColors.border),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+      borderRadius: AppDimensions.inputRadius.circular,
       borderSide: BorderSide(color: borderFocus, width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+      borderRadius: AppDimensions.inputRadius.circular,
       borderSide: const BorderSide(color: AppColors.error),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+      borderRadius: AppDimensions.inputRadius.circular,
       borderSide: const BorderSide(color: AppColors.error, width: 1.5),
     ),
     labelStyle: AppTextStyles.bodyMd,
@@ -178,7 +179,7 @@ class AppTheme {
     color: AppColors.surface, // ← fixed: was warningLight
     elevation: AppDimensions.cardElevation,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.cardRadius),
+      borderRadius: AppDimensions.cardRadius.circular,
     ),
     margin: EdgeInsets.zero,
   );
@@ -221,7 +222,7 @@ class AppTheme {
     selectedColor: primary.withOpacity(0.12),
     labelStyle: AppTextStyles.labelMd,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
+      borderRadius: AppDimensions.radiusFull.circular,
       side: const BorderSide(color: AppColors.border),
     ),
     padding: const EdgeInsets.symmetric(

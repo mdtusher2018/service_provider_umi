@@ -153,7 +153,7 @@ class _ServiceListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: 12.circular,
       child: Padding(
         padding: 12.paddingV,
         child: Row(
@@ -163,7 +163,7 @@ class _ServiceListTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: 10.circular,
               ),
               child: Center(child: AppText.bodyLg(item.emoji)),
             ),

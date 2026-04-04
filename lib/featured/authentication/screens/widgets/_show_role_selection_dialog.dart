@@ -1,12 +1,14 @@
 part of '../welcome_screen.dart';
 
 void _showRoleSelectionDialog(WidgetRef ref) {
-  showDialog(
+  showGeneralDialog(
     context: ref.context,
-    builder: (_) {
+    transitionDuration: dialogSlidingFadeTransitionDuration,
+    transitionBuilder: dialogSlideFadeTransition,
+    pageBuilder: (context, animation, secondaryAnimation) {
       return Dialog(
         backgroundColor: AppColors.background,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: 20.circular),
         insetPadding: 20.paddingH,
         child: Padding(
           padding: 20.paddingAll,
@@ -79,14 +81,14 @@ Widget _categoryCard(String title, String subtitle, String image) {
     decoration: BoxDecoration(
       color: AppColors.white,
       border: Border.all(color: AppColors.border),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: 12.circular,
     ),
     child: Row(
       children: [
         SizedBox(
           width: 60,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: 8.circular,
             child: Image.asset(image, width: 60, height: 60),
           ),
         ),

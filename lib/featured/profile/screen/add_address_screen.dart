@@ -18,10 +18,10 @@ class _AddressPageState extends State<AddressPage> {
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.address?.label ?? '');
-    _addressCtrl = TextEditingController(text: widget.address?.street ?? '');
-    _cityCtrl = TextEditingController(text: widget.address?.city ?? '');
-    _countryCtrl = TextEditingController(text: widget.address?.country ?? '');
+    _nameCtrl = TextEditingController(text: widget.address?.name ?? '');
+    _addressCtrl = TextEditingController(text: widget.address?.address ?? '');
+    _cityCtrl = TextEditingController(text: widget.address?.address ?? '');
+    _countryCtrl = TextEditingController(text: widget.address?.address ?? '');
   }
 
   @override
@@ -48,10 +48,9 @@ class _AddressPageState extends State<AddressPage> {
                   id:
                       widget.address?.id ??
                       DateTime.now().millisecondsSinceEpoch.toString(),
-                  label: _nameCtrl.text,
-                  street: _addressCtrl.text,
-                  city: _cityCtrl.text,
-                  country: _countryCtrl.text,
+                  address: _nameCtrl.text,
+                  lat: 54.0,
+                  lng: 21.0,
                 );
 
                 context.pop(newAddress);

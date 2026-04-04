@@ -41,9 +41,7 @@ class AppCheckboxTile extends StatelessWidget {
                 activeColor: AppColors.primary,
                 checkColor: AppColors.white,
                 side: const BorderSide(color: AppColors.border, width: 1.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: 4.circular),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
               ),

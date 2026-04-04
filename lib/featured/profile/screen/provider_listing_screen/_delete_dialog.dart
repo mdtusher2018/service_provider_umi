@@ -10,7 +10,7 @@ class _DeleteDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 40.paddingH,
       child: Padding(
         padding: 24.paddingAll,
@@ -32,9 +32,7 @@ class _DeleteDialog extends StatelessWidget {
                   backgroundColor: AppColors.primaryProvider,
                   foregroundColor: AppColors.white,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
                 child: AppText(
                   'YES, DELETE',
@@ -51,9 +49,7 @@ class _DeleteDialog extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.textPrimary,
                   side: const BorderSide(color: AppColors.grey300),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
                 child: AppText(
                   "NO, DON'T DELETE",

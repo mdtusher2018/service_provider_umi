@@ -1,6 +1,5 @@
 part of 'booking_schedule_screen.dart';
 
-
 // ─── Day schedule data ────────────────────────────────────────
 class _DaySchedule {
   final String from;
@@ -34,7 +33,7 @@ class _DayRow extends ConsumerWidget {
       duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
         color: hasSchedule ? AppColors.secondary : AppColors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: 14.circular,
         border: Border.all(
           color: hasSchedule ? AppColors.secondary : AppColors.border,
           width: 1.5,

@@ -117,7 +117,7 @@ class _WeeklyBookingScheduleScreenState
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: AppColors.grey100,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: 14.circular,
               ),
               child: Row(
                 children: [
@@ -180,7 +180,7 @@ class _WeeklyBookingScheduleScreenState
             padding: 12.paddingAll,
             decoration: BoxDecoration(
               color: AppColors.grey50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: 12.circular,
               border: Border.all(color: AppColors.border),
             ),
             child: Row(
@@ -209,7 +209,7 @@ class _WeeklyBookingScheduleScreenState
             padding: 16.paddingH,
             decoration: BoxDecoration(
               color: AppColors.white,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: 24.circular,
               border: Border.all(color: AppColors.border),
             ),
             child: DropdownButtonHideUnderline(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -219,9 +220,11 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showBlockDialog() {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (_) => _BlockUserDialog(
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (_, _, _) => _BlockUserDialog(
         userName: widget.contactName,
         onBlock: () {
           context.pop();
@@ -233,10 +236,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showCallOptions() {
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
-      builder: (_) => _CallOptionDialog(
+      pageBuilder: (_, _, _) => _CallOptionDialog(
         contactName: widget.contactName,
         contactImageUrl: widget.contactImageUrl,
         onCall: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,10 +77,12 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   }
 
   void _confirmDeleteAccount() {
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
-      builder: (_) => _DeleteDialog(
+      pageBuilder: (_, _, _) => _DeleteDialog(
         title: 'Are you sure you want to delete ?',
         onYes: () async {
           await ref.read(deleteAccountProvider.notifier).deleteAccount();
@@ -221,7 +224,7 @@ class _DeleteDialog extends ConsumerWidget {
     final isDeleting = deleteState is ActionStateLoading;
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 32.paddingH,
       child: Padding(
         padding: 24.paddingAll,

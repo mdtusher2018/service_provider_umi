@@ -33,7 +33,7 @@ class AppDayChip extends StatelessWidget {
         padding: padding ?? 8.paddingV,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: 8.circular,
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
@@ -106,7 +106,7 @@ class AppTimeChip extends StatelessWidget {
               : isAvailable
               ? AppColors.white
               : AppColors.grey100,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: 8.circular,
           border: Border.all(
             color: isSelected
                 ? AppColors.primary

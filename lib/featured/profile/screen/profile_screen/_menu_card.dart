@@ -38,7 +38,7 @@ class _MenuCard extends ConsumerWidget {
                         color: AppColors.primaryFor(
                           ref.watch(appRoleProvider),
                         ).withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: 4.circular,
                       ),
                       child: Icon(
                         item.icon,

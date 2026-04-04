@@ -19,7 +19,7 @@ void _showPickerOptions(WidgetRef ref) {
             height: 4,
             decoration: BoxDecoration(
               color: AppColors.grey300,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: 2.circular,
             ),
           ),
           16.verticalSpace,

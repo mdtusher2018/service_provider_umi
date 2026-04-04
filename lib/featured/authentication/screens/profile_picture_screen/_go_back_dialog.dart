@@ -17,7 +17,7 @@ class _GoBackDialog extends StatelessWidget {
             padding: 24.paddingAll,
             decoration: BoxDecoration(
               color: AppColors.white,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: 20.circular,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -52,7 +52,7 @@ class _GoBackDialog extends StatelessWidget {
                           foregroundColor: AppColors.textPrimary,
                           side: const BorderSide(color: AppColors.grey300),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: 10.circular,
                           ),
                           padding: 12.paddingV,
                         ),
@@ -72,7 +72,7 @@ class _GoBackDialog extends StatelessWidget {
                           foregroundColor: AppColors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: 10.circular,
                           ),
                           padding: 12.paddingV,
                         ),

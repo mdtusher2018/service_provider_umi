@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_constants.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +48,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               children: [
                 Image.asset('assets/logo.png', height: 200),
 
-                Image.asset('assets/doctor.png',height: 300),
+                Image.asset('assets/doctor.png', height: 300),
               ],
             ),
           ),
@@ -91,9 +92,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 log(ref.watch(appRoleProvider).name);
                 context.go(AppRoutes.guestOnboarding);
               },
-              child: const AppText.bodySm(
+              child: const AppText.bodyMd(
                 "Continue as a guest",
-                color: AppColors.textSecondary,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
               ),
             ),
 

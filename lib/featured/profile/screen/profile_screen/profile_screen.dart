@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -33,10 +34,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   void _confirmLogout() {
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
-      builder: (_) => _LogoutDialog(
+      pageBuilder: (_, _, _) => _LogoutDialog(
         onCancel: () => Navigator.of(context).pop(),
         onLogout: () => Navigator.of(context).pop(),
       ),

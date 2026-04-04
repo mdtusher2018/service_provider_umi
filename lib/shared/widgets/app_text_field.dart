@@ -198,7 +198,7 @@ class _AppTextFieldState extends State<AppTextField> {
     required double borderRadious,
   }) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(borderRadious),
+      borderRadius: borderRadious.circular,
       borderSide: BorderSide(color: color, width: width),
     );
   }
@@ -235,7 +235,7 @@ class AppSearchBar extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: 8.circular,
       ),
       child: TextField(
         controller: controller,

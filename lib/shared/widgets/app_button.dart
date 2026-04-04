@@ -142,7 +142,7 @@ class AppButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final primary = _primary(ref); // ← teal or blue
-    final radius = borderRadius ?? BorderRadius.circular(12);
+    final radius = borderRadius ?? 12.circular;
 
     return GestureDetector(
       onTap: onPressed,

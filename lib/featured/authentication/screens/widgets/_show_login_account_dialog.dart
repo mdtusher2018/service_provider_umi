@@ -1,7 +1,12 @@
 part of '../welcome_screen.dart';
 
 void _showLoginAccountDialog(WidgetRef ref) {
-  showDialog(context: ref.context, builder: (_) => const _LoginDialog());
+  showGeneralDialog(
+    context: ref.context,
+    transitionDuration: dialogSlidingFadeTransitionDuration,
+    transitionBuilder: dialogSlideFadeTransition,
+    pageBuilder: (_, _, _) => const _LoginDialog(),
+  );
 }
 
 class _LoginDialog extends ConsumerStatefulWidget {
@@ -13,10 +18,10 @@ class _LoginDialog extends ConsumerStatefulWidget {
 
 class _LoginDialogState extends ConsumerState<_LoginDialog> {
   final _emailController = TextEditingController(
-    text: kDebugMode ? "nazmulhasan@mockmail.xyz" : null,
+    text: kDebugMode ? "jolelal861@agoalz.com" : null,
   );
   final _passwordController = TextEditingController(
-    text: kDebugMode ? "112233" : null,
+    text: kDebugMode ? "jolelal861@agoalz.com" : null,
   );
   final _formKey = GlobalKey<FormState>();
 
@@ -45,7 +50,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
 
     return Dialog(
       backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Padding(
         padding: 24.paddingAll,

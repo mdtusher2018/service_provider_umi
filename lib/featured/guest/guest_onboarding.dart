@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
@@ -125,7 +126,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
                     color: currentIndex == index
                         ? Colors.teal
                         : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: 10.circular,
                   ),
                 ),
               ),
@@ -135,24 +136,12 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
 
             /// Next button
             Padding(
-              padding: 24.paddingH,
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: nextPage,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: AppText(
-                    currentIndex == onboardingData.length - 1
-                        ? "Finish"
-                        : "Next",
-                  ),
-                ),
+              padding: 20.paddingH,
+              child: AppButton.primary(
+                label: currentIndex == onboardingData.length - 1
+                    ? "Finish"
+                    : "Next",
+                onPressed: nextPage,
               ),
             ),
 

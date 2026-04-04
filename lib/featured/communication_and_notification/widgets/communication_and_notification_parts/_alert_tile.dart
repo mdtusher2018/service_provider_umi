@@ -51,7 +51,7 @@ class _AlertTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: iconBg,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: 6.circular,
               ),
               child: Icon(icon, color: iconColor, size: 20),
             ),

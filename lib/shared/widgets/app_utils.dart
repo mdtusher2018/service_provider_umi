@@ -148,7 +148,7 @@ class _AppShimmerState extends State<AppShimmer>
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+          borderRadius: widget.borderRadius ?? 8.circular,
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -243,7 +243,7 @@ class AppBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color ?? AppColors.primaryLight,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: 20.circular,
       ),
       child: AppText(
         label,

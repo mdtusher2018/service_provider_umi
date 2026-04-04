@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -10,21 +12,6 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 part 'add_address_screen.dart';
-
-class AddressModel {
-  final String id;
-  final String label;
-  final String street;
-  final String city;
-  final String country;
-  const AddressModel({
-    required this.id,
-    required this.label,
-    required this.street,
-    required this.city,
-    required this.country,
-  });
-}
 
 class MyAddressesScreen extends StatefulWidget {
   const MyAddressesScreen({super.key});
@@ -37,10 +24,9 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
   final List<AddressModel> _addresses = [
     const AddressModel(
       id: '1',
-      label: 'Mr. Raju Home',
-      street: '1901 Thorner Rd, Allentown, New Mexico 31134',
-      city: 'New Mexico',
-      country: '(407) 555-0101',
+      address: '1901 Thorner Rd, Allentown, New Mexico 31134',
+      lat: 45.5,
+      lng: 90.5,
     ),
   ];
 
@@ -63,9 +49,11 @@ class _MyAddressesScreenState extends State<MyAddressesScreen> {
   }
 
   void _confirmDelete(AddressModel address) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (_) => _DeleteDialog(
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (_, _, _) => _DeleteDialog(
         onYes: () {
           setState(() => _addresses.removeWhere((a) => a.id == address.id));
           context.pop();
@@ -154,7 +142,7 @@ class _AddressTile extends StatelessWidget {
       padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: 14.circular,
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
@@ -170,10 +158,10 @@ class _AddressTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.labelLg(address.label, fontWeight: FontWeight.w700),
+                AppText.labelLg(address.address, fontWeight: FontWeight.w700),
                 3.verticalSpace,
-                AppText.bodySm(address.street, color: AppColors.textSecondary),
-                AppText.bodySm(address.country, color: AppColors.textSecondary),
+                // AppText.bodySm(address.street, color: AppColors.textSecondary),
+                // AppText.bodySm(address.country, color: AppColors.textSecondary),
               ],
             ),
           ),
@@ -207,7 +195,7 @@ class _DeleteDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 32.paddingH,
       child: Padding(
         padding: 24.paddingAll,

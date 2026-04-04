@@ -60,8 +60,8 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.border),
-                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.black),
+                  borderRadius: 12.circular,
                 ),
                 child: AppText.labelMd(
                   "Show month",
@@ -96,28 +96,18 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
                 child: Container(
                   width: 58,
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primary : AppColors.border,
-                    ),
+                    color: isSelected
+                        ? AppColors.primary.withOpacity(0.1)
+                        : AppColors.white,
+                    borderRadius: 14.circular,
+                    border: Border.all(color: AppColors.black),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppText.labelSm(
-                        date.getDayOfWeek,
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textSecondary,
-                      ),
+                      AppText.labelMd(date.getDayOfWeek),
                       4.verticalSpace,
-                      AppText.h3(
-                        date.day.toString(),
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textPrimary,
-                      ),
+                      AppText.h3(date.day.toString()),
                     ],
                   ),
                 ),

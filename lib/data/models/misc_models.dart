@@ -1,30 +1,9 @@
 // models/misc/misc_models.dart
 
-
-
 // ── Notifications ─────────────────────────────────────────────────────────────
 
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
-
-class NotificationItem {
-  final String title;
-  final String content;
-  final String createdAt;
-
-  const NotificationItem({
-    required this.title,
-    required this.content,
-    required this.createdAt,
-  });
-
-  factory NotificationItem.fromJson(Map<String, dynamic> json) =>
-      NotificationItem(
-        title: json['title'] as String,
-        content: json['content'] as String,
-        createdAt: json['created_at'] as String,
-      );
-}
 
 // ── Favorites ─────────────────────────────────────────────────────────────────
 
@@ -37,11 +16,13 @@ class FavoritesResponse {
   factory FavoritesResponse.fromJson(Map<String, dynamic> json) =>
       FavoritesResponse(
         results: (json['results'] as List)
-            .map((e) =>
-                ProviderSearchResult.fromJson(e as Map<String, dynamic>))
+            .map(
+              (e) => ProviderSearchResult.fromJson(e as Map<String, dynamic>),
+            )
             .toList(),
         pagination: PaginationMeta.fromJson(
-            json['pagination'] as Map<String, dynamic>),
+          json['pagination'] as Map<String, dynamic>,
+        ),
       );
 }
 
@@ -59,10 +40,10 @@ class FaqItem {
   });
 
   factory FaqItem.fromJson(Map<String, dynamic> json) => FaqItem(
-        id: json['id'] as int,
-        question: json['question'] as String,
-        answer: json['answer'] as String,
-      );
+    id: json['id'] as int,
+    question: json['question'] as String,
+    answer: json['answer'] as String,
+  );
 }
 
 class FaqsResponse {
@@ -71,10 +52,10 @@ class FaqsResponse {
   const FaqsResponse({required this.faqs});
 
   factory FaqsResponse.fromJson(Map<String, dynamic> json) => FaqsResponse(
-        faqs: (json['faqs'] as List)
-            .map((e) => FaqItem.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
+    faqs: (json['faqs'] as List)
+        .map((e) => FaqItem.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
 }
 
 // ── Static Content ────────────────────────────────────────────────────────────

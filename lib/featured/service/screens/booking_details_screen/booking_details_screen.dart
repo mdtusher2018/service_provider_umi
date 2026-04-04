@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
@@ -29,10 +30,12 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
     final role = ref.read(appRoleProvider);
     final primary = AppColors.primaryFor(role);
 
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierDismissible: false,
-      builder: (_) => _CongratsDialog(
+      pageBuilder: (_, _, _) => _CongratsDialog(
         primary: primary,
         onDone: () {
           context.pop(); // close dialog

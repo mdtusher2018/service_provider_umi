@@ -141,7 +141,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
         Container(
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: 24.circular,
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
@@ -228,7 +228,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
         Container(
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: 24.circular,
           ),
           child: Row(
             children: [
@@ -330,7 +330,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           padding: 16.paddingAll,
           decoration: BoxDecoration(
             color: AppColors.grey50,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: 16.circular,
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
@@ -358,7 +358,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.outline(
             label: 'Skip',
             onPressed: () {
-              // context.go(AppRoutes.bookingConfirmation);
+              context.push(AppRoutes.searchResults);
             },
           ),
         ),
@@ -396,23 +396,24 @@ class _FrequencyCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : AppColors.white,
-          borderRadius: BorderRadius.circular(24),
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.1)
+              : AppColors.white,
+          borderRadius: 24.circular,
+          border: isSelected
+              ? Border.all(width: 1, color: AppColors.primary)
+              : Border.all(color: Colors.transparent),
         ),
         child: Column(
           children: [
             AppText.labelLg(
               title,
-              color: isSelected ? AppColors.white : AppColors.textPrimary,
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
-            AppText.bodySm(
-              subtitle,
-              color: isSelected
-                  ? AppColors.white.withOpacity(0.7)
-                  : AppColors.textSecondary,
-            ),
+            AppText.bodySm(subtitle),
           ],
         ),
       ),
@@ -432,7 +433,7 @@ class _StartTypeCard extends StatelessWidget {
       padding: 12.paddingV,
       decoration: BoxDecoration(
         color: isSelected ? AppColors.white : Colors.transparent,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: 24.circular,
         boxShadow: [
           if (isSelected)
             BoxShadow(
@@ -468,7 +469,7 @@ class _TimeRangeCard extends StatelessWidget {
         padding: 12.paddingV,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: 12.circular,
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.border,
           ),
@@ -520,7 +521,7 @@ class _TimeSpinnerState extends State<_TimeSpinner> {
           height: 44,
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: 10.circular,
             border: Border.all(color: AppColors.border, width: 1.5),
           ),
           child: Center(child: AppText.h3(widget.values[_current])),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -21,7 +22,6 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch on open; only re-fetch if not already loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final current = ref.read(staticContentProvider);
       if (current is StaticContentStateInitial) {
@@ -30,27 +30,24 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
     });
   }
 
-  /// Pick the correct field from the content object based on page type
   String _resolveContent(StaticContentStateSuccess state) {
     switch (widget.type) {
       case StaticPageType.privacy:
-        return state.content.privacyPolicy ?? 'No content available.';
+        return state.content.privacyPolicy ?? '';
       case StaticPageType.terms:
-        return state.content.termsAndCondition ?? 'No content available.';
+        return state.content.termsAndCondition ?? '';
       case StaticPageType.aboutUs:
-        return state.content.aboutUs ?? 'No content available.';
-
+        return state.content.aboutUs ?? '';
       case StaticPageType.refundPolicy:
-        return state.content.refundPolicy ?? 'No content available.';
+        return state.content.refundPolicy ?? '';
       case StaticPageType.shippingPolicy:
-        return state.content.shippingPolicy ?? 'No content available.';
-
+        return state.content.shippingPolicy ?? '';
       case StaticPageType.location:
-        return state.content.location ?? 'No content available.';
+        return state.content.location ?? '';
       case StaticPageType.copyRight:
-        return state.content.copyRight ?? 'No content available.';
+        return state.content.copyRight ?? '';
       case StaticPageType.footerText:
-        return state.content.footerText ?? 'No content available.';
+        return state.content.footerText ?? '';
     }
   }
 
@@ -81,14 +78,28 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
           child: CircularProgressIndicator(color: AppColors.primary),
         ),
 
-        success: (content) => SingleChildScrollView(
-          padding: 20.paddingAll,
-          child: AppText.bodyMd(
-            _resolveContent(StaticContentStateSuccess(content)),
-            color: AppColors.textSecondary,
-            height: 1.7,
-          ),
-        ),
+        success: (content) {
+          final htmlContent = _resolveContent(
+            StaticContentStateSuccess(content),
+          );
+
+          // ✅ Friendly fallback if field is empty
+          if (htmlContent.trim().isEmpty) {
+            return const Center(
+              child: AppText.bodyMd(
+                'No content available.',
+                color: AppColors.textSecondary,
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            // ✅ flutter_html renders HTML tags properly —
+            // handles <p>, <h1-h3>, <strong>, <a>, <ul>, <li>, etc.
+            child: Html(data: htmlContent),
+          );
+        },
 
         failure: (failure) => Center(
           child: Padding(

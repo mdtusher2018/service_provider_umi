@@ -19,7 +19,7 @@ class _ListingCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: 14.circular,
         border: Border.all(color: primary, width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -35,7 +35,7 @@ class _ListingCard extends StatelessWidget {
           Padding(
             padding: 8.paddingAll,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: 8.circular,
               child: Container(
                 width: 90,
                 height: 80,

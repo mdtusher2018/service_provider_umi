@@ -32,7 +32,7 @@ class PaymentsScreen extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: 16.circular,
             border: Border.all(color: AppColors.border),
           ),
           child: Column(
@@ -71,7 +71,7 @@ class _PaymentTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: 16.circular,
       child: Padding(
         padding: 16.paddingAll,
         child: Row(
@@ -153,7 +153,7 @@ class _BookingCard extends StatelessWidget {
       padding: 14.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: 16.circular,
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
@@ -167,7 +167,7 @@ class _BookingCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: 10.circular,
             child: Container(
               width: 68,
               height: 68,

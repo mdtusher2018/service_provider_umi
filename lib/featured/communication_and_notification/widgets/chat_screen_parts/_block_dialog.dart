@@ -16,7 +16,7 @@ class _BlockUserDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 32.paddingH,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),

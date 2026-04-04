@@ -157,7 +157,7 @@ class _ProviderTabBar extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: 10.circular,
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
@@ -174,7 +174,7 @@ class _ProviderTabBar extends StatelessWidget {
                       color: isSelected
                           ? AppColors.grey200
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: 7.circular,
                     ),
                     child: Center(
                       child: AppText.labelMd(

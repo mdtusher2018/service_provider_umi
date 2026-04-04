@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
@@ -132,14 +133,15 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
   }
 
   void _showRatingDialog(BookingItem item) {
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.5),
-      builder: (_) => RatingDialog(
+      pageBuilder: (_, _, _) => RatingDialog(
         serviceName: item.serviceTitle,
         onSubmit: (rating, tags, comment) {
           context.pop();
-          // TODO: submit rating via provider
         },
       ),
     );

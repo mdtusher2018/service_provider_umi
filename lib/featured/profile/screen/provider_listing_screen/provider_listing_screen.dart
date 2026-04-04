@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -48,10 +49,12 @@ class _MyListingScreenState extends ConsumerState<ProviderListingScreen> {
   ];
 
   void _confirmDelete(ServiceListing listing) {
-    showDialog(
+    showGeneralDialog(
       context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
-      builder: (_) => _DeleteDialog(
+      pageBuilder: (_, _, _) => _DeleteDialog(
         onYes: () {
           setState(() => _listings.removeWhere((l) => l.id == listing.id));
           context.pop();

@@ -67,7 +67,7 @@ class AppBottomSheetContainer extends StatelessWidget {
                 height: 4,
                 decoration: BoxDecoration(
                   color: AppColors.grey300,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: 2.circular,
                 ),
               ),
             ),
@@ -106,7 +106,7 @@ class AppPrivacyDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       child: Padding(
         padding: 24.paddingAll,
         child: Column(

@@ -142,7 +142,7 @@ class _FreqOption extends ConsumerWidget {
         padding: 16.paddingAll,
         decoration: BoxDecoration(
           color: AppColors.grey50,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: 16.circular,
           border: Border.all(
             color: AppColors.primaryFor(ref.watch(appRoleProvider)),
             width: 1.5,

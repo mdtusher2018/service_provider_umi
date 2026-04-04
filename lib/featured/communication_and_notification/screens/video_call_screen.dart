@@ -219,7 +219,7 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.4),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: 20.circular,
                               ),
                               child: AppText.labelLg(
                                 _durationString,
@@ -295,14 +295,14 @@ class _VideoCallScreenState extends ConsumerState<VideoCallScreen>
         width: 90,
         height: 130,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: 12.circular,
           border: Border.all(color: AppColors.white.withOpacity(0.3), width: 2),
           boxShadow: [
             BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 10),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: 10.circular,
           child: _isCameraOff
               ? Container(
                   color: AppColors.grey800,

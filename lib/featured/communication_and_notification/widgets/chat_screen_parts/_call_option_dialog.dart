@@ -18,7 +18,7 @@ class _CallOptionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: 20.circular),
       insetPadding: 40.paddingH,
       child: Padding(
         padding: 20.paddingAll,
@@ -44,7 +44,7 @@ class _CallOptionDialog extends StatelessWidget {
               height: 100,
               decoration: BoxDecoration(
                 color: AppColors.grey100,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: 12.circular,
               ),
               child: Center(
                 child: AppAvatar(

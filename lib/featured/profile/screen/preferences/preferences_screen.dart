@@ -78,7 +78,7 @@ class _PrefTile extends StatelessWidget {
         height: 36,
         decoration: BoxDecoration(
           color: primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: 8.circular,
         ),
         child: Icon(item.icon, color: primary, size: 24),
       ),

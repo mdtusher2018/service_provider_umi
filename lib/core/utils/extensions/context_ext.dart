@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 extension BuildContextExtensions on BuildContext {
@@ -39,7 +40,7 @@ extension BuildContextExtensions on BuildContext {
         content: AppText(message, color: AppColors.white),
         backgroundColor: isError ? colorScheme.error : colorScheme.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: 10.circular),
         duration: duration,
       ),
     );
@@ -50,7 +51,6 @@ extension BuildContextExtensions on BuildContext {
 
   void showErrorSnackBar(String message) =>
       showSnackBar(message, isError: true);
-
 
   // ─── Localization ────────────────────────────────────────
   // Uncomment once generated:

@@ -22,7 +22,7 @@ Widget _buildGallery(WidgetRef ref) {
             width: 90,
             decoration: BoxDecoration(
               color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: 12.circular,
               border: Border.all(color: AppColors.border),
             ),
             child: Icon(

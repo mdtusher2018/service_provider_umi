@@ -86,7 +86,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: 8.circular,
                 border: Border.all(color: AppColors.grey200),
               ),
               child: Row(

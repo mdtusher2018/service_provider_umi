@@ -86,7 +86,7 @@ class _TimeBox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: 10.circular,
         border: Border(),
       ),
       child: AppText(

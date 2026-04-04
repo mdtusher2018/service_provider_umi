@@ -83,7 +83,7 @@ class _FaqSheet extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: 16.circular,
               ),
               child: Image.asset("assets/elderly_care.png", fit: BoxFit.cover),
             ),

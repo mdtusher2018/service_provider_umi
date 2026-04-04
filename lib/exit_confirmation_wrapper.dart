@@ -1,8 +1,7 @@
-// lib/core/widgets/exit_confirmation_wrapper.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/utils/animations.dart';
 
 class ExitConfirmationWrapper extends StatelessWidget {
   final Widget child;
@@ -16,14 +15,12 @@ class ExitConfirmationWrapper extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        // Check if GoRouter has any page to go back to
         final router = GoRouter.of(context);
         if (router.canPop()) {
           router.pop();
           return;
         }
 
-        // No page to go back → show exit dialog
         final shouldExit = await _showExitDialog(context);
         if (shouldExit == true) {
           SystemNavigator.pop();
@@ -34,9 +31,11 @@ class ExitConfirmationWrapper extends StatelessWidget {
   }
 
   Future<bool?> _showExitDialog(BuildContext context) {
-    return showDialog<bool>(
+    return showGeneralDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (ctx, _, _) => AlertDialog(
         title: const Text('Exit App'),
         content: const Text('Are you sure you want to close the app?'),
         actions: [

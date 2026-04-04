@@ -13,7 +13,7 @@ class _TipsCard extends StatelessWidget {
       padding: 16.paddingAll,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: 16.circular,
         border: Border.all(color: AppColors.grey200),
       ),
       child: Column(
