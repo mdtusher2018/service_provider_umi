@@ -4,6 +4,8 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/data/models/notification_models.dart';
+import 'package:service_provider_umi/featured/notification/riverpod/notification_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
@@ -50,22 +52,6 @@ class CallHistory {
     required this.name,
     this.imageUrl,
     required this.lastTime,
-    required this.type,
-  });
-}
-
-class AlertItem {
-  final String id;
-  final String title;
-  final String description;
-  final DateTime time;
-  final AlertType type;
-
-  const AlertItem({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.time,
     required this.type,
   });
 }
@@ -125,30 +111,6 @@ class _CommunicationAndNotificationScreenState
     ),
   ];
 
-  final List<AlertItem> _alerts = [
-    AlertItem(
-      id: '1',
-      title: 'Order Accepted',
-      description: 'We have accepted your order. Click to view details.',
-      time: DateTime.now().subtract(const Duration(hours: 2)),
-      type: AlertType.orderAccepted,
-    ),
-    AlertItem(
-      id: '2',
-      title: 'Order Complete',
-      description: 'We have accepted your order. Click to view details.',
-      time: DateTime.now().subtract(const Duration(hours: 2)),
-      type: AlertType.orderComplete,
-    ),
-    AlertItem(
-      id: '3',
-      title: 'Cancel order',
-      description: 'We have accepted your order. Click to view details.',
-      time: DateTime.now().subtract(const Duration(hours: 2)),
-      type: AlertType.cancelOrder,
-    ),
-  ];
-
   List<InboxContact> get _filteredContacts => _searchQuery.isEmpty
       ? _contacts
       : _contacts
@@ -161,6 +123,9 @@ class _CommunicationAndNotificationScreenState
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(notificationsProvider.notifier).fetch();
+    });
   }
 
   @override
@@ -219,7 +184,7 @@ class _CommunicationAndNotificationScreenState
       children: [
         // Search bar
         Padding(
-          padding:  16.paddingH,
+          padding: 16.paddingH,
           child: AppSearchBar(
             hint: "Search friends",
             suffix: Icon(Icons.search, size: 24),
@@ -289,18 +254,42 @@ class _CommunicationAndNotificationScreenState
   }
 
   Widget _buildAlertsTab() {
-    return ListView.separated(
-      itemCount: _alerts.length,
-      separatorBuilder: (_, __) => 16.verticalSpace,
-      itemBuilder: (_, i) => _AlertTile(alert: _alerts[i]),
+    final alertsAsync = ref.watch(notificationsProvider);
+
+    return alertsAsync.when(
+      initial: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      failure: (e) => Center(child: Text(e.toString())),
+      success: (alerts) => RefreshIndicator(
+        onRefresh: () async {
+          ref.read(notificationsProvider.notifier).fetch();
+        },
+        child: ListView.separated(
+          itemCount: alerts.length,
+          separatorBuilder: (_, __) => 16.verticalSpace,
+          itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
+        ),
+      ),
     );
   }
 
   Widget _buildLastAlertsTab() {
-    return ListView.separated(
-      itemCount: _alerts.length,
-      separatorBuilder: (_, __) => 16.verticalSpace,
-      itemBuilder: (_, i) => _AlertTile(alert: _alerts[i]),
+    final alertsAsync = ref.watch(notificationsProvider);
+
+    return alertsAsync.when(
+      initial: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      failure: (e) => Center(child: Text(e.toString())),
+      success: (alerts) => RefreshIndicator(
+        onRefresh: () async {
+          ref.read(notificationsProvider.notifier).fetch();
+        },
+        child: ListView.separated(
+          itemCount: alerts.length,
+          separatorBuilder: (_, __) => 16.verticalSpace,
+          itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
+        ),
+      ),
     );
   }
 }

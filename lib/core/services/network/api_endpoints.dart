@@ -29,4 +29,34 @@ class ApiEndpoints {
   // ─── Categories ─────────────────────────────────────────────────────────────
   static const String services = '/categories';
   static const String serviceById = '/categories/{id}';
+
+  // ─── MOCK ─────────────────────────────────────────────────────────────
+
+  // ─── Support ────────────────────────────────────────────────────────────────
+  static const String support = '/support';
+
+  // ─── Favorites ──────────────────────────────────────────────────────────────
+  static const String favorites = '/favorites';
+
+  // ─── Address ────────────────────────────────────────────────────────────────
+  static const String addAddress = '/addresses';
+  static const String savedAddresses = '/addresses';
+
+  // ─── Sub Categories ─────────────────────────────────────────────────────────
+  static const String subCategories = '/sub-categories/{id}';
+
+  // ─── Booking ────────────────────────────────────────────────────────────────
+  static const String bookingDetail = '/bookings/{id}';
+  static const String myBookings = '/bookings';
+  static const String createBooking = '/bookings';
+
+  // ─── FAQs ───────────────────────────────────────────────────────────────────
+  static const String faqs = '/faqs';
+
+  // ─── Provider ───────────────────────────────────────────────────────────────
+  static const String providerProfile = '/providers/{id}';
+
+  // ─── Filters & Search ───────────────────────────────────────────────────────
+  static const String serviceFilters = '/services/filters';
+  static const String searchProviders = '/providers/search';
 }

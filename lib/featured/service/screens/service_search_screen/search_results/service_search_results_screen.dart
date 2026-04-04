@@ -4,6 +4,8 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -12,27 +14,6 @@ import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 part '_build_results_list.dart';
 part '_faq_bottom_sheet.dart';
 part '_widgets.dart';
-
-//============================================
-//================= Model ====================
-//============================================
-class _ProviderResult {
-  final String id, name;
-  final double rating, pricePerHour;
-  final int reviews, serviceCount;
-  final bool isVerified, hasRepeated, hasUpdatedSchedule;
-  const _ProviderResult({
-    required this.id,
-    required this.name,
-    required this.rating,
-    required this.reviews,
-    required this.serviceCount,
-    required this.pricePerHour,
-    required this.isVerified,
-    required this.hasRepeated,
-    required this.hasUpdatedSchedule,
-  });
-}
 
 class SearchResultsScreen extends ConsumerStatefulWidget {
   final String category;
@@ -45,6 +26,17 @@ class SearchResultsScreen extends ConsumerStatefulWidget {
 
 class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
   bool _showFaqSheet = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      ref
+          .read(searchServiceProvidersProvider.notifier)
+          .search(SearchProvidersRequest(page: 1, limit: 10));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +68,9 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
 
   Widget _buildFaqBanner() {
     return GestureDetector(
-      onTap: () => setState(() => _showFaqSheet = true),
+      onTap: () {
+        setState(() => _showFaqSheet = true);
+      },
       child: Container(
         margin: 16.paddingAll,
 

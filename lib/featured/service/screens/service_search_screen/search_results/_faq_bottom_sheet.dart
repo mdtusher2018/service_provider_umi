@@ -21,76 +21,92 @@ Widget _buildFaqOverlay({
   );
 }
 
-class _FaqSheet extends StatelessWidget {
+class _FaqSheet extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   const _FaqSheet({required this.onClose});
 
-  static const _faqs = [
-    (
-      'How does it work?',
-      'Our professionals are vetted and background-checked for your safety.Our professionals are vetted and background-checked for your safety.Our professionals are vetted and background-checked for your safety.Our professionals are vetted and background-checked for your safety.Our professionals are vetted and background-checked for your safety.',
-    ),
-    (
-      'Can they perform other tasks besides caregiving?',
-      'Yes, many providers offer additional household services.Yes, many providers offer additional household services.Yes, many providers offer additional household services.Yes, many providers offer additional household services.Yes, many providers offer additional household services.',
-    ),
-    (
-      'Does it include care for people with medical conditions?',
-      'Yes, filter by condition to find specialized care.',
-    ),
-    (
-      'The person to be cared for is in the hospital',
-      'Hospital-based care may be available. Check provider profiles.',
-    ),
-    (
-      'Can I book the service on a weekly basis?',
-      'Yes! Select "Weekly" frequency when booking.',
-    ),
-  ];
+  @override
+  ConsumerState<_FaqSheet> createState() => _FaqSheetState();
+}
+
+class _FaqSheetState extends ConsumerState<_FaqSheet> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(faqProvider.notifier).fetch("elderly_care");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final faqState = ref.watch(faqProvider);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-      constraints: BoxConstraints(maxHeight: context.screenHeight * 0.6),
+      constraints: BoxConstraints(maxHeight: context.screenHeight * 0.8),
       decoration: const BoxDecoration(
-        color: AppColors.white,
-
+        color: AppColors.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: faqState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+
+        error: (e, _) => Center(child: AppText.bodyMd(e.toString())),
+
+        data: (faqs) {
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: AppText.h3('How does the Elderly care\nservice work?'),
+                // ─── Header ───
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: AppText.h3(
+                        'How does the Elderly care\nservice work?',
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: widget.onClose,
+                      child: const Icon(
+                        Icons.close_rounded,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-                GestureDetector(
-                  onTap: onClose,
-                  child: const Icon(
-                    Icons.close_rounded,
-                    color: AppColors.textSecondary,
+
+                16.verticalSpace,
+
+                // ─── Illustration ───
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: 16.circular,
+                  ),
+                  child: Image.asset(
+                    "assets/elderly_care.png",
+                    fit: BoxFit.cover,
                   ),
                 ),
+
+                16.verticalSpace,
+
+                // ─── FAQ LIST FROM API ───
+                if (faqs.isEmpty)
+                  const AppText.bodyMd("No FAQs available")
+                else
+                  ...faqs.map(
+                    (faq) =>
+                        _FaqTile(question: faq.question, answer: faq.answer),
+                  ),
               ],
             ),
-            16.verticalSpace,
-            // Illustration
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.primaryLight,
-                borderRadius: 16.circular,
-              ),
-              child: Image.asset("assets/elderly_care.png", fit: BoxFit.cover),
-            ),
-            16.verticalSpace,
-            ..._faqs.map((faq) => _FaqTile(question: faq.$1, answer: faq.$2)),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

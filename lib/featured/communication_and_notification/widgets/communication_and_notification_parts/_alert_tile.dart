@@ -2,7 +2,7 @@ part of '../../screens/communication_and_notification_screen.dart';
 
 // ─── Alert Tile ───────────────────────────────────────────────
 class _AlertTile extends StatelessWidget {
-  final AlertItem alert;
+  final NotificationItem alert;
   const _AlertTile({required this.alert});
 
   @override
@@ -51,7 +51,7 @@ class _AlertTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: iconBg,
-                borderRadius: 6.circular,
+                borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(icon, color: iconColor, size: 20),
             ),
@@ -62,10 +62,7 @@ class _AlertTile extends StatelessWidget {
                 children: [
                   AppText.labelLg(alert.title),
                   2.verticalSpace,
-                  AppText.bodySm(
-                    alert.description,
-                    color: AppColors.textSecondary,
-                  ),
+                  AppText.bodySm(alert.message, color: AppColors.textSecondary),
                 ],
               ),
             ),
@@ -75,7 +72,7 @@ class _AlertTile extends StatelessWidget {
               children: [
                 Icon(Icons.watch_later_outlined, size: 16),
                 AppText.bodySm(
-                  alert.time.toRelativeTime,
+                  DateTime.tryParse(alert.createdAt)?.toRelativeTime ?? "",
                   color: AppColors.textgrey,
                 ),
               ],

@@ -167,10 +167,10 @@ class ProviderCard extends StatelessWidget {
           Row(
             children: [
               if (hasRepeated)
-                _buildBadge('$reviewCount has repeated', Icons.refresh_rounded),
+                _buildBadge('$reviewCount has repeated', Icons.sync),
               if (hasRepeated && hasUpdatedSchedule) 6.horizontalSpace,
               if (hasUpdatedSchedule)
-                _buildBadge('Updated Schedule', Icons.calendar_today),
+                _buildBadge('Updated Schedule', Icons.calendar_today_outlined),
             ],
           ),
         ],

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/error/app_exception.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
@@ -96,14 +97,14 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       ),
 
                       state.when(
-                        initial: () =>
-                            Center(child: CircularProgressIndicator()),
                         loading: () =>
                             Center(child: CircularProgressIndicator()),
-                        success: (categories) =>
-                            RadialMenu(menuItems: categories),
-                        failure: (failure) =>
-                            Center(child: AppText.h4(failure.message)),
+                        data: (categories) => RadialMenu(menuItems: categories),
+                        error: (e, _) => Center(
+                          child: AppText.h4(
+                            (e is AppException) ? e.message : e.toString(),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -267,7 +268,13 @@ class RadialMenu extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   if (menuItems[index].haveSubcategory) {
-                    context.push(AppRoutes.serviceSubCategory);
+                    context.push(
+                      AppRoutes.serviceSubCategory,
+                      extra: {
+                        "serviceName": menuItems[index].name,
+                        "serviceId": menuItems[index].id,
+                      },
+                    );
                   } else {
                     context.push(AppRoutes.bookingTime);
                   }

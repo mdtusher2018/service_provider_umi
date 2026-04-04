@@ -115,7 +115,14 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: AppRoutes.filter, builder: (_, __) => FilterScreen()),
       GoRoute(
         path: AppRoutes.serviceSubCategory,
-        builder: (_, __) => const ServiceSubCategoryScreen(),
+
+        builder: (_, state) {
+          final data = state.extra as Map<String, String>;
+          return ServiceSubCategoryScreen(
+            serviceId: data["serviceId"].toString(),
+            serviceName: data['serviceName'].toString(),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.providerProfile,

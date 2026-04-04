@@ -1,16 +1,15 @@
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
+import 'package:service_provider_umi/data/models/misc_models.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
-
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
-
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 class MockServiceDataSource implements ServiceRemoteDataSource {
-  // ─── Mock Services ───────────────────────────────────────────────────────
+  // ─── Mock Services ────────────────────────────────────────────────────────
 
   static final List<ServiceModel> _allServices = [
     ServiceModel(
@@ -134,9 +133,8 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     ],
   };
 
-  // ─── Mock Providers ──────────────────────────────────────────────────────
+  // ─── Mock Providers ───────────────────────────────────────────────────────
 
-  // ignore: unused_field
   static final List<ProviderSearchResult> _mockProviders = [
     ProviderSearchResult(
       id: 'provider_001',
@@ -212,7 +210,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     ),
   ];
 
-  // ─── Mock Bookings ───────────────────────────────────────────────────────
+  // ─── Mock Bookings ────────────────────────────────────────────────────────
 
   static final List<BookingItem> _mockBookings = [
     BookingItem(
@@ -284,12 +282,69 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     ),
   ];
 
-  // ─── Implementations ─────────────────────────────────────────────────────
+  // ─── Mock FAQs ────────────────────────────────────────────────────────────
+
+  static const Map<String, List<FaqItem>> _faqs = {
+    'elderly_care': [
+      FaqItem(
+        id: 1,
+        question: 'How does this service work?',
+        answer:
+            'Select a service, choose your schedule, and book a provider. '
+            'The provider will confirm and arrive at your location.',
+      ),
+      FaqItem(
+        id: 2,
+        question: 'Can I cancel a booking?',
+        answer:
+            'Yes, you can cancel a booking up to 24 hours before the start '
+            'time without any charge.',
+      ),
+      FaqItem(
+        id: 3,
+        question: 'Are providers background-checked?',
+        answer:
+            'All verified providers have undergone thorough background checks '
+            'and identity verification.',
+      ),
+      FaqItem(
+        id: 4,
+        question: 'What payment methods are accepted?',
+        answer:
+            'We accept all major credit/debit cards and mobile banking payments.',
+      ),
+      FaqItem(
+        id: 5,
+        question: 'How do I contact support?',
+        answer:
+            'You can reach our support team via the in-app support section '
+            'or call our helpline at any time.',
+      ),
+    ],
+  };
+
+  // ─── Implementations ──────────────────────────────────────────────────────
+
   @override
-  Future<List<ServiceModel>> getSubCategories(String serviceType) async {
+  Future<List<ServiceModel>> getAllCategories() async {
     await _delay();
-    final key = serviceType.toLowerCase().replaceAll(' ', '_');
-    return _subCategories[key] ?? _subCategories[serviceType] ?? [];
+    return _allServices;
+  }
+
+  @override
+  Future<ServiceModel> getServiceById(String id) async {
+    await _delay();
+    return _allServices.firstWhere(
+      (s) => s.id == id,
+      orElse: () => throw Exception('Service not found: $id'),
+    );
+  }
+
+  @override
+  Future<List<ServiceModel>> getSubCategories(String serviceId) async {
+    await _delay();
+    final key = serviceId.toLowerCase().replaceAll(' ', '_');
+    return _subCategories[key] ?? _subCategories[serviceId] ?? [];
   }
 
   @override
@@ -326,7 +381,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
         'Parkinsons',
         'Stroke',
         'Multiple sclerosis',
-        'Alzheimer\'s',
+        "Alzheimer's",
       ],
     );
   }
@@ -495,7 +550,14 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     );
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────
+  @override
+  Future<List<FaqItem>> getFaqs(String serviceType) async {
+    await _delay(ms: 400);
+    final key = serviceType.toLowerCase().replaceAll('-', '_');
+    return _faqs[key] ?? _faqs['elderly_care'] ?? [];
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
 
   String _nameForProvider(String id) {
     const names = {
@@ -521,15 +583,4 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
 
   Future<void> _delay({int ms = 500}) =>
       Future.delayed(Duration(milliseconds: ms));
-
-  @override
-  Future<List<ServiceModel>> getAllCategories() async {
-    await _delay();
-    return _allServices;
-  }
-
-  @override
-  Future<ServiceModel> getServiceById(String id) {
-    throw UnimplementedError();
-  }
 }

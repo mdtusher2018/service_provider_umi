@@ -1,19 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/error/app_exception.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class ServiceSubCategoryScreen extends StatelessWidget {
-  const ServiceSubCategoryScreen({super.key});
+class ServiceSubCategoryScreen extends ConsumerStatefulWidget {
+  const ServiceSubCategoryScreen({
+    super.key,
+    required this.serviceId,
+    required this.serviceName,
+  });
+  final String serviceId;
+  final String serviceName;
 
-  // Dynamic list of care categories
-  final List<Map<String, dynamic>> careCategories = const [
-    {"label": "Children", "icon": Icons.child_care},
-    {"label": "Elders", "icon": Icons.elderly},
-  ];
+  @override
+  ConsumerState<ServiceSubCategoryScreen> createState() =>
+      _ServiceSubCategoryScreenState();
+}
+
+class _ServiceSubCategoryScreenState
+    extends ConsumerState<ServiceSubCategoryScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(subCategoriesProvider.notifier).fetch(widget.serviceId);
+    });
+  }
+
+  Widget _buildBody() {
+    final state = ref.watch(subCategoriesProvider);
+
+    return state.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) =>
+          Center(child: Text((e is AppException) ? e.message : e.toString())),
+      data: (categories) {
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: categories.map((category) {
+            return InkWell(
+              onTap: () {
+                context.push(AppRoutes.bookingTime);
+              },
+              child: _buildCategoryItem(
+                category.name,
+                Icons.category, // you can map icon later
+              ),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +100,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.arrow_back_ios_new),
                   16.horizontalSpace,
-                  AppText.h1("Care", color: AppColors.textgrey),
+                  AppText.h1(widget.serviceName, color: AppColors.textgrey),
                 ],
               ),
             ),
@@ -63,24 +108,7 @@ class ServiceSubCategoryScreen extends StatelessWidget {
             24.verticalSpace,
 
             // Dynamic Categories using Wrap
-            Padding(
-              padding: 16.paddingH,
-              child: Wrap(
-                spacing: 16, // horizontal spacing
-                runSpacing: 16, // vertical spacing
-                children: careCategories.map((category) {
-                  return InkWell(
-                    onTap: () {
-                      context.push(AppRoutes.bookingTime);
-                    },
-                    child: _buildCategoryItem(
-                      category["label"],
-                      category["icon"],
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+            Padding(padding: 16.paddingH, child: _buildBody()),
 
             const Spacer(flex: 3),
 
