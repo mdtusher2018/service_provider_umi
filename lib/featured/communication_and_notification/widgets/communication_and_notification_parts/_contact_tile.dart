@@ -2,12 +2,13 @@ part of '../../screens/communication_and_notification_screen.dart';
 
 // ─── Contact Tile ─────────────────────────────────────────────
 class _ContactTile extends ConsumerWidget {
-  final InboxContact contact;
+  final ChatRoom contact;
   final VoidCallback onTap;
   const _ContactTile({required this.contact, required this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final last = contact.lastMessage;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -27,20 +28,19 @@ class _ContactTile extends ConsumerWidget {
           child: Row(
             children: [
               AppAvatar(
-                name: contact.name,
-                imageUrl: contact.imageUrl,
+                name: contact.otherUser.name,
+                imageUrl: contact.otherUser.profile,
                 size: AvatarSize.md,
-                isOnline: contact.isOnline,
               ),
               12.horizontalSpace,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.labelLg(contact.name),
+                    AppText.labelLg(contact.otherUser.name),
                     2.verticalSpace,
                     AppText.bodySm(
-                      contact.lastMessage,
+                      _lastMessagePreview(last),
                       maxLines: 1,
                       color: AppColors.textSecondary,
                     ),
@@ -50,7 +50,7 @@ class _ContactTile extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  AppText.bodyXs(contact.lastTime.toRelativeTime),
+                  AppText.bodyXs(last?.createdAt.toRelativeTime ?? ""),
                   4.verticalSpace,
                   if (contact.unreadCount > 0)
                     Container(
@@ -76,5 +76,12 @@ class _ContactTile extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _lastMessagePreview(ChatMessage? msg) {
+    if (msg == null) return 'Start a conversation';
+    if (msg.text.isNotEmpty) return msg.text;
+    if (msg.images.isNotEmpty) return '📷 Photo';
+    return '';
   }
 }

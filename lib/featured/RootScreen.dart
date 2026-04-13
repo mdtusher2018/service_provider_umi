@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
+import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-
 import 'package:service_provider_umi/featured/service/screens/user_home_screen.dart';
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
@@ -32,6 +35,23 @@ class _RootScreenState extends ConsumerState<RootScreen> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    initializedChatService();
+  }
+
+  Future<void> initializedChatService() async {
+    final token = await ref
+        .read(localStorageProvider)
+        .read(StorageKey.accessToken);
+        
+    ChatSocketService.instance.init(
+      baseUrl: AppConfig.socketUrl,
+      token: token ?? "",
+    );
+  }
+
   Widget _homeButton(AppRole role) {
     return FloatingActionButton(
       onPressed: () => onTabTap(2),
@@ -56,6 +76,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
       const UserServiceScreen(),
       const FavouritesScreen(),
       const UserHomeScreen(),
+      // ChatListScreen(),
       const CommunicationAndNotificationScreen(),
       const ProfileScreen(),
     ];

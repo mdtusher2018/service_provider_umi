@@ -257,11 +257,14 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.chat,
         builder: (context, state) {
           final contactId = state.pathParameters['contactId']!;
+
           final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final imageUrl = extra?['imageUrl'] ?? '';
+          final myId = extra?['myId'] ?? "";
           return ChatScreen(
             contactId: contactId,
+
             contactName: contactName,
             contactImageUrl: imageUrl,
           );

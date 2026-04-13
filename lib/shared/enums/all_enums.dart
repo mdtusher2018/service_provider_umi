@@ -2,7 +2,7 @@ enum AlertType { orderAccepted, orderComplete, cancelOrder }
 
 enum CallType { audio, video }
 
-enum MessageStatus { sending, sent, delivered, read }
+enum MessageStatus { sending, sent, delivered, read, failed }
 
 // ─── Call state ───────────────────────────────────────────────
 enum CallState { ringing, connecting, connected, ended }

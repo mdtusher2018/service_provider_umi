@@ -17,8 +17,7 @@ AuthRemoteDataSource authRemoteDataSource(Ref ref) =>
 
 @riverpod
 UserRemoteDataSource userRemoteDataSource(Ref ref) =>
-    // UserRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
-    MockUserDataSource();
+    UserRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
 
 @riverpod
 NotificationRemoteDataSource notificationRemoteDataSource(Ref ref) =>

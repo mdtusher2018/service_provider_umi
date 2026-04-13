@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/services/network/interceptors/logging_interceptor.dart';
+import 'package:service_provider_umi/core/services/socket/socket_service.dart';
 
 import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
 import 'package:service_provider_umi/core/services/storage/storage_key.dart';
@@ -58,6 +59,7 @@ class RefreshTokenInterceptor extends Interceptor {
 
         if (newAccessToken != null) {
           await _secureStorage.write(StorageKey.accessToken, newAccessToken);
+          SocketService.instance.updateToken(newAccessToken);
         }
 
         // Retry original request

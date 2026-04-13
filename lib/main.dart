@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +16,7 @@ Future<void> main() async {
   FlavorConfig.initialize(
     flavor: Flavor.dev,
     baseUrl: 'http://103.186.20.117:6000/api/v1',
-    socketUrl: 'wss://dev.api.com/socket',
+    socketUrl: 'http://103.186.20.117:6005',
     googleMapsApiKey: 'YOUR_KEY',
     agoraAppId: 'AGORA_ID',
     stripePublishableKey: 'STRIPE_KEY',

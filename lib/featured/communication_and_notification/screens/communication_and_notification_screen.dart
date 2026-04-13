@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/notification_models.dart';
+import 'package:service_provider_umi/featured/_chat/chat_models.dart';
 import 'package:service_provider_umi/featured/notification/riverpod/notification_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
@@ -18,27 +20,6 @@ part '../widgets/communication_and_notification_parts/_history_tile.dart';
 part '../widgets/communication_and_notification_parts/_alert_tile.dart';
 part '../widgets/communication_and_notification_parts/_contact_tile.dart';
 part '../widgets/communication_and_notification_parts/_tab_bar.dart';
-
-// ─── Models ───────────────────────────────────────────────────
-class InboxContact {
-  final String id;
-  final String name;
-  final String? imageUrl;
-  final String lastMessage;
-  final DateTime lastTime;
-  final int unreadCount;
-  final bool isOnline;
-
-  const InboxContact({
-    required this.id,
-    required this.name,
-    this.imageUrl,
-    required this.lastMessage,
-    required this.lastTime,
-    this.unreadCount = 0,
-    this.isOnline = false,
-  });
-}
 
 class CallHistory {
   final String id;
@@ -71,10 +52,9 @@ class CommunicationAndNotificationScreen extends ConsumerStatefulWidget {
 
 class _CommunicationAndNotificationScreenState
     extends ConsumerState<CommunicationAndNotificationScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late TabController _tabController;
   final _searchController = TextEditingController();
-  final String _searchQuery = '';
 
   final List<CallHistory> _history = [
     CallHistory(
@@ -92,39 +72,36 @@ class _CommunicationAndNotificationScreenState
       type: CallType.video,
     ),
   ];
-  final List<InboxContact> _contacts = [
-    InboxContact(
-      id: '1',
-      name: 'Admin Maria',
-      lastMessage: 'Hello, How are you Im Designer',
-      lastTime: DateTime.now().subtract(const Duration(minutes: 5)),
-      unreadCount: 2,
-      isOnline: true,
-    ),
-    InboxContact(
-      id: '2',
-      name: 'NB Sujon',
-      lastMessage: 'Hello, How are you Im Designer',
-      lastTime: DateTime.now().subtract(const Duration(minutes: 10)),
-      unreadCount: 0,
-      isOnline: false,
-    ),
-  ];
 
-  List<InboxContact> get _filteredContacts => _searchQuery.isEmpty
-      ? _contacts
-      : _contacts
-            .where(
-              (c) => c.name.toLowerCase().contains(_searchQuery.toLowerCase()),
-            )
-            .toList();
+  final _chatService = ChatSocketService.instance;
+  List<ChatRoom> _rooms = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(notificationsProvider.notifier).fetch();
+    });
+
+    _chatService.chatListStream.listen(_onChatList);
+    _chatService.fetchChatList();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _chatService.fetchChatList();
+    }
+  }
+
+  void _onChatList(List<ChatRoom> rooms) {
+    if (!mounted) return;
+    setState(() {
+      _rooms = rooms;
+      _isLoading = false;
     });
   }
 
@@ -132,6 +109,7 @@ class _CommunicationAndNotificationScreenState
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -195,22 +173,28 @@ class _CommunicationAndNotificationScreenState
 
         // Contact list
         Expanded(
-          child: _filteredContacts.isEmpty
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+                )
+              : _rooms.isEmpty
               ? const AppEmptyState(
                   title: 'No conversations',
                   subtitle: 'Start messaging a provider',
+                  icon: Icon(Icons.chat, size: 40, color: AppColors.grey400),
                 )
               : ListView.separated(
                   padding: EdgeInsets.zero,
                   separatorBuilder: (context, index) => 20.verticalSpace,
-                  itemCount: _filteredContacts.length,
+                  itemCount: _rooms.length,
                   itemBuilder: (_, i) => _ContactTile(
-                    contact: _filteredContacts[i],
+                    contact: _rooms[i],
                     onTap: () => context.push(
-                      AppRoutes.chatPath(_filteredContacts[i].id),
+                      AppRoutes.chatPath(_rooms[i].id),
                       extra: {
-                        'name': _filteredContacts[i].name,
-                        'imageUrl': _filteredContacts[i].imageUrl,
+                        'name': _rooms[i].otherUser.name,
+                        'myId': "",
+                        'imageUrl': _rooms[i].otherUser.profile ?? "",
                       },
                     ),
                   ),
@@ -239,10 +223,11 @@ class _CommunicationAndNotificationScreenState
                       history: _history[i],
 
                       onTap: () => context.push(
-                        AppRoutes.chatPath(_filteredContacts[i].id),
+                        AppRoutes.chatPath(_rooms[i].id),
                         extra: {
-                          'name': _filteredContacts[i].name,
-                          'imageUrl': _filteredContacts[i].imageUrl,
+                          'name': _rooms[i].otherUser.name,
+                          'myId': "",
+                          'imageUrl': _rooms[i].otherUser.profile,
                         },
                       ),
                     );
