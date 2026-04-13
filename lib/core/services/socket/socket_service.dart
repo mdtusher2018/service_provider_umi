@@ -33,6 +33,11 @@ class SocketService {
   SocketConnectionState get state => _state;
   bool get isConnected => _state == SocketConnectionState.connected;
 
+  // ─── Error stream ────────────────────────────────────────────────────────────
+  /// Emits human-readable error messages that the UI can display as snackbars.
+  final _errorController = StreamController<String>.broadcast();
+  Stream<String> get errorStream => _errorController.stream;
+
   // ─── Listener registry ──────────────────────────────────────────────────────
   /// event → list of handlers registered via [on]
   final Map<String, List<Function(dynamic)>> _listeners = {};
@@ -96,16 +101,19 @@ class SocketService {
 
     s.onReconnectFailed((_) {
       _updateState(SocketConnectionState.error);
+      _errorController.add('Connection failed. Please check your network.');
       log('[SocketService] Reconnection failed permanently');
     });
 
     s.onError((err) {
       _updateState(SocketConnectionState.error);
+      _errorController.add('Socket error: ${err.toString()}');
       log('[SocketService] Error: $err', error: err);
     });
 
     s.onConnectError((err) {
       _updateState(SocketConnectionState.error);
+      _errorController.add('Could not connect to chat server.');
       log('[SocketService] Connect error: $err', error: err);
     });
   }
@@ -159,7 +167,7 @@ class SocketService {
     } else {
       _socket?.emit(event, data);
     }
-    log('[SocketService] Emitted "$event"');
+    log('[SocketService] Emitted "$event" $data');
   }
 
   /// Update the auth token (e.g. after token refresh) and reconnect.
@@ -185,6 +193,8 @@ class SocketService {
     _listeners.clear();
     _pendingQueue.clear();
     _updateState(SocketConnectionState.disconnected);
+    _stateController.close();
+    _errorController.close();
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────

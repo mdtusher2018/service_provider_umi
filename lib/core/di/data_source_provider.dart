@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/data/data_source/mock/mock_misc_data_sources.dart';
 import 'package:service_provider_umi/data/data_source/mock/mock_service_data_source.dart';
-import 'package:service_provider_umi/data/data_source/mock/mock_user_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/auth_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/notification_remote_data_source.dart';

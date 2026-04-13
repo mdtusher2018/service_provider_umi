@@ -256,15 +256,14 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.chat,
         builder: (context, state) {
-          final contactId = state.pathParameters['contactId']!;
-
           final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
+          final otherUserId = extra?['otherUserId'];
           final imageUrl = extra?['imageUrl'] ?? '';
           final myId = extra?['myId'] ?? "";
           return ChatScreen(
-            contactId: contactId,
-
+            otherUserId: otherUserId,
+            myId: myId,
             contactName: contactName,
             contactImageUrl: imageUrl,
           );

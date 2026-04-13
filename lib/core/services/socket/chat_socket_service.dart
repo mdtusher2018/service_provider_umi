@@ -40,6 +40,10 @@ class ChatSocketService {
       _socket.connectionStream;
   SocketConnectionState get connectionState => _socket.state;
 
+  /// Re-expose socket-level errors (connect errors, network failures, etc.)
+  /// for the UI layer to consume as snackbars.
+  Stream<String> get errorStream => _socket.errorStream;
+
   // ─── Internal state ───────────────────────────────────────────────────────
   String? _activeConversationUserId;
   String? _activeChatId;
@@ -50,6 +54,9 @@ class ChatSocketService {
 
   List<ChatRoom> get cachedChatList => List.unmodifiable(_cachedChatList);
   List<ChatMessage> get cachedMessages => List.unmodifiable(_cachedMessages);
+
+  String? _lastMessageId;
+  DateTime? _lastMessageTime;
 
   // ─── Init ─────────────────────────────────────────────────────────────────
 
@@ -69,7 +76,7 @@ class ChatSocketService {
     // Auto-refetch chat list after reconnect
     _socket.connectionStream.listen((state) {
       if (state == SocketConnectionState.connected) {
-        fetchChatList();
+        fetchChatList(onAck: (response) {});
         if (_activeConversationUserId != null) {
           _emitMessagePage(_activeConversationUserId!);
         }
@@ -84,8 +91,10 @@ class ChatSocketService {
 
   /// Emit [my_chat_list] to request a fresh list from the server.
   /// The response arrives via [chatListStream].
-  void fetchChatList() {
-    _socket.emit(ChatEvents.getMyChatList);
+  Future<void> fetchChatList({
+    required void Function(dynamic response) onAck,
+  }) async {
+    _socket.emit(ChatEvents.getMyChatList, ack: (response) => onAck(response));
   }
 
   // ─── Conversation ─────────────────────────────────────────────────────────
@@ -119,54 +128,81 @@ class ChatSocketService {
   // ─── Private handlers ─────────────────────────────────────────────────────
 
   void _onChatList(dynamic raw) {
-    AppLogger.debug(raw.toString());
     try {
       final list = _parseList(raw);
       final rooms = list.map((e) => ChatRoom.fromJson(e)).toList();
       _cachedChatList = rooms;
       _chatListController.add(rooms);
       log('[ChatSocketService] chat_list updated — ${rooms.length} rooms');
-    } catch (e) {
+    } catch (e, st) {
+      AppLogger.error('[ChatSocketService] Failed to parse chat_list $e, $st');
       log('[ChatSocketService] Failed to parse chat_list', error: e);
     }
   }
 
   void _onMessage(dynamic raw) {
     try {
-      AppLogger.debug(raw.toString());
       final list = raw['data'] as List? ?? [];
-      AppLogger.debug(list.toString());
+
       final messages = list.map((e) => ChatMessage.fromJson(e)).toList();
       _cachedMessages = messages;
       _messagesController.add(messages);
       log('[ChatSocketService] message — ${messages.length} messages loaded');
-    } catch (e) {
+    } catch (e, st) {
+      AppLogger.error(
+        '[ChatSocketService] Failed to parse message event $e \n $st',
+      );
       log('[ChatSocketService] Failed to parse message', error: e);
     }
   }
 
   void _onNewMessage(dynamic raw) {
+    AppLogger.info("${DateTime.now()} $raw");
+
     try {
-      final data = raw is Map<String, dynamic>
-          ? raw
-          : Map<String, dynamic>.from(raw as Map);
-      final msg = ChatMessage.fromJson(data);
+      final map = Map<String, dynamic>.from(raw as Map);
+      final data = map['message'] ?? map['data'];
+
+      if (data == null) {
+        log('new_message missing data field: $map');
+        return;
+      }
+
+      final msg = ChatMessage.fromJson(Map<String, dynamic>.from(data));
+
+      /// 🔥 TIME-BASED DUPLICATE PREVENTION (500ms)
+      final now = DateTime.now();
+
+      if (_lastMessageId == msg.id &&
+          _lastMessageTime != null &&
+          now.difference(_lastMessageTime!).inMilliseconds < 500) {
+        AppLogger.info(
+          '[ChatSocketService] skipped duplicate within 500ms: ${msg.id}',
+        );
+        return;
+      }
+
+      _lastMessageId = msg.id;
+      _lastMessageTime = now;
+
       _newMessageController.add(msg);
 
-      // Append to cached messages if it belongs to the open convo
-      if (_activeConversationUserId != null &&
-          (msg.senderId == _activeConversationUserId ||
-              msg.receiverId == _activeConversationUserId)) {
+      final isForActiveConvo =
+          _activeConversationUserId != null &&
+          msg.senderId == _activeConversationUserId;
+
+      if (isForActiveConvo) {
         _cachedMessages = [..._cachedMessages, msg];
         _messagesController.add(_cachedMessages);
 
-        // Auto-mark seen
-        if (_activeChatId != null) markAsSeen(chatId: _activeChatId!);
+        if (_activeChatId != null) {
+          markAsSeen(chatId: _activeChatId!);
+        }
       }
 
-      log('[ChatSocketService] new_message from ${msg.senderId}');
-    } catch (e) {
-      log('[ChatSocketService] Failed to parse new_message', error: e);
+      log('[ChatSocketService] new_message added: ${msg.text}');
+    } catch (e, st) {
+      AppLogger.error('[ChatSocketService] new_message error $e\n$st');
     }
   }
 
@@ -181,22 +217,29 @@ class ChatSocketService {
     required SendMessagePayload payload,
     required void Function(dynamic response) onAck,
   }) {
-    if (!_socket.isConnected) {
-      // Still optimistically show — queue the real emit for when reconnected
-      _socket.emit(
-        ChatEvents.sendMessage,
-        data: payload.toJson(),
-
-        queueIfOffline: true,
-      );
-      // Can't get an ack while offline; caller should handle via new_message stream
-      return;
-    }
-
     _socket.emit(
       ChatEvents.sendMessage,
       data: payload.toJson(),
-      ack: (response) => onAck(response), // ← ack callback
+      ack: (response) {
+        AppLogger.error(response.toString());
+        final data = response['data'];
+        final msg = ChatMessage(
+          chatId: data['chatId'],
+          createdAt: DateTime.tryParse(data['createdAt']) ?? DateTime.now(),
+          id: data['createdAt'],
+          images: [],
+          receiverId: data['receiverId'],
+          senderId: data['senderId'],
+          text: data['text'],
+        );
+        _cachedMessages = [..._cachedMessages, msg];
+        _messagesController.add(_cachedMessages);
+
+        if (_activeChatId != null) {
+          markAsSeen(chatId: _activeChatId!);
+        }
+        onAck(response);
+      }, // ← ack callback
     );
   }
 

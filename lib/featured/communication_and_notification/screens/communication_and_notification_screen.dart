@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/data/models/notification_models.dart';
 import 'package:service_provider_umi/featured/_chat/chat_models.dart';
 import 'package:service_provider_umi/featured/notification/riverpod/notification_provider.dart';
@@ -76,6 +79,7 @@ class _CommunicationAndNotificationScreenState
   final _chatService = ChatSocketService.instance;
   List<ChatRoom> _rooms = [];
   bool _isLoading = true;
+  StreamSubscription<String>? _errorSub;
 
   @override
   void initState() {
@@ -87,13 +91,14 @@ class _CommunicationAndNotificationScreenState
     });
 
     _chatService.chatListStream.listen(_onChatList);
-    _chatService.fetchChatList();
+    _chatService.fetchChatList(onAck: (response) {});
+    _errorSub = _chatService.errorStream.listen(_onSocketError);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _chatService.fetchChatList();
+      _chatService.fetchChatList(onAck: (response) {});
     }
   }
 
@@ -109,8 +114,21 @@ class _CommunicationAndNotificationScreenState
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
+    _errorSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _onSocketError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
+      ),
+    );
   }
 
   @override
@@ -183,18 +201,28 @@ class _CommunicationAndNotificationScreenState
                   subtitle: 'Start messaging a provider',
                   icon: Icon(Icons.chat, size: 40, color: AppColors.grey400),
                 )
-              : ListView.separated(
-                  padding: EdgeInsets.zero,
-                  separatorBuilder: (context, index) => 20.verticalSpace,
-                  itemCount: _rooms.length,
-                  itemBuilder: (_, i) => _ContactTile(
-                    contact: _rooms[i],
-                    onTap: () => context.push(
-                      AppRoutes.chatPath(_rooms[i].id),
-                      extra: {
-                        'name': _rooms[i].otherUser.name,
-                        'myId': "",
-                        'imageUrl': _rooms[i].otherUser.profile ?? "",
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    _chatService.fetchChatList(onAck: (response) {});
+                  },
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    separatorBuilder: (context, index) => 20.verticalSpace,
+                    itemCount: _rooms.length,
+                    itemBuilder: (_, i) => _ContactTile(
+                      contact: _rooms[i],
+                      onTap: () async {
+                        final myUserId = await getMyUserId(ref);
+
+                        context.push(
+                          AppRoutes.chatPath(_rooms[i].id),
+                          extra: {
+                            'otherUserId': _rooms[i].otherUser.id,
+                            'name': _rooms[i].otherUser.name,
+                            'myId': myUserId,
+                            'imageUrl': _rooms[i].otherUser.profile ?? "",
+                          },
+                        );
                       },
                     ),
                   ),
@@ -222,14 +250,19 @@ class _CommunicationAndNotificationScreenState
                     return _HistoryTile(
                       history: _history[i],
 
-                      onTap: () => context.push(
-                        AppRoutes.chatPath(_rooms[i].id),
-                        extra: {
-                          'name': _rooms[i].otherUser.name,
-                          'myId': "",
-                          'imageUrl': _rooms[i].otherUser.profile,
-                        },
-                      ),
+                      onTap: () async {
+                        final myUserId = await getMyUserId(ref);
+
+                        context.push(
+                          AppRoutes.chatPath(_rooms[i].id),
+                          extra: {
+                            'otherUserId': _rooms[i].otherUser.id,
+                            'name': _rooms[i].otherUser.name,
+                            'myId': myUserId,
+                            'imageUrl': _rooms[i].otherUser.profile,
+                          },
+                        );
+                      },
                     );
                   },
                 ),

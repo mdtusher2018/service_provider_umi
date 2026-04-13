@@ -33,6 +33,7 @@ class ChatUser {
 
 class ChatMessage {
   final String id;
+  final String chatId;
   final String senderId;
   final String receiverId;
   final String text;
@@ -42,6 +43,7 @@ class ChatMessage {
 
   const ChatMessage({
     required this.id,
+    required this.chatId,
     required this.senderId,
     required this.receiverId,
     required this.text,
@@ -52,19 +54,43 @@ class ChatMessage {
 
   factory ChatMessage.fromJson(Map<String, dynamic> j) => ChatMessage(
     id: j['id'] ?? '',
+    chatId: j['chatId'] ?? '',
     senderId: j['senderId'] ?? '',
     receiverId: j['receiverId'] ?? '',
     text: j['text'] ?? '',
-    images: j['images'] != null
-        ? List<String>.from(
-            (j['images'] as List).map((img) => img['url']?.toString() ?? ''),
-          )
-        : [],
+    images: _parseImages(j['images']),
     createdAt: j['createdAt'] != null
         ? DateTime.tryParse(j['createdAt'].toString()) ?? DateTime.now()
         : DateTime.now(),
     seen: j['seen'] ?? false,
   );
+
+  /// 🔥 Handles multiple image formats
+  static List<String> _parseImages(dynamic images) {
+    try {
+      if (images == null) return [];
+
+      // Case 1: List [{url: ""}]
+      if (images is List) {
+        return images
+            .map((img) => img['url']?.toString() ?? '')
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+
+      // Case 2: { create: [{url: ""}] }
+      if (images is Map && images['create'] is List) {
+        return (images['create'] as List)
+            .map((img) => img['url']?.toString() ?? '')
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -79,6 +105,7 @@ class ChatMessage {
   ChatMessage copyWith({bool? seen, String? text, List<String>? images}) =>
       ChatMessage(
         id: id,
+        chatId: chatId,
         senderId: senderId,
         receiverId: receiverId,
         text: text ?? this.text,
