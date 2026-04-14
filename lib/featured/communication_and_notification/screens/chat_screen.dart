@@ -78,7 +78,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     _activeChatId = widget.chatId;
 
     _scrollController.addListener(() {
-      if (_scrollController.offset <= 100 && _chatService.hasMorePages) {
+      if (_scrollController.offset <= 300 && _chatService.hasMorePages) {
         _isLoadingMore = true; // start loading
         _chatService.fetchMoreMessages(widget.otherUserId);
       }
