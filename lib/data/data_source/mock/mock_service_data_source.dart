@@ -359,7 +359,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     final end = (start + limit).clamp(0, total);
     return SearchProvidersResponse(
       results: _mockProviders.sublist(start, end),
-      pagination: PaginationMeta(page: page, limit: limit, total: total),
+      pagination: PaginationMeta(page: page, limit: limit, totalPage: total),
     );
   }
 
@@ -514,7 +514,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     final end = (start + limit).clamp(0, total);
     return BookingsListResponse(
       bookings: filtered.sublist(start, end),
-      pagination: PaginationMeta(page: page, limit: limit, total: total),
+      pagination: PaginationMeta(page: page, limit: limit, totalPage: total),
     );
   }
 

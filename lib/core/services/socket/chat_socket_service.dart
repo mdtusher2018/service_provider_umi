@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:service_provider_umi/core/logger/app_logger.dart';
+import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/featured/_chat/chat_events.dart';
 import 'package:service_provider_umi/featured/_chat/chat_models.dart';
 import 'socket_service.dart';
@@ -58,6 +59,11 @@ class ChatSocketService {
   String? _lastMessageId;
   DateTime? _lastMessageTime;
 
+  // ─── Pagination ─────────────────────────────────────────────────────────────────
+
+  int currentPage = 1;
+  bool hasMorePages = true;
+
   // ─── Init ─────────────────────────────────────────────────────────────────
 
   /// Initialise the socket and register persistent chat listeners.
@@ -106,8 +112,7 @@ class ChatSocketService {
     _activeChatId = chatId;
     _cachedMessages = [];
     _emitMessagePage(otherUserId);
-
-    // Mark as seen if we have a chatId
+    AppLogger.info("ChatId: $chatId");
     if (chatId != null) markAsSeen(chatId: chatId);
   }
 
@@ -143,11 +148,35 @@ class ChatSocketService {
   void _onMessage(dynamic raw) {
     try {
       final list = raw['data'] as List? ?? [];
+      final pagination = PaginationMeta.fromJson(raw['meta']);
 
-      final messages = list.map((e) => ChatMessage.fromJson(e)).toList();
-      _cachedMessages = messages;
-      _messagesController.add(messages);
-      log('[ChatSocketService] message — ${messages.length} messages loaded');
+      AppLogger.info("Messages Meta: ${raw['meta']}");
+
+      hasMorePages = pagination.hasMore;
+      currentPage = pagination.page;
+
+      final incoming = list.map((e) => ChatMessage.fromJson(e)).toList();
+
+      if (pagination.page == 1) {
+        _cachedMessages = incoming;
+      } else {
+        // prepend older messages (important!)
+        _cachedMessages = [...incoming, ..._cachedMessages];
+      }
+
+      /// 🔥 REMOVE DUPLICATES
+      final uniqueMap = {for (var m in _cachedMessages) m.id: m};
+
+      _cachedMessages = uniqueMap.values.toList();
+
+      /// 🔥 FORCE CORRECT ORDER (OLD → NEW)
+      _cachedMessages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+      _messagesController.add(_cachedMessages);
+
+      log(
+        '[ChatSocketService] message — page ${pagination.page}, total ${_cachedMessages.length}',
+      );
     } catch (e, st) {
       AppLogger.error(
         '[ChatSocketService] Failed to parse message event $e \n $st',
@@ -204,6 +233,15 @@ class ChatSocketService {
     } catch (e, st) {
       AppLogger.error('[ChatSocketService] new_message error $e\n$st');
     }
+  }
+
+  void fetchMoreMessages(String userId) {
+    if (_activeChatId == null) return;
+
+    _socket.emit(
+      ChatEvents.messagePage,
+      data: MessagePagePayload(userId: userId, page: currentPage + 1).toJson(),
+    );
   }
 
   void _emitMessagePage(String userId) {

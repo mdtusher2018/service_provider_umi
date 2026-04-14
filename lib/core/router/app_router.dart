@@ -256,6 +256,7 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.chat,
         builder: (context, state) {
+          final chatId = state.pathParameters['contactId']!;
           final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final otherUserId = extra?['otherUserId'];
@@ -266,6 +267,7 @@ GoRouter appRouter(Ref ref) {
             myId: myId,
             contactName: contactName,
             contactImageUrl: imageUrl,
+            chatId: chatId,
           );
         },
       ),

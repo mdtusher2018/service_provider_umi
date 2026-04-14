@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:service_provider_umi/core/logger/app_logger.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -119,16 +120,10 @@ class _CommunicationAndNotificationScreenState
     super.dispose();
   }
 
-  void _onSocketError(String message) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade700,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-      ),
-    );
+  void _onSocketError(String message) async {
+    final connected = await ref.read(networkInfoProvider).isConnected;
+    if (!mounted || !connected) return;
+    context.showErrorSnackBar(message);
   }
 
   @override

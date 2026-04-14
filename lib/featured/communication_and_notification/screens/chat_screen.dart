@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
+import 'package:service_provider_umi/core/services/socket/socket_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -57,22 +61,48 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   // ── State ─────────────────────────────────────────────────────────────────
   final List<_UiMessage> _messages = [];
   bool _isSending = false;
+  bool _isOffline = false;
+  bool _isInitialLoading = true;
+  bool _isLoadingMore = false;
+  _UiMessage? _pendingOfflineMessage; // ← new: holds the unsent message
   String? _activeChatId; // filled once server confirms the chatId
 
   // ── Subscriptions ─────────────────────────────────────────────────────────
   late final StreamSubscription<List<ChatMessage>> _historySub;
   late final StreamSubscription<String> _errorSub;
-
+  late final StreamSubscription<bool> _networkSub; // ← new
   // ─────────────────────────────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
     _activeChatId = widget.chatId;
 
+    _scrollController.addListener(() {
+      if (_scrollController.offset <= 100 && _chatService.hasMorePages) {
+        _isLoadingMore = true; // start loading
+        _chatService.fetchMoreMessages(widget.otherUserId);
+      }
+    });
+
     final cached = _chatService.cachedMessages;
     if (cached.isNotEmpty) {
       _messages.addAll(cached.map(_UiMessage.fromSocket));
     }
+
+    _networkSub = ref.read(networkInfoProvider).onConnectivityChanged.listen((
+      connected,
+    ) {
+      if (!mounted) return;
+      setState(() => _isOffline = !connected);
+      initializedChatService();
+      // ── Back online: retry any message that was stuck ──────────────────
+
+      if (connected && _pendingOfflineMessage != null) {
+        final msg = _pendingOfflineMessage!;
+        _pendingOfflineMessage = null;
+        _retrySendMessage(msg);
+      }
+    });
 
     // 2. Listen to full history delivered by "message" event
     _historySub = _chatService.messagesStream.listen(_onHistoryReceived);
@@ -87,8 +117,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  Future<void> initializedChatService() async {
+    final token = await ref
+        .read(localStorageProvider)
+        .read(StorageKey.accessToken);
+
+    ChatSocketService.instance.init(
+      baseUrl: AppConfig.socketUrl,
+      token: token ?? "",
+    );
+  }
+
   @override
   void dispose() {
+    _networkSub.cancel();
     _historySub.cancel();
     _errorSub.cancel();
     _chatService.leaveConversation();
@@ -112,22 +154,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ..clear()
         ..addAll(socketMsgs.map(_UiMessage.fromSocket))
         ..addAll(pending);
+      _isInitialLoading = false;
+      _isLoadingMore = false;
     });
-    _scrollToBottom(jump: socketMsgs.length > 1);
+    if (_chatService.currentPage == 1) _scrollToBottom(jump: true);
   }
 
   // ─── Socket error handler ────────────────────────────────────────────────
 
-  void _onSocketError(String message) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade700,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-      ),
-    );
+  void _onSocketError(String message) async {
+    final connected = await ref.read(networkInfoProvider).isConnected;
+    if (!mounted || !connected) return;
+    context.showErrorSnackBar(message);
+    AppLogger.error(message);
+
+    context.showErrorSnackBar(message);
   }
 
   // ─── Send message ────────────────────────────────────────────────────────
@@ -149,37 +190,102 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
 
     setState(() {
-      _isSending = true;
       _messages.add(optimistic);
       _messageController.clear();
+      if (!_isOffline) _isSending = true;
     });
     _scrollToBottom();
 
-    // ── Emit to server with ack callback ───────────────────────────────────
+    // ── If offline, park it and bail — no spinner, shows failed state ──
+    if (_isOffline) {
+      _pendingOfflineMessage = optimistic;
+      return;
+    }
+
+    _dispatchMessage(optimistic);
+  }
+
+  void _dispatchMessage(_UiMessage optimistic) {
+    AppLogger.debug("Rety called");
     _chatService.sendMessage(
-      payload: SendMessagePayload(receiverId: widget.otherUserId, text: text),
+      payload: SendMessagePayload(
+        receiverId: widget.otherUserId,
+        text: optimistic.text ?? '',
+      ),
       onAck: (response) {
-        _handleSendAck(tempId: tempId, response: response);
+        _handleSendAck(tempId: optimistic.id, response: response);
       },
     );
   }
 
-  /// Replace the optimistic bubble with the confirmed server message.
+  void _retrySendMessage(_UiMessage msg, {int attempt = 1}) async {
+    const maxAttempts = 5;
+
+    if (!mounted) return;
+
+    // ── Too many attempts → mark as failed and give up ────────────────────
+    if (attempt > maxAttempts) {
+      AppLogger.error('[Chat] Gave up after $maxAttempts attempts');
+      setState(() {
+        final idx = _messages.indexWhere((m) => m.id == msg.id);
+        if (idx != -1) {
+          _messages[idx] = msg.copyWith(
+            status: MessageStatus.failed,
+            isPending: false,
+          );
+        }
+        _isSending = false;
+      });
+      return;
+    }
+
+    // ── Update bubble to "sending" ─────────────────────────────────────────
+    setState(() {
+      final idx = _messages.indexWhere((m) => m.id == msg.id);
+      if (idx != -1) {
+        _messages[idx] = msg.copyWith(
+          status: MessageStatus.sending,
+          isPending: true,
+        );
+      }
+      _isSending = true;
+    });
+
+    // ── Check socket readiness ─────────────────────────────────────────────
+    if (_chatService.connectionState != SocketConnectionState.connected) {
+      AppLogger.warning(
+        '[Chat] Socket not ready — attempt $attempt/$maxAttempts, waiting 5s',
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
+
+      if (_chatService.connectionState != SocketConnectionState.connected) {
+        _retrySendMessage(msg, attempt: attempt + 1);
+        return;
+      }
+    }
+
+    // ── Socket is ready — dispatch ─────────────────────────────────────────
+    AppLogger.debug('[Chat] Dispatching — attempt $attempt');
+    _dispatchMessage(msg);
+  }
+
   void _handleSendAck({required String tempId, required dynamic response}) {
     final bool success = response is Map && response['success'] == true;
 
     setState(() {
       final idx = _messages.indexWhere((m) => m.id == tempId);
-      if (idx == -1) return;
+      if (idx == -1) {
+        _isSending = false; // ← guard: bubble already gone
+        return;
+      }
 
-      AppLogger.info(response.toString());
       if (success) {
         final data = response['data'] as Map<String, dynamic>? ?? {};
-
-        // Grab chatId from ack if we didn't have it yet
         _activeChatId ??= data['chatId']?.toString();
 
-        // Build confirmed message from the ack data
         final confirmed = _UiMessage(
           id: data['_id']?.toString() ?? tempId,
           senderId: widget.myId,
@@ -194,13 +300,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         );
 
         _messages[idx] = confirmed;
-        AppLogger.success("REplaced");
+        AppLogger.success("Replaced optimistic bubble");
       } else {
-        // Mark as failed so user can retry
-        _messages[idx] = _messages[idx].copyWith(status: MessageStatus.failed);
+        _messages[idx] = _messages[idx].copyWith(
+          status: MessageStatus.failed,
+          isPending: false,
+        );
       }
 
-      _isSending = false;
+      _isSending = false; // ← always resets
     });
   }
 
@@ -377,6 +485,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
     final keys = grouped.keys.toList();
 
+    if (_isInitialLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     if (keys.isEmpty) {
       return Center(child: AppText.bodyXs('Say hello 👋'));
     }
@@ -384,10 +496,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      itemCount: keys.length,
+      itemCount: keys.length + (_isLoadingMore ? 1 : 0),
       itemBuilder: (_, i) {
-        final date = keys[i];
+        // ✅ Top loader
+        if (_isLoadingMore && i == 0) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          );
+        }
+        final index = _isLoadingMore ? i - 1 : i;
+
+        final date = keys[index];
         final msgs = grouped[date]!;
+
         return Column(
           children: [
             // Date separator

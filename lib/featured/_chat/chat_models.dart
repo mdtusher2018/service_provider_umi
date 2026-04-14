@@ -179,8 +179,20 @@ class SendMessagePayload {
 
 class MessagePagePayload {
   final String userId;
-  const MessagePagePayload({required this.userId});
-  Map<String, dynamic> toJson() => {'userId': userId};
+  final int page;
+  final int limit;
+
+  const MessagePagePayload({
+    required this.userId,
+    this.page = 1,
+    this.limit = 100,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'userId': userId,
+    'page': page,
+    'limit': limit,
+  };
 }
 
 class SeenPayload {

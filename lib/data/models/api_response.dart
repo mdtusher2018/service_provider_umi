@@ -16,17 +16,16 @@ class ApiResponse<T> {
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
     T Function(dynamic)? fromData,
-  ) =>
-      ApiResponse(
-        success: json['success'] as bool,
-        message: json['message'] as String?,
-        data: json['data'] != null && fromData != null
-            ? fromData(json['data'])
-            : null,
-        error: json['error'] != null
-            ? ApiError.fromJson(json['error'] as Map<String, dynamic>)
-            : null,
-      );
+  ) => ApiResponse(
+    success: json['success'] as bool,
+    message: json['message'] as String?,
+    data: json['data'] != null && fromData != null
+        ? fromData(json['data'])
+        : null,
+    error: json['error'] != null
+        ? ApiError.fromJson(json['error'] as Map<String, dynamic>)
+        : null,
+  );
 }
 
 class ApiError {
@@ -36,25 +35,29 @@ class ApiError {
   const ApiError({required this.code, required this.message});
 
   factory ApiError.fromJson(Map<String, dynamic> json) => ApiError(
-        code: json['code'] as String,
-        message: json['message'] as String,
-      );
+    code: json['code'] as String,
+    message: json['message'] as String,
+  );
 }
 
 class PaginationMeta {
   final int page;
   final int limit;
-  final int total;
+  final int totalPage;
+
+  final bool hasMore;
 
   const PaginationMeta({
     required this.page,
     required this.limit,
-    required this.total,
+    required this.totalPage,
+    this.hasMore = false,
   });
 
   factory PaginationMeta.fromJson(Map<String, dynamic> json) => PaginationMeta(
-        page: json['page'] as int,
-        limit: json['limit'] as int,
-        total: json['total'] as int,
-      );
+    page: json['page'] as int,
+    limit: json['limit'] as int,
+    totalPage: json['totalPage'] as int,
+    hasMore: json['hasMore'] as bool,
+  );
 }
