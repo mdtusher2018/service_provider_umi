@@ -194,7 +194,7 @@ class _ProviderProfileOverviewScreenState
         bottom: context.bottomPadding + 12,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.background,
         border: const Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(

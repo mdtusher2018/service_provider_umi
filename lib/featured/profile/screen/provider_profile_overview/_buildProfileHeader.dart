@@ -21,7 +21,7 @@ Widget _buildProfileHeader({
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: 16.circular,
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: AppColors.borderFocus),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -41,8 +41,8 @@ Widget _buildProfileHeader({
             _StatDivider(),
             _StatItem(
               value: '',
-              icon: Icon(Icons.verified, color: AppColors.info),
-              label: 'Verified',
+              icon: Icon(Icons.verified, color: AppColors.info, size: 40),
+
               valueColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
           ],
@@ -53,12 +53,13 @@ Widget _buildProfileHeader({
 }
 
 class _StatItem extends StatelessWidget {
-  final String value, label;
+  final String value;
+  final String? label;
   final Color? valueColor;
   final Widget? icon;
   const _StatItem({
     required this.value,
-    required this.label,
+    this.label,
     this.valueColor,
     this.icon,
   });
@@ -71,7 +72,7 @@ class _StatItem extends StatelessWidget {
           AppText.h3(value, color: valueColor ?? AppColors.textPrimary),
         ?icon,
         2.verticalSpace,
-        AppText.bodySm(label),
+        if (label != null) AppText.bodySm(label!),
       ],
     );
   }
@@ -80,6 +81,6 @@ class _StatItem extends StatelessWidget {
 class _StatDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 32, color: AppColors.border);
+    return Container(width: 1, height: 50, color: AppColors.borderFocus);
   }
 }

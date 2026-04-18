@@ -32,14 +32,18 @@ class _CommentTile extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.labelLg(comment.author),
+                  Row(
+                    spacing: 8,
+                    children: [
+                      AppText.labelLg(comment.author),
+                      AppText.bodySm(".${comment.timeAgo}"),
+                    ],
+                  ),
                   Row(
                     children: [
-                      AppText.bodySm(comment.timeAgo),
                       if (comment.isVerified) ...[
-                        6.horizontalSpace,
                         Icon(
-                          Icons.check_circle_rounded,
+                          Icons.verified_outlined,
                           color: AppColors.primaryFor(
                             ref.watch(appRoleProvider),
                           ),

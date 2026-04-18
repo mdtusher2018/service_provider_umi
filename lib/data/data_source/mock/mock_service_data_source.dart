@@ -14,38 +14,41 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   static final List<ServiceModel> _allServices = [
     ServiceModel(
       id: '1',
-      name: 'Home Care',
-      image: 'https://picsum.photos/seed/homecare/200',
+      name: 'Home',
+      image:
+          'https://static.vecteezy.com/system/resources/previews/010/151/123/original/house-symbol-and-home-icon-sign-design-free-png.png',
       haveSubcategory: false,
     ),
     ServiceModel(
       id: '2',
-      name: 'Elderly Care',
-      image: 'https://picsum.photos/seed/elderlycare/200',
+      name: 'Cleaning',
+      image: 'https://cdn-icons-png.flaticon.com/256/12211/12211111.png',
       haveSubcategory: true,
     ),
     ServiceModel(
       id: '3',
-      name: 'Child Care',
-      image: 'https://picsum.photos/seed/childcare/200',
+      name: 'Care',
+      image: 'https://cdn-icons-png.flaticon.com/512/6205/6205324.png',
       haveSubcategory: true,
     ),
     ServiceModel(
       id: '4',
       name: 'Pet Care',
-      image: 'https://picsum.photos/seed/petcare/200',
+      image: 'https://cdn-icons-png.flaticon.com/512/2138/2138410.png',
       haveSubcategory: false,
     ),
     ServiceModel(
       id: '5',
-      name: 'Cleaning',
-      image: 'https://picsum.photos/seed/cleaning/200',
+      name: 'Electrical',
+      image:
+          'https://tse3.mm.bing.net/th/id/OIP.yj0qQw6b2ZeMsAK1tL9TJAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
       haveSubcategory: false,
     ),
     ServiceModel(
       id: '6',
-      name: 'Gardening',
-      image: 'https://picsum.photos/seed/gardening/200',
+      name: 'Others',
+      image:
+          'https://static.vecteezy.com/system/resources/previews/016/327/497/original/gift-box-3d-icon-render-illustration-png.png',
       haveSubcategory: false,
     ),
     ServiceModel(

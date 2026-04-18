@@ -15,7 +15,7 @@ class App extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'YourAppName',
+      title: 'iUmi',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.of(currentRole),
       themeMode: ThemeMode.system,

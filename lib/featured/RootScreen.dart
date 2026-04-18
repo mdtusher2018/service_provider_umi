@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/featured/service/screens/user_home_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/user_home_screen/user_home_screen.dart';
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
@@ -45,7 +45,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
     final token = await ref
         .read(localStorageProvider)
         .read(StorageKey.accessToken);
-        
+
     ChatSocketService.instance.init(
       baseUrl: AppConfig.socketUrl,
       token: token ?? "",
@@ -76,7 +76,6 @@ class _RootScreenState extends ConsumerState<RootScreen> {
       const UserServiceScreen(),
       const FavouritesScreen(),
       const UserHomeScreen(),
-      // ChatListScreen(),
       const CommunicationAndNotificationScreen(),
       const ProfileScreen(),
     ];
@@ -118,7 +117,16 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: IndexedStack(index: currentIndex, children: screens),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: KeyedSubtree(
+          key: ValueKey(currentIndex),
+          child: screens[currentIndex],
+        ),
+      ),
       bottomNavigationBar: CustomBottomNavBar(
         role: role,
         currentIndex: currentIndex,

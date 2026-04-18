@@ -33,7 +33,7 @@ class BookingItem {
   });
 }
 
-class BookingCard extends ConsumerWidget {
+class BookingCard extends ConsumerStatefulWidget {
   final BookingItem item;
   final VoidCallback? onTap;
   final VoidCallback? onRatingTap;
@@ -46,81 +46,124 @@ class BookingCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BookingCard> createState() => _BookingCardState();
+}
+
+class _BookingCardState extends ConsumerState<BookingCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+      lowerBound: 0.95,
+      upperBound: 1.0,
+      value: 1.0,
+    );
+
+    _scale = _controller;
+  }
+
+  void _onTapDown(TapDownDetails _) {
+    _controller.reverse(); // goes to 0.95
+  }
+
+  void _onTapUp(TapUpDetails _) async {
+    await _controller.forward();
+    widget.onTap?.call();
+  }
+
+  void _onTapCancel() {
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
+
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: 16.circular,
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: 14.paddingAll,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ─── Image ──────────────────────────────
-              ClipRRect(
-                borderRadius: 10.circular,
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  color: AppColors.primaryLight,
-                  child: item.imageUrl.isNotEmpty
-                      ? Image.network(item.imageUrl, fit: BoxFit.cover)
-                      : const Icon(Icons.elderly_outlined, size: 36),
-                ),
-              ),
-              12.horizontalSpace,
-
-              // ─── Details ────────────────────────────
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    AppText.labelLg(
-                      item.serviceTitle,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    6.verticalSpace,
-
-                    // Time
-                    Row(
-                      children: [
-                        const Icon(Icons.access_time_rounded, size: 13),
-                        4.horizontalSpace,
-                        AppText.bodySm(item.timeRange),
-                      ],
-                    ),
-                    4.verticalSpace,
-
-                    // Date
-                    Row(
-                      children: [
-                        const Icon(Icons.calendar_month_outlined, size: 13),
-                        4.horizontalSpace,
-                        AppText.bodySm(item.date),
-                      ],
-                    ),
-                    10.verticalSpace,
-
-                    // ─── Status badges ───────────────
-                    _buildStatusRow(role),
-                  ],
-                ),
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: 16.circular,
+            border: Border.all(color: AppColors.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
               ),
             ],
+          ),
+          child: Padding(
+            padding: 14.paddingAll,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: 10.circular,
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    color: AppColors.primaryLight,
+                    child: widget.item.imageUrl.isNotEmpty
+                        ? Image.network(widget.item.imageUrl, fit: BoxFit.cover)
+                        : const Icon(Icons.elderly_outlined, size: 36),
+                  ),
+                ),
+                12.horizontalSpace,
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.labelLg(
+                        widget.item.serviceTitle,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      6.verticalSpace,
+
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time_rounded, size: 13),
+                          4.horizontalSpace,
+                          AppText.bodySm(widget.item.timeRange),
+                        ],
+                      ),
+                      4.verticalSpace,
+
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_month_outlined, size: 13),
+                          4.horizontalSpace,
+                          AppText.bodySm(widget.item.date),
+                        ],
+                      ),
+                      10.verticalSpace,
+
+                      _buildStatusRow(role),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -128,7 +171,7 @@ class BookingCard extends ConsumerWidget {
   }
 
   Widget _buildStatusRow(AppRole role) {
-    switch (item.status) {
+    switch (widget.item.status) {
       case BookingStatus.pending:
         if (role == AppRole.provider) {
           return Row(
@@ -182,7 +225,7 @@ class BookingCard extends ConsumerWidget {
           return Row(
             children: [
               GestureDetector(
-                onTap: onRatingTap,
+                onTap: widget.onRatingTap,
                 child: const _StatusBadge(
                   label: 'Rating',
                   color: AppColors.primary,

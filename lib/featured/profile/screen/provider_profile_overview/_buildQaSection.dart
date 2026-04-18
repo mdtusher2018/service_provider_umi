@@ -35,21 +35,7 @@ Widget _buildQaSection({required _ProviderData mockProvider}) {
         ),
       ),
       4.verticalSpace,
-      SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: () {},
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.textPrimary,
-            side: const BorderSide(color: AppColors.border),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: 12.paddingV,
-          ),
-          child: AppText.labelLg('View all'),
-        ),
-      ),
+      AppButton.outline(label: "View all"),
     ],
   );
 }

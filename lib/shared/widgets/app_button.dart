@@ -214,7 +214,7 @@ class AppButton extends ConsumerWidget {
         return AppColors.secondary;
       case AppButtonVariant.outline:
       case AppButtonVariant.social:
-        return AppColors.white;
+        return Colors.transparent;
       case AppButtonVariant.ghost:
         return Colors.transparent;
       case AppButtonVariant.danger:

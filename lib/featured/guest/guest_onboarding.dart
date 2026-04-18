@@ -51,7 +51,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
   }
 
   void skip() {
-    // Navigate to login/home
+    context.go(AppRoutes.root);
   }
 
   @override

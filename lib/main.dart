@@ -17,6 +17,8 @@ Future<void> main() async {
     flavor: Flavor.dev,
     baseUrl: 'http://103.186.20.117:6000/api/v1',
     socketUrl: 'http://103.186.20.117:6005',
+    // baseUrl: 'http://api.dev.com/api/v1',
+    // socketUrl: 'http://api.dev.com',
     googleMapsApiKey: 'YOUR_KEY',
     agoraAppId: 'AGORA_ID',
     stripePublishableKey: 'STRIPE_KEY',

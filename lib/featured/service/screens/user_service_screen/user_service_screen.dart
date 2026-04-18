@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,20 +105,20 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                     items: _upcoming,
                     emptyMessage: 'No upcoming bookings',
                     emptySubtitle: 'Book a service to see it here',
-                    onCardTap: _onCardTap,
+                    onCardTap: (iteam) => _onCardTap(iteam, context),
                   ),
                   BookingList(
                     items: _past,
                     emptyMessage: 'No past bookings',
                     emptySubtitle: 'Your completed services will appear here',
-                    onCardTap: _onCardTap,
+                    onCardTap: (iteam) => _onCardTap(iteam, context),
                     onRatingTap: _showRatingDialog,
                   ),
                   BookingList(
                     items: _cancelled,
                     emptyMessage: 'No cancelled bookings',
                     emptySubtitle: 'Cancelled services will appear here',
-                    onCardTap: _onCardTap,
+                    onCardTap: (iteam) => _onCardTap(iteam, context),
                   ),
                 ],
               ),
@@ -128,8 +129,8 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     );
   }
 
-  void _onCardTap(BookingItem item) {
-    // Navigate to booking detail
+  void _onCardTap(BookingItem item, BuildContext context) {
+    context.push(AppRoutes.bookingDetail, extra: item);
   }
 
   void _showRatingDialog(BookingItem item) {

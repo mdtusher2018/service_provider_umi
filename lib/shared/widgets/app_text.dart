@@ -15,6 +15,7 @@ class AppText extends StatelessWidget {
   final double? letterSpacing;
   final double? height;
   final FontWeight? fontWeight;
+  final bool selectable;
   final double? fontSize;
   final TextDecoration? decoration;
 
@@ -30,6 +31,7 @@ class AppText extends StatelessWidget {
     this.letterSpacing,
     this.height,
     this.fontWeight,
+    this.selectable = true, // ✅ default
     this.fontSize,
     this.decoration,
   });
@@ -48,6 +50,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.display;
 
   const AppText.h1(
@@ -63,6 +66,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.h1;
 
   const AppText.h2(
@@ -78,6 +82,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.h2;
 
   const AppText.h3(
@@ -93,6 +98,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.h3;
 
   const AppText.h4(
@@ -108,6 +114,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.h4;
 
   const AppText.bodyLg(
@@ -123,6 +130,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.bodyLg;
 
   const AppText.bodyMd(
@@ -138,6 +146,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.bodyMd;
 
   const AppText.bodySm(
@@ -153,6 +162,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.bodySm;
 
   const AppText.bodyXs(
@@ -168,6 +178,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.bodyXs;
 
   const AppText.labelLg(
@@ -183,6 +194,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.labelLg;
 
   const AppText.labelMd(
@@ -198,6 +210,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.labelMd;
 
   const AppText.labelSm(
@@ -213,6 +226,7 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.labelSm;
 
   const AppText.price(
@@ -228,10 +242,28 @@ class AppText extends StatelessWidget {
     this.decoration,
     this.letterSpacing,
     this.height,
+    this.selectable = true, // ✅ default
   }) : style = AppTextStyles.price;
 
   @override
   Widget build(BuildContext context) {
+    if (selectable) {
+      return SelectableText(
+        text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+
+        style: (style ?? AppTextStyles.bodyMd).copyWith(
+          color: color,
+          letterSpacing: letterSpacing,
+          height: height,
+          fontWeight: fontWeight,
+          fontSize: fontSize,
+          decoration: decoration,
+          decorationColor: color,
+        ),
+      );
+    }
     return Text(
       text,
       textAlign: textAlign,
