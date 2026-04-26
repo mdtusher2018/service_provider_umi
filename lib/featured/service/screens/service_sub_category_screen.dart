@@ -49,10 +49,7 @@ class _ServiceSubCategoryScreenState
               onTap: () {
                 context.push(AppRoutes.bookingTime);
               },
-              child: _buildCategoryItem(
-                category.name,
-                Icons.category, // you can map icon later
-              ),
+              child: _buildCategoryItem(category.name, category.image ?? ""),
             );
           }).toList(),
         );
@@ -124,16 +121,34 @@ class _ServiceSubCategoryScreenState
   }
 
   // Helper to build CircleAvatar categories
-  Widget _buildCategoryItem(String label, IconData icon) {
-    return CircleAvatar(
-      radius: 40,
-      backgroundColor: Colors.white,
+  Widget _buildCategoryItem(String label, String icon) {
+    double size = 50;
+    return Container(
+      width: size * 2,
+      height: size * 2,
+      padding: const EdgeInsets.all(4),
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.white,
+      ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 28, color: AppColors.black),
-          4.verticalSpace,
-          AppText(label),
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(icon),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          AppText.bodySm(
+            label,
+            textAlign: TextAlign.center,
+            fontWeight: FontWeight.w500,
+          ),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -78,7 +79,7 @@ class AppRatingBar extends StatelessWidget {
 class AppRatingBreakdown extends StatelessWidget {
   final double overall;
   final int totalReviews;
-  final Map<String, double> breakdown;
+  final RatingBreakdown breakdown;
 
   const AppRatingBreakdown({
     super.key,
@@ -121,10 +122,26 @@ class AppRatingBreakdown extends StatelessWidget {
           ],
         ),
         16.verticalSpace,
-        ...breakdown.entries.map(
-          (e) => Padding(
-            padding: 8.paddingBottom,
-            child: _RatingRow(label: e.key, value: e.value),
+        Padding(
+          padding: 8.paddingBottom,
+          child: _RatingRow(label: "Punctuality", value: breakdown.punctuality),
+        ),
+        Padding(
+          padding: 8.paddingBottom,
+          child: _RatingRow(label: "Kindness", value: breakdown.kindness),
+        ),
+        Padding(
+          padding: 8.paddingBottom,
+          child: _RatingRow(
+            label: "Value For Money",
+            value: breakdown.valueForMoney,
+          ),
+        ),
+        Padding(
+          padding: 8.paddingBottom,
+          child: _RatingRow(
+            label: "Professionalism",
+            value: breakdown.professionalism,
           ),
         ),
       ],

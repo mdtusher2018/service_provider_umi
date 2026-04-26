@@ -90,13 +90,13 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       ServiceModel(
         id: '31',
         name: 'Babysitting',
-        image: 'https://picsum.photos/seed/babysit/200',
+        image: 'https://cdn-icons-png.flaticon.com/512/6205/6205324.png',
         haveSubcategory: false,
       ),
       ServiceModel(
         id: '32',
         name: 'After School Care',
-        image: 'https://picsum.photos/seed/afterschool/200',
+        image: 'https://cdn-icons-png.flaticon.com/512/2138/2138410.png',
         haveSubcategory: false,
       ),
     ],
@@ -124,13 +124,13 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       ServiceModel(
         id: '31',
         name: 'Babysitting',
-        image: 'https://picsum.photos/seed/babysit/200',
+        image: 'https://cdn-icons-png.flaticon.com/512/6205/6205324.png',
         haveSubcategory: false,
       ),
       ServiceModel(
         id: '32',
         name: 'After School Care',
-        image: 'https://picsum.photos/seed/afterschool/200',
+        image: 'https://cdn-icons-png.flaticon.com/512/2138/2138410.png',
         haveSubcategory: false,
       ),
     ],
@@ -440,6 +440,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
           id: 'r_1',
           userName: 'Ana Silva',
           userImage: 'https://i.pravatar.cc/100?img=20',
+          userVerified: true,
           rating: 5.0,
           comment:
               'The service was outstanding. Very punctual and professional.',
@@ -451,6 +452,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
           id: 'r_2',
           userName: 'Mark Johnson',
           userImage: 'https://i.pravatar.cc/100?img=33',
+          userVerified: true,
           rating: 4.8,
           comment: 'Great with my mother. Would definitely book again.',
           createdAt: DateTime.now()
@@ -461,6 +463,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
           id: 'r_3',
           userName: 'Layla Hassan',
           userImage: 'https://i.pravatar.cc/100?img=47',
+          userVerified: true,
           rating: 5.0,
           comment: 'Very kind and attentive. Highly recommended!',
           createdAt: DateTime.now()

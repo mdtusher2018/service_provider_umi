@@ -116,6 +116,7 @@ class ProviderComment {
   final String id;
   final String userName;
   final String userImage;
+  final bool userVerified;
   final num rating;
   final String comment;
   final String createdAt;
@@ -124,6 +125,7 @@ class ProviderComment {
     required this.id,
     required this.userName,
     required this.userImage,
+    required this.userVerified,
     required this.rating,
     required this.comment,
     required this.createdAt,
@@ -134,6 +136,7 @@ class ProviderComment {
         id: json['id'] as String,
         userName: json['user_name'] as String,
         userImage: json['user_image'] as String,
+        userVerified: json['user_verified'] as bool,
         rating: json['rating'] as int,
         comment: json['comment'] as String,
         createdAt: json['created_at'] as String,

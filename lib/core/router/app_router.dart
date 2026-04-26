@@ -26,7 +26,7 @@ import 'package:service_provider_umi/featured/profile/screen/preferences/prefere
 import 'package:service_provider_umi/featured/profile/screen/preferences/work_area_screen.dart';
 
 import 'package:service_provider_umi/featured/profile/screen/provider_listing_screen/provider_listing_screen.dart';
-import 'package:service_provider_umi/featured/profile/screen/provider_profile_overview/provider_profile_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/provider_profile_overview/provider_profile_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/reviews_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/static_page_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_details_screen/booking_details_screen.dart';

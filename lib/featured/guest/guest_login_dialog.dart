@@ -1,4 +1,4 @@
-part of 'provider_profile_screen.dart';
+part of '../service/screens/provider_profile_overview/provider_profile_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  GuestLoginDialog

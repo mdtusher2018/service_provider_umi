@@ -5,6 +5,7 @@ import 'package:service_provider_umi/core/services/socket/chat_socket_service.da
 import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// ignore: unused_import
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';

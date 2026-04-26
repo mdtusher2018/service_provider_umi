@@ -3,7 +3,7 @@ part of 'provider_profile_screen.dart';
 final favoriteProvider = StateProvider<bool>((ref) => false);
 Widget _buildAppBar({
   required WidgetRef ref,
-  required _ProviderData mockProvider,
+  required ProviderProfile mockProvider,
 }) {
   final isFavorited = ref.watch(favoriteProvider);
 

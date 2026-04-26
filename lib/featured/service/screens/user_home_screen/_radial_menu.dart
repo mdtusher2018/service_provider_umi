@@ -228,7 +228,7 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
                   ),
                 ),
               ),
-              AppText.bodySm(widget.item.name),
+              AppText.bodySm(widget.item.name, fontWeight: FontWeight.w500),
             ],
           ),
         ),

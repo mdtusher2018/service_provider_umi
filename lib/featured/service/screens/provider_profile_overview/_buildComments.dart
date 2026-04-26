@@ -2,7 +2,7 @@ part of 'provider_profile_screen.dart';
 
 // ─── Supporting widgets ───────────────────────────────────────
 
-Widget _buildComments({required List<_CommentData> comments}) {
+Widget _buildComments({required List<ProviderComment> comments}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -14,11 +14,12 @@ Widget _buildComments({required List<_CommentData> comments}) {
 }
 
 class _CommentTile extends ConsumerWidget {
-  final _CommentData comment;
+  final ProviderComment comment;
   const _CommentTile({required this.comment});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final time = DateTime.tryParse(comment.createdAt) ?? DateTime.now();
     return Padding(
       padding: 14.paddingBottom,
       child: Column(
@@ -26,7 +27,7 @@ class _CommentTile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              AppAvatar(name: comment.author, size: AvatarSize.sm),
+              AppAvatar(name: comment.userImage, size: AvatarSize.sm),
 
               10.horizontalSpace,
               Column(
@@ -35,13 +36,13 @@ class _CommentTile extends ConsumerWidget {
                   Row(
                     spacing: 8,
                     children: [
-                      AppText.labelLg(comment.author),
-                      AppText.bodySm(".${comment.timeAgo}"),
+                      AppText.labelLg(comment.userName),
+                      AppText.bodySm(".${time.toRelativeTime}"),
                     ],
                   ),
                   Row(
                     children: [
-                      if (comment.isVerified) ...[
+                      if (comment.userVerified) ...[
                         Icon(
                           Icons.verified_outlined,
                           color: AppColors.primaryFor(
@@ -64,7 +65,7 @@ class _CommentTile extends ConsumerWidget {
             ],
           ),
           8.verticalSpace,
-          AppText.bodyMd(comment.text, color: AppColors.textSecondary),
+          AppText.bodyMd(comment.comment, color: AppColors.textSecondary),
         ],
       ),
     );
