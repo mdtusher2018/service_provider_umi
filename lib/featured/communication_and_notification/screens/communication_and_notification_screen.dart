@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
@@ -64,7 +65,6 @@ class _CommunicationAndNotificationScreenState
     CallHistory(
       id: '1',
       name: 'Admin Maria',
-
       lastTime: DateTime.now().subtract(const Duration(minutes: 5)),
       type: CallType.audio,
     ),
@@ -247,14 +247,14 @@ class _CommunicationAndNotificationScreenState
 
                       onTap: () async {
                         final myUserId = await getMyUserId(ref);
-
+                        AppLogger.info(_history.length.toString());
                         context.push(
-                          AppRoutes.chatPath(_rooms[i].id),
+                          AppRoutes.chatPath(_history[i].id),
                           extra: {
-                            'otherUserId': _rooms[i].otherUser.id,
-                            'name': _rooms[i].otherUser.name,
+                            'otherUserId': _history[i].id,
+                            'name': "User 2",
                             'myId': myUserId,
-                            'imageUrl': _rooms[i].otherUser.profile,
+                            'imageUrl': "User 2",
                           },
                         );
                       },

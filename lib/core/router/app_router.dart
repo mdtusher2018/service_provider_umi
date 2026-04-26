@@ -278,7 +278,7 @@ GoRouter appRouter(Ref ref) {
           final extra = state.extra as Map<String, dynamic>?;
           final contactName = extra?['name'] ?? 'Contact';
           final imageUrl = extra?['imageUrl'] ?? '';
-          final channelId = extra?['channelId'] ?? '';
+          final channelId = extra?['channelId'];
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
           return AudioCallScreen(
             contactId: contactId,

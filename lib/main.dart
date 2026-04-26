@@ -20,7 +20,7 @@ Future<void> main() async {
     // baseUrl: 'http://api.dev.com/api/v1',
     // socketUrl: 'http://api.dev.com',
     googleMapsApiKey: 'YOUR_KEY',
-    agoraAppId: 'AGORA_ID',
+    agoraAppId: '87317ef9a331453ca1463797ba82cd41',
     stripePublishableKey: 'STRIPE_KEY',
   );
 

@@ -69,7 +69,8 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final role = ref.watch(appRoleProvider);
+    final role = AppRole.user;
+    // ref.watch(appRoleProvider);
 
     /// USER SCREENS
     final userScreens = [

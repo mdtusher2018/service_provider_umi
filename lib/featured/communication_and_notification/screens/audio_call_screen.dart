@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,7 +81,8 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
 
       _engine!.registerEventHandler(
         RtcEngineEventHandler(
-          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {},
+          onUserJoined: (connection, remoteUid, elapsed) {
             setState(() => _callState = CallState.connected);
             _startTimer();
           },
@@ -108,9 +110,11 @@ class _AudioCallScreenState extends ConsumerState<AudioCallScreen>
           widget.channelId ??
           'call_${widget.contactId}_${DateTime.now().millisecondsSinceEpoch}';
 
+      AppLogger.info(channelId);
       await _engine!.joinChannel(
-        token: '', // TODO: generate token from your backend
-        channelId: channelId,
+        token:
+            '007eJxTYHC7fzQniZUtmVf+p6+PllSvTfFkS+Grjw7+9rp6dLpb7xcFBgtzY0Pz1DTLRGNjQxNT4+REQxMzY3NL86REC6PkFBNDx9o3mQ2BjAzxomGsjAwQCOJzMiRnJOblpeZ4pjAwAABrax+G', // TODO: generate token from your backend
+        channelId: "channelId",
         uid: 0,
         options: const ChannelMediaOptions(
           clientRoleType: ClientRoleType.clientRoleBroadcaster,
