@@ -11,10 +11,9 @@ import 'package:service_provider_umi/featured/authentication/screens/profile_pic
 import 'package:service_provider_umi/featured/authentication/screens/provider_onboarding.dart';
 import 'package:service_provider_umi/featured/authentication/screens/verify_code_screen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/welcome_screen.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/audio_call_screen.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/screens/call_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/chat_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/video_call_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/featured/profile/screen/change_password_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/language_screen.dart';
@@ -280,12 +279,14 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'];
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
-          return AudioCallScreen(
+
+          return CallScreen(
             contactId: contactId,
             contactName: contactName,
             contactImageUrl: imageUrl,
             channelId: channelId,
             isIncoming: isIncoming,
+            callType: CallType.audio,
           );
         },
       ),
@@ -298,12 +299,14 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'] ?? '';
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
-          return VideoCallScreen(
+
+          return CallScreen(
             contactId: contactId,
             contactName: contactName,
             contactImageUrl: imageUrl,
             channelId: channelId,
             isIncoming: isIncoming,
+            callType: CallType.video,
           );
         },
       ),

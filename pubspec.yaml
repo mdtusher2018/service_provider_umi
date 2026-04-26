@@ -52,7 +52,6 @@ dependencies:
   intl:
     
   freezed_annotation: 
-  firebase_analytics: 
   connectivity_plus: 
   flutter_localizations:
     sdk: flutter
