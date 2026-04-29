@@ -4,6 +4,7 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
 
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -25,34 +26,43 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
   final _requests = const [
     BookingItem(
-      id: '1',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.pending,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
   ];
 
   final _ongoing = const [
     BookingItem(
-      id: '2',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.ongoing,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
   ];
 
   final _cancelled = const [
     BookingItem(
-      id: '3',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.cancelled,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
   ];
 

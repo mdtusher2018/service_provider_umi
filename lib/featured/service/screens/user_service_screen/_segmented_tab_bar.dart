@@ -3,7 +3,8 @@ part of 'user_service_screen.dart';
 // ─── Segmented Tab Bar ────────────────────────────────────────
 class _SegmentedTabBar extends StatelessWidget {
   final TabController controller;
-  const _SegmentedTabBar({required this.controller});
+  final VoidCallback? onChanged;
+  const _SegmentedTabBar({required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,10 @@ class _SegmentedTabBar extends StatelessWidget {
               final isSelected = controller.index == e.key;
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => controller.animateTo(e.key),
+                  onTap: () {
+                    controller.animateTo(e.key);
+                    onChanged?.call(); // ✅ notify parent
+                  },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     margin: 3.paddingAll,

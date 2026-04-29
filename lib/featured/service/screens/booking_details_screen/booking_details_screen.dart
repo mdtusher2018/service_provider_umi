@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
+
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -72,9 +73,9 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
             20.verticalSpace,
             _buildSection('Service price', _buildPrice()),
             40.verticalSpace,
-            if (widget.booking.status == BookingStatus.ongoing)
+            if (widget.booking.bookingStatus == BookingStatus.ongoing)
               AppButton.primary(label: "Complete", onPressed: _complete),
-            if (widget.booking.status == BookingStatus.pending)
+            if (widget.booking.bookingStatus == BookingStatus.pending)
               Row(
                 spacing: 16,
                 children: [
@@ -149,7 +150,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
           children: [
             const Icon(Icons.calendar_month_outlined, size: 18),
             8.horizontalSpace,
-            AppText.bodyMd(widget.booking.date),
+            AppText.bodyMd(widget.booking.bookingDate),
           ],
         ),
 

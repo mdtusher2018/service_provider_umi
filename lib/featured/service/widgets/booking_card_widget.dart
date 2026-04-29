@@ -1,37 +1,16 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
+import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-
-// ─── Models ───────────────────────────────────────────────────
-
-class BookingItem {
-  final String id;
-  final String serviceTitle;
-  final String imageUrl;
-  final String timeRange;
-  final String date;
-  final BookingStatus status;
-  final bool needsRating;
-  final bool needsSupport;
-
-  const BookingItem({
-    required this.id,
-    required this.serviceTitle,
-    required this.imageUrl,
-    required this.timeRange,
-    required this.date,
-    required this.status,
-    this.needsRating = false,
-    this.needsSupport = false,
-  });
-}
 
 class BookingCard extends ConsumerStatefulWidget {
   final BookingItem item;
@@ -122,8 +101,11 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     width: 72,
                     height: 72,
                     color: AppColors.primaryLight,
-                    child: widget.item.imageUrl.isNotEmpty
-                        ? Image.network(widget.item.imageUrl, fit: BoxFit.cover)
+                    child: widget.item.serviceImageUrl.isNotEmpty
+                        ? Image.network(
+                            widget.item.serviceImageUrl,
+                            fit: BoxFit.cover,
+                          )
                         : const Icon(Icons.elderly_outlined, size: 36),
                   ),
                 ),
@@ -134,7 +116,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.labelLg(
-                        widget.item.serviceTitle,
+                        widget.item.serviceName,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -144,7 +126,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         children: [
                           const Icon(Icons.access_time_rounded, size: 13),
                           4.horizontalSpace,
-                          AppText.bodySm(widget.item.timeRange),
+                          AppText.bodySm(
+                            "From ${widget.item.startTime} to ${widget.item.endTime}",
+                          ),
                         ],
                       ),
                       4.verticalSpace,
@@ -153,7 +137,11 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         children: [
                           const Icon(Icons.calendar_month_outlined, size: 13),
                           4.horizontalSpace,
-                          AppText.bodySm(widget.item.date),
+                          AppText.bodySm(
+                            DateTime.parse(
+                              widget.item.bookingDate,
+                            ).toRelativeTime,
+                          ),
                         ],
                       ),
                       10.verticalSpace,
@@ -171,7 +159,10 @@ class _BookingCardState extends ConsumerState<BookingCard>
   }
 
   Widget _buildStatusRow(AppRole role) {
-    switch (widget.item.status) {
+    AppLogger.info(
+      "============>>>>>>>>>>>>>" + widget.item.bookingStatus.name.toString(),
+    );
+    switch (widget.item.bookingStatus) {
       case BookingStatus.pending:
         if (role == AppRole.provider) {
           return Row(
@@ -315,22 +306,26 @@ class BookingList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return AppEmptyState(
-        title: emptyMessage,
-        subtitle: emptySubtitle,
-        icon: Container(
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            shape: BoxShape.circle,
+      return ListView(
+        children: [
+          AppEmptyState(
+            title: emptyMessage,
+            subtitle: emptySubtitle,
+            icon: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.calendar_today_outlined,
+                color: AppColors.primary,
+                size: 32,
+              ),
+            ),
           ),
-          child: const Icon(
-            Icons.calendar_today_outlined,
-            color: AppColors.primary,
-            size: 32,
-          ),
-        ),
+        ],
       );
     }
 

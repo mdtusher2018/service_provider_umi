@@ -9,6 +9,7 @@ import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 
 import 'package:service_provider_umi/data/repository/service_repository.dart';
+import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 part 'service_provider.g.dart';
 
@@ -105,10 +106,11 @@ class BookingsNotifier extends _$BookingsNotifier {
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> fetch() async {
+  Future<void> fetch({BookingStatus? status}) async {
     state = const AsyncLoading();
 
-    final result = await _repo.getMyBookings();
+    final result = await _repo.getMyBookings(status: status);
+    if (!ref.mounted) return;
 
     state = result.when(
       success: AsyncData.new,

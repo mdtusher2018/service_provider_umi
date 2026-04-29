@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 
 import 'package:service_provider_umi/exit_confirmation_wrapper.dart';
@@ -37,9 +38,7 @@ import 'package:service_provider_umi/featured/service/screens/service_search_scr
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_results/service_search_results_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_sub_category_screen.dart';
-
 import 'package:service_provider_umi/featured/service/screens/work_schedule_screen/work_schedule_screen.dart';
-import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
@@ -153,12 +152,15 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) {
           final booking = state.extra as BookingItem?;
           final fallback = BookingItem(
-            id: state.pathParameters['bookingId']!,
-            serviceTitle: 'Service',
-            imageUrl: '',
-            timeRange: '',
-            date: '',
-            status: BookingStatus.pending,
+            bookingId: '',
+            serviceName: '',
+            serviceImageUrl: '',
+            startTime: '',
+            endTime: '',
+            bookingDate: '',
+            bookingStatus: BookingStatus.cancelled,
+            paidOnDate: '',
+            price: 0,
           );
           return BookingDetailScreen(booking: booking ?? fallback);
         },

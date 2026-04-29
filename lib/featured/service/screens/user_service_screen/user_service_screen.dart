@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
-import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+
 part '_rating_dialog.dart';
 part '_segmented_tab_bar.dart';
 
-// ─── Screen ───────────────────────────────────────────────────
 class UserServiceScreen extends ConsumerStatefulWidget {
   const UserServiceScreen({super.key});
 
@@ -26,40 +29,10 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  // Mock data
-  final _upcoming = const [
-    BookingItem(
-      id: '1',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.accepted,
-    ),
-  ];
-
-  final _past = const [
-    BookingItem(
-      id: '2',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.completed,
-      needsRating: true,
-      needsSupport: true,
-    ),
-  ];
-
-  final _cancelled = const [
-    BookingItem(
-      id: '3',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.cancelled,
-    ),
+  final _tabs = const [
+    BookingStatus.accepted,
+    BookingStatus.completed,
+    BookingStatus.cancelled,
   ];
 
   @override
@@ -68,59 +41,84 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     _tabController = TabController(length: 3, vsync: this);
   }
 
+  BookingStatus get _currentStatus => _tabs[_tabController.index];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadData();
+  }
+
+  void _loadData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(bookingsProvider.notifier).fetch(status: _currentStatus);
+    });
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
 
+  void _onTabChanged() {
+    setState(() {});
+    _loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bookingsState = ref.watch(bookingsProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ─── Title ────────────────────────────────
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
               child: AppText.h1('Service'),
             ),
 
-            // ─── Tab Bar ──────────────────────────────
             Padding(
               padding: 20.paddingH,
-              child: _SegmentedTabBar(controller: _tabController),
+              child: _SegmentedTabBar(
+                controller: _tabController,
+                onChanged: _onTabChanged,
+              ),
             ),
 
             16.verticalSpace,
 
-            // ─── Tab Views ────────────────────────────
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  BookingList(
-                    items: _upcoming,
-                    emptyMessage: 'No upcoming bookings',
-                    emptySubtitle: 'Book a service to see it here',
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                  ),
-                  BookingList(
-                    items: _past,
-                    emptyMessage: 'No past bookings',
-                    emptySubtitle: 'Your completed services will appear here',
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                    onRatingTap: _showRatingDialog,
-                  ),
-                  BookingList(
-                    items: _cancelled,
-                    emptyMessage: 'No cancelled bookings',
-                    emptySubtitle: 'Cancelled services will appear here',
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                  ),
-                ],
+              child: bookingsState.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: AppText.h3(e.toString())),
+                data: (data) {
+                  final bookings = data.bookings;
+
+                  if (bookings.isEmpty) {
+                    return const Center(
+                      child: AppText.bodyLg('No bookings found'),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      ref
+                          .read(bookingsProvider.notifier)
+                          .fetch(status: _currentStatus);
+                    },
+                    child: BookingList(
+                      items: bookings,
+                      emptyMessage: 'No bookings',
+                      emptySubtitle: 'Your bookings will appear here',
+                      onCardTap: (item) => _onCardTap(item, context),
+                      onRatingTap: _showRatingDialog,
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -140,7 +138,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
       transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.5),
       pageBuilder: (_, _, _) => RatingDialog(
-        serviceName: item.serviceTitle,
+        serviceName: item.serviceName,
         onSubmit: (rating, tags, comment) {
           context.pop();
         },

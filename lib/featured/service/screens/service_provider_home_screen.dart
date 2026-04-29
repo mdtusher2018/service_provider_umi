@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 
@@ -26,20 +27,26 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   DateTime _selectedDate = DateTime(2024, 6, 14);
   final List<BookingItem> _bookings = [
     BookingItem(
-      id: '1',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.ongoing,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
     BookingItem(
-      id: '2',
-      serviceTitle: 'Home Cleaning',
-      imageUrl: '',
-      timeRange: 'From 10:00 to 12:00',
-      date: 'Tuesday, 2 Feb 2025',
-      status: BookingStatus.accepted,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
   ];
 

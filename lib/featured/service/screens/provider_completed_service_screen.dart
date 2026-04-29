@@ -5,12 +5,15 @@ class ProviderCompletedServiceScreen extends StatelessWidget {
 
   final List<BookingItem> _completed = const [
     BookingItem(
-      id: '10',
-      serviceTitle: 'Elderly care',
-      imageUrl: '',
-      timeRange: 'From 16:30 to 18:30',
-      date: 'Monday, 1 Feb 2025',
-      status: BookingStatus.completed,
+      bookingId: '10',
+      serviceName: 'Elderly care',
+      serviceImageUrl: '',
+      startTime: '16:30',
+      endTime: '19:30',
+      bookingDate: 'Monday, 1 Feb 2025',
+      bookingStatus: BookingStatus.completed,
+      paidOnDate: 'Monday, 1 Feb 2025',
+      price: 120,
     ),
   ];
 
