@@ -66,7 +66,7 @@ class AppCard extends StatelessWidget {
 class ProviderCard extends StatelessWidget {
   final String name;
   final String? imageUrl;
-  final String serviceType;
+
   final double rating;
   final int reviewCount;
   final int serviceCount;
@@ -82,7 +82,7 @@ class ProviderCard extends StatelessWidget {
     super.key,
     required this.name,
     this.imageUrl,
-    required this.serviceType,
+
     required this.rating,
     this.reviewCount = 0,
     this.serviceCount = 0,
@@ -115,7 +115,11 @@ class ProviderCard extends StatelessWidget {
                     color: AppColors.grey300,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.favorite_border, size: 16),
+                  child: Icon(
+                    isFavorited ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorited ? AppColors.error : AppColors.grey600,
+                    size: 16,
+                  ),
                 ),
               ),
               12.horizontalSpace,

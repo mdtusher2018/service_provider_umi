@@ -102,13 +102,16 @@ class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
 @riverpod
 class BookingsNotifier extends _$BookingsNotifier {
   @override
-  AsyncValue<BookingsListResponse> build() => const AsyncLoading();
+  AsyncValue<BookingsListResponse> build(BookingStatus status) {
+    // Auto-fetch on build
+    fetch();
+    return const AsyncLoading();
+  }
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> fetch({BookingStatus? status}) async {
+  Future<void> fetch() async {
     state = const AsyncLoading();
-
     final result = await _repo.getMyBookings(status: status);
     if (!ref.mounted) return;
 

@@ -1,11 +1,11 @@
 part of 'provider_profile_screen.dart';
 
-final favoriteProvider = StateProvider<bool>((ref) => false);
+final _favoriteProvider = StateProvider<bool>((ref) => false);
 Widget _buildAppBar({
   required WidgetRef ref,
   required ProviderProfile mockProvider,
 }) {
-  final isFavorited = ref.watch(favoriteProvider);
+  final isFavorited = ref.watch(_favoriteProvider);
 
   return SafeArea(
     bottom: false,
@@ -33,7 +33,7 @@ Widget _buildAppBar({
           ),
           GestureDetector(
             onTap: () {
-              ref.read(favoriteProvider.notifier).state = !isFavorited;
+              ref.read(_favoriteProvider.notifier).state = !isFavorited;
             },
             child: Icon(
               isFavorited

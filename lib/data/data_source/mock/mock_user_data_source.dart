@@ -51,7 +51,7 @@ class MockUserDataSource implements UserRemoteDataSource {
       name: 'Fatima Begum',
       avatarUrl: 'https://i.pravatar.cc/150?img=9',
       verified: true,
-      isLiked: true,
+      isLiked: false,
       rating: 4.9,
       reviewsCount: 41,
       servicesCount: 4,

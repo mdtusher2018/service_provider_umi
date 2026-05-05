@@ -5,6 +5,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -24,46 +25,10 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final _requests = const [
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
-  ];
-
-  final _ongoing = const [
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
-  ];
-
-  final _cancelled = const [
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
+  final _tabs = const [
+    BookingStatus.pending,
+    BookingStatus.ongoing,
+    BookingStatus.cancelled,
   ];
 
   @override
@@ -72,10 +37,29 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
     _tabController = TabController(length: 3, vsync: this);
   }
 
+  BookingStatus get _currentStatus => _tabs[_tabController.index];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadData();
+  }
+
+  void _loadData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(bookingsProvider(_currentStatus).notifier).fetch();
+    });
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _onTabChanged() {
+    setState(() {});
+    _loadData();
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
@@ -88,6 +72,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(bookingsProvider(_currentStatus));
     return Scaffold(
       backgroundColor: AppColors.background,
 
@@ -109,39 +94,39 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
           children: [
             Padding(
               padding: 20.paddingH,
-              child: _ProviderTabBar(controller: _tabController),
+              child: _ProviderTabBar(
+                controller: _tabController,
+                onChanged: _onTabChanged,
+              ),
             ),
 
             16.verticalSpace,
 
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  /// REQUEST
-                  BookingList(
-                    items: _requests,
-                    emptyMessage: "No service requests",
-                    emptySubtitle: "New requests will appear here",
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                  ),
+              child: state.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: AppText.h3(e.toString())),
+                data: (data) {
+                  if (data.bookings.isEmpty) {
+                    return const Center(
+                      child: AppText.bodyLg('No bookings found'),
+                    );
+                  }
 
-                  /// ONGOING
-                  BookingList(
-                    items: _ongoing,
-                    emptyMessage: "No ongoing services",
-                    emptySubtitle: "Accepted bookings will appear here",
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                  ),
-
-                  /// CANCELLED
-                  BookingList(
-                    items: _cancelled,
-                    emptyMessage: "No cancelled bookings",
-                    emptySubtitle: "Cancelled services will appear here",
-                    onCardTap: (iteam) => _onCardTap(iteam, context),
-                  ),
-                ],
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await ref
+                          .read(bookingsProvider(_currentStatus).notifier)
+                          .fetch();
+                    },
+                    child: BookingList(
+                      items: data.bookings,
+                      emptyMessage: 'No bookings',
+                      emptySubtitle: 'Your bookings will appear here',
+                      onCardTap: (item) => _onCardTap(item, context),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -153,13 +138,12 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
 class _ProviderTabBar extends StatelessWidget {
   final TabController controller;
+  final VoidCallback? onChanged;
 
-  const _ProviderTabBar({required this.controller});
+  const _ProviderTabBar({required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ["Request", "Ongoing", "Cancelled"];
-
     return AnimatedBuilder(
       animation: controller,
       builder: (_, __) {
@@ -171,12 +155,16 @@ class _ProviderTabBar extends StatelessWidget {
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
-            children: tabs.asMap().entries.map((e) {
+            children: ["Request", "Ongoing", "Cancelled"].asMap().entries.map((
+              e,
+            ) {
               final isSelected = controller.index == e.key;
-
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => controller.animateTo(e.key),
+                  onTap: () {
+                    controller.animateTo(e.key);
+                    onChanged?.call(); // ✅ notify parent
+                  },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     margin: 3.paddingAll,
@@ -185,10 +173,20 @@ class _ProviderTabBar extends StatelessWidget {
                           ? AppColors.grey200
                           : Colors.transparent,
                       borderRadius: 7.circular,
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                            ]
+                          : [],
                     ),
                     child: Center(
                       child: AppText.labelMd(
                         e.value,
+                        color: AppColors.textPrimary,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w400,

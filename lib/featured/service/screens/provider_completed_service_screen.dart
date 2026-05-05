@@ -1,21 +1,26 @@
 part of 'provider_service_screen.dart';
 
-class ProviderCompletedServiceScreen extends StatelessWidget {
+class ProviderCompletedServiceScreen extends ConsumerStatefulWidget {
   const ProviderCompletedServiceScreen({super.key});
 
-  final List<BookingItem> _completed = const [
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
-  ];
+  @override
+  ConsumerState<ProviderCompletedServiceScreen> createState() =>
+      _ProviderCompletedServiceScreenState();
+}
+
+class _ProviderCompletedServiceScreenState
+    extends ConsumerState<ProviderCompletedServiceScreen> {
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
+  void _loadData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(bookingsProvider(BookingStatus.completed).notifier).fetch();
+    });
+  }
 
   void _onCardTap(BookingItem item, BuildContext context) {
     context.push(AppRoutes.bookingDetail, extra: item);
@@ -23,22 +28,35 @@ class ProviderCompletedServiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(bookingsProvider(BookingStatus.completed));
     return Scaffold(
       backgroundColor: AppColors.background,
 
       appBar: AppAppBar(title: "Completed Services"),
 
-      body: _completed.isEmpty
-          ? const Center(child: AppText.bodyLg("No completed services"))
-          : ListView.separated(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-              itemCount: _completed.length,
-              separatorBuilder: (_, __) => 12.verticalSpace,
-              itemBuilder: (_, i) => BookingCard(
-                item: _completed[i],
-                onTap: () => _onCardTap(_completed[i], context),
-              ),
+      body: state.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: AppText.h3(e.toString())),
+        data: (data) {
+          if (data.bookings.isEmpty) {
+            return const Center(child: AppText.bodyLg('No bookings found'));
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref
+                  .read(bookingsProvider(BookingStatus.completed).notifier)
+                  .fetch();
+            },
+            child: BookingList(
+              items: data.bookings,
+              emptyMessage: 'No bookings',
+              emptySubtitle: 'Your bookings will appear here',
+              onCardTap: (item) => _onCardTap(item, context),
             ),
+          );
+        },
+      ),
     );
   }
 }

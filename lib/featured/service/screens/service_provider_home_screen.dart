@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 
@@ -24,36 +25,27 @@ class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
-  DateTime _selectedDate = DateTime(2024, 6, 14);
-  final List<BookingItem> _bookings = [
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
-    BookingItem(
-      bookingId: '10',
-      serviceName: 'Elderly care',
-      serviceImageUrl: '',
-      startTime: '16:30',
-      endTime: '19:30',
-      bookingDate: 'Monday, 1 Feb 2025',
-      bookingStatus: BookingStatus.completed,
-      paidOnDate: 'Monday, 1 Feb 2025',
-      price: 120,
-    ),
-  ];
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
+  void _loadData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(bookingsProvider(BookingStatus.completed).notifier).fetch();
+    });
+  }
+
+  void _onCardTap(BookingItem item, BuildContext context) {
+    context.push(AppRoutes.bookingDetail, extra: item);
+  }
 
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
     final primary = AppColors.primaryFor(role);
+    final state = ref.watch(bookingsProvider(BookingStatus.accepted));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -65,7 +57,38 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
               children: [
                 _buildHeader(primary),
                 Expanded(
-                  child: _buildBookingList(), // Create booking list widget here
+                  child: state.when(
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: AppText.h3(e.toString())),
+                    data: (data) {
+                      final bookings = data.bookings;
+
+                      if (bookings.isEmpty) {
+                        return const Center(
+                          child: AppText.bodyLg('No bookings found'),
+                        );
+                      }
+
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          await ref
+                              .read(
+                                bookingsProvider(
+                                  BookingStatus.accepted,
+                                ).notifier,
+                              )
+                              .fetch();
+                        },
+                        child: BookingList(
+                          items: bookings,
+                          emptyMessage: 'No bookings',
+                          emptySubtitle: 'Your bookings will appear here',
+                          onCardTap: (item) => _onCardTap(item, context),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -88,7 +111,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           const Spacer(),
           // Date selector
           GestureDetector(
-            onTap: () => _selectDate(context), // Open the Date Picker
+            // onTap: () => _selectDate(context), // Open the Date Picker
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
@@ -99,17 +122,17 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
               child: Row(
                 children: [
                   AppText(
-                    DateFormat('d MMM, yyyy').format(_selectedDate),
+                    DateFormat('d MMM, yyyy').format(DateTime.now()),
                     style: AppTextStyles.labelMd.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  4.horizontalSpace,
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.grey400,
-                    size: 16,
-                  ),
+                  // 4.horizontalSpace,
+                  // const Icon(
+                  //   Icons.keyboard_arrow_down_rounded,
+                  //   color: AppColors.grey400,
+                  //   size: 16,
+                  // ),
                 ],
               ),
             ),
@@ -119,62 +142,41 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
     );
   }
 
-  // Booking List Widget
-  Widget _buildBookingList() {
-    return ListView.separated(
-      padding: EdgeInsets.all(16),
-      separatorBuilder: (context, index) {
-        return 16.verticalSpace;
-      },
-      itemCount: _bookings.length,
-      itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            context.push(AppRoutes.bookingDetail, extra: _bookings[index]);
-          },
-          child: BookingCard(item: _bookings[index]),
-        );
-      },
-    );
-  }
-
-  // Method to show Date Picker and update selected date
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2101),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: AppColors.primary,
-
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-            colorScheme: ColorScheme.light(primary: AppColors.primary),
-            // Customizing the header text style
-            textTheme: TextTheme(
-              headlineMedium: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            // Customize the Date Picker's Year and Month selection
-            inputDecorationTheme: InputDecorationTheme(
-              border: OutlineInputBorder(borderSide: BorderSide.none),
-              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-            ),
-            dialogTheme: DialogThemeData(backgroundColor: AppColors.white),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(2020),
+  //     lastDate: DateTime(2101),
+  //     builder: (context, child) {
+  //       return Theme(
+  //         data: ThemeData.light().copyWith(
+  //           primaryColor: AppColors.primary,
+  //           buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+  //           colorScheme: ColorScheme.light(primary: AppColors.primary),
+  //           // Customizing the header text style
+  //           textTheme: TextTheme(
+  //             headlineMedium: TextStyle(
+  //               color: AppColors.textPrimary,
+  //               fontSize: 18,
+  //               fontWeight: FontWeight.w600,
+  //             ),
+  //           ),
+  //           // Customize the Date Picker's Year and Month selection
+  //           inputDecorationTheme: InputDecorationTheme(
+  //             border: OutlineInputBorder(borderSide: BorderSide.none),
+  //             focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+  //           ),
+  //           dialogTheme: DialogThemeData(backgroundColor: AppColors.white),
+  //         ),
+  //         child: child!,
+  //       );
+  //     },
+  //   );
+  //   if (picked != null && picked != _selectedDate) {
+  //     setState(() {
+  //       _selectedDate = picked;
+  //     });
+  //   }
+  // }
 }

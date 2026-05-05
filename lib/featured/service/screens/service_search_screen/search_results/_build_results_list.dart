@@ -24,7 +24,7 @@ Widget _buildResultsList({required WidgetRef ref, required String category}) {
 
           return ProviderCard(
             name: p.name,
-            serviceType: category,
+
             rating: p.rating,
             reviewCount: p.reviewsCount,
             serviceCount: p.servicesCount,

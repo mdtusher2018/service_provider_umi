@@ -71,8 +71,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final role = AppRole.user;
-    // ref.watch(appRoleProvider);
+    final role = ref.watch(appRoleProvider);
 
     /// USER SCREENS
     final userScreens = [
@@ -94,11 +93,16 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
     /// GUEST SCREENS (mostly browsing)
     final guestScreens = [
-      const GuestServicesScreen(),
-      const GuestFavouritesScreen(), // could redirect to login later
-      const UserHomeScreen(),
-      const GuestInboxScreen(),
-      const GuestProfileScreen(), // can show login/signup
+      // const GuestServicesScreen(),
+      // const GuestFavouritesScreen(),
+      // const UserHomeScreen(),
+      // const GuestInboxScreen(),
+      // const GuestProfileScreen(),
+      const ProviderServiceScreen(),
+      const CommunicationAndNotificationScreen(),
+      const ServiceProviderHomeScreen(),
+      const CommunicationAndNotificationScreen(isNotification: true),
+      const ProfileScreen(),
     ];
 
     /// Choose screens based on role

@@ -50,8 +50,8 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
   }
 
   void _loadData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bookingsProvider.notifier).fetch(status: _currentStatus);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(bookingsProvider(_currentStatus).notifier).fetch();
     });
   }
 
@@ -68,7 +68,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
   @override
   Widget build(BuildContext context) {
-    final bookingsState = ref.watch(bookingsProvider);
+    final state = ref.watch(bookingsProvider(_currentStatus));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -92,7 +92,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
             16.verticalSpace,
 
             Expanded(
-              child: bookingsState.when(
+              child: state.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
@@ -106,9 +106,9 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
                   return RefreshIndicator(
                     onRefresh: () async {
-                      ref
-                          .read(bookingsProvider.notifier)
-                          .fetch(status: _currentStatus);
+                      await ref
+                          .read(bookingsProvider(_currentStatus).notifier)
+                          .fetch();
                     },
                     child: BookingList(
                       items: bookings,
