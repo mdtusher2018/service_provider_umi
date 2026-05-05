@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: unused_import
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/featured/service/screens/user_home_screen/user_home_screen.dart';
@@ -61,8 +62,8 @@ class _RootScreenState extends ConsumerState<RootScreen> {
       shape: RoundedRectangleBorder(borderRadius: 100.circular),
       child: Image.asset(
         (role == AppRole.provider)
-            ? "assets/icons/upcoming.png"
-            : "assets/icons/home.png",
+            ? Assets.icons.upcoming.keyName
+            : Assets.icons.home.keyName,
         width: 32,
       ),
     );

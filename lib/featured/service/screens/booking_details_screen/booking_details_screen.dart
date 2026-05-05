@@ -4,6 +4,7 @@ import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -123,7 +124,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
         ),
         // Chat icon
         AppAvatar(
-          imageUrl: "assets/icons/chat_icon.png",
+          imageUrl: Assets.icons.chatIcon.keyName,
           size: AvatarSize.md,
           backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
         ),

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -22,19 +23,19 @@ class _ServiceProviderOnboardingScreenState
 
   final List<_OnboardingModel> onboardingData = [
     _OnboardingModel(
-      image: "assets/service_provider_images/provider_onboarding_1.png",
+      image: Assets.serviceProviderImages.providerOnboarding1.keyName,
       title: "Offer your at-home\nservices",
       description:
           "Let us know where you can travel to, when you’re available, and what services you want to offer.",
     ),
     _OnboardingModel(
-      image: "assets/service_provider_images/provider_onboarding_2.png",
+      image: Assets.serviceProviderImages.providerOnboarding2.keyName,
       title: "Perform the services",
       description:
           "Complete the service for which you’ve been booked. It’s time to make an impact!",
     ),
     _OnboardingModel(
-      image: "assets/service_provider_images/provider_onboarding_3.png",
+      image: Assets.serviceProviderImages.providerOnboarding3.keyName,
       title: "Earn money",
       description:
           "Receive the payment for the services you’ve provided in your account. Simple and fast.",

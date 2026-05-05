@@ -106,7 +106,10 @@ class _RadialMenuState extends State<RadialMenu>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset("assets/icons/support.png", width: radiusSize),
+                    Image.asset(
+                      Assets.icons.support.keyName,
+                      width: radiusSize,
+                    ),
                     AppText.h4('Support', color: AppColors.secondary),
                   ],
                 ),
@@ -140,7 +143,7 @@ class _RadialMenuState extends State<RadialMenu>
                     child: Icon(Icons.close),
                   ),
                 ),
-                Image.asset("assets/support.png", width: 120),
+                Image.asset(Assets.support.keyName, width: 120),
                 16.verticalSpace,
 
                 16.verticalSpace,

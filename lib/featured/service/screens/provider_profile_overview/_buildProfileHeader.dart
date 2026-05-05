@@ -27,7 +27,7 @@ Widget _buildProfileHeader({
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             AppAvatar(
-              imageUrl: "assets/icons/chat_icon.png",
+              imageUrl: Assets.icons.chatIcon.keyName,
               size: AvatarSize.md,
               backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),

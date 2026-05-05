@@ -46,7 +46,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
                 child: _categoryCard(
                   "Book a service",
                   "I am a Client",
-                  "assets/book_service.png",
+                  Assets.welcome.bookService.keyName,
                 ),
               ),
 
@@ -64,7 +64,7 @@ void _showRoleSelectionDialog(WidgetRef ref) {
                 child: _categoryCard(
                   "Offer services",
                   "I am a Professional",
-                  "assets/offer_service.png",
+                  Assets.welcome.offerService.keyName,
                 ),
               ),
             ],

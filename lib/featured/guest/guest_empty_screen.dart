@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -12,10 +13,10 @@ class GuestServicesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _GuestEmptyScreen(
+    return _GuestEmptyScreen(
       title: "Services",
       description: "Your booked services will appear here",
-      image: "assets/guest_images/guest_service.png",
+      image: Assets.guestImages.guestService.keyName,
     );
   }
 }
@@ -25,10 +26,10 @@ class GuestFavouritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _GuestEmptyScreen(
+    return _GuestEmptyScreen(
       title: "Favourites",
       description: "Your favourite professionals will appear here",
-      image: "assets/guest_images/guest_favorite.png",
+      image: Assets.guestImages.guestFavorite.keyName,
     );
   }
 }
@@ -82,11 +83,11 @@ class GuestProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _GuestEmptyScreen(
+    return _GuestEmptyScreen(
       title: "Profile",
       description:
           "Please create an account first to access and enjoy all the services.",
-      image: "assets/guest_images/guest_profile.png",
+      image: Assets.guestImages.guestProfile.keyName,
     );
   }
 }
@@ -110,7 +111,7 @@ class _ChatGuestTab extends StatelessWidget {
                   20.verticalSpace,
 
                   Image.asset(
-                    "assets/guest_images/guest_chat.png",
+                    Assets.guestImages.guestChat.keyName,
                     height: 180,
                   ),
 
@@ -170,7 +171,7 @@ class _AlertsGuestTab extends StatelessWidget {
                   20.verticalSpace,
 
                   Image.asset(
-                    "assets/guest_images/guest_alerts.png",
+                    Assets.guestImages.guestAlerts.keyName,
                     height: 180,
                   ),
                   20.verticalSpace,

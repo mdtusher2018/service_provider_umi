@@ -32,13 +32,13 @@ class _TipsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _ExampleAvatar(
-                assetOrEmoji: 'assets/service_provider_images/right_image.png',
+                assetOrEmoji: Assets.serviceProviderImages.rightImage.keyName,
                 isGood: true,
                 primary: primary,
               ),
               12.horizontalSpace,
               _ExampleAvatar(
-                assetOrEmoji: 'assets/service_provider_images/wrong_image.png',
+                assetOrEmoji: Assets.serviceProviderImages.wrongImage.keyName,
                 isGood: false,
                 primary: primary,
               ),

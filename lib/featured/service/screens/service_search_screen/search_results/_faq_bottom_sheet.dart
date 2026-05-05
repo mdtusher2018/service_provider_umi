@@ -88,7 +88,7 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
                     borderRadius: 16.circular,
                   ),
                   child: Image.asset(
-                    "assets/elderly_care.png",
+                    Assets.elderlyCare.keyName,
                     fit: BoxFit.cover,
                   ),
                 ),

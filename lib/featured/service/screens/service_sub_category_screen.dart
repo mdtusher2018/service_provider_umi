@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class ServiceSubCategoryScreen extends ConsumerStatefulWidget {
@@ -71,7 +72,7 @@ class _ServiceSubCategoryScreenState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Logo
-                  Image.asset("assets/logo.png", height: 60),
+                  Image.asset(Assets.logo.keyName, height: 60),
                   Row(
                     children: [
                       _buildCircleIcon(Icons.search, () {

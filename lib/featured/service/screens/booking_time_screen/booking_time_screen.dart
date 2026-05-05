@@ -4,6 +4,7 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_chip.dart';
@@ -33,14 +34,14 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
   DateTime _selectedDate = DateTime.now();
 
   final _morningSlots = [
-    ('assets/icons/sunrise.png', '6 - 9'),
-    ('assets/icons/day.png', '9 - 12'),
-    ('assets/icons/day.png', '12 - 15'),
+    (Assets.icons.sunrise.keyName, '6 - 9'),
+    (Assets.icons.day.keyName, '9 - 12'),
+    (Assets.icons.day.keyName, '12 - 15'),
   ];
   final _eveningSlots = [
-    ('assets/icons/day.png', '15 - 18'),
-    ('assets/icons/sunset.png', '18 - 21'),
-    ('assets/icons/night.png', '21 - 00'),
+    (Assets.icons.day.keyName, '15 - 18'),
+    (Assets.icons.sunset.keyName, '18 - 21'),
+    (Assets.icons.night.keyName, '21 - 00'),
   ];
 
   @override

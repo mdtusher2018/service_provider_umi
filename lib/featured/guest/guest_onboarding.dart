@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -20,19 +21,19 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
 
   final List<_OnboardingModel> onboardingData = [
     _OnboardingModel(
-      image: "assets/guest_images/guest_onboarding_1.png",
+      image: Assets.guestImages.guestOnboarding1.keyName,
       title: "Find your at-\nhome services",
       description:
           "We offer almost everything cleaning, private\nclasses, beauty...",
     ),
     _OnboardingModel(
-      image: "assets/guest_images/guest_onboarding_2.png",
+      image: Assets.guestImages.guestOnboarding2.keyName,
       title: "Choose your ideal\nprofessional",
       description:
           "Browse through hundreds of professionals\nand pick the one you like most.",
     ),
     _OnboardingModel(
-      image: "assets/guest_images/guest_onboarding_3.png",
+      image: Assets.guestImages.guestOnboarding3.keyName,
       title: "Enjoy your service",
       description:
           "Welcome the professional to the agreed\nplace and time. Thank you for trusting us!",
