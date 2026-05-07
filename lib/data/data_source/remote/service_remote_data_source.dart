@@ -7,6 +7,7 @@ import 'package:service_provider_umi/data/models/mock_service_provider_models.da
 import 'package:service_provider_umi/data/models/provider_models.dart';
 
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 abstract class ServiceRemoteDataSource {
@@ -33,6 +34,10 @@ abstract class ServiceRemoteDataSource {
 
   // ── FAQs ────────────────────────────────────────────────────────────────────
   Future<List<FaqItem>> getFaqs(String serviceType);
+
+  Future<WorkScheduleListResponse> getWorkSchedule({int page, int limit});
+  Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules);
+  Future<void> updateWorkSchedule(List<WorkScheduleRequest> schedules);
 }
 
 class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
@@ -185,5 +190,50 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     }
     if (apiResponse.data == null) throw Exception('Empty response data');
     return apiResponse.data as T;
+  }
+
+  @override
+  Future<WorkScheduleListResponse> getWorkSchedule({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final response = await _dio.get(
+      ApiEndpoints.workSchedule,
+      queryParameters: {'page': page, 'limit': limit},
+    );
+    final apiResponse = ApiResponse<WorkScheduleListResponse>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) => WorkScheduleListResponse.fromJson(
+        response.data
+            as Map<
+              String,
+              dynamic
+            >, // pass root so nested data/meta is accessible
+      ),
+    );
+    if (!apiResponse.success) {
+      throw Exception(
+        apiResponse.error?.message ?? 'Failed to fetch work schedule',
+      );
+    }
+    return apiResponse.data!;
+  }
+
+  // ── POST /workSchedule ───────────────────────────────────────────────────────
+  @override
+  Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules) async {
+    await _dio.post(
+      ApiEndpoints.workSchedule,
+      data: schedules.map((s) => s.toJson()).toList(),
+    );
+  }
+
+  // ── PATCH /workSchedule ──────────────────────────────────────────────────────
+  @override
+  Future<void> updateWorkSchedule(List<WorkScheduleRequest> schedules) async {
+    await _dio.patch(
+      ApiEndpoints.workSchedule,
+      data: schedules.map((s) => s.toJson()).toList(),
+    );
   }
 }

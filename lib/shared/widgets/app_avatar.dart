@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -82,6 +83,7 @@ class AppAvatar extends StatelessWidget {
     // ✅ Local file (picked image)
     if (imageUrl != null &&
         imageUrl!.isNotEmpty &&
+        !kIsWeb &&
         File(imageUrl!).existsSync()) {
       return Image.file(
         File(imageUrl!),

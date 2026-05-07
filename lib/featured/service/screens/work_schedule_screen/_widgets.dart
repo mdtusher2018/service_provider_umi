@@ -1,14 +1,21 @@
 part of 'work_schedule_screen.dart';
 
-// ─── Day Row ──────────────────────────────────────────────────
+// ─── Day Row ──────────────────────────────────────────────────────────────────
+
 class _DayRow extends StatelessWidget {
-  final DaySchedule schedule;
+  final String dayLabel; // e.g. "Monday"
+  final bool isAvailable; // mapped from WorkScheduleModel.status
+  final TimeOfDay from; // mapped from WorkScheduleModel.startTime
+  final TimeOfDay to; // mapped from WorkScheduleModel.endTime
   final Color primary;
   final ValueChanged<bool> onToggle;
   final VoidCallback? onTapTime;
 
   const _DayRow({
-    required this.schedule,
+    required this.dayLabel,
+    required this.isAvailable,
+    required this.from,
+    required this.to,
     required this.primary,
     required this.onToggle,
     this.onTapTime,
@@ -22,14 +29,14 @@ class _DayRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Day name + toggle + status
+        // ── Day name + toggle + status label ──────────────────────────────
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText(schedule.day, style: AppTextStyles.h3),
+            AppText(dayLabel, style: AppTextStyles.h3),
 
             Switch(
-              value: schedule.isAvailable,
+              value: isAvailable,
               onChanged: onToggle,
               activeThumbColor: primary,
               activeTrackColor: primary.withOpacity(0.25),
@@ -39,9 +46,9 @@ class _DayRow extends StatelessWidget {
             ),
 
             AppText(
-              schedule.isAvailable ? 'Available' : 'Not available',
+              isAvailable ? 'Available' : 'Not available',
               style: AppTextStyles.bodySm.copyWith(
-                color: schedule.isAvailable
+                color: isAvailable
                     ? AppColors.textSecondary
                     : AppColors.grey400,
               ),
@@ -49,21 +56,19 @@ class _DayRow extends StatelessWidget {
           ],
         ),
 
-        // Time range (only shown when available)
-        if (schedule.isAvailable) ...[
+        // ── Time range (only when available) ──────────────────────────────
+        if (isAvailable) ...[
           6.verticalSpace,
           GestureDetector(
             onTap: onTapTime,
             child: Row(
               children: [
-                // From box
-                _TimeBox(time: _fmt(schedule.from), primary: primary),
+                _TimeBox(time: _fmt(from), primary: primary),
                 Padding(
                   padding: 10.paddingH,
                   child: AppText.bodyMd('—', color: AppColors.textSecondary),
                 ),
-                // To box
-                _TimeBox(time: _fmt(schedule.to), primary: primary),
+                _TimeBox(time: _fmt(to), primary: primary),
               ],
             ),
           ),
@@ -73,7 +78,8 @@ class _DayRow extends StatelessWidget {
   }
 }
 
-// ─── Time Box ─────────────────────────────────────────────────
+// ─── Time Box ─────────────────────────────────────────────────────────────────
+
 class _TimeBox extends StatelessWidget {
   final String time;
   final Color primary;

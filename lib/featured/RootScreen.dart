@@ -23,17 +23,16 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 class RootScreen extends ConsumerStatefulWidget {
   const RootScreen({super.key});
+  static int currentIndex = 2;
 
   @override
   ConsumerState<RootScreen> createState() => _RootScreenState();
 }
 
 class _RootScreenState extends ConsumerState<RootScreen> {
-  int currentIndex = 2;
-
   void onTabTap(int index) {
     setState(() {
-      currentIndex = index;
+      RootScreen.currentIndex = index;
     });
   }
 
@@ -93,16 +92,11 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
     /// GUEST SCREENS (mostly browsing)
     final guestScreens = [
-      // const GuestServicesScreen(),
-      // const GuestFavouritesScreen(),
-      // const UserHomeScreen(),
-      // const GuestInboxScreen(),
-      // const GuestProfileScreen(),
-      const ProviderServiceScreen(),
-      const CommunicationAndNotificationScreen(),
-      const ServiceProviderHomeScreen(),
-      const CommunicationAndNotificationScreen(isNotification: true),
-      const ProfileScreen(),
+      const GuestServicesScreen(),
+      const GuestFavouritesScreen(),
+      const UserHomeScreen(),
+      const GuestInboxScreen(),
+      const GuestProfileScreen(),
     ];
 
     /// Choose screens based on role
@@ -130,13 +124,13 @@ class _RootScreenState extends ConsumerState<RootScreen> {
           return FadeTransition(opacity: animation, child: child);
         },
         child: KeyedSubtree(
-          key: ValueKey(currentIndex),
-          child: screens[currentIndex],
+          key: ValueKey(RootScreen.currentIndex),
+          child: screens[RootScreen.currentIndex],
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
         role: role,
-        currentIndex: currentIndex,
+        currentIndex: RootScreen.currentIndex,
         onTap: onTabTap,
       ),
       floatingActionButton: _homeButton(role),

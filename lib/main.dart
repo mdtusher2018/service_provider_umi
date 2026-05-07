@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/services/storage/hive_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'app.dart';
 
@@ -15,8 +16,8 @@ Future<void> main() async {
 
   FlavorConfig.initialize(
     flavor: Flavor.dev,
-    baseUrl: 'http://103.186.20.117:6000/api/v1',
-    socketUrl: 'http://103.186.20.117:6005',
+    baseUrl: 'http://103.186.20.117:1000/api/v1',
+    socketUrl: 'http://103.186.20.117:1005',
     // baseUrl: 'http://api.dev.com/api/v1',
     // socketUrl: 'http://api.dev.com',
     googleMapsApiKey: 'YOUR_KEY',
@@ -45,6 +46,7 @@ Future<void> main() async {
       return true;
     };
   }
+  setPathUrlStrategy();
   runApp(
     ProviderScope(
       overrides: [

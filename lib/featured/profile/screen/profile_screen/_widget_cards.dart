@@ -5,10 +5,19 @@ Widget _buildSwitchTile(WidgetRef ref) {
   final isProvider = currentRole == AppRole.provider;
 
   return GestureDetector(
-    onTap: () {
+    onTap: () async {
       ref.read(appRoleProvider.notifier).switchRole();
       if (ref.read(appRoleProvider) == AppRole.provider) {
-        ref.context.go(AppRoutes.providerOnboarding);
+        final token =
+            await ref.read(localStorageProvider).read(StorageKey.accessToken)
+                as String? ??
+            "";
+        if (token.decodeJwt['role'] == 'service_provider') {
+          RootScreen.currentIndex = 2;
+          ref.context.go(AppRoutes.root);
+        } else {
+          ref.context.go(AppRoutes.providerOnboarding);
+        }
 
         return;
       }

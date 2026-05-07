@@ -10,7 +10,21 @@ class AppRoutes {
   // ─── Main shell ──────────────────────────────────────────
   // Single entry point for all roles (user / provider / guest).
   // RootScreen internally switches screens via IndexedStack.
-  static const String root = '/home';
+  static const String root = '/root';
+
+  // static const serviceSubCategory = 'service/:serviceId';
+  // static String serviceSubCategoryPath(String serviceId, String serviceName) {
+  //   return '$root/service/$serviceId'
+  //       '?name=${Uri.encodeComponent(serviceName)}';
+  // }
+
+  static const bookingTime = 'time/:serviceId';
+  static String bookingTimePath(String serviceId, String serviceName) {
+    return '$root/time/$serviceId/'
+        '?name=${Uri.encodeComponent(serviceName)}';
+  }
+
+  static const String searchResults = '/search-results';
 
   // ─── Auth ────────────────────────────────────────────────
   static const String phoneNumber = '/auth/phone';
@@ -20,13 +34,13 @@ class AppRoutes {
 
   // ─── Service discovery ───────────────────────────────────
   static const String search = '/search';
-  static const String searchResults = '/search/results';
+
   static const String filter = '/search/filter';
-  static const String serviceSubCategory = '/service/subcategory';
+
   static const String providerProfile = '/provider/:providerId';
 
   // ─── Booking flow ────────────────────────────────────────
-  static const String bookingTime = '/booking/time';
+
   static const String bookingSchedule = '/booking/schedule';
   static const String bookingDetail = '/booking/:bookingId';
   static const String myBookings = '/booking/my-bookings';

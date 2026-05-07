@@ -359,7 +359,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.outline(
             label: 'Skip',
             onPressed: () {
-              context.push(AppRoutes.searchResults);
+              context.go(AppRoutes.searchResults);
             },
           ),
         ),
@@ -369,7 +369,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.primary(
             label: 'Search',
             onPressed: () {
-              context.push(AppRoutes.searchResults);
+              context.go(AppRoutes.searchResults);
             },
           ),
         ),

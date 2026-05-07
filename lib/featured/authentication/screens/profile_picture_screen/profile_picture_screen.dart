@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
@@ -132,7 +133,11 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                   child: AppButton.primary(
                     label: "Confirm",
                     onPressed: () {
-                      context.push(AppRoutes.verifyOtp);
+                      if (kIsWeb) {
+                        context.go(AppRoutes.verifyOtp);
+                      } else {
+                        context.push(AppRoutes.verifyOtp);
+                      }
                     },
                   ),
                 ),

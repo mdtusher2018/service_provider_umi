@@ -17,8 +17,8 @@ part '_faq_bottom_sheet.dart';
 part '_widgets.dart';
 
 class SearchResultsScreen extends ConsumerStatefulWidget {
-  final String category;
-  const SearchResultsScreen({super.key, this.category = 'Elderly care'});
+
+  const SearchResultsScreen({super.key});
 
   @override
   ConsumerState<SearchResultsScreen> createState() =>
@@ -52,7 +52,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
                 _buildFilterRow(ref),
                 _buildFaqBanner(),
                 Expanded(
-                  child: _buildResultsList(category: widget.category, ref: ref),
+                  child: _buildResultsList( ref: ref),
                 ),
               ],
             ),

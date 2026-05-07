@@ -7,6 +7,7 @@ import 'package:service_provider_umi/data/models/misc_models.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -158,6 +159,63 @@ class ProviderProfileNotifier extends _$ProviderProfileNotifier {
     state = result.when(
       success: (data) => AsyncData(data),
       failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+}
+
+@riverpod
+class WorkScheduleNotifier extends _$WorkScheduleNotifier {
+  @override
+  AsyncValue<WorkScheduleListResponse> build() {
+    fetch();
+    return const AsyncLoading();
+  }
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  Future<void> fetch({int page = 1, int limit = 10}) async {
+    state = const AsyncLoading();
+
+    final result = await _repo.getWorkSchedule(page: page, limit: limit);
+    if (!ref.mounted) return;
+
+    state = result.when(
+      success: AsyncData.new,
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+}
+
+@riverpod
+class SaveWorkScheduleNotifier extends _$SaveWorkScheduleNotifier {
+  @override
+  AsyncValue<void> build() => const AsyncData(null);
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  /// Call this from the screen.  Pass [isUpdate] = true for PATCH, false for POST.
+  Future<bool> save({
+    required List<WorkScheduleRequest> schedules,
+    required bool isUpdate,
+  }) async {
+    state = const AsyncLoading();
+
+    final result = isUpdate
+        ? await _repo.updateWorkSchedule(schedules)
+        : await _repo.createWorkSchedule(schedules);
+
+    if (!ref.mounted) return false;
+
+    return result.when(
+      success: (_) {
+        state = const AsyncData(null);
+        ref.invalidate(workScheduleProvider);
+        return true;
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+        return false;
+      },
     );
   }
 }

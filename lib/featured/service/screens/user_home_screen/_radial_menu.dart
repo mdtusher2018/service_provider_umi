@@ -195,17 +195,7 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
       onTapUp: (_) => setState(() => scale = 1.0),
       onTapCancel: () => setState(() => scale = 1.0),
       onTap: () {
-        if (widget.item.haveSubcategory) {
-          context.push(
-            AppRoutes.serviceSubCategory,
-            extra: {
-              "serviceName": widget.item.name,
-              "serviceId": widget.item.id,
-            },
-          );
-        } else {
-          context.push(AppRoutes.bookingTime);
-        }
+        context.go(AppRoutes.bookingTimePath(widget.item.id, widget.item.name));
       },
       child: AnimatedScale(
         scale: scale,

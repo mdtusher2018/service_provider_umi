@@ -1,6 +1,6 @@
 part of 'service_search_results_screen.dart';
 
-Widget _buildResultsList({required WidgetRef ref, required String category}) {
+Widget _buildResultsList({required WidgetRef ref}) {
   final state = ref.watch(searchServiceProvidersProvider);
 
   return state.when(

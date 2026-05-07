@@ -1,8 +1,8 @@
+import 'dart:convert';
+
 extension StringExtensions on String {
   bool get isEmail {
-    final regex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
+    final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return regex.hasMatch(this);
   }
 
@@ -59,4 +59,22 @@ extension NullableStringExtensions on String? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
   bool get isNotNullOrEmpty => this != null && this!.isNotEmpty;
   String get orEmpty => this ?? '';
+}
+
+extension TokenDecode on String {
+  Map<String, dynamic> get decodeJwt {
+    try {
+      final parts = split('.');
+      if (parts.length != 3) return {};
+
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final payloadBytes = base64Url.decode(normalized);
+      final payloadString = utf8.decode(payloadBytes);
+
+      return json.decode(payloadString) as Map<String, dynamic>;
+    } catch (e) {
+      return {};
+    }
+  }
 }

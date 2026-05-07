@@ -59,4 +59,6 @@ class ApiEndpoints {
   // ─── Filters & Search ───────────────────────────────────────────────────────
   static const String serviceFilters = '/services/filters';
   static const String searchProviders = '/providers/search';
+
+  static const String workSchedule = '/workSchedule';
 }

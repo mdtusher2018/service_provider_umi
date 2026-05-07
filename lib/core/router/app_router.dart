@@ -37,7 +37,6 @@ import 'package:service_provider_umi/featured/service/screens/provider_service_s
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/filter_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_results/service_search_results_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/service_sub_category_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/work_schedule_screen/work_schedule_screen.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -48,7 +47,7 @@ part 'app_router.g.dart';
 // Only one navigator key needed — no shell keys required anymore
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-@riverpod
+@Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -64,20 +63,46 @@ GoRouter appRouter(Ref ref) {
       ),
 
       // ── Guest Onboarding ────────────────────────────────
-      // Dead-end: no back stack → back = exit dialog
       GoRoute(
         path: AppRoutes.guestOnboarding,
         builder: (_, __) =>
             ExitConfirmationWrapper(child: GuestOnboardingScreen()),
       ),
 
-      // ── Main shell ───────────────────────────────────────
-      // RootScreen owns its own IndexedStack + bottom nav.
-      // No StatefulShellRoute needed — RootScreen handles all tab switching.
-      // Dead-end: pressing back on any tab → exit dialog
+      // ── Main ───────────────────────────────────────
       GoRoute(
         path: AppRoutes.root,
         builder: (_, __) => const ExitConfirmationWrapper(child: RootScreen()),
+
+        routes: [
+          GoRoute(
+            path: AppRoutes.bookingTime,
+            builder: (_, state) {
+              final serviceId = state.pathParameters['serviceId']!;
+              return BookingTimeScreen(serviceId: serviceId);
+            },
+          ),
+          // GoRoute(
+          //   path: AppRoutes.serviceSubCategory,
+          //   builder: (_, state) {
+          //     final serviceId = state.pathParameters['serviceId']!;
+          //     final serviceName = state.uri.queryParameters['name'] ?? '';
+          //     return ServiceSubCategoryScreen(
+          //       serviceId: serviceId,
+          //       serviceName: serviceName,
+          //     );
+          //   },
+          //   routes: [
+          //     GoRoute(
+          //       path: AppRoutes.bookingTime,
+          //       builder: (_, state) {
+          //         final serviceId = state.pathParameters['serviceId']!;
+          //         return BookingTimeScreen(serviceId: serviceId);
+          //       },
+          //     ),
+          //   ],
+          // ),
+        ],
       ),
 
       // ── Auth flow ───────────────────────────────────────
@@ -106,22 +131,11 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.searchResults,
         builder: (context, state) {
-          final category = state.extra as String? ?? 'Elderly Care';
-          return SearchResultsScreen(category: category);
+          return SearchResultsScreen();
         },
       ),
       GoRoute(path: AppRoutes.filter, builder: (_, __) => FilterScreen()),
-      GoRoute(
-        path: AppRoutes.serviceSubCategory,
 
-        builder: (_, state) {
-          final data = state.extra as Map<String, String>;
-          return ServiceSubCategoryScreen(
-            serviceId: data["serviceId"].toString(),
-            serviceName: data['serviceName'].toString(),
-          );
-        },
-      ),
       GoRoute(
         path: AppRoutes.providerProfile,
         builder: (context, state) {
@@ -131,10 +145,6 @@ GoRouter appRouter(Ref ref) {
       ),
 
       // ── Booking flow ─────────────────────────────────────
-      GoRoute(
-        path: AppRoutes.bookingTime,
-        builder: (_, __) => const BookingTimeScreen(),
-      ),
       GoRoute(
         path: AppRoutes.myBookings,
         builder: (_, __) => const MyBookingScreen(),
