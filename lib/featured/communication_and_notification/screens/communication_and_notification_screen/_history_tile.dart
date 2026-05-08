@@ -1,4 +1,4 @@
-part of '../../screens/communication_and_notification_screen.dart';
+part of 'communication_and_notification_screen.dart';
 
 // ─── History Tile ─────────────────────────────────────────────
 class _HistoryTile extends ConsumerWidget {

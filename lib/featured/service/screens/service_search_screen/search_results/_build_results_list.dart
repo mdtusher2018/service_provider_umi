@@ -4,7 +4,7 @@ Widget _buildResultsList({required WidgetRef ref}) {
   final state = ref.watch(searchServiceProvidersProvider);
 
   return state.when(
-    loading: () => const Center(child: CircularProgressIndicator()),
+    loading: () => const AppLoader(),
 
     error: (e, _) => Center(child: AppText.bodyLg(e.toString())),
 
@@ -35,7 +35,11 @@ Widget _buildResultsList({required WidgetRef ref}) {
             isFavorited: p.isLiked,
             hasUpdatedSchedule: true,
             onTap: () {
-              ref.context.push(AppRoutes.providerProfilePath(p.id));
+              if (kIsWeb) {
+                ref.context.go(AppRoutes.providerProfilePath(p.id));
+              } else {
+                ref.context.push(AppRoutes.providerProfilePath(p.id));
+              }
             },
             onFavorite: () {},
           );

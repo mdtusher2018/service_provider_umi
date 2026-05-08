@@ -93,7 +93,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
             Expanded(
               child: state.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const AppLoader(),
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
                   final bookings = data.bookings;

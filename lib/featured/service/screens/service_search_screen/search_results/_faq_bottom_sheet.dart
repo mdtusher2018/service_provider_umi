@@ -50,7 +50,7 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: faqState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const AppLoader(),
 
         error: (e, _) => Center(child: AppText.bodyMd(e.toString())),
 

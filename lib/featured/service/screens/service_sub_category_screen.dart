@@ -38,7 +38,7 @@
 //     final state = ref.watch(subCategoriesProvider);
 
 //     return state.when(
-//       loading: () => const Center(child: CircularProgressIndicator()),
+//       loading: () => const AppLoader(),
 //       error: (e, _) =>
 //           Center(child: Text((e is AppException) ? e.message : e.toString())),
 //       data: (categories) {

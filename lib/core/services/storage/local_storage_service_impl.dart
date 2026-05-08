@@ -36,6 +36,7 @@ final class LocalStorageServiceImpl implements LocalStorageService {
     _cache[StorageKey.rememberMe.key] = _prefs.getBool(
       StorageKey.rememberMe.key,
     );
+    _cache[StorageKey.userRole.key] = _prefs.getString(StorageKey.userRole.key);
 
     /// determine session mode
     _isSessionMode = !(_cache[StorageKey.rememberMe.key] ?? false);

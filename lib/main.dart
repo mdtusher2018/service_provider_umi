@@ -50,7 +50,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        appRoleProvider.overrideWith(() => AppRoleNotifier(AppRole.guest)),
+        appRoleProvider.overrideWith(() => AppRoleNotifier()),
         localStorageProvider.overrideWithValue(localStorage),
         hiveStorageProvider.overrideWithValue(HiveService.instance),
       ],

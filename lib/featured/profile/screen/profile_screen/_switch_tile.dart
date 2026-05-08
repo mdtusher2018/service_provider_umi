@@ -13,15 +13,17 @@ Widget _buildSwitchTile(WidgetRef ref) {
                 as String? ??
             "";
         if (token.decodeJwt['role'] == 'service_provider') {
-          RootScreen.currentIndex = 2;
-          ref.context.go(AppRoutes.root);
+          AppLogger.debug("===========>>>>>>>>> 1");
+          ref.context.go(AppRoutes.providerHome);
         } else {
+          AppLogger.debug("===========>>>>>>>>> 2");
           ref.context.go(AppRoutes.providerOnboarding);
         }
 
         return;
       }
-      ref.context.go(AppRoutes.root);
+      AppLogger.debug("===========>>>>>>>>> 3");
+      ref.context.go(AppRoutes.userHome);
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -45,33 +47,5 @@ Widget _buildSwitchTile(WidgetRef ref) {
         ],
       ),
     ),
-  );
-}
-
-Widget _buildUserCard(
-  WidgetRef ref, {
-  required String name,
-  required String phone,
-  required String avaterUrl,
-}) {
-  return Row(
-    children: [
-      AppAvatar(name: name, imageUrl: avaterUrl, size: AvatarSize.md),
-      14.horizontalSpace,
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.h3(name),
-          if (ref.watch(appRoleProvider) == AppRole.user)
-            AppText.bodySm(phone, color: AppColors.textSecondary),
-          if (ref.watch(appRoleProvider) == AppRole.provider)
-            AppLinkText(
-              links: [AppTextLink(label: "Not verified", onTap: () {})],
-              "Verification : Not verified",
-              linkColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
-            ),
-        ],
-      ),
-    ],
   );
 }

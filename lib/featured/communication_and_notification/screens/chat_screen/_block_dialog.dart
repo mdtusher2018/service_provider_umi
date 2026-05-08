@@ -1,4 +1,4 @@
-part of '../../screens/chat_screen.dart';
+part of 'chat_screen.dart';
 
 // ─── Block User Dialog ────────────────────────────────────────
 class _BlockUserDialog extends StatelessWidget {

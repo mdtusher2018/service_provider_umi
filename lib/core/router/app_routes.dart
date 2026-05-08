@@ -7,40 +7,34 @@ class AppRoutes {
   static const String login = '/login';
   static const String guestOnboarding = '/guest-onboarding';
 
-  // ─── Main shell ──────────────────────────────────────────
-  // Single entry point for all roles (user / provider / guest).
-  // RootScreen internally switches screens via IndexedStack.
-  static const String root = '/root';
+  // ─── User Shell Tabs ─────────────────────────────────────
+  static const String services = '/user/services';
+  static const String favourites = '/user/favourites';
+  static const String userHome = '/user/home';
+  static const String inbox = '/user/inbox';
+  static const String profile = '/user/profile';
 
-  // static const serviceSubCategory = 'service/:serviceId';
-  // static String serviceSubCategoryPath(String serviceId, String serviceName) {
-  //   return '$root/service/$serviceId'
-  //       '?name=${Uri.encodeComponent(serviceName)}';
-  // }
-
-  static const bookingTime = 'time/:serviceId';
-  static String bookingTimePath(String serviceId, String serviceName) {
-    return '$root/time/$serviceId/'
-        '?name=${Uri.encodeComponent(serviceName)}';
-  }
-
-  static const String searchResults = '/search-results';
+  // ─── Provider Shell Tabs ──────────────────────────────────
+  static const String providerServices = '/provider/services';
+  static const String providerInbox = '/provider/inbox';
+  static const String providerHome = '/provider/home';
+  static const String providerNotifications = '/provider/notifications';
+  static const String providerProfile = '/provider/profile';
 
   // ─── Auth ────────────────────────────────────────────────
   static const String phoneNumber = '/auth/phone';
   static const String verifyOtp = '/auth/verify-otp';
   static const String profilePicture = '/auth/profile-picture';
-  static const String providerOnboarding = '/provider-onboarding';
+  static const String providerOnboarding = '/service-provider-onboarding';
 
   // ─── Service discovery ───────────────────────────────────
   static const String search = '/search';
-
-  static const String filter = '/search/filter';
-
-  static const String providerProfile = '/provider/:providerId';
+  static const String searchResults = '/search-results';
+  static const String filter = '/search-results/filter';
+  static const String providerProfileView = '/service-provider/:providerId';
+  static const searchTime = ':serviceId/search-time';
 
   // ─── Booking flow ────────────────────────────────────────
-
   static const String bookingSchedule = '/booking/schedule';
   static const String bookingDetail = '/booking/:bookingId';
   static const String myBookings = '/booking/my-bookings';
@@ -60,7 +54,6 @@ class AppRoutes {
   static const String changePassword = '/profile/change-password';
   static const String language = '/profile/language';
   static const String staticPage = '/page/:type';
-  static const String notifications = '/notifications';
 
   // ─── Communication ───────────────────────────────────────
   static const String chat = '/chat/:contactId';
@@ -69,13 +62,16 @@ class AppRoutes {
 
   // ─── Provider-specific screens ───────────────────────────
   static const String providerCompletedServiceScreen =
-      '/provider-completed-service-screen';
+      '/service-provider-completed-screen';
 
   // ─── Helpers ─────────────────────────────────────────────
-  static String providerProfilePath(String id) => '/provider/$id';
+  static String providerProfilePath(String id) => '/service-provider/$id';
   static String bookingDetailPath(String id) => '/booking/$id';
   static String chatPath(String contactId) => '/chat/$contactId';
   static String audioCallPath(String contactId) => '/audio/$contactId';
   static String videoCallPath(String contactId) => '/video/$contactId';
   static String staticPagePath(String type) => '/page/$type';
+  static String searchTimePath(String serviceId) {
+    return '$userHome/$serviceId/search-time';
+  }
 }

@@ -1,4 +1,4 @@
-part of '../welcome_screen.dart';
+part of 'welcome_screen.dart';
 
 void _showResetPasswordDialog(WidgetRef ref, {required String email}) {
   showGeneralDialog(

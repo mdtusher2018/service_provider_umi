@@ -28,8 +28,6 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
   );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
-  bool _isLoading = false;
-
   @override
   void dispose() {
     for (final c in _controllers) {
@@ -53,19 +51,16 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
       // On delete, go back
       _focusNodes[index - 1].requestFocus();
     }
-    setState(() {});
   }
 
   Future<void> _done() async {
     if (!_isComplete) return;
-    setState(() => _isLoading = true);
 
     // Simulate verification
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
-    setState(() => _isLoading = false);
 
-    context.go(AppRoutes.root);
+    context.go(AppRoutes.userHome);
   }
 
   @override
@@ -112,11 +107,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
               const Spacer(),
 
               // ─── Done button ─────────────────────────
-              AppButton(
-                label: "Done",
-                isLoading: _isLoading,
-                onPressed: (!_isComplete || _isLoading) ? null : _done,
-              ),
+              AppButton.primary(label: "Done", onPressed: _done),
 
               16.verticalSpace,
 

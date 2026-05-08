@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -92,28 +93,29 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_back_ios_rounded,
-                          color: AppColors.primaryFor(
-                            ref.watch(appRoleProvider),
+                  if (!kIsWeb)
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_rounded,
+                            color: AppColors.primaryFor(
+                              ref.watch(appRoleProvider),
+                            ),
+                            size: 18,
                           ),
-                          size: 18,
-                        ),
-                        8.horizontalSpace,
-                        AppText.h1(
-                          'Back',
-                          color: AppColors.primaryFor(
-                            ref.watch(appRoleProvider),
+                          8.horizontalSpace,
+                          AppText.h1(
+                            'Back',
+                            color: AppColors.primaryFor(
+                              ref.watch(appRoleProvider),
+                            ),
+                            fontWeight: FontWeight.w700,
                           ),
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
                   const Spacer(),
                   GestureDetector(
                     onTap: _clearAll,
@@ -224,8 +226,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                     ),
                     32.verticalSpace,
 
-                    AppText.h4("Image"),
                     if (ref.watch(appRoleProvider) == AppRole.provider) ...[
+                      AppText.h4("Image"),
                       8.verticalSpace,
                       AppTextField(
                         prefixIcon: Icon(Icons.image),
@@ -244,19 +246,25 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                           return;
                         }
 
-                        context.pop({
-                          'palliativeCare': _palliativeCare,
-                          'drivingLicence': _drivingLicence,
-                          'qualifiedCarer': _qualifiedCarer,
-                          'businessProfile': _businessProfile,
-                          'priceMin': _priceRange.start,
-                          'priceMax': _priceRange.end,
-                          'tasks': _selectedTasks.toList(),
-                          'conditions': _selectedConditions.toList(),
-                          'experiences': _selectedExperiences.toList(),
-                        });
+                        if (kIsWeb) {
+                          context.go(AppRoutes.searchResults);
+                        } else {
+                          context.go(AppRoutes.searchResults);
+                          context.pop({
+                            'palliativeCare': _palliativeCare,
+                            'drivingLicence': _drivingLicence,
+                            'qualifiedCarer': _qualifiedCarer,
+                            'businessProfile': _businessProfile,
+                            'priceMin': _priceRange.start,
+                            'priceMax': _priceRange.end,
+                            'tasks': _selectedTasks.toList(),
+                            'conditions': _selectedConditions.toList(),
+                            'experiences': _selectedExperiences.toList(),
+                          });
+                        }
                       },
                     ),
+                    32.verticalSpace,
                   ],
                 ),
               ),

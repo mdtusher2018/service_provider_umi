@@ -5,7 +5,8 @@ enum StorageKey {
   refreshToken(StorageKeyType.secureString, 'refresh_token'),
   rememberMe(StorageKeyType.bool, 'rememberMe'),
   savedLoginsKey(StorageKeyType.string, 'saved_logins_accounts'),
-  selectedLocale(StorageKeyType.string, 'selected_local');
+  selectedLocale(StorageKeyType.string, 'selected_local'),
+  userRole(StorageKeyType.string, 'user_role');
 
   final StorageKeyType type;
   final String key;

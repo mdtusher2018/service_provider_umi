@@ -1,4 +1,4 @@
-part of '../../screens/chat_screen.dart';
+part of 'chat_screen.dart';
 
 // part '../widgets/chat_screen_parts/_message_bubble.dart'
 

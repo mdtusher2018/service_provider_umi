@@ -7,6 +7,7 @@ import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 // ─── Screen ───────────────────────────────────────────────────
 class FavouritesScreen extends ConsumerStatefulWidget {
@@ -41,7 +42,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
         backgroundColor: AppColors.background,
       ),
       body: state.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const AppLoader(),
         error: (e, _) => Center(child: AppText.h3(e.toString())),
         data: (favourites) {
           return RefreshIndicator(

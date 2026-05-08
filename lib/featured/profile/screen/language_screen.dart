@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -7,15 +9,16 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 
-class LanguageScreen extends StatefulWidget {
+final _languageProvider = StateProvider.autoDispose<String>((ref) => 'English');
+
+class LanguageScreen extends ConsumerStatefulWidget {
   const LanguageScreen({super.key});
 
   @override
-  State<LanguageScreen> createState() => _LanguageScreenState();
+  ConsumerState<LanguageScreen> createState() => _LanguageScreenState();
 }
 
-class _LanguageScreenState extends State<LanguageScreen> {
-  String _selected = 'English';
+class _LanguageScreenState extends ConsumerState<LanguageScreen> {
   final List<String> _languages = [
     'English',
     'Romanian',
@@ -65,7 +68,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  value: _selected,
+                  value: ref.watch(_languageProvider),
                   isExpanded: true,
                   icon: const Icon(
                     Icons.keyboard_arrow_down_rounded,
@@ -80,7 +83,11 @@ class _LanguageScreenState extends State<LanguageScreen> {
                             DropdownMenuItem(value: lang, child: AppText(lang)),
                       )
                       .toList(),
-                  onChanged: (v) => setState(() => _selected = v!),
+                  onChanged: (v) {
+                    if (v != null) {
+                      ref.read(_languageProvider.notifier).state = v;
+                    }
+                  },
                 ),
               ),
             ),
@@ -88,7 +95,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
             AppButton.primary(
               label: 'Save',
               onPressed: () {
-                context.showSnackBar('Language changed to $_selected');
+                context.showSnackBar(
+                  'Language changed to ${ref.watch(_languageProvider)}',
+                );
                 context.pop();
               },
             ),

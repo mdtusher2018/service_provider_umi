@@ -1,13 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
-import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -19,7 +20,8 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 part '_logout_dialog.dart';
 part '_menu_card.dart';
-part '_widget_cards.dart';
+part '_user_cards.dart';
+part '_switch_tile.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -71,8 +73,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 20.verticalSpace,
                 userState.when(
                   initial: () => const SizedBox.shrink(),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const AppLoader(),
                   success: (profile) => _buildUserCard(
                     ref,
                     name: profile.name,
@@ -100,10 +101,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     _Item(Icons.person_outline_rounded, 'Personal details', () {
                       userState.maybeWhen(
                         success: (profile) {
-                          context.push(
-                            AppRoutes.personalDetails,
-                            extra: profile,
-                          );
+                          if (kIsWeb) {
+                            context.go(
+                              AppRoutes.personalDetails,
+                              extra: profile,
+                            );
+                          } else {
+                            context.push(
+                              AppRoutes.personalDetails,
+                              extra: profile,
+                            );
+                          }
                         },
                         orElse: () {
                           context.showSnackBar("Pull to refresh");
@@ -111,64 +119,95 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       );
                     }),
                     if (role == AppRole.user) ...[
-                      _Item(
-                        Icons.location_on_outlined,
-                        'My addresses',
-                        () => context.push(AppRoutes.myAddresses),
-                      ),
+                      _Item(Icons.location_on_outlined, 'My addresses', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.myAddresses);
+                        } else {
+                          context.push(AppRoutes.myAddresses);
+                        }
+                      }),
                       _Item(
                         Icons.credit_card_outlined,
                         'Payments and refunds',
-                        () => context.push(AppRoutes.payments),
+                        () {
+                          if (kIsWeb) {
+                            context.go(AppRoutes.payments);
+                          } else {
+                            context.push(AppRoutes.payments);
+                          }
+                        },
                       ),
                     ],
                     if (role == AppRole.provider) ...[
-                      _Item(
-                        Icons.credit_card,
-                        'My balance',
-                        () => context.push(AppRoutes.myBalance),
-                      ),
-                      _Item(
-                        Icons.campaign,
-                        'My listing',
-                        () => context.push(AppRoutes.providerListing),
-                      ),
-                      _Item(
-                        Icons.tune,
-                        'Booking preferences',
-                        () => context.push(AppRoutes.preferences),
-                      ),
-                      _Item(
-                        Icons.star_border,
-                        'My Review',
-                        () => context.push(AppRoutes.providerReviews),
-                      ),
+                      _Item(Icons.credit_card, 'My balance', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.myBalance);
+                        } else {
+                          context.push(AppRoutes.myBalance);
+                        }
+                      }),
+                      _Item(Icons.campaign, 'My listing', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.providerListing);
+                        } else {
+                          context.push(AppRoutes.providerListing);
+                        }
+                      }),
+                      _Item(Icons.tune, 'Booking preferences', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.preferences);
+                        } else {
+                          context.push(AppRoutes.preferences);
+                        }
+                      }),
+                      _Item(Icons.star_border, 'My Review', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.providerReviews);
+                        } else {
+                          context.push(AppRoutes.providerReviews);
+                        }
+                      }),
                     ],
-                    _Item(
-                      Icons.lock_outline_rounded,
-                      'Change password',
-                      () => context.push(AppRoutes.changePassword),
-                    ),
-                    _Item(
-                      Icons.g_translate_outlined,
-                      'Language',
-                      () => context.push(AppRoutes.language),
-                    ),
-                    _Item(
-                      Icons.info_sharp,
-                      'About Us',
-                      () => context.push(AppRoutes.staticPagePath('about-us')),
-                    ),
+                    _Item(Icons.lock_outline_rounded, 'Change password', () {
+                      if (kIsWeb) {
+                        context.go(AppRoutes.changePassword);
+                      } else {
+                        context.push(AppRoutes.changePassword);
+                      }
+                    }),
+                    _Item(Icons.g_translate_outlined, 'Language', () {
+                      if (kIsWeb) {
+                        context.go(AppRoutes.language);
+                      } else {
+                        context.push(AppRoutes.language);
+                      }
+                    }),
+                    _Item(Icons.info_sharp, 'About Us', () {
+                      if (kIsWeb) {
+                        context.push(AppRoutes.staticPagePath('about-us'));
+                      } else {
+                        context.push(AppRoutes.staticPagePath('about-us'));
+                      }
+                    }),
                     _Item(
                       Icons.description_outlined,
                       'Terms and conditions',
-                      () => context.push(AppRoutes.staticPagePath('terms')),
+                      () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.staticPagePath('terms'));
+                        } else {
+                          context.push(AppRoutes.staticPagePath('terms'));
+                        }
+                      },
                     ),
-                    _Item(
-                      Icons.privacy_tip_outlined,
-                      'Privacy policy',
-                      () => context.push(AppRoutes.staticPagePath('privacy')),
-                    ),
+                    _Item(Icons.privacy_tip_outlined, 'Privacy policy', () {
+                      if (kIsWeb) {
+                        context.go(AppRoutes.staticPagePath('privacy'));
+                      } else {
+                        context.push(AppRoutes.staticPagePath('privacy'));
+                      }
+                    }),
+
                     _Item(
                       Icons.logout_rounded,
                       'Log Out',

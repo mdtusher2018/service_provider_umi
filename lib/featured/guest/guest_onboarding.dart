@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -8,16 +10,17 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class GuestOnboardingScreen extends StatefulWidget {
+class GuestOnboardingScreen extends ConsumerStatefulWidget {
   const GuestOnboardingScreen({super.key});
 
   @override
-  State<GuestOnboardingScreen> createState() => _GuestOnboardingScreenState();
+  ConsumerState<GuestOnboardingScreen> createState() =>
+      _GuestOnboardingScreenState();
 }
 
-class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
+class _GuestOnboardingScreenState extends ConsumerState<GuestOnboardingScreen> {
   final PageController _controller = PageController();
-  int currentIndex = 0;
+  final _onboardingIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
 
   final List<_OnboardingModel> onboardingData = [
     _OnboardingModel(
@@ -41,8 +44,9 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
   ];
 
   void nextPage() {
+    final currentIndex = ref.read(_onboardingIndexProvider);
     if (currentIndex == onboardingData.length - 1) {
-      context.go(AppRoutes.root);
+      context.go(AppRoutes.userHome);
     } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -52,11 +56,12 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
   }
 
   void skip() {
-    context.go(AppRoutes.root);
+    context.go(AppRoutes.userHome);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = ref.watch(_onboardingIndexProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -74,9 +79,7 @@ class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
                 controller: _controller,
                 itemCount: onboardingData.length,
                 onPageChanged: (index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
+                  ref.read(_onboardingIndexProvider.notifier).state = index;
                 },
                 itemBuilder: (_, index) {
                   final item = onboardingData[index];

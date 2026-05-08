@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
@@ -65,7 +66,7 @@ class _ProviderProfileOverviewScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
       body: state.when(
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => AppLoader(),
         data: (providerProfile) => _buildProfileScreen(providerProfile),
         error: (e, _) => Center(
           child: AppText.h4((e is AppException) ? e.message : e.toString()),

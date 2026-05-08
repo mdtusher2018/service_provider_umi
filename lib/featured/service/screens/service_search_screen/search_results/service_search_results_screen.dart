@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -11,6 +12,7 @@ import 'package:service_provider_umi/shared/widgets/app_card.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 part '_build_results_list.dart';
 part '_faq_bottom_sheet.dart';

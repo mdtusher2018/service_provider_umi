@@ -1,4 +1,4 @@
-part of '../welcome_screen.dart';
+part of 'welcome_screen.dart';
 
 void _showLoginAccountDialog(WidgetRef ref) {
   showGeneralDialog(
@@ -40,7 +40,7 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
         loading: () {},
         success: () {
           ref.read(appRoleProvider.notifier).loginAsUser();
-          context.go(AppRoutes.root);
+          context.go(AppRoutes.userHome);
         },
         failure: (error) => context.showErrorSnackBar(error.message),
       );

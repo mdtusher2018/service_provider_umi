@@ -1,4 +1,4 @@
-part of '../../screens/communication_and_notification_screen.dart';
+part of 'communication_and_notification_screen.dart';
 
 // ─── Tab Bar ──────────────────────────────────────────────────
 class _TabBar extends ConsumerWidget {

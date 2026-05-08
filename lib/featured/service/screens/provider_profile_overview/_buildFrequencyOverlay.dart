@@ -90,10 +90,17 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
               'Cancel one-time service in 1 click',
             ],
             onTap: () {
-              context.push(
-                AppRoutes.bookingSchedule,
-                extra: BookingFrequency.weekly,
-              );
+              if (kIsWeb) {
+                context.go(
+                  AppRoutes.bookingSchedule,
+                  extra: BookingFrequency.weekly,
+                );
+              } else {
+                context.push(
+                  AppRoutes.bookingSchedule,
+                  extra: BookingFrequency.weekly,
+                );
+              }
             },
           ),
           12.verticalSpace,

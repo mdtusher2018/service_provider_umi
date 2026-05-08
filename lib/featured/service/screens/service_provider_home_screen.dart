@@ -11,6 +11,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
@@ -58,8 +59,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                 _buildHeader(primary),
                 Expanded(
                   child: state.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const AppLoader(),
                     error: (e, _) => Center(child: AppText.h3(e.toString())),
                     data: (data) {
                       final bookings = data.bookings;

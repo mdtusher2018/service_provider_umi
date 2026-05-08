@@ -1,27 +1,82 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/router/app_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
 
 const double kWebAppMaxWidth = 430.0;
 const double kWebAppMaxHeight = 860.0;
 
-class WebAppShell extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// Nav item model — carries both user and provider variants
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _NavItem {
+  final String label;
+  final String route;
+  final int branchIndex; // matches StatefulShellRoute branch index
+
+  const _NavItem({
+    required this.label,
+    required this.route,
+    required this.branchIndex,
+  });
+}
+
+// Nav definitions — mirrors StatefulShellRoute branch order exactly
+const _userNavItems = [
+  _NavItem(label: 'Services', route: AppRoutes.services, branchIndex: 0),
+  _NavItem(label: 'Favourites', route: AppRoutes.favourites, branchIndex: 1),
+  _NavItem(label: 'Home', route: AppRoutes.userHome, branchIndex: 2),
+  _NavItem(label: 'Inbox', route: AppRoutes.inbox, branchIndex: 3),
+  _NavItem(label: 'Profile', route: AppRoutes.profile, branchIndex: 4),
+];
+
+const _providerNavItems = [
+  _NavItem(
+    label: 'Calendar',
+    route: AppRoutes.providerServices,
+    branchIndex: 0,
+  ),
+  _NavItem(label: 'Inbox', route: AppRoutes.providerInbox, branchIndex: 1),
+  _NavItem(label: 'Home', route: AppRoutes.providerHome, branchIndex: 2),
+  _NavItem(
+    label: 'Notifications',
+    route: AppRoutes.providerNotifications,
+    branchIndex: 3,
+  ),
+  _NavItem(label: 'Profile', route: AppRoutes.providerProfile, branchIndex: 4),
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WebAppShell
+// Wraps the GoRouter shell child. On web: adds header + phone frame + footer.
+// On native: renders the child directly (no-op wrapper).
+// ─────────────────────────────────────────────────────────────────────────────
+
+class WebAppShell extends ConsumerWidget {
   final Widget child;
   const WebAppShell({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Only wrap on web — on native just render the child directly.
+  Widget build(BuildContext context, WidgetRef ref) {
     if (!kIsWeb) return child;
 
+    final role = ref.watch(appRoleProvider);
     final real = MediaQuery.of(context);
     final screenWidth = real.size.width;
     final screenHeight = real.size.height;
 
-    // Clamp to the phone container dimensions.
     final double containerWidth = screenWidth < kWebAppMaxWidth
         ? screenWidth
         : kWebAppMaxWidth;
@@ -34,21 +89,14 @@ class WebAppShell extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ── Website header (full browser width) ───────────────────────
-            const WebsiteHeader(),
+            // ── Full-width header ────────────────────────────────────────────
+            _WebsiteHeader(role: role),
 
-            // ── Phone container ───────────────────────────────────────────
+            // ── Phone container ──────────────────────────────────────────────
             Center(
               child: SizedBox(
                 width: containerWidth,
                 height: containerHeight,
-
-                // ── KEY FIX ───────────────────────────────────────────────
-                // Override MediaQuery so every widget INSIDE the container
-                // (including your BuildContextExtensions) sees the clamped
-                // 430 × 860 size, NOT the real browser viewport.
-                // This means isSmallScreen / isMediumScreen / isLargeScreen
-                // all behave exactly as they do on a real phone.
                 child: MediaQuery(
                   data: real.copyWith(
                     size: Size(containerWidth, containerHeight),
@@ -64,11 +112,11 @@ class WebAppShell extends StatelessWidget {
 
             const SizedBox(height: 48),
 
-            // ── Website body sections (full browser width) ────────────────
+            // ── Website sections ─────────────────────────────────────────────
             const WebsiteBody(),
 
-            // ── Website footer (full browser width) ───────────────────────
-            const WebsiteFooter(),
+            // ── Footer ───────────────────────────────────────────────────────
+            _WebsiteFooter(role: role),
           ],
         ),
       ),
@@ -77,15 +125,20 @@ class WebAppShell extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// WEBSITE HEADER
-// Matches: logo left · nav links centre · LogOut + Download buttons right
+// HEADER  — role-aware nav links + log-out / download buttons
 // ─────────────────────────────────────────────────────────────────────────────
-class WebsiteHeader extends StatelessWidget {
-  const WebsiteHeader({super.key});
+
+class _WebsiteHeader extends ConsumerStatefulWidget {
+  final AppRole role;
+  const _WebsiteHeader({required this.role});
 
   @override
+  ConsumerState<_WebsiteHeader> createState() => _WebsiteHeaderState();
+}
+
+class _WebsiteHeaderState extends ConsumerState<_WebsiteHeader> {
+  @override
   Widget build(BuildContext context) {
-    // Only render on web; returns empty on mobile (safety guard).
     if (!kIsWeb) return const SizedBox.shrink();
 
     return Container(
@@ -108,18 +161,11 @@ class WebsiteHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Row(
               children: [
-                // ── Logo ──────────────────────────────────────
                 _HeaderLogo(),
-
                 const Spacer(),
-
-                // ── Nav links ─────────────────────────────────
-                _NavLinks(),
-
+                _NavLinks(role: widget.role),
                 const Spacer(),
-
-                // ── Action buttons ────────────────────────────
-                _HeaderActions(),
+                _HeaderActions(role: widget.role),
               ],
             ),
           ),
@@ -129,17 +175,149 @@ class WebsiteHeader extends StatelessWidget {
   }
 }
 
-// LogOut + Download buttons
-class _HeaderActions extends StatelessWidget {
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+
+class _HeaderLogo extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(4),
+      onTap: () => ref.read(appRouterProvider).go(AppRoutes.userHome),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        child: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'i',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              TextSpan(
+                text: 'Badi',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Nav links — role-aware ───────────────────────────────────────────────────
+
+/// Uses [appRouterProvider] to get the current location because [WebAppShell]
+/// lives inside MaterialApp.router's builder — outside the GoRouter subtree —
+/// so [GoRouterState.of(context)] would throw.
+class _NavLinks extends ConsumerWidget {
+  final AppRole role;
+  const _NavLinks({required this.role});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = role == AppRole.provider ? _providerNavItems : _userNavItems;
+
+    // .matches can be empty during a redirect frame (e.g. login → home).
+    // Use a safe helper instead of .last directly.
+    final router = ref.watch(appRouterProvider);
+    final matches = router.routerDelegate.currentConfiguration.matches;
+    final currentLocation = matches.isNotEmpty
+        ? matches.last.matchedLocation
+        : '';
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: items.map((item) {
+        final isActive =
+            currentLocation == item.route ||
+            currentLocation.startsWith('${item.route}/');
+        return _NavLinkButton(
+          item: item,
+          isActive: isActive,
+          onTap: () => router.go(item.route),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _NavLinkButton extends StatefulWidget {
+  final _NavItem item;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavLinkButton({
+    required this.item,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  State<_NavLinkButton> createState() => _NavLinkButtonState();
+}
+
+class _NavLinkButtonState extends State<_NavLinkButton> {
+  bool _hovered = false;
+
   @override
   Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: widget.isActive
+                ? AppColors.primary.withOpacity(0.12)
+                : _hovered
+                ? AppColors.primary.withOpacity(0.06)
+                : Colors.transparent,
+          ),
+          child: Text(
+            widget.item.label,
+            style: TextStyle(
+              color: widget.isActive ? AppColors.primary : Colors.black87,
+              fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.normal,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Header action buttons — Log Out / Download ───────────────────────────────
+
+class _HeaderActions extends ConsumerWidget {
+  final AppRole role;
+  const _HeaderActions({required this.role});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Log Out — outlined style
-        _OutlinedActionButton(label: 'Log Out', onTap: () {}),
+        _OutlinedActionButton(
+          label: role == AppRole.guest ? 'Log In' : 'Log Out',
+          onTap: () => ref.read(appRouterProvider).go(AppRoutes.login),
+        ),
         const SizedBox(width: 10),
-        // Download — filled teal
         _FilledActionButton(
           label: 'Download',
           onTap: () {
@@ -236,149 +414,19 @@ class _FilledActionButtonState extends State<_FilledActionButton> {
   }
 }
 
-// Nav link items
-class _NavLinks extends StatelessWidget {
-  const _NavLinks();
+// ─────────────────────────────────────────────────────────────────────────────
+// FOOTER — role-aware nav links
+// ─────────────────────────────────────────────────────────────────────────────
 
-  static const _links = [
-    _NavItem(label: 'Home', route: '/home'),
-    _NavItem(label: 'Service', route: '/search'),
-    _NavItem(label: 'Favourite', route: '/favourites'),
-    _NavItem(label: 'Inbox', route: '/notifications'),
-    _NavItem(label: 'Profile', route: '/profile'),
-  ];
+class _WebsiteFooter extends StatelessWidget {
+  final AppRole role;
+  const _WebsiteFooter({required this.role});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: _links
-          .map((item) => _NavLinkButton(item: item, isActive: false))
-          .toList(),
-    );
-  }
-}
-
-class _NavItem {
-  final String label;
-  final String route;
-  const _NavItem({required this.label, required this.route});
-}
-
-class _NavLinkButton extends StatefulWidget {
-  final _NavItem item;
-  final bool isActive;
-
-  const _NavLinkButton({required this.item, required this.isActive});
-
-  @override
-  State<_NavLinkButton> createState() => _NavLinkButtonState();
-}
-
-class _NavLinkButtonState extends State<_NavLinkButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = widget.isActive || _hovered
-        ? AppColors.textPrimary
-        : AppColors.grey400;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: widget.isActive ? AppColors.primary : Colors.transparent,
-                width: 2,
-              ),
-            ),
-          ),
-          child: Text(
-            widget.item.label,
-            style: TextStyle(
-              color: color,
-              fontSize: 14,
-              fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Logo mark
-class _HeaderLogo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        child: RichText(
-          text: const TextSpan(
-            children: [
-              TextSpan(
-                text: 'i',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              TextSpan(
-                text: 'Badi',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A website footer widget rendered only on web.
-///
-/// Matches the iBadi design:
-///   • Dark navy background  (#2B3445)
-///   • Centred "|Badi" logo  (teal pipe + white text)
-///   • Nav links row         (Home · Service · Favourites · Inbox · Profile)
-///   • Thin horizontal rule
-///   • "Copyright iBadi" caption
-///
-/// Usage:
-///   ```dart
-///   WebsiteFooter()
-///   ```
-class WebsiteFooter extends StatelessWidget {
-  const WebsiteFooter({super.key});
-
-  static const List<String> _navLabels = [
-    'Home',
-    'Service',
-    'Favourites',
-    'Inbox',
-    'Profile',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    // Safety guard — renders nothing on mobile/desktop native builds.
     if (!kIsWeb) return const SizedBox.shrink();
+
+    final items = role == AppRole.provider ? _providerNavItems : _userNavItems;
 
     return Container(
       width: double.infinity,
@@ -387,21 +435,31 @@ class WebsiteFooter extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Logo ────────────────────────────────────────────────────────
-          _Logo(),
+          // ── Logo ──────────────────────────────────────────────────────────
+          _FooterLogo(),
 
           const SizedBox(height: 20),
 
-          // ── Nav links ───────────────────────────────────────────────────
-          _NavRow(),
+          // ── Nav links ─────────────────────────────────────────────────────
+          Wrap(
+            spacing: 32,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: items
+                .map(
+                  (item) =>
+                      _FooterNavItem(label: item.label, route: item.route),
+                )
+                .toList(),
+          ),
 
           const SizedBox(height: 20),
 
-          // ── Divider ─────────────────────────────────────────────────────
+          // ── Divider ───────────────────────────────────────────────────────
           AppDivider(),
           const SizedBox(height: 16),
 
-          // ── Copyright ───────────────────────────────────────────────────
+          // ── Copyright ─────────────────────────────────────────────────────
           AppText.bodyMd('Copyright iBadi'),
 
           const SizedBox(height: 8),
@@ -411,15 +469,13 @@ class WebsiteFooter extends StatelessWidget {
   }
 }
 
-// ── Logo: "|Badi" with teal pipe and white wordmark ───────────────────────────
-class _Logo extends StatelessWidget {
+class _FooterLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Teal vertical bar
         Container(
           width: 3,
           height: 22,
@@ -429,55 +485,48 @@ class _Logo extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        // Wordmark
         AppText.bodyMd('Badi'),
       ],
     );
   }
 }
 
-// ── Nav links row ────────────────────────────────────────────────────────────
-class _NavRow extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 32,
-      runSpacing: 10,
-      alignment: WrapAlignment.center,
-      children: WebsiteFooter._navLabels
-          .map((label) => _FooterNavItem(label: label))
-          .toList(),
-    );
-  }
-}
-
-// Single nav item with hover colour transition
-class _FooterNavItem extends StatefulWidget {
+class _FooterNavItem extends ConsumerStatefulWidget {
   final String label;
-  const _FooterNavItem({required this.label});
+  final String route;
+  const _FooterNavItem({required this.label, required this.route});
 
   @override
-  State<_FooterNavItem> createState() => _FooterNavItemState();
+  ConsumerState<_FooterNavItem> createState() => _FooterNavItemState();
 }
 
-class _FooterNavItemState extends State<_FooterNavItem> {
+class _FooterNavItemState extends ConsumerState<_FooterNavItem> {
+  bool _hovered = false;
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-
-      child: AnimatedDefaultTextStyle(
-        duration: const Duration(milliseconds: 150),
-        style: AppTextStyles.bodyMd,
-        child: Text(widget.label),
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: () => ref.read(appRouterProvider).go(widget.route),
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 150),
+          style: AppTextStyles.bodyMd.copyWith(
+            color: _hovered ? AppColors.primary : null,
+          ),
+          child: Text(widget.label),
+        ),
       ),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Design tokens — mirrors iBadi brand
+// Design tokens (local, mirrors iBadi brand)
 // ─────────────────────────────────────────────────────────────────────────────
+
 abstract class _T {
   static const Color primary = Color(0xFF00BFA5);
   static const Color primaryLight = Color(0xFFE0F7F4);
@@ -498,9 +547,9 @@ abstract class _T {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// WebsiteBody — drop between WebsiteHeader and WebsiteFooter.
-// Contains all 5 landing-page sections, web-only, no navigation logic.
+// WebsiteBody — all landing sections
 // ─────────────────────────────────────────────────────────────────────────────
+
 class WebsiteBody extends StatelessWidget {
   const WebsiteBody({super.key});
 
@@ -508,24 +557,22 @@ class WebsiteBody extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!kIsWeb) return const SizedBox.shrink();
 
-    return SingleChildScrollView(
-      child: Column(
-        children: const [
-          _AboutUsSection(),
-          _OurServicesSection(),
-          _ClientReviewsSection(),
-          _BestCenterSection(),
-          _CtaBannerSection(),
-        ],
-      ),
+    return const Column(
+      children: [
+        _AboutUsSection(),
+        _OurServicesSection(),
+        _ClientReviewsSection(),
+        _BestCenterSection(),
+        _CtaBannerSection(),
+      ],
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION 1 — About Us
-// Left: stacked photo with teal border offset. Right: title, body, checklist, CTA.
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _AboutUsSection extends StatelessWidget {
   const _AboutUsSection();
 
@@ -578,12 +625,10 @@ class _AboutUsSection extends StatelessWidget {
 class _AboutImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Stacked photo effect: offset teal border behind the image
     return SizedBox(
       height: 340,
       child: Stack(
         children: [
-          // Teal border box — offset bottom-right
           Positioned(
             bottom: 0,
             right: 0,
@@ -595,7 +640,6 @@ class _AboutImage extends StatelessWidget {
               ),
             ),
           ),
-          // Photo on top — offset top-left
           Positioned(
             top: 0,
             left: 0,
@@ -666,7 +710,7 @@ class _CheckItem extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 1),
             padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: _T.primaryLight,
               shape: BoxShape.circle,
             ),
@@ -691,8 +735,8 @@ class _CheckItem extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION 2 — Our Services
-// Centred title, 2-column grid of service cards
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _OurServicesSection extends StatelessWidget {
   const _OurServicesSection();
 
@@ -701,36 +745,28 @@ class _OurServicesSection extends StatelessWidget {
       title: 'Resident Care',
       icon: Icons.home_work_outlined,
       body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '
-          'placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim '
-          'congue pellentesque ac hac.',
+          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
       hasBg: true,
     ),
     _ServiceData(
       title: 'Elderly Nutrition',
       icon: Icons.restaurant_menu_outlined,
       body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '
-          'placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim '
-          'congue pellentesque ac hac.',
+          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
       hasBg: true,
     ),
     _ServiceData(
       title: 'Resident Care',
       icon: Icons.home_work_outlined,
       body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '
-          'placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim '
-          'congue pellentesque ac hac.',
+          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
       hasBg: false,
     ),
     _ServiceData(
       title: 'Elderly Nutrition',
       icon: Icons.restaurant_menu_outlined,
       body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '
-          'placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim '
-          'congue pellentesque ac hac.',
+          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
       hasBg: false,
     ),
   ];
@@ -748,7 +784,6 @@ class _OurServicesSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: _T.maxWidth),
           child: Column(
             children: [
-              // Section title
               const Text(
                 'Our Services',
                 style: TextStyle(
@@ -758,8 +793,6 @@ class _OurServicesSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
-
-              // 2-column grid
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 600;
@@ -836,7 +869,6 @@ class _ServiceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Icon bubble
           Container(
             width: 44,
             height: 44,
@@ -872,8 +904,8 @@ class _ServiceCard extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION 3 — Client Reviews
-// Mint/teal-tinted bg, large open-quote, review text, reviewer avatar + dots
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _ClientReviewsSection extends StatelessWidget {
   const _ClientReviewsSection();
 
@@ -890,7 +922,6 @@ class _ClientReviewsSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 780),
           child: Column(
             children: [
-              // Title
               const Text(
                 'Client Reviews',
                 style: TextStyle(
@@ -900,11 +931,8 @@ class _ClientReviewsSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
-
-              // Review card
               Stack(
                 children: [
-                  // Opening quote mark
                   Positioned(
                     top: -8,
                     left: 0,
@@ -918,7 +946,6 @@ class _ClientReviewsSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Closing quote mark
                   Positioned(
                     bottom: 56,
                     right: 0,
@@ -932,7 +959,6 @@ class _ClientReviewsSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Review body
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
@@ -958,8 +984,6 @@ class _ClientReviewsSection extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 28),
-
-                        // Avatar + name
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -973,9 +997,9 @@ class _ClientReviewsSection extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            Column(
+                            const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
                                   'James Smith',
                                   style: TextStyle(
@@ -997,8 +1021,6 @@ class _ClientReviewsSection extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 28),
-
-                        // Dots indicator
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1041,9 +1063,9 @@ class _Dot extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SECTION 4 — The Best Elderly Care Center For You
-// Left: bold heading + body + CTA. Right: photo.
+// SECTION 4 — Best Center
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _BestCenterSection extends StatelessWidget {
   const _BestCenterSection();
 
@@ -1135,9 +1157,9 @@ class _BestCenterPhoto extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SECTION 5 — CTA Banner  "Looking for a Better Care?"
-// Teal bg, white heading + body, outlined booking button, 24/7 badge, plane icon
+// SECTION 5 — CTA Banner
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _CtaBannerSection extends StatelessWidget {
   const _CtaBannerSection();
 
@@ -1158,7 +1180,6 @@ class _CtaBannerSection extends StatelessWidget {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Text + button
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1188,10 +1209,8 @@ class _CtaBannerSection extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   if (isWide) ...[
                     const SizedBox(width: 48),
-                    // Right side: 24/7 badge + paper-plane icon
                     Column(
                       children: [
                         _Badge247(),
@@ -1225,9 +1244,9 @@ class _Badge247 extends StatelessWidget {
         border: Border.all(color: Colors.redAccent, width: 3),
         color: _T.white.withOpacity(0.12),
       ),
-      child: Column(
+      child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text(
             '24/7',
             style: TextStyle(
@@ -1247,7 +1266,6 @@ class _Badge247 extends StatelessWidget {
 // Shared small widgets
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Teal filled button
 class _PrimaryButton extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
@@ -1289,7 +1307,6 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   }
 }
 
-/// White outlined button (used on teal CTA section)
 class _OutlinedWhiteButton extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
@@ -1332,8 +1349,6 @@ class _OutlinedWhiteButtonState extends State<_OutlinedWhiteButton> {
   }
 }
 
-/// Grey placeholder for where real network images will go.
-/// Replace the body of this widget with your Image.network() / CachedNetworkImage.
 class _PlaceholderPhoto extends StatelessWidget {
   final String label;
   final IconData icon;

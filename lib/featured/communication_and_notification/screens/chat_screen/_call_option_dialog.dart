@@ -1,4 +1,4 @@
-part of '../../screens/chat_screen.dart';
+part of 'chat_screen.dart';
 
 // ─── Call Option Dialog ───────────────────────────────────────
 class _CallOptionDialog extends StatelessWidget {

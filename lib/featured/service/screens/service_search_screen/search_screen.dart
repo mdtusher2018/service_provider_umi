@@ -1,7 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/error/app_exception.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
@@ -15,58 +21,23 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
-  final String _query = '';
 
-  static const _popularServices = [
-    _ServiceItem(
-      icon: Icons.cleaning_services_outlined,
-      label: 'Cleaning',
-      emoji: '🧹',
-    ),
-    _ServiceItem(
-      icon: Icons.spa_outlined,
-      label: 'Manicure/Pedicure',
-      emoji: '💅',
-    ),
-    _ServiceItem(icon: Icons.build_outlined, label: 'Handyman', emoji: '🔧'),
-    _ServiceItem(
-      icon: Icons.content_cut_rounded,
-      label: 'Hairdressing',
-      emoji: '✂️',
-    ),
-    _ServiceItem(icon: Icons.pets_outlined, label: 'Dog Grooming', emoji: '🐕'),
-    _ServiceItem(
-      icon: Icons.self_improvement_outlined,
-      label: 'Massage Therapy',
-      emoji: '💆',
-    ),
-    _ServiceItem(
-      icon: Icons.school_outlined,
-      label: 'Tutoring Lessons',
-      emoji: '📚',
-    ),
-    _ServiceItem(
-      icon: Icons.fitness_center_outlined,
-      label: 'Personal Trainer',
-      emoji: '🏋️',
-    ),
-    _ServiceItem(
-      icon: Icons.medical_services_outlined,
-      label: 'Elderly Care',
-      emoji: '👴',
-    ),
-    _ServiceItem(
-      icon: Icons.child_care_outlined,
-      label: 'Child Care',
-      emoji: '👶',
-    ),
-  ];
+  String _query = '';
 
-  List<_ServiceItem> get _filtered => _query.isEmpty
-      ? _popularServices
-      : _popularServices
-            .where((s) => s.label.toLowerCase().contains(_query.toLowerCase()))
-            .toList();
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(categoriesProvider.notifier).fetch();
+    });
+
+    _searchController.addListener(() {
+      setState(() {
+        _query = _searchController.text;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -74,27 +45,44 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.dispose();
   }
 
+  List<ServiceModel> _filtered(List<ServiceModel> services) {
+    if (_query.isEmpty) return services;
+
+    return services
+        .where((s) => s.name.toLowerCase().contains(_query.toLowerCase()))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(categoriesProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ─── Search bar ───────────────────────────────
             16.verticalSpace,
+
+            /// SEARCH BAR
             Padding(
               padding: 16.paddingH,
               child: AppSearchBar(
+                controller: _searchController,
                 hint: "Find the service you need",
-                leading: Icon(Icons.arrow_back),
+                leading: kIsWeb
+                    ? null
+                    : InkWell(
+                        onTap: () => context.pop(),
+                        child: const Icon(Icons.arrow_back),
+                      ),
               ),
             ),
 
             24.verticalSpace,
 
-            // ─── Section title ────────────────────────────
+            /// TITLE
             Padding(
               padding: 20.paddingH,
               child: AppText.labelLg(
@@ -102,28 +90,55 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
+
             8.verticalSpace,
 
-            // ─── List ─────────────────────────────────────
+            /// API DATA
             Expanded(
-              child: _filtered.isEmpty
-                  ? const AppEmptyState(
-                      title: 'No services found',
-                      subtitle: 'Try a different search term',
-                    )
-                  : ListView.builder(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await ref.read(categoriesProvider.notifier).fetch();
+                },
+                child: state.when(
+                  loading: () => const AppLoader(),
+
+                  error: (e, _) => Center(
+                    child: AppText.h4(
+                      (e is AppException) ? e.message : e.toString(),
+                    ),
+                  ),
+
+                  data: (services) {
+                    final filtered = _filtered(services);
+
+                    if (filtered.isEmpty) {
+                      return const AppEmptyState(
+                        title: 'No services found',
+                        subtitle: 'Try a different search term',
+                      );
+                    }
+
+                    return ListView.builder(
                       padding: 20.paddingH,
-                      itemCount: _filtered.length,
+                      itemCount: filtered.length,
                       itemBuilder: (_, i) {
-                        final item = _filtered[i];
+                        final item = filtered[i];
+
                         return _ServiceListTile(
                           item: item,
                           onTap: () {
-                            // context.go('/user/services/category/${item.label}');
+                            if (kIsWeb) {
+                              context.go(AppRoutes.searchTimePath(item.id));
+                            } else {
+                              context.push(AppRoutes.searchTimePath(item.id));
+                            }
                           },
                         );
                       },
-                    ),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -132,19 +147,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 }
 
-class _ServiceItem {
-  final IconData icon;
-  final String label;
-  final String emoji;
-  const _ServiceItem({
-    required this.icon,
-    required this.label,
-    required this.emoji,
-  });
-}
-
 class _ServiceListTile extends StatelessWidget {
-  final _ServiceItem item;
+  final ServiceModel item;
   final VoidCallback? onTap;
 
   const _ServiceListTile({required this.item, this.onTap});
@@ -159,17 +163,28 @@ class _ServiceListTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
                 borderRadius: 10.circular,
               ),
-              child: Center(child: AppText.bodyLg(item.emoji)),
+              clipBehavior: Clip.antiAlias,
+              child: item.image != null && item.image!.isNotEmpty
+                  ? Image.network(
+                      item.image!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) {
+                        return const Icon(Icons.image_not_supported);
+                      },
+                    )
+                  : const Icon(Icons.image),
             ),
+
             14.horizontalSpace,
+
             Expanded(
-              child: AppText.bodyLg(item.label, fontWeight: FontWeight.w500),
+              child: AppText.bodyLg(item.name, fontWeight: FontWeight.w500),
             ),
           ],
         ),

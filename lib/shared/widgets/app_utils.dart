@@ -50,43 +50,17 @@ class AppDividerWithLabel extends StatelessWidget {
 // ─── Loaders ─────────────────────────────────────────────────────────────────
 
 class AppLoader extends StatelessWidget {
-  final double size;
   final Color? color;
   final double strokeWidth;
 
-  const AppLoader({
-    super.key,
-    this.size = 24,
-    this.color,
-    this.strokeWidth = 2.5,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CircularProgressIndicator(
-        strokeWidth: strokeWidth,
-        color: color ?? AppColors.primary,
-      ),
-    );
-  }
-}
-
-class AppFullScreenLoader extends StatelessWidget {
-  final String? message;
-  const AppFullScreenLoader({super.key, this.message});
+  const AppLoader({super.key, this.color, this.strokeWidth = 4});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const AppLoader(size: 40),
-          if (message != null) ...[16.verticalSpace, AppText.bodyMd(message!)],
-        ],
+      child: CircularProgressIndicator(
+        strokeWidth: strokeWidth,
+        color: color ?? AppColors.primary,
       ),
     );
   }

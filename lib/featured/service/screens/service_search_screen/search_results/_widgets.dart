@@ -42,10 +42,14 @@ Widget _buildHeader(BuildContext context) {
         10.horizontalSpace,
         Expanded(
           child: AppTextField(
-            prefixIcon: InkWell(
-              onTap: () => context.pop(),
-              child: Icon(Icons.arrow_back),
-            ),
+            enabled: false,
+            hint: "Find the service you need",
+            prefixIcon: kIsWeb
+                ? null
+                : InkWell(
+                    onTap: () => context.go(AppRoutes.userHome),
+                    child: Icon(Icons.arrow_back),
+                  ),
             fillColor: AppColors.white,
           ),
         ),
@@ -78,14 +82,25 @@ Widget _buildFilterRow(WidgetRef ref) {
         _FilterChip(
           icon: Icons.calendar_today_outlined,
           label: 'When?',
-          onTap: () {},
+          onTap: () {
+            if (kIsWeb) {
+              ref.context.go(AppRoutes.searchTimePath("2"));
+            }
+            ref.context.push(
+              AppRoutes.searchTimePath("2"),
+            ); //replace with actual id or params if needed
+          },
         ),
         8.horizontalSpace,
         _FilterChip(
           icon: Icons.tune_rounded,
           label: 'Filters',
           onTap: () {
-            ref.context.push(AppRoutes.filter);
+            if (kIsWeb) {
+              ref.context.go(AppRoutes.filter);
+            } else {
+              ref.context.push(AppRoutes.filter);
+            }
           },
         ),
       ],

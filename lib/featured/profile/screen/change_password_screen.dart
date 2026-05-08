@@ -8,7 +8,7 @@ import 'package:service_provider_umi/featured/authentication/riverpod/auth_provi
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'package:service_provider_umi/core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -22,7 +22,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final _oldCtrl = TextEditingController();
   final _newCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
-  bool _showOld = false, _showNew = false, _showConfirm = false;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -72,31 +72,29 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           key: _formKey,
           child: Column(
             children: [
-              _PasswordField(
+              AppTextField(
                 hint: 'Current password',
                 controller: _oldCtrl,
                 label: 'Old password',
-                showText: _showOld,
-                onToggle: () => setState(() => _showOld = !_showOld),
+                showPasswordToggle: true,
                 validator: (v) =>
                     v == null || v.isEmpty ? 'Enter old password' : null,
               ),
               16.verticalSpace,
-              _PasswordField(
+              AppTextField(
                 hint: 'New password',
                 controller: _newCtrl,
                 label: 'New password',
-                showText: _showNew,
-                onToggle: () => setState(() => _showNew = !_showNew),
+                showPasswordToggle: true,
                 validator: (v) => Validators.password(v),
               ),
               16.verticalSpace,
-              _PasswordField(
+              AppTextField(
                 hint: 'Confirm new password',
                 controller: _confirmCtrl,
                 label: 'Confirm password',
-                showText: _showConfirm,
-                onToggle: () => setState(() => _showConfirm = !_showConfirm),
+                showPasswordToggle: true,
+
                 validator: (v) => Validators.confirmPassword(v, _newCtrl.text),
               ),
               32.verticalSpace,
@@ -121,75 +119,5 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           newPassword: _newCtrl.text,
           confirmPassword: _confirmCtrl.text,
         );
-  }
-}
-
-class _PasswordField extends StatelessWidget {
-  final String label;
-  final String hint;
-  final TextEditingController controller;
-  final bool showText;
-  final VoidCallback onToggle;
-  final String? Function(String?)? validator;
-
-  const _PasswordField({
-    required this.label,
-    required this.hint,
-    required this.controller,
-    required this.showText,
-    required this.onToggle,
-    this.validator,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText.labelMd(label, color: AppColors.textSecondary),
-        6.verticalSpace,
-        TextFormField(
-          controller: controller,
-          obscureText: !showText,
-          validator: validator,
-          style: AppTextStyles.bodyMd,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.textgrey),
-            filled: true,
-            fillColor: AppColors.white,
-            border: OutlineInputBorder(
-              borderRadius: 12.circular,
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: 12.circular,
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: 12.circular,
-              borderSide: const BorderSide(
-                color: AppColors.primary,
-                width: 1.5,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            suffixIcon: GestureDetector(
-              onTap: onToggle,
-              child: Icon(
-                showText
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                color: AppColors.grey400,
-                size: 20,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

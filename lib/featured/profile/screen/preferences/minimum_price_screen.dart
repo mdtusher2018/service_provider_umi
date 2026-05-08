@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
 
 // ════════════════════════════════════════════════════════════
 //  3. Minimum Price Screen
 // ════════════════════════════════════════════════════════════
+final _isloadingProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 class MinimumPriceScreen extends ConsumerStatefulWidget {
   const MinimumPriceScreen({super.key});
 
@@ -23,13 +26,12 @@ class MinimumPriceScreen extends ConsumerStatefulWidget {
 
 class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
   double _price = 15;
-  bool _isSaving = false;
 
   Future<void> _save() async {
-    setState(() => _isSaving = true);
+    ref.read(_isloadingProvider.notifier).state = true;
     await Future.delayed(const Duration(milliseconds: 700));
     if (!mounted) return;
-    setState(() => _isSaving = false);
+    ref.read(_isloadingProvider.notifier).state = false;
     context.showSnackBar('Minimum price saved successfully');
     context.pop();
   }
@@ -159,32 +161,12 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
             const Spacer(),
 
             // ─── Save button ─────────────────────────
-            Padding(
-              padding: EdgeInsets.only(bottom: context.bottomPadding + 20),
-              child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary,
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: 12.circular),
-                  ),
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : AppText('Save', style: AppTextStyles.buttonLg),
-                ),
-              ),
+            AppButton.primary(
+              label: "Save",
+              onPressed: _save,
+              isLoading: ref.watch(_isloadingProvider),
             ),
+            24.verticalSpace,
           ],
         ),
       ),

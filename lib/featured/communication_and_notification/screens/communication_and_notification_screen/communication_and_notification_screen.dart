@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
@@ -11,8 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/data/models/notification_models.dart';
-import 'package:service_provider_umi/featured/_chat/chat_models.dart';
-import 'package:service_provider_umi/featured/notification/riverpod/notification_provider.dart';
+import 'package:service_provider_umi/data/models/chat_models.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/riverpod/notification_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
@@ -21,10 +22,10 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-part '../widgets/communication_and_notification_parts/_history_tile.dart';
-part '../widgets/communication_and_notification_parts/_alert_tile.dart';
-part '../widgets/communication_and_notification_parts/_contact_tile.dart';
-part '../widgets/communication_and_notification_parts/_tab_bar.dart';
+part '_history_tile.dart';
+part '_alert_tile.dart';
+part '_contact_tile.dart';
+part '_tab_bar.dart';
 
 class CallHistory {
   final String id;
@@ -187,9 +188,7 @@ class _CommunicationAndNotificationScreenState
         // Contact list
         Expanded(
           child: _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
-                )
+              ? AppLoader()
               : _rooms.isEmpty
               ? const AppEmptyState(
                   title: 'No conversations',
@@ -208,16 +207,27 @@ class _CommunicationAndNotificationScreenState
                       contact: _rooms[i],
                       onTap: () async {
                         final myUserId = await getMyUserId(ref);
-
-                        context.push(
-                          AppRoutes.chatPath(_rooms[i].id),
-                          extra: {
-                            'otherUserId': _rooms[i].otherUser.id,
-                            'name': _rooms[i].otherUser.name,
-                            'myId': myUserId,
-                            'imageUrl': _rooms[i].otherUser.profile ?? "",
-                          },
-                        );
+                        if (kIsWeb) {
+                          context.go(
+                            AppRoutes.chatPath(_rooms[i].id),
+                            extra: {
+                              'otherUserId': _rooms[i].otherUser.id,
+                              'name': _rooms[i].otherUser.name,
+                              'myId': myUserId,
+                              'imageUrl': _rooms[i].otherUser.profile ?? "",
+                            },
+                          );
+                        } else {
+                          context.push(
+                            AppRoutes.chatPath(_rooms[i].id),
+                            extra: {
+                              'otherUserId': _rooms[i].otherUser.id,
+                              'name': _rooms[i].otherUser.name,
+                              'myId': myUserId,
+                              'imageUrl': _rooms[i].otherUser.profile ?? "",
+                            },
+                          );
+                        }
                       },
                     ),
                   ),
@@ -270,8 +280,8 @@ class _CommunicationAndNotificationScreenState
     final alertsAsync = ref.watch(notificationsProvider);
 
     return alertsAsync.when(
-      initial: () => const Center(child: CircularProgressIndicator()),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      initial: () => const AppLoader(),
+      loading: () => const AppLoader(),
       failure: (e) => Center(child: Text(e.toString())),
       success: (alerts) => RefreshIndicator(
         onRefresh: () async {
@@ -290,8 +300,8 @@ class _CommunicationAndNotificationScreenState
     final alertsAsync = ref.watch(notificationsProvider);
 
     return alertsAsync.when(
-      initial: () => const Center(child: CircularProgressIndicator()),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      initial: () => const AppLoader(),
+      loading: () => const AppLoader(),
       failure: (e) => Center(child: Text(e.toString())),
       success: (alerts) => RefreshIndicator(
         onRefresh: () async {

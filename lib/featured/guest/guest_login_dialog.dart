@@ -92,11 +92,21 @@ class GuestLoginDialog extends StatelessWidget {
             24.verticalSpace,
 
             // ─── Log In button ────────────────────────
-            AppButton.primary(label: "Log In"),
+            AppButton.primary(
+              label: "Log In",
+              onPressed: () {
+                context.go(AppRoutes.login);
+              },
+            ),
             10.verticalSpace,
 
             // ─── Create Account button ────────────────
-            AppButton.outline(label: "Create Account"),
+            AppButton.outline(
+              label: "Create Account",
+              onPressed: () {
+                context.go(AppRoutes.login);
+              },
+            ),
           ],
         ),
       ),

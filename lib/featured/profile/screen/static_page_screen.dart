@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/static_content_provider.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 class StaticPageScreen extends ConsumerStatefulWidget {
   final String title;
@@ -74,9 +75,7 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
       body: contentState.when(
         initial: () => const SizedBox.shrink(),
 
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
+        loading: () => const AppLoader(),
 
         success: (content) {
           final htmlContent = _resolveContent(

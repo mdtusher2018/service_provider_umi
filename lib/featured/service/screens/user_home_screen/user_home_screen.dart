@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/error/app_exception.dart';
@@ -74,7 +75,11 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                                       color: AppColors.black,
                                     ),
                                     onPressed: () {
-                                      context.push(AppRoutes.search);
+                                      if (kIsWeb) {
+                                        context.go(AppRoutes.search);
+                                      } else {
+                                        context.push(AppRoutes.search);
+                                      }
                                     },
                                   ),
                                 ),
@@ -98,8 +103,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       ),
 
                       state.when(
-                        loading: () =>
-                            Center(child: CircularProgressIndicator()),
+                        loading: () => const AppLoader(),
                         data: (categories) => RadialMenu(menuItems: categories),
                         error: (e, _) => Center(
                           child: AppText.h4(

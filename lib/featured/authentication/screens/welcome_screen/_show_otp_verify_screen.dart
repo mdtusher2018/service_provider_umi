@@ -1,4 +1,4 @@
-part of '../welcome_screen.dart';
+part of 'welcome_screen.dart';
 
 void _showOTPVerifyDialog(
   WidgetRef ref, {
@@ -32,8 +32,10 @@ class _OTPVerifyDialog extends ConsumerStatefulWidget {
 class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
   final _otpController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  int _seconds = AppConstants.otpResendableAfter;
-  bool _canResend = false;
+  final _otpSecondsProvider = StateProvider.autoDispose<int>(
+    (ref) => AppConstants.otpResendableAfter,
+  );
+  final _otpCanResendProvider = StateProvider.autoDispose<bool>((ref) => false);
 
   @override
   void initState() {
@@ -48,21 +50,31 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
   }
 
   void _startCountdown() {
-    _seconds = AppConstants.otpResendableAfter;
-    _canResend = false;
+    ref.read(_otpSecondsProvider.notifier).state =
+        AppConstants.otpResendableAfter;
+
+    ref.read(_otpCanResendProvider.notifier).state = false;
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
       if (!mounted) return false;
-      setState(() {
-        _seconds--;
-        if (_seconds <= 0) _canResend = true;
-      });
-      return _seconds > 0;
+      final seconds = ref.read(_otpSecondsProvider);
+
+      if (seconds <= 1) {
+        ref.read(_otpSecondsProvider.notifier).state = 0;
+        ref.read(_otpCanResendProvider.notifier).state = true;
+        return false;
+      }
+
+      ref.read(_otpSecondsProvider.notifier).state = seconds - 1;
+
+      return true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final seconds = ref.watch(_otpSecondsProvider);
+    final canResend = ref.watch(_otpCanResendProvider);
     ref.listen<AuthState>(otpVerifyProvider, (_, state) {
       state.when(
         initial: () {},
@@ -71,7 +83,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
           if (widget.isSignup) {
             if (widget.role == AppRole.user) {
               ref.read(appRoleProvider.notifier).loginAsUser();
-              context.go(AppRoutes.root);
+              context.go(AppRoutes.userHome);
             } else if (widget.role == AppRole.provider) {
               ref.read(appRoleProvider.notifier).loginAsProvider();
               context.go(AppRoutes.providerOnboarding);
@@ -148,7 +160,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
               16.verticalSpace,
 
               // Resend countdown / button
-              _canResend
+              canResend
                   ? AppLinkText(
                       'Didn\'t receive OTP?  Resend',
                       links: [
@@ -166,7 +178,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
                       ],
                     )
                   : AppText.bodyMd(
-                      'Resend OTP in ${_seconds}s',
+                      'Resend OTP in ${seconds}s',
                       color: AppColors.textSecondary,
                     ),
               10.verticalSpace,

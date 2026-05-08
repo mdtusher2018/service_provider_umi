@@ -35,7 +35,7 @@ class _ProviderCompletedServiceScreenState
       appBar: AppAppBar(title: "Completed Services"),
 
       body: state.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const AppLoader(),
         error: (e, _) => Center(child: AppText.h3(e.toString())),
         data: (data) {
           if (data.bookings.isEmpty) {

@@ -5,7 +5,7 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/localization/locale_provider.dart';
 import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/theme/app_theme.dart';
-import 'package:service_provider_umi/web_app_shell.dart';
+import 'package:service_provider_umi/shared/widgets/web_app_shell.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});

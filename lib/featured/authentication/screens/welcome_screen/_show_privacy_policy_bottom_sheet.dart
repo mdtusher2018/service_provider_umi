@@ -1,4 +1,4 @@
-part of '../welcome_screen.dart';
+part of 'welcome_screen.dart';
 
 Future<bool?> _showPrivacyPolicyBottomSheet(WidgetRef ref) {
   return showModalBottomSheet(

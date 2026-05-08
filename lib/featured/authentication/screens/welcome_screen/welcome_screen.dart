@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_constants.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -18,14 +19,15 @@ import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-part 'widgets/_show_privacy_policy_bottom_sheet.dart';
-part 'widgets/_show_role_selection_dialog.dart';
-part 'widgets/_showAuthBottomSheet.dart';
-part 'widgets/_show_create_account_dialog.dart';
-part 'widgets/_show_login_account_dialog.dart';
-part 'widgets/_show_otp_verify_screen.dart';
-part 'widgets/_show_forgot_password_dialog.dart';
-part 'widgets/_show_reset_password_soalog.dart';
+part '_show_privacy_policy_bottom_sheet.dart';
+part '_show_role_selection_dialog.dart';
+part '_showAuthBottomSheet.dart';
+part '_show_create_account_dialog.dart';
+part '_show_login_account_dialog.dart';
+part '_show_otp_verify_screen.dart';
+part '_show_forgot_password_dialog.dart';
+part '_show_reset_password_soalog.dart';
+
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});

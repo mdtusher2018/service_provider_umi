@@ -1,143 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/core/config/app_config.dart';
-import 'package:service_provider_umi/core/di/core_providers.dart';
-import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
-import 'package:service_provider_umi/core/services/storage/storage_key.dart';
-import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// ignore: unused_import
-import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/featured/service/screens/user_home_screen/user_home_screen.dart';
-import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen.dart';
-import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
-import 'package:service_provider_umi/featured/profile/screen/profile_screen/profile_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/provider_service_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
-
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-
-class RootScreen extends ConsumerStatefulWidget {
-  const RootScreen({super.key});
-  static int currentIndex = 2;
-
-  @override
-  ConsumerState<RootScreen> createState() => _RootScreenState();
-}
-
-class _RootScreenState extends ConsumerState<RootScreen> {
-  void onTabTap(int index) {
-    setState(() {
-      RootScreen.currentIndex = index;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initializedChatService();
-  }
-
-  Future<void> initializedChatService() async {
-    final token = await ref
-        .read(localStorageProvider)
-        .read(StorageKey.accessToken);
-
-    ChatSocketService.instance.init(
-      baseUrl: AppConfig.socketUrl,
-      token: token ?? "",
-    );
-  }
-
-  Widget _homeButton(AppRole role) {
-    return FloatingActionButton(
-      onPressed: () => onTabTap(2),
-      backgroundColor: AppColors.primaryFor(role),
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: 100.circular),
-      child: Image.asset(
-        (role == AppRole.provider)
-            ? Assets.icons.upcoming.keyName
-            : Assets.icons.home.keyName,
-        width: 32,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final role = ref.watch(appRoleProvider);
-
-    /// USER SCREENS
-    final userScreens = [
-      const UserServiceScreen(),
-      const FavouritesScreen(),
-      const UserHomeScreen(),
-      const CommunicationAndNotificationScreen(),
-      const ProfileScreen(),
-    ];
-
-    /// PROVIDER SCREENS
-    final providerScreens = [
-      const ProviderServiceScreen(),
-      const CommunicationAndNotificationScreen(),
-      const ServiceProviderHomeScreen(),
-      const CommunicationAndNotificationScreen(isNotification: true),
-      const ProfileScreen(),
-    ];
-
-    /// GUEST SCREENS (mostly browsing)
-    final guestScreens = [
-      const GuestServicesScreen(),
-      const GuestFavouritesScreen(),
-      const UserHomeScreen(),
-      const GuestInboxScreen(),
-      const GuestProfileScreen(),
-    ];
-
-    /// Choose screens based on role
-    List<Widget> screens;
-
-    switch (role) {
-      case AppRole.guest:
-        screens = guestScreens;
-        break;
-
-      case AppRole.user:
-        screens = userScreens;
-        break;
-
-      case AppRole.provider:
-        screens = providerScreens;
-        break;
-    }
-
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (child, animation) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        child: KeyedSubtree(
-          key: ValueKey(RootScreen.currentIndex),
-          child: screens[RootScreen.currentIndex],
-        ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        role: role,
-        currentIndex: RootScreen.currentIndex,
-        onTap: onTabTap,
-      ),
-      floatingActionButton: _homeButton(role),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-}
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -153,7 +22,7 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUserLike = role == AppRole.user || role == AppRole.guest;
+    final isProvider = role == AppRole.provider;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -172,30 +41,33 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          // index 0
           _navItem(
-            icon: isUserLike
-                ? Icons.calendar_today_outlined
-                : Icons.calendar_month_outlined,
-            label: isUserLike ? "Service" : "Calendar",
+            icon: isProvider
+                ? Icons.calendar_month_outlined
+                : Icons.calendar_today_outlined,
+            label: isProvider ? "Calendar" : "Service",
             index: 0,
           ),
+          // index 1
           _navItem(
-            icon: isUserLike
-                ? Icons.favorite_border
-                : Icons.chat_bubble_outline,
-            label: isUserLike ? "Favourites" : "Inbox",
+            icon: isProvider
+                ? Icons.chat_bubble_outline
+                : Icons.favorite_border,
+            label: isProvider ? "Inbox" : "Favourites",
             index: 1,
           ),
 
-          32.horizontalSpace,
-
+          32.horizontalSpace, // FAB gap (index 2)
+          // index 3
           _navItem(
-            icon: isUserLike
-                ? Icons.chat_bubble_outline
-                : Icons.notifications_none,
-            label: isUserLike ? "Inbox" : "Notification",
+            icon: isProvider
+                ? Icons.notifications_none
+                : Icons.chat_bubble_outline,
+            label: isProvider ? "Notification" : "Inbox",
             index: 3,
           ),
+          // index 4
           _navItem(icon: Icons.person_outline, label: "Profile", index: 4),
         ],
       ),
@@ -237,6 +109,55 @@ class CustomBottomNavBar extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RootScreen extends ConsumerWidget {
+  final StatefulNavigationShell navigationShell;
+  final AppRole role; // 👈 passed from shell builder, no provider watch needed
+
+  const RootScreen({
+    super.key,
+    required this.navigationShell,
+    required this.role,
+  });
+
+  void _onTap(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
+
+  Widget _homeButton() {
+    return FloatingActionButton(
+      onPressed: () => _onTap(2),
+      backgroundColor: AppColors.primaryFor(role),
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: 100.circular),
+      child: Image.asset(
+        role == AppRole.provider
+            ? Assets.icons.upcoming.keyName
+            : Assets.icons.home.keyName,
+        width: 32,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: (kIsWeb)
+          ? null
+          : CustomBottomNavBar(
+              currentIndex: navigationShell.currentIndex,
+              onTap: _onTap,
+              role: role,
+            ),
+      floatingActionButton: (kIsWeb) ? null : _homeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

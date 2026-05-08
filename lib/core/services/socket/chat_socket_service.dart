@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
-import 'package:service_provider_umi/featured/_chat/chat_events.dart';
-import 'package:service_provider_umi/featured/_chat/chat_models.dart';
+import 'package:service_provider_umi/core/services/socket/chat_events.dart';
+import 'package:service_provider_umi/data/models/chat_models.dart';
 import 'socket_service.dart';
 
 /// Feature-level service that wires chat-specific socket events.

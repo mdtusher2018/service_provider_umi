@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
@@ -238,13 +239,17 @@ class _WeeklyBookingScheduleScreenState
             ),
           ),
 
-          GestureDetector(
-            onTap: () => context.pop(),
-            child: const Icon(
-              Icons.close_rounded,
-              color: AppColors.textSecondary,
+          if (!kIsWeb) ...[
+            GestureDetector(
+              onTap: () => context.pop(),
+              child: const Icon(
+                Icons.close_rounded,
+                color: AppColors.textSecondary,
+              ),
             ),
-          ),
+          ] else ...[
+            40.horizontalSpace,
+          ],
         ],
       ),
     );

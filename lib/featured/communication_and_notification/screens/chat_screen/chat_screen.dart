@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
-import 'package:service_provider_umi/featured/_chat/chat_models.dart';
+import 'package:service_provider_umi/data/models/chat_models.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
@@ -24,10 +25,10 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-part '../widgets/chat_screen_parts/_block_dialog.dart';
-part '../widgets/chat_screen_parts/_message_bubble.dart';
-part '../widgets/chat_screen_parts/_call_option_dialog.dart';
-part '../widgets/chat_screen_parts/_chat_options_sheet.dart';
+part '_block_dialog.dart';
+part '_message_bubble.dart';
+part '_call_option_dialog.dart';
+part '_chat_options_sheet.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 class ChatScreen extends ConsumerStatefulWidget {
@@ -385,25 +386,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  void _startAudioCall() => context.push(
-    AppRoutes.audioCallPath("1"),
-    extra: {
-      'name': widget.contactName,
-      'imageUrl': widget.contactImageUrl ?? '',
-      'channelId': '',
-      'isIncoming': false,
-    },
-  );
+  void _startAudioCall() {
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.audioCallPath("1"),
+        extra: {
+          'name': widget.contactName,
+          'imageUrl': widget.contactImageUrl ?? '',
+          'channelId': '',
+          'isIncoming': false,
+        },
+      );
+    } else {
+      context.push(
+        AppRoutes.audioCallPath("1"),
+        extra: {
+          'name': widget.contactName,
+          'imageUrl': widget.contactImageUrl ?? '',
+          'channelId': '',
+          'isIncoming': false,
+        },
+      );
+    }
+  }
 
-  void _startVideoCall() => context.push(
-    AppRoutes.videoCallPath("1"),
-    extra: {
-      'name': widget.contactName,
-      'imageUrl': widget.contactImageUrl ?? '',
-      'channelId': '',
-      'isIncoming': false,
-    },
-  );
+  void _startVideoCall() {
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.videoCallPath("1"),
+        extra: {
+          'name': widget.contactName,
+          'imageUrl': widget.contactImageUrl ?? '',
+          'channelId': '',
+          'isIncoming': false,
+        },
+      );
+    } else {
+      context.push(
+        AppRoutes.videoCallPath("1"),
+        extra: {
+          'name': widget.contactName,
+          'imageUrl': widget.contactImageUrl ?? '',
+          'channelId': '',
+          'isIncoming': false,
+        },
+      );
+    }
+  }
 
   // ─── Build ────────────────────────────────────────────────────────────────
   @override
@@ -486,7 +515,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final keys = grouped.keys.toList();
 
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const AppLoader();
     }
 
     if (keys.isEmpty) {
@@ -502,13 +531,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         if (_isLoadingMore && i == 0) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
+            child: AppLoader(),
           );
         }
         final index = _isLoadingMore ? i - 1 : i;
@@ -604,10 +627,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               child: _isSending
                   ? const Padding(
                       padding: EdgeInsets.all(10),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.white,
-                      ),
+                      child: AppLoader(),
                     )
                   : const Icon(
                       Icons.send_rounded,

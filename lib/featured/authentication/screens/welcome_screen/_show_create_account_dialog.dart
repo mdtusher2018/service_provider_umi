@@ -1,4 +1,4 @@
-part of '../welcome_screen.dart';
+part of 'welcome_screen.dart';
 
 void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
   showGeneralDialog(
@@ -173,3 +173,6 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
         );
   }
 }
+
+
+

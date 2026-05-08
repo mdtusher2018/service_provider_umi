@@ -11,6 +11,7 @@ import 'package:service_provider_umi/featured/service/widgets/booking_card_widge
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 part 'provider_completed_service_screen.dart';
 
 class ProviderServiceScreen extends ConsumerStatefulWidget {
@@ -104,7 +105,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
             Expanded(
               child: state.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const AppLoader(),
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
                   if (data.bookings.isEmpty) {

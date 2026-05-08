@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -8,18 +10,17 @@ import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
-class ServiceProviderOnboardingScreen extends StatefulWidget {
+class ServiceProviderOnboardingScreen extends ConsumerStatefulWidget {
   const ServiceProviderOnboardingScreen({super.key});
 
   @override
-  State<ServiceProviderOnboardingScreen> createState() =>
+  ConsumerState<ServiceProviderOnboardingScreen> createState() =>
       _ServiceProviderOnboardingScreenState();
 }
 
 class _ServiceProviderOnboardingScreenState
-    extends State<ServiceProviderOnboardingScreen> {
+    extends ConsumerState<ServiceProviderOnboardingScreen> {
   final PageController _controller = PageController();
-  int currentIndex = 0;
 
   final List<_OnboardingModel> onboardingData = [
     _OnboardingModel(
@@ -42,7 +43,10 @@ class _ServiceProviderOnboardingScreenState
     ),
   ];
 
+  final _onboardingIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
+
   void nextPage() {
+    final currentIndex = ref.read(_onboardingIndexProvider);
     if (currentIndex == onboardingData.length - 1) {
       context.go(AppRoutes.workSchedule);
     } else {
@@ -54,11 +58,12 @@ class _ServiceProviderOnboardingScreenState
   }
 
   void skip() {
-    // Navigate directly to the main screen (e.g., dashboard, login)
+    context.go(AppRoutes.workSchedule);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = ref.watch(_onboardingIndexProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -76,9 +81,7 @@ class _ServiceProviderOnboardingScreenState
                 controller: _controller,
                 itemCount: onboardingData.length,
                 onPageChanged: (index) {
-                  setState(() {
-                    currentIndex = index;
-                  });
+                  ref.read(_onboardingIndexProvider.notifier).state = index;
                 },
                 itemBuilder: (_, index) {
                   final item = onboardingData[index];

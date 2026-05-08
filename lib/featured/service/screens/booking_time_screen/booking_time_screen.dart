@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -15,9 +16,7 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 
 class BookingTimeScreen extends ConsumerStatefulWidget {
-  final String? serviceId;
-  final String? providerId;
-  const BookingTimeScreen({super.key, this.serviceId, this.providerId});
+  const BookingTimeScreen({super.key});
 
   @override
   ConsumerState<BookingTimeScreen> createState() => _BookingTimeScreenState();
@@ -63,22 +62,23 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: AppColors.black,
-                        size: 24,
+                  if (!kIsWeb)
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: AppColors.black,
+                          size: 24,
+                        ),
                       ),
                     ),
-                  ),
                   8.verticalSpace,
                   Row(
                     children: [

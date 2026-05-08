@@ -11,6 +11,7 @@ import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 import '../../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../../core/theme/app_colors.dart';
@@ -236,7 +237,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
 
             // ── Loading spinner until API responds ───────────────────────
             if (isLoading)
-              const Expanded(child: Center(child: CircularProgressIndicator()))
+              const Expanded(child: AppLoader())
             else
               Expanded(
                 child: ListView.separated(

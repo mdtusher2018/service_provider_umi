@@ -1,25 +1,30 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import '../../../../../core/di/app_role_provider.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 
-class PhoneNumberScreen extends ConsumerStatefulWidget {
-  const PhoneNumberScreen({super.key});
+/// Local provider (only used in this file)
+final _loadingProvider = StateProvider.autoDispose<bool>((ref) => false);
+
+class ProviderPhoneNumberScreen extends ConsumerStatefulWidget {
+  const ProviderPhoneNumberScreen({super.key});
 
   @override
-  ConsumerState<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
+  ConsumerState<ProviderPhoneNumberScreen> createState() =>
+      _PhoneNumberScreenState();
 }
 
-class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
+class _PhoneNumberScreenState extends ConsumerState<ProviderPhoneNumberScreen> {
   final _ctrl = TextEditingController(text: '+880 1840-560614');
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -31,20 +36,20 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
     final phone = _ctrl.text.trim();
     if (phone.isEmpty) return;
 
-    setState(() => _isLoading = true);
+    ref.read(_loadingProvider.notifier).state = true;
     // Simulate SMS send
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    context.push(AppRoutes.verifyOtp, extra: phone);
+    ref.read(_loadingProvider.notifier).state = false;
+    if (kIsWeb) {
+      context.go(AppRoutes.verifyOtp, extra: phone);
+    } else {
+      context.push(AppRoutes.verifyOtp, extra: phone);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final role = ref.watch(appRoleProvider);
-    final primary = AppColors.primaryFor(role);
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -93,28 +98,10 @@ class _PhoneNumberScreenState extends ConsumerState<PhoneNumberScreen> {
               40.verticalSpace,
 
               // ─── Verify button ──────────────────────
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _verify,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary,
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: 12.circular),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : AppText('Verify', style: AppTextStyles.buttonLg),
-                ),
+              AppButton.primary(
+                label: "Verify",
+                onPressed: _verify,
+                isLoading: ref.watch(_loadingProvider),
               ),
               16.verticalSpace,
 
