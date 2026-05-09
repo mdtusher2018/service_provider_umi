@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,7 +129,14 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    context.push(AppRoutes.bookingDetail, extra: item);
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.bookingDetail,
+        extra: item,
+      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+    } else {
+      context.push(AppRoutes.bookingDetail, extra: item);
+    }
   }
 
   void _showRatingDialog(BookingItem item) {

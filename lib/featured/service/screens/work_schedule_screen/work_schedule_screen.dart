@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
@@ -184,7 +185,11 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
     if (!mounted) return;
 
     if (ok) {
-      context.push(AppRoutes.filter);
+      if (kIsWeb) {
+        context.go(AppRoutes.filter);
+      } else {
+        context.push(AppRoutes.filter);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to save schedule. Try again.')),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -64,11 +65,24 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    context.push(AppRoutes.bookingDetail, extra: item);
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.bookingDetail,
+        extra: item,
+      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+    } else {
+      context.push(AppRoutes.bookingDetail, extra: item);
+    }
   }
 
   void _openCompleted() {
-    context.push(AppRoutes.providerCompletedServiceScreen);
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.providerCompletedServiceScreen,
+      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+    } else {
+      context.push(AppRoutes.providerCompletedServiceScreen);
+    }
   }
 
   @override

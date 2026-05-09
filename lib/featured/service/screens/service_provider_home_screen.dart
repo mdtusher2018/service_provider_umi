@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +40,14 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    context.push(AppRoutes.bookingDetail, extra: item);
+    if (kIsWeb) {
+      context.push(
+        AppRoutes.bookingDetail,
+        extra: item,
+      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+    } else {
+      context.push(AppRoutes.bookingDetail, extra: item);
+    }
   }
 
   @override

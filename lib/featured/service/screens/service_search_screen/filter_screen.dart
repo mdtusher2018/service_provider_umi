@@ -241,7 +241,11 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                       label: 'Update',
                       onPressed: () {
                         if (ref.watch(appRoleProvider) == AppRole.provider) {
-                          context.push(AppRoutes.profilePicture);
+                          if (kIsWeb) {
+                            context.go(AppRoutes.profilePicture);
+                          } else {
+                            context.push(AppRoutes.profilePicture);
+                          }
 
                           return;
                         }

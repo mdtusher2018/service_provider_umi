@@ -23,7 +23,11 @@ class _ProviderCompletedServiceScreenState
   }
 
   void _onCardTap(BookingItem item, BuildContext context) {
-    context.push(AppRoutes.bookingDetail, extra: item);
+    if (kIsWeb) {
+      context.go(AppRoutes.bookingDetail, extra: item);
+    } else {
+      context.push(AppRoutes.bookingDetail, extra: item);
+    }
   }
 
   @override

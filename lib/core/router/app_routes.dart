@@ -53,7 +53,7 @@ class AppRoutes {
   static const String providerReviews = '/profile/reviews';
   static const String changePassword = '/profile/change-password';
   static const String language = '/profile/language';
-  static const String staticPage = '/page/:type';
+  static const String staticPage = '/profile/:type';
 
   // ─── Communication ───────────────────────────────────────
   static const String chat = '/chat/:contactId';
@@ -70,7 +70,7 @@ class AppRoutes {
   static String chatPath(String contactId) => '/chat/$contactId';
   static String audioCallPath(String contactId) => '/audio/$contactId';
   static String videoCallPath(String contactId) => '/video/$contactId';
-  static String staticPagePath(String type) => '/page/$type';
+  static String staticPagePath(String type) => '/profile/$type';
   static String searchTimePath(String serviceId) {
     return '$userHome/$serviceId/search-time';
   }

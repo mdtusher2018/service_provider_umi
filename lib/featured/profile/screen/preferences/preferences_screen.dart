@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,19 +24,37 @@ class PreferencesScreen extends ConsumerWidget {
       _PrefItem(
         icon: Icons.location_on_outlined,
         label: 'My work areas',
-        onTap: () => context.push(AppRoutes.workAreas),
+        onTap: () {
+          if (kIsWeb) {
+            context.go(AppRoutes.workAreas);
+          } else {
+            context.push(AppRoutes.workAreas);
+          }
+        },
       ),
 
       _PrefItem(
         icon: Icons.access_time_rounded,
         label: 'My schedule',
-        onTap: () => context.push(AppRoutes.workSchedule),
+        onTap: () {
+          if (kIsWeb) {
+            context.go(AppRoutes.workSchedule);
+          } else {
+            context.push(AppRoutes.workSchedule);
+          }
+        },
       ),
 
       _PrefItem(
         icon: Icons.attach_money_rounded,
         label: 'Minimum booking amount',
-        onTap: () => context.push(AppRoutes.minimumPrice),
+        onTap: () {
+          if (kIsWeb) {
+            context.go(AppRoutes.minimumPrice);
+          } else {
+            context.push(AppRoutes.minimumPrice);
+          }
+        },
       ),
     ];
 

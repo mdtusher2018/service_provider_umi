@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -41,7 +42,13 @@ class PaymentsScreen extends StatelessWidget {
               _PaymentTile(
                 icon: Icons.receipt_long_outlined,
                 label: 'My booking',
-                onTap: () => context.push(AppRoutes.myBookings),
+                onTap: () {
+                  if (kIsWeb) {
+                    context.go(AppRoutes.myBookings);
+                  } else {
+                    context.push(AppRoutes.myBookings);
+                  }
+                },
               ),
               const Divider(height: 1, indent: 52, color: AppColors.divider),
               _PaymentTile(
