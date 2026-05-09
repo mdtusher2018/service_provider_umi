@@ -61,4 +61,9 @@ class ApiEndpoints {
   static const String searchProviders = '/providers/search';
 
   static const String workSchedule = '/workSchedule';
+
+  static const String getMyPaymentCards = "/stripe/payment-method";
+  static String deletePaymentCard(String paymentMethodId) =>
+      "/stripe/payment-method/$paymentMethodId";
+  static const String getAddCardLink = "/stripe/payment-method/add-link";
 }

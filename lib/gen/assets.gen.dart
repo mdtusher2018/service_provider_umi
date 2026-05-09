@@ -11,6 +11,23 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsCardsGen {
+  const $AssetsCardsGen();
+
+  /// File path: assets/cards/mastercard.png
+  AssetGenImage get mastercard =>
+      const AssetGenImage('assets/cards/mastercard.png');
+
+  /// File path: assets/cards/paypal.png
+  AssetGenImage get paypal => const AssetGenImage('assets/cards/paypal.png');
+
+  /// File path: assets/cards/visa.png
+  AssetGenImage get visa => const AssetGenImage('assets/cards/visa.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [mastercard, paypal, visa];
+}
+
 class $AssetsGuestImagesGen {
   const $AssetsGuestImagesGen();
 
@@ -158,6 +175,7 @@ class $AssetsWelcomeGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsCardsGen cards = $AssetsCardsGen();
   static const AssetGenImage elderlyCare = AssetGenImage(
     'assets/elderly_care.png',
   );

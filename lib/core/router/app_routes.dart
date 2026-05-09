@@ -54,6 +54,7 @@ class AppRoutes {
   static const String changePassword = '/profile/change-password';
   static const String language = '/profile/language';
   static const String staticPage = '/profile/:type';
+  static const String paymentCardsPage = '/my-cards-page';
 
   // ─── Communication ───────────────────────────────────────
   static const String chat = '/chat/:contactId';

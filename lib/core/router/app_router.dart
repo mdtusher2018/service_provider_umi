@@ -6,6 +6,7 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_time_screen/booking_time_screen.dart';
 import 'package:service_provider_umi/shared/widgets/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
@@ -60,7 +61,7 @@ GoRouter appRouter(Ref ref) {
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
     errorBuilder: (context, state) {
       return NotFoundScreen(error: state.error.toString());
@@ -275,6 +276,11 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.providerOnboarding,
         builder: (_, __) => const ServiceProviderOnboardingScreen(),
+      ),
+
+      GoRoute(
+        path: AppRoutes.paymentCardsPage,
+        builder: (_, __) => MyPaymentCardsPage(),
       ),
 
       // ── Service discovery ────────────────────────────────

@@ -64,6 +64,7 @@ dependencies:
   extended_image: ^10.0.1
   socket_io_client: ^3.1.4
   url_strategy: ^0.3.0
+  webview_flutter: ^4.13.1
 
 
 dev_dependencies:
@@ -85,6 +86,7 @@ flutter:
     - assets/guest_images/
     - assets/service_provider_images/
     - assets/welcome/
+    - assets/cards/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -54,7 +54,13 @@ class PaymentsScreen extends StatelessWidget {
               _PaymentTile(
                 icon: Icons.credit_card_outlined,
                 label: 'Payments methods',
-                onTap: () {},
+                onTap: () {
+                  if (kIsWeb) {
+                    context.go(AppRoutes.paymentCardsPage);
+                  } else {
+                    context.push(AppRoutes.paymentCardsPage);
+                  }
+                },
               ),
             ],
           ),
