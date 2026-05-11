@@ -4,11 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/config/flavor_config.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
-import 'package:service_provider_umi/core/services/storage/hive_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:url_strategy/url_strategy.dart';
-
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'app.dart';
 
 Future<void> main() async {
@@ -18,8 +17,8 @@ Future<void> main() async {
     flavor: Flavor.dev,
     baseUrl: 'http://103.186.20.117:1000/api/v1',
     socketUrl: 'http://103.186.20.117:1005',
-    // baseUrl: 'http://api.dev.com/api/v1',
-    // socketUrl: 'http://api.dev.com',
+    // baseUrl: 'http://10.10.10.21:3000',
+    // socketUrl: 'http://10.10.10.21:3000',
     googleMapsApiKey: 'YOUR_KEY',
     agoraAppId: '87317ef9a331453ca1463797ba82cd41',
     stripePublishableKey: 'STRIPE_KEY',
@@ -28,7 +27,10 @@ Future<void> main() async {
   // Init LocalStorageService (SharedPreferences + SecureStorage) + Hive
   final localStorage = LocalStorageServiceImpl();
   await localStorage.init();
-  await HiveService.init();
+
+  Stripe.publishableKey =
+      "pk_test_51RINl1PG9XHOcPc0EWzFHpb89UURpt1siYriwsWyU3EUfozu15bmm4M0x7t0KBDZ8FMTHGfo7xoD00SjmA5uK11A00htzh5FBi";
+  await Stripe.instance.applySettings();
 
   if (kDebugMode) {
     /// 🔴 Flutter framework errors
@@ -52,7 +54,6 @@ Future<void> main() async {
       overrides: [
         appRoleProvider.overrideWith(() => AppRoleNotifier()),
         localStorageProvider.overrideWithValue(localStorage),
-        hiveStorageProvider.overrideWithValue(HiveService.instance),
       ],
       child: const App(),
     ),

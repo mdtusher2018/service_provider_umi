@@ -107,8 +107,10 @@ class AppToggleTile extends ConsumerWidget {
         Switch(
           value: value,
           onChanged: onChanged,
-          activeThumbColor: AppColors.primary,
-          activeTrackColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
+          activeThumbColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
+          activeTrackColor: AppColors.primaryFor(
+            ref.watch(appRoleProvider),
+          ).withValues(alpha: 0.5),
           inactiveThumbColor: AppColors.grey300,
           inactiveTrackColor: AppColors.grey200,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

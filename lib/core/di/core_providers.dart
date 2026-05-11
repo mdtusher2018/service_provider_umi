@@ -5,7 +5,6 @@ import 'package:service_provider_umi/core/services/network/interceptors/auth_int
 import 'package:service_provider_umi/core/services/network/interceptors/refresh_token_interceptor.dart';
 import 'package:service_provider_umi/core/services/network/network_info.dart';
 import 'package:service_provider_umi/core/services/permission_service.dart';
-import 'package:service_provider_umi/core/services/storage/hive_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
 
@@ -33,11 +32,6 @@ RefreshTokenInterceptor refreshTokenInterceptor(Ref ref, Dio dio) {
 LocalStorageService localStorage(Ref ref) {
   final local = LocalStorageServiceImpl();
   return local;
-}
-
-@riverpod
-HiveService hiveStorage(Ref ref) {
-  return HiveService.instance;
 }
 
 @riverpod

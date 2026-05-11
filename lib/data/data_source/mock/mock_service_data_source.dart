@@ -368,25 +368,12 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<ServiceFiltersModel> getFilters(String serviceType) async {
+  Future<ServiceFiltersModel> getFilters() async {
     await _delay();
     return const ServiceFiltersModel(
-      maxPrice: 50.0,
-      tasks: [
-        'Cleaning',
-        'Cooking',
-        'Medication reminder',
-        'Personal hygiene',
-        'Companionship',
-        'Transportation',
-      ],
-      specializations: [
-        'Senile dementia',
-        'Parkinsons',
-        'Stroke',
-        'Multiple sclerosis',
-        "Alzheimer's",
-      ],
+      experienceOptions: [],
+      othersTaskOptions: [],
+      category: [],
     );
   }
 
@@ -636,5 +623,13 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
         total: total,
       ),
     );
+  }
+
+  @override
+  Future<ProviderProfile> updateServiceProviderProfile(
+    UpdateProviderRequest schedules,
+  ) {
+    // TODO: implement updateServiceProviderProfile
+    throw UnimplementedError();
   }
 }

@@ -9,6 +9,7 @@ class PaymentCardModel {
   final String funding;
   final String country;
   final String fingerprint;
+  final bool isDefault;
 
   PaymentCardModel({
     required this.id,
@@ -20,6 +21,7 @@ class PaymentCardModel {
     required this.funding,
     required this.country,
     required this.fingerprint,
+    required this.isDefault,
   });
 
   factory PaymentCardModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class PaymentCardModel {
       funding: json['funding'] ?? '',
       country: json['country'] ?? '',
       fingerprint: json['fingerprint'] ?? '',
+      isDefault: json['isDefault'] ?? false,
     );
   }
 }

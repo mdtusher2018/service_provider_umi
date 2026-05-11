@@ -2,6 +2,11 @@
 
 // ── Provider Profile Response ─────────────────────────────────────────────────
 
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
 class ProviderProfile {
   final String id;
   final String name;
@@ -10,11 +15,11 @@ class ProviderProfile {
   final bool verified;
   final double hourlyRate;
   final String about;
-  final ProviderRating rating;
+  final ProviderRating? rating;
   final List<String> gallery;
   final List<ProviderQuestion> questions;
   final List<ProviderComment> comments;
-  final ProviderAvailability availability;
+  final ProviderAvailability? availability;
 
   const ProviderProfile({
     required this.id,
@@ -24,34 +29,45 @@ class ProviderProfile {
     required this.verified,
     required this.hourlyRate,
     required this.about,
-    required this.rating,
+    this.rating,
     required this.gallery,
     required this.questions,
     required this.comments,
-    required this.availability,
+    this.availability,
   });
 
-  factory ProviderProfile.fromJson(Map<String, dynamic> json) =>
-      ProviderProfile(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        serviceTitle: json['service_title'] as String,
-        profileImage: json['profile_image'] as String,
-        verified: json['verified'] as bool,
-        hourlyRate: (json['hourly_rate'] as num).toDouble(),
-        about: json['about'] as String,
-        rating: ProviderRating.fromJson(json['rating'] as Map<String, dynamic>),
-        gallery: List<String>.from(json['gallery'] as List),
-        questions: (json['questions'] as List)
-            .map((e) => ProviderQuestion.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        comments: (json['comments'] as List)
-            .map((e) => ProviderComment.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        availability: ProviderAvailability.fromJson(
-          json['availability'] as Map<String, dynamic>,
-        ),
-      );
+  factory ProviderProfile.fromJson(
+    Map<String, dynamic> json,
+  ) => ProviderProfile(
+    id: json['id'] as String? ?? '',
+    name: json['name'] as String? ?? '',
+    serviceTitle: json['service_title'] as String? ?? '',
+    profileImage: json['profile_image'] as String? ?? '',
+    verified: json['verified'] as bool? ?? false,
+    hourlyRate: (json['hourly_rate'] as num?)?.toDouble() ?? 0.0,
+    about: json['about'] as String? ?? '',
+    rating: json['rating'] != null
+        ? ProviderRating.fromJson(json['rating'] as Map<String, dynamic>)
+        : null,
+    gallery:
+        (json['gallery'] as List?)?.map((e) => e as String? ?? '').toList() ??
+        [],
+    questions:
+        (json['questions'] as List?)
+            ?.map((e) => ProviderQuestion.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
+    comments:
+        (json['comments'] as List?)
+            ?.map((e) => ProviderComment.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
+    availability: json['availability'] != null
+        ? ProviderAvailability.fromJson(
+            json['availability'] as Map<String, dynamic>,
+          )
+        : null,
+  );
 }
 
 class ProviderRating {
@@ -195,78 +211,19 @@ class AvailabilitySlot {
 
 // ── Create / Update Provider Request ─────────────────────────────────────────
 
-class DayAvailability {
-  final bool isAvailable;
-  final String? start;
-  final String? end;
-
-  const DayAvailability({required this.isAvailable, this.start, this.end});
-
-  Map<String, dynamic> toJson() => {
-    'is_available': isAvailable,
-    if (start != null) 'start': start,
-    if (end != null) 'end': end,
-  };
-}
-
-class CreateProviderRequest {
-  final Map<String, DayAvailability> availability;
-  final String serviceId;
-  final double hourlyRate;
-  final List<String> tasks;
-  final List<String> specializations;
-  final String experience;
-  final bool drivingLicense;
-  final bool businessProfilesOnly;
-  final bool qualifiedOnly;
-  final bool palliativeCare;
-  final String phoneNumber;
-  // image & service_provider_image are sent as multipart files
-
-  const CreateProviderRequest({
-    required this.availability,
-    required this.serviceId,
-    required this.hourlyRate,
-    required this.tasks,
-    required this.specializations,
-    required this.experience,
-    required this.drivingLicense,
-    required this.businessProfilesOnly,
-    required this.qualifiedOnly,
-    required this.palliativeCare,
-    required this.phoneNumber,
-  });
-
-  Map<String, dynamic> toJson() => {
-    'availability': availability.map((k, v) => MapEntry(k, v.toJson())),
-    'service_id': serviceId,
-    'hourly_rate': hourlyRate,
-    'tasks': tasks,
-    'specializations': specializations,
-    'experience': experience,
-    'driving_license': drivingLicense,
-    'business_profiles_only': businessProfilesOnly,
-    'qualified_only': qualifiedOnly,
-    'palliative_care': palliativeCare,
-    'phone_number': phoneNumber,
-  };
-}
-
 class UpdateProviderRequest {
-  final Map<String, DayAvailability>? availability;
   final String? serviceId;
   final double? hourlyRate;
   final double? minimumPrice;
   final List<String>? tasks;
   final List<String>? specializations;
   final String? experience;
-  final bool? drivingLicense;
-  final bool? businessProfilesOnly;
-  final bool? qualifiedOnly;
-  final bool? palliativeCare;
+  final File? drivingLicense;
+  final File? businessProfilesOnly;
+  final File? qualifiedOnly;
+  final File? palliativeCare;
 
   const UpdateProviderRequest({
-    this.availability,
     this.serviceId,
     this.hourlyRate,
     this.minimumPrice,
@@ -279,41 +236,48 @@ class UpdateProviderRequest {
     this.palliativeCare,
   });
 
-  Map<String, dynamic> toJson() => {
-    if (availability != null)
-      'availability': availability!.map((k, v) => MapEntry(k, v.toJson())),
-    if (serviceId != null) 'service_id': serviceId,
-    if (hourlyRate != null) 'hourly_rate': hourlyRate,
-    if (minimumPrice != null) 'minimum_price': minimumPrice,
-    if (tasks != null) 'tasks': tasks,
-    if (specializations != null) 'specializations': specializations,
-    if (experience != null) 'experience': experience,
-    if (drivingLicense != null) 'driving_license': drivingLicense,
-    if (businessProfilesOnly != null)
-      'business_profiles_only': businessProfilesOnly,
-    if (qualifiedOnly != null) 'qualified_only': qualifiedOnly,
-    if (palliativeCare != null) 'palliative_care': palliativeCare,
-  };
+  Future<FormData> toFormData() async {
+    // ── JSON blob that goes into the "data" key ──────────────
+    final Map<String, dynamic> dataMap = {};
+
+    if (hourlyRate != null) dataMap['perHourPrice'] = hourlyRate;
+    if (experience != null) dataMap['experienceOptionId'] = experience;
+    if (specializations != null) dataMap['specialistsIn'] = specializations;
+    if (tasks != null) dataMap['othersRequiredTasks'] = tasks;
+
+    // ── File fields ──────────────────────────────────────────
+    Future<MapEntry<String, MultipartFile>> toFile(
+      String key,
+      File file,
+    ) async => MapEntry(
+      key,
+      await MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
+      ),
+    );
+
+    final fileFields = <MapEntry<String, MultipartFile>>[];
+
+    if (drivingLicense != null) {
+      fileFields.add(await toFile('drivingLicense', drivingLicense!));
+    }
+    if (businessProfilesOnly != null) {
+      fileFields.add(await toFile('businessProfiles', businessProfilesOnly!));
+    }
+    if (qualifiedOnly != null) {
+      fileFields.add(await toFile('qualifiedCarer', qualifiedOnly!));
+    }
+    if (palliativeCare != null) {
+      fileFields.add(await toFile('palliativeCare', palliativeCare!));
+    }
+
+    return FormData.fromMap({
+      'data': jsonEncode(dataMap), // ✅ JSON string under "data" key
+      for (final e in fileFields) e.key: e.value,
+    });
+  }
 }
-
-// ── Provider OTP Response ─────────────────────────────────────────────────────
-
-class CreateProviderResponse {
-  final String token;
-  final bool accessToken;
-
-  const CreateProviderResponse({
-    required this.token,
-    required this.accessToken,
-  });
-
-  factory CreateProviderResponse.fromJson(Map<String, dynamic> json) =>
-      CreateProviderResponse(
-        token: json['token'] as String,
-        accessToken: json['accessToken'] as bool,
-      );
-}
-
 // ── Review ────────────────────────────────────────────────────────────────────
 
 class ReviewRequest {

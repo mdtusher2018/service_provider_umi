@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/payment_card_model.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/payment_cards_provider.dart';
-import 'package:service_provider_umi/featured/profile/screen/payment_webview.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 class MyPaymentCardsPage extends ConsumerWidget {
   const MyPaymentCardsPage({super.key});
@@ -32,28 +33,31 @@ class MyPaymentCardsPage extends ConsumerWidget {
         child: AppButton.primary(
           label: "Add New",
           onPressed: () async {
-            final url = await ref
+            final clientSecret = await ref
                 .read(paymentCardsProvider.notifier)
                 .getAddCardLink();
 
-            if (url == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Failed to get add card link')),
-              );
+            if (clientSecret == null) {
+              context.showSnackBar('Failed to get add card link');
+
               return;
             }
+            AppLogger.debug(clientSecret);
 
-            if (context.mounted) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PaymentWebViewScreen(url: url),
-                ),
-              ).then((_) {
-                /// refresh cards after returning
-                ref.read(paymentCardsProvider.notifier).fetchCards();
-              });
-            }
+            /// 2. Init PaymentSheet
+            await Stripe.instance.initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                setupIntentClientSecret: clientSecret,
+                merchantDisplayName: 'Paycron',
+                style: ThemeMode.light,
+              ),
+            );
+
+            /// 3. Open Stripe UI
+            await Stripe.instance.presentPaymentSheet();
+
+            /// 4. IMPORTANT: Sync with backend (refresh cards)
+            ref.read(paymentCardsProvider.notifier).fetchCards();
           },
         ),
       ),
@@ -91,7 +95,14 @@ class MyPaymentCardsPage extends ConsumerWidget {
                 onRefresh: () async {
                   ref.read(paymentCardsProvider.notifier).fetchCards();
                 },
-                child: ListView(children: [AppText.bodyMd('No cards found')]),
+                child: ListView(
+                  children: [
+                    AppEmptyState(
+                      title: 'No cards found',
+                      icon: Icon(Icons.error),
+                    ),
+                  ],
+                ),
               );
             }
 
@@ -101,7 +112,7 @@ class MyPaymentCardsPage extends ConsumerWidget {
               },
               child: ListView.separated(
                 itemCount: cards.length,
-                separatorBuilder: (_, __) => 20.verticalSpace,
+                separatorBuilder: (_, __) => 10.verticalSpace,
                 itemBuilder: (context, index) {
                   final card = cards[index];
 
@@ -139,53 +150,81 @@ class _CardTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      children: [
-        Image.asset(getCardImage(card.displayBrand), width: 42, height: 42),
+    return Container(
+      padding: 16.paddingAll,
+      decoration: (card.isDefault)
+          ? BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: 16.circular,
+              border: Border.all(color: AppColors.primary),
+            )
+          : null,
+      child: Row(
+        children: [
+          Image.asset(getCardImage(card.displayBrand), width: 42, height: 42),
 
-        const SizedBox(width: 14),
+          const SizedBox(width: 14),
 
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText.bodyMd(
-                card.displayBrand.toUpperCase(),
-                fontWeight: FontWeight.w700,
-              ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText.bodyMd(
+                  card.displayBrand.toUpperCase(),
+                  fontWeight: FontWeight.w700,
+                ),
 
-              const SizedBox(height: 4),
+                const SizedBox(height: 4),
 
-              AppText.bodySm(
-                '**** **** **** ${card.last4digit}',
-                color: Colors.grey,
+                AppText.bodySm(
+                  '**** **** **** ${card.last4digit}',
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'delete') {
+                final success = await ref
+                    .read(paymentCardsProvider.notifier)
+                    .deleteCard(card.id);
+
+                if (context.mounted) {
+                  context.showSnackBar(
+                    success
+                        ? 'Card deleted successfully'
+                        : 'Failed to delete card',
+                    isError: !success,
+                  );
+                }
+              }
+              if (value == 'default') {
+                final success = await ref
+                    .read(paymentCardsProvider.notifier)
+                    .setDefaultCard(card.id);
+
+                if (context.mounted) {
+                  context.showSnackBar(
+                    success
+                        ? 'Set as default card successfully'
+                        : 'Failed to set default card',
+                    isError: !success,
+                  );
+                }
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'delete', child: AppText('Delete')),
+              PopupMenuItem(
+                value: 'default',
+                child: AppText('Set as Default Card'),
               ),
             ],
           ),
-        ),
-
-        PopupMenuButton<String>(
-          onSelected: (value) async {
-            if (value == 'delete') {
-              final success = await ref
-                  .read(paymentCardsProvider.notifier)
-                  .deleteCard(card.id);
-
-              if (context.mounted) {
-                context.showSnackBar(
-                  success
-                      ? 'Card deleted successfully'
-                      : 'Failed to delete card',
-                  isError: !success,
-                );
-              }
-            }
-          },
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 'delete', child: AppText('Delete')),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

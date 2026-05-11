@@ -35,8 +35,8 @@ class ServiceRepository with SafeCall {
   ) => asyncGuard(() => _remote.searchProviders(request));
 
   // ── GET /service-providers/filters ───────────────────────────────────────────
-  Future<Result<ServiceFiltersModel, Failure>> getFilters(String serviceType) =>
-      asyncGuard(() => _remote.getFilters(serviceType));
+  Future<Result<ServiceFiltersModel, Failure>> getFilters() =>
+      asyncGuard(() => _remote.getFilters());
 
   // ── GET /service-providers/:id ───────────────────────────────────────────────
   Future<Result<ProviderProfile, Failure>> getProviderProfile(
@@ -79,4 +79,9 @@ class ServiceRepository with SafeCall {
   Future<Result<void, Failure>> updateWorkSchedule(
     List<WorkScheduleRequest> schedules,
   ) => asyncGuard(() => _remote.updateWorkSchedule(schedules));
+
+  // ── PATCH /workSchedule ──────────────────────────────────────────────────────
+  Future<Result<ProviderProfile, Failure>> updateServiceProviderProfile(
+    UpdateProviderRequest schedules,
+  ) => asyncGuard(() => _remote.updateServiceProviderProfile(schedules));
 }

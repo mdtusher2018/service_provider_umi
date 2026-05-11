@@ -57,9 +57,9 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
     final contentState = ref.watch(staticContentProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
@@ -72,61 +72,70 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
         title: AppText.h3(widget.title),
         centerTitle: true,
       ),
-      body: contentState.when(
-        initial: () => const SizedBox.shrink(),
 
-        loading: () => const AppLoader(),
+      body: Container(
+        margin: 16.paddingAll,
+        padding: 16.paddingAll,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: 16.circular,
+          color: AppColors.white,
+        ),
+        child: contentState.when(
+          initial: () => const SizedBox.shrink(),
 
-        success: (content) {
-          final htmlContent = _resolveContent(
-            StaticContentStateSuccess(content),
-          );
+          loading: () => const AppLoader(),
 
-          // ✅ Friendly fallback if field is empty
-          if (htmlContent.trim().isEmpty) {
-            return const Center(
-              child: AppText.bodyMd(
-                'No content available.',
-                color: AppColors.textSecondary,
-              ),
+          success: (content) {
+            final htmlContent = _resolveContent(
+              StaticContentStateSuccess(content),
             );
-          }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            // ✅ flutter_html renders HTML tags properly —
-            // handles <p>, <h1-h3>, <strong>, <a>, <ul>, <li>, etc.
-            child: Html(data: htmlContent),
-          );
-        },
+            // ✅ Friendly fallback if field is empty
+            if (htmlContent.trim().isEmpty) {
+              return const Center(
+                child: AppText.bodyMd(
+                  'No content available.',
+                  color: AppColors.textSecondary,
+                ),
+              );
+            }
 
-        failure: (failure) => Center(
-          child: Padding(
-            padding: 24.paddingAll,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.error_outline_rounded,
-                  color: AppColors.textSecondary,
-                  size: 48,
-                ),
-                16.verticalSpace,
-                AppText.bodyMd(
-                  failure.message,
-                  color: AppColors.textSecondary,
-                  textAlign: TextAlign.center,
-                ),
-                24.verticalSpace,
-                TextButton(
-                  onPressed: () =>
-                      ref.read(staticContentProvider.notifier).fetch(),
-                  child: const AppText.bodyMd(
-                    'Try again',
-                    color: AppColors.primary,
+            return SingleChildScrollView(
+              // ✅ flutter_html renders HTML tags properly —
+              // handles <p>, <h1-h3>, <strong>, <a>, <ul>, <li>, etc.
+              child: Html(data: htmlContent),
+            );
+          },
+
+          failure: (failure) => Center(
+            child: Padding(
+              padding: 24.paddingAll,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    color: AppColors.textSecondary,
+                    size: 48,
                   ),
-                ),
-              ],
+                  16.verticalSpace,
+                  AppText.bodyMd(
+                    failure.message,
+                    color: AppColors.textSecondary,
+                    textAlign: TextAlign.center,
+                  ),
+                  24.verticalSpace,
+                  TextButton(
+                    onPressed: () =>
+                        ref.read(staticContentProvider.notifier).fetch(),
+                    child: const AppText.bodyMd(
+                      'Try again',
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

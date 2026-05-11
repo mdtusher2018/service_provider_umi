@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/data/data_source/mock/mock_misc_data_sources.dart';
@@ -18,8 +20,8 @@ AuthRemoteDataSource authRemoteDataSource(Ref ref) =>
 
 @riverpod
 UserRemoteDataSource userRemoteDataSource(Ref ref) =>
-    // UserRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
-    MockUserDataSource();
+    UserRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+// MockUserDataSource();
 
 @riverpod
 NotificationRemoteDataSource notificationRemoteDataSource(Ref ref) =>
@@ -27,8 +29,8 @@ NotificationRemoteDataSource notificationRemoteDataSource(Ref ref) =>
 
 @riverpod
 ServiceRemoteDataSource serviceRemoteDataSource(Ref ref) =>
-    // ServiceRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
-    MockServiceDataSource();
+    ServiceRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+// MockServiceDataSource();
 
 @riverpod
 StaticContentRemoteDataSource staticContentRemoteDataSource(Ref ref) =>

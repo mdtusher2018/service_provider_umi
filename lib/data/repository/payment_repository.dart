@@ -16,6 +16,9 @@ class PaymentRepository with SafeCall {
   Future<Result<void, Failure>> deleteCard(String paymentMethodId) =>
       asyncGuard(() => _remote.deleteCard(paymentMethodId));
 
+  Future<Result<void, Failure>> setDefaultCard(String paymentMethodId) =>
+      asyncGuard(() => _remote.setDefaultCard(paymentMethodId));
+
   Future<Result<String, Failure>> getAddCardLink() =>
       asyncGuard(() => _remote.getAddCardLink());
 }

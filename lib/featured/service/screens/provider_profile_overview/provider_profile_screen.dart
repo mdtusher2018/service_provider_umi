@@ -102,7 +102,8 @@ class _ProviderProfileOverviewScreenState
                     _buildQaSection(mockProvider: providerProfile),
 
                     AppDivider(),
-                    _buildRatingSection(providerProfile),
+                    if (providerProfile.rating != null)
+                      _buildRatingSection(providerProfile.rating!),
                     AppDivider(),
                     _buildComments(comments: providerProfile.comments),
                     AppDivider(),
@@ -141,11 +142,11 @@ class _ProviderProfileOverviewScreenState
     );
   }
 
-  Widget _buildRatingSection(ProviderProfile providerProfile) {
+  Widget _buildRatingSection(ProviderRating rating) {
     return AppRatingBreakdown(
-      overall: providerProfile.rating.average,
-      totalReviews: providerProfile.rating.totalReviews,
-      breakdown: providerProfile.rating.breakdown,
+      overall: rating.average,
+      totalReviews: rating.totalReviews,
+      breakdown: rating.breakdown,
     );
   }
 

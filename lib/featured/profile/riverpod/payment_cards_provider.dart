@@ -46,6 +46,39 @@ class PaymentCardsNotifier extends _$PaymentCardsNotifier {
     );
   }
 
+  /// Set Default Card
+  Future<bool> setDefaultCard(String paymentMethodId) async {
+    final currentCards = state.value ?? [];
+
+    final result = await _repo.setDefaultCard(paymentMethodId);
+
+    return result.when(
+      success: (_) {
+        final updatedCards = currentCards.map((card) {
+          return PaymentCardModel(
+            id: card.id,
+            type: card.type,
+            displayBrand: card.displayBrand,
+            last4digit: card.last4digit,
+            expMonth: card.expMonth,
+            expYear: card.expYear,
+            funding: card.funding,
+            country: card.country,
+            fingerprint: card.fingerprint,
+            isDefault: card.id == paymentMethodId, // ✅ key logic
+          );
+        }).toList();
+
+        state = AsyncData(updatedCards);
+
+        return true;
+      },
+      failure: (e) {
+        return false;
+      },
+    );
+  }
+
   /// GET ADD CARD LINK
   Future<String?> getAddCardLink() async {
     final result = await _repo.getAddCardLink();

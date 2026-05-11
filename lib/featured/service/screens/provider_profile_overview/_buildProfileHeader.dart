@@ -33,8 +33,8 @@ Widget _buildProfileHeader({
             ),
             _StatDivider(),
             _StatItem(
-              value: '${mockProvider.rating.average} ⭐',
-              label: '${mockProvider.rating.totalReviews} reviews',
+              value: '${mockProvider.rating?.average ?? 0} ⭐',
+              label: '${mockProvider.rating?.totalReviews ?? 0} reviews',
             ),
             _StatDivider(),
             _StatItem(value: '${1}', label: 'Service'),

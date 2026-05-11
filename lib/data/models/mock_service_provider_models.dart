@@ -1,5 +1,6 @@
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
+import 'package:service_provider_umi/data/models/service_models.dart';
 
 // ── Search Providers Request ──────────────────────────────────────────────────
 
@@ -21,13 +22,13 @@ class SearchProvidersRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'page': page,
-        'limit': limit,
-        if (query != null) 'query': query,
-        if (serviceId != null) 'service_id': serviceId,
-        if (serviceType != null) 'service_type': serviceType,
-        if (filters != null) 'filters': filters,
-      };
+    'page': page,
+    'limit': limit,
+    if (query != null) 'query': query,
+    if (serviceId != null) 'service_id': serviceId,
+    if (serviceType != null) 'service_type': serviceType,
+    if (filters != null) 'filters': filters,
+  };
 }
 
 // ── Search Providers Response ─────────────────────────────────────────────────
@@ -57,20 +58,47 @@ class SearchProvidersResponse {
 // ── Service Filters Model ─────────────────────────────────────────────────────
 
 class ServiceFiltersModel {
-  final double maxPrice;
-  final List<String> tasks;
-  final List<String> specializations;
+  final List<FilterOptionModel> experienceOptions;
+  final List<FilterOptionModel> othersTaskOptions;
+  final List<ServiceModel> category;
 
   const ServiceFiltersModel({
-    required this.maxPrice,
-    required this.tasks,
-    required this.specializations,
+    required this.experienceOptions,
+    required this.othersTaskOptions,
+    required this.category,
+  });
+}
+
+class FilterOptionModel {
+  final String id;
+  final String value;
+  final bool isDeleted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  const FilterOptionModel({
+    required this.id,
+    required this.value,
+    required this.isDeleted,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory ServiceFiltersModel.fromJson(Map<String, dynamic> json) =>
-      ServiceFiltersModel(
-        maxPrice: (json['max_price'] as num).toDouble(),
-        tasks: List<String>.from(json['tasks'] as List),
-        specializations: List<String>.from(json['specializations'] as List),
-      );
+  factory FilterOptionModel.fromJson(Map<String, dynamic> json) {
+    return FilterOptionModel(
+      id: json['id'] as String,
+      value: json['value'] as String,
+      isDeleted: json['isDeleted'] as bool,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'value': value,
+    'isDeleted': isDeleted,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
 }

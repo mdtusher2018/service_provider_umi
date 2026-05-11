@@ -1,14 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
-
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/misc_models.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
-
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
@@ -94,7 +92,7 @@ class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
     final result = await _repo.searchProviders(request);
 
     state = result.when(
-      success: (data) => AsyncData((result as Success).data),
+      success: (data) => AsyncData(data),
       failure: (e) => AsyncError(e, StackTrace.current),
     );
   }
@@ -217,5 +215,62 @@ class SaveWorkScheduleNotifier extends _$SaveWorkScheduleNotifier {
         return false;
       },
     );
+  }
+}
+
+//========================================
+//============Filter Page Api=============
+//========================================
+
+@riverpod
+class FilterNotifier extends _$FilterNotifier {
+  @override
+  AsyncValue<ServiceFiltersModel> build() {
+    return const AsyncLoading();
+  }
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  Future<void> fetch() async {
+    state = const AsyncLoading();
+    final result = await _repo.getFilters();
+    state = result.when(
+      success: (data) => AsyncData(data),
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+}
+
+//========================================
+//==========Service Profile API===========
+//========================================
+
+@riverpod
+class UpdateProviderNotifier extends _$UpdateProviderNotifier {
+  @override
+  AsyncValue<bool> build() {
+    return const AsyncData(false);
+  }
+
+  Future<bool> update(UpdateProviderRequest data) async {
+    state = const AsyncLoading();
+
+    final repo = ref.read(serviceRepositoryProvider);
+    final result = await repo.updateServiceProviderProfile(data);
+
+    final success = result.when(
+      success: (_) {
+        state = AsyncData(true);
+        return true;
+      },
+      failure: (e) {
+        AppLogger.error(e.message);
+        AppLogger.error(StackTrace.current.toString());
+        state = AsyncError(e.message, StackTrace.current);
+        return false;
+      },
+    );
+
+    return success;
   }
 }

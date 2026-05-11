@@ -7,6 +7,7 @@ import 'package:service_provider_umi/data/models/payment_card_model.dart';
 abstract class PaymentRemoteDataSource {
   Future<List<PaymentCardModel>> getMyCards();
   Future<void> deleteCard(String paymentMethodId);
+  Future<void> setDefaultCard(String paymentMethodId);
 
   Future<String> getAddCardLink();
 }
@@ -42,6 +43,17 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   }
 
   @override
+  Future<void> setDefaultCard(String paymentMethodId) async {
+    final response = await _dio.post(
+      ApiEndpoints.setDefaultPaymentCard(paymentMethodId),
+    );
+
+    if (response.data['success'] != true) {
+      throw Exception(response.data['message'] ?? 'Failed to delete card');
+    }
+  }
+
+  @override
   Future<String> getAddCardLink() async {
     final response = await _dio.get(ApiEndpoints.getAddCardLink);
 
@@ -49,6 +61,6 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       throw Exception(response.data['message'] ?? 'Failed to get link');
     }
 
-    return response.data['data']['url'];
+    return response.data['data']['secret'];
   }
 }

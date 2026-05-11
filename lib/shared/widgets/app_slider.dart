@@ -5,7 +5,6 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 
-
 /// Duration slider - as seen in booking screens "Duration 2h"
 class AppDurationSlider extends StatelessWidget {
   final double value;
@@ -71,14 +70,14 @@ class AppDurationSlider extends StatelessWidget {
 }
 
 /// Price range slider
-class AppPriceSlider extends ConsumerWidget {
+class AppPriceRangeSlider extends ConsumerWidget {
   final RangeValues values;
   final double min;
   final double max;
   final ValueChanged<RangeValues>? onChanged;
   final String currency;
 
-  const AppPriceSlider({
+  const AppPriceRangeSlider({
     super.key,
     required this.values,
     this.min = 0,
@@ -124,6 +123,40 @@ class AppPriceSlider extends ConsumerWidget {
             onChanged: onChanged,
           ),
         ),
+      ],
+    );
+  }
+}
+
+class AppPriceSlider extends StatelessWidget {
+  final double value;
+  final double min;
+  final double max;
+  final ValueChanged<double>? onChanged;
+  final String currency;
+
+  const AppPriceSlider({
+    super.key,
+    required this.value,
+    this.min = 0,
+    this.max = 100,
+    this.onChanged,
+    this.currency = '\$',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Max Price'),
+            Text('$currency${value.toStringAsFixed(0)}'),
+          ],
+        ),
+        Slider(value: value, min: min, max: max, onChanged: onChanged),
       ],
     );
   }

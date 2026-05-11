@@ -20,7 +20,7 @@ abstract class ServiceRemoteDataSource {
   Future<SearchProvidersResponse> searchProviders(
     SearchProvidersRequest request,
   );
-  Future<ServiceFiltersModel> getFilters(String serviceType);
+  Future<ServiceFiltersModel> getFilters();
   Future<ProviderProfile> getProviderProfile(String providerId);
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
@@ -38,6 +38,10 @@ abstract class ServiceRemoteDataSource {
   Future<WorkScheduleListResponse> getWorkSchedule({int page, int limit});
   Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules);
   Future<void> updateWorkSchedule(List<WorkScheduleRequest> schedules);
+
+  Future<ProviderProfile> updateServiceProviderProfile(
+    UpdateProviderRequest schedules,
+  );
 }
 
 class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
@@ -107,12 +111,38 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /service-providers/filters?service_type=X ───────────────────────────
   @override
-  Future<ServiceFiltersModel> getFilters(String serviceType) async {
-    final response = await _dio.get(
-      ApiEndpoints.serviceFilters,
-      queryParameters: {'service_type': serviceType},
+  Future<ServiceFiltersModel> getFilters() async {
+    final responses = await Future.wait([
+      _dio.get(ApiEndpoints.serviceExperience),
+      _dio.get(ApiEndpoints.serviceOthersTaskOptions),
+    ]);
+
+    final experienceResponse = ApiResponse<List<FilterOptionModel>>.fromJson(
+      responses[0].data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => FilterOptionModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
     );
-    return _parse(response, ServiceFiltersModel.fromJson);
+
+    final othersTaskResponse = ApiResponse<List<FilterOptionModel>>.fromJson(
+      responses[1].data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => FilterOptionModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+    final categoryResponse = await getAllCategories();
+
+    return ServiceFiltersModel(
+      experienceOptions: experienceResponse.data ?? [],
+      othersTaskOptions: othersTaskResponse.data ?? [],
+      category: categoryResponse,
+    );
   }
 
   // ── GET /service-providers/:id ───────────────────────────────────────────────
@@ -235,5 +265,20 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
       ApiEndpoints.workSchedule,
       data: schedules.map((s) => s.toJson()).toList(),
     );
+  }
+
+  // ── PATCH /updateServiceProviderProfile ──────────────────────────────────────────────────────
+  @override
+  Future<ProviderProfile> updateServiceProviderProfile(
+    UpdateProviderRequest data,
+  ) async {
+    final response = await _dio.patch(
+      ApiEndpoints.updateServiceProviderProfile,
+      data: await data.toFormData(), // ✅ await the async FormData
+      options: Options(
+        contentType: 'multipart/form-data', // ✅ explicit content type
+      ),
+    );
+    return _parse<ProviderProfile>(response, ProviderProfile.fromJson);
   }
 }

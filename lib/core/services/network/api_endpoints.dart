@@ -55,9 +55,12 @@ class ApiEndpoints {
 
   // ─── Provider ───────────────────────────────────────────────────────────────
   static const String providerProfile = '/providers/{id}';
+  static const String updateServiceProviderProfile =
+      '/users/service-provider-info';
 
   // ─── Filters & Search ───────────────────────────────────────────────────────
-  static const String serviceFilters = '/services/filters';
+  static const String serviceExperience = '/experience-options';
+  static const String serviceOthersTaskOptions = '/others-task-options';
   static const String searchProviders = '/providers/search';
 
   static const String workSchedule = '/workSchedule';
@@ -65,5 +68,7 @@ class ApiEndpoints {
   static const String getMyPaymentCards = "/stripe/payment-method";
   static String deletePaymentCard(String paymentMethodId) =>
       "/stripe/payment-method/$paymentMethodId";
+  static String setDefaultPaymentCard(String paymentMethodId) =>
+      "/stripe/payment-method/default/$paymentMethodId";
   static const String getAddCardLink = "/stripe/payment-method/add-link";
 }

@@ -46,8 +46,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
       pageBuilder: (_, _, _) => _LogoutDialog(
-        onCancel: () => Navigator.of(context).pop(),
-        onLogout: () => Navigator.of(context).pop(),
+        onCancel: () {
+          context.pop();
+        },
+        onLogout: () async {
+          await ref.read(localStorageProvider).clearAll();
+
+          ref.invalidate(myProfileProvider);
+          ref.invalidate(appRoleProvider);
+
+          if (mounted) {
+            context.go(AppRoutes.login);
+          }
+        },
       ),
     );
   }
