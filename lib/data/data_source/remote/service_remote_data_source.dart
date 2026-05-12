@@ -8,6 +8,7 @@ import 'package:service_provider_umi/data/models/provider_models.dart';
 
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 abstract class ServiceRemoteDataSource {
@@ -25,12 +26,14 @@ abstract class ServiceRemoteDataSource {
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
   Future<void> createBooking(CreateBookingRequest request);
+  Future<void> acceptBooking(String bookingId);
+  Future<void> rejectBooking(String bookingId);
   Future<BookingsListResponse> getMyBookings({
-    BookingStatus? status,
-    int page = 1,
-    int limit = 10,
+    required int page,
+    required BookingStatus status,
+    required AppRole appRole,
   });
-  Future<BookingDetails> getBookingDetail(String bookingId);
+  Future<BookingDetailModel> getBookingDetail(String bookingId);
 
   // ── FAQs ────────────────────────────────────────────────────────────────────
   Future<List<FaqItem>> getFaqs(String serviceType);
@@ -159,30 +162,79 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     await _dio.post(ApiEndpoints.createBooking, data: request.toJson());
   }
 
+  @override
+  Future<void> acceptBooking(String bookingId) async {
+    await _dio.patch(ApiEndpoints.acceptBooking(bookingId));
+  }
+
+  @override
+  Future<void> rejectBooking(String bookingId) async {
+    await _dio.patch(ApiEndpoints.cancelBooking(bookingId));
+  }
+
   // ── GET /bookings/my-bookings ────────────────────────────────────────────────
   @override
   Future<BookingsListResponse> getMyBookings({
-    BookingStatus? status,
     int page = 1,
-    int limit = 10,
+    required BookingStatus status,
+    required AppRole appRole,
   }) async {
+    final endpoint = (appRole == AppRole.user)
+        ? ApiEndpoints.userBookings
+        : ApiEndpoints.providerBookings;
+
+    // 🔥 CASE: accepted tab → call twice
+    if (status == BookingStatus.accepted || status == BookingStatus.requested) {
+      final responses = await Future.wait([
+        _dio.get(
+          endpoint,
+          queryParameters: {
+            'page': page,
+            'include': 'user,provider,bookingDays',
+            'status': BookingStatus.requested.name,
+          },
+        ),
+        _dio.get(
+          endpoint,
+          queryParameters: {
+            'page': page,
+            'include': 'user,provider,bookingDays',
+            'status': BookingStatus.accepted.name,
+          },
+        ),
+      ]);
+
+      final res1 = _parse(responses[0], BookingsListResponse.fromJson);
+      final res2 = _parse(responses[1], BookingsListResponse.fromJson);
+
+      // 🔥 MERGE
+      return BookingsListResponse(
+        bookings: [...res1.bookings, ...res2.bookings],
+      );
+    }
+
+    // ✅ NORMAL FLOW
     final response = await _dio.get(
-      ApiEndpoints.myBookings,
+      endpoint,
       queryParameters: {
         'page': page,
-        'limit': limit,
-        if (status != null) 'status': status.apiValue,
+        'include': 'user,provider,bookingDays',
+        'status': status.name,
       },
     );
+
     return _parse(response, BookingsListResponse.fromJson);
   }
 
   // ── GET /bookings/:id ────────────────────────────────────────────────────────
   @override
-  Future<BookingDetails> getBookingDetail(String bookingId) async {
+  Future<BookingDetailModel> getBookingDetail(String bookingId) async {
     final url = ApiEndpoints.bookingDetail.replaceFirst('{id}', bookingId);
-    final response = await _dio.get(url);
-    return _parse(response, BookingDetails.fromJson);
+    final response = await _dio.get(
+      url,
+      queryParameters: {'include': 'user,provider,bookingDays'},
+    );
+    return _parse(response, BookingDetailModel.fromJson);
   }
 
   // ── GET /faqs?service_type=X ─────────────────────────────────────────────────

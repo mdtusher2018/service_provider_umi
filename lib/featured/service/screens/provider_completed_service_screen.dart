@@ -18,21 +18,21 @@ class _ProviderCompletedServiceScreenState
 
   void _loadData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.read(bookingsProvider(BookingStatus.completed).notifier).fetch();
+      ref.read(bookingsProvider(BookingStatus.complete).notifier).fetch();
     });
   }
 
-  void _onCardTap(BookingItem item, BuildContext context) {
+  void _onCardTap(BookingModel item, BuildContext context) {
     if (kIsWeb) {
-      context.go(AppRoutes.bookingDetail, extra: item);
+      context.go(AppRoutes.bookingDetailPath(item.id));
     } else {
-      context.push(AppRoutes.bookingDetail, extra: item);
+      context.push(AppRoutes.bookingDetailPath(item.id));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(bookingsProvider(BookingStatus.completed));
+    final state = ref.watch(bookingsProvider(BookingStatus.complete));
     return Scaffold(
       backgroundColor: AppColors.background,
 
@@ -42,18 +42,18 @@ class _ProviderCompletedServiceScreenState
         loading: () => const AppLoader(),
         error: (e, _) => Center(child: AppText.h3(e.toString())),
         data: (data) {
-          if (data.bookings.isEmpty) {
+          if (data.isEmpty) {
             return const Center(child: AppText.bodyLg('No bookings found'));
           }
 
           return RefreshIndicator(
             onRefresh: () async {
               ref
-                  .read(bookingsProvider(BookingStatus.completed).notifier)
+                  .read(bookingsProvider(BookingStatus.complete).notifier)
                   .fetch();
             },
             child: BookingList(
-              items: data.bookings,
+              items: data,
               emptyMessage: 'No bookings',
               emptySubtitle: 'Your bookings will appear here',
               onCardTap: (item) => _onCardTap(item, context),

@@ -1,5 +1,6 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 class BookingCard extends ConsumerStatefulWidget {
-  final BookingItem item;
+  final BookingModel item;
   final VoidCallback? onTap;
   final VoidCallback? onRatingTap;
 
@@ -100,9 +101,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     width: 72,
                     height: 72,
                     color: AppColors.primaryLight,
-                    child: widget.item.serviceImageUrl.isNotEmpty
+                    child: widget.item.provider != null
                         ? Image.network(
-                            widget.item.serviceImageUrl,
+                            widget.item.provider!.profile,
                             fit: BoxFit.cover,
                           )
                         : const Icon(Icons.elderly_outlined, size: 36),
@@ -115,7 +116,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.labelLg(
-                        widget.item.serviceName,
+                        "widget.item.serviceName",
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -125,24 +126,32 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         children: [
                           const Icon(Icons.access_time_rounded, size: 13),
                           4.horizontalSpace,
-                          AppText.bodySm(
-                            "From ${widget.item.startTime} to ${widget.item.endTime}",
+                          Flexible(
+                            child: AppText.bodySm(
+                              "From ${widget.item.bookingDays.first.startTime!.toDisplayTime} to ${widget.item.bookingDays.first.endTime!.toDisplayTime}",
+                            ),
                           ),
                         ],
                       ),
                       4.verticalSpace,
 
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_month_outlined, size: 13),
-                          4.horizontalSpace,
-                          AppText.bodySm(
-                            DateTime.parse(
-                              widget.item.bookingDate,
-                            ).toRelativeTime,
-                          ),
-                        ],
-                      ),
+                      if (widget.item.bookingDays.first.startTime != null)
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_month_outlined, size: 13),
+                            4.horizontalSpace,
+                            Flexible(
+                              child: AppText.bodySm(
+                                widget
+                                    .item
+                                    .bookingDays
+                                    .first
+                                    .startTime!
+                                    .toDisplayDate,
+                              ),
+                            ),
+                          ],
+                        ),
                       10.verticalSpace,
 
                       _buildStatusRow(role),
@@ -158,8 +167,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
   }
 
   Widget _buildStatusRow(AppRole role) {
-    switch (widget.item.bookingStatus) {
-      case BookingStatus.pending:
+    AppLogger.debug(widget.item.status.toString());
+    switch (widget.item.status) {
+      case BookingStatus.requested:
         if (role == AppRole.provider) {
           return Row(
             children: [
@@ -207,7 +217,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
           backgroundColor: AppColors.infoLight,
         );
 
-      case BookingStatus.completed:
+      case BookingStatus.complete:
         if (role == AppRole.user) {
           return Row(
             children: [
@@ -236,16 +246,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
           backgroundColor: AppColors.successLight,
         );
 
-      case BookingStatus.cancelled:
+      case BookingStatus.canceled:
         return const _StatusBadge(
           label: 'Cancelled',
-          color: AppColors.error,
-          backgroundColor: AppColors.errorLight,
-        );
-
-      case BookingStatus.rejected:
-        return const _StatusBadge(
-          label: 'Rejected',
           color: AppColors.error,
           backgroundColor: AppColors.errorLight,
         );
@@ -284,11 +287,11 @@ class _StatusBadge extends StatelessWidget {
 
 // ─── Booking List ─────────────────────────────────────────────
 class BookingList extends StatelessWidget {
-  final List<BookingItem> items;
+  final List<BookingModel> items;
   final String emptyMessage;
   final String emptySubtitle;
-  final void Function(BookingItem) onCardTap;
-  final void Function(BookingItem)? onRatingTap;
+  final void Function(BookingModel) onCardTap;
+  final void Function(BookingModel)? onRatingTap;
 
   const BookingList({
     super.key,

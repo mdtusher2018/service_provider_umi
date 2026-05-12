@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
@@ -8,6 +10,7 @@ import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
+
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 part 'service_provider.g.dart';
@@ -100,19 +103,168 @@ class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
 
 @riverpod
 class BookingsNotifier extends _$BookingsNotifier {
-  @override
-  AsyncValue<BookingsListResponse> build(BookingStatus status) {
-    // Auto-fetch on build
-    fetch();
-    return const AsyncLoading();
-  }
+  int _page = 1;
+  bool _hasMore = true;
+  bool _isFetching = false;
+  BookingStatus? bookingStatus;
+  final isAccepting = ValueNotifier<bool>(false);
+  final isCancelling = ValueNotifier<bool>(false);
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> fetch() async {
-    state = const AsyncLoading();
-    final result = await _repo.getMyBookings(status: status);
+  @override
+  AsyncValue<List<BookingModel>> build(BookingStatus status) {
+    bookingStatus = status;
+    fetch(initial: true);
+
+    return const AsyncLoading();
+  }
+
+  Future<void> fetch({bool initial = false}) async {
+    if (_isFetching) return;
+
+    if (initial) {
+      _page = 1;
+      _hasMore = true;
+      state = const AsyncLoading();
+    }
+
+    if (!_hasMore) return;
+
+    _isFetching = true;
+
+    final result = await _repo.getMyBookings(
+      page: _page,
+      status: bookingStatus!,
+      appRole: ref.read(appRoleProvider),
+    );
+
     if (!ref.mounted) return;
+
+    result.when(
+      success: (res) {
+        final newItems = res.bookings;
+
+        final current = state.value ?? [];
+
+        final updated = initial ? newItems : [...current, ...newItems];
+
+        _hasMore = newItems.isNotEmpty;
+        _page++;
+
+        state = AsyncData(updated);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+
+    _isFetching = false;
+  }
+
+  Future<void> createBooking({required CreateBookingRequest request}) async {
+    final result = await _repo.createBooking(request);
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) async {
+        // 🔥 reload first page after create
+        await fetch(initial: true);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+  }
+
+  Future<void> acceptBooking(String bookingId) async {
+    final current = state.value ?? [];
+    isAccepting.value = true;
+    final result = await _repo.acceptBooking(bookingId);
+    isAccepting.value = false;
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) {
+        final updated = current.map((b) {
+          // if (b.id == bookingId) {
+          //   return BookingModel(
+          //     bookingId: b.bookingId,
+          //     providerName: b.providerName,
+          //     providerImage: b.providerImage,
+          //     startTime: b.startTime,
+          //     endTime: b.endTime,
+          //     day: b.day,
+          //     status: BookingStatus.accepted,
+          //   );
+          // }
+          return b;
+        }).toList();
+
+        state = AsyncData(updated);
+      },
+      failure: (e) async {
+        await fetch(initial: true);
+      },
+    );
+  }
+
+  Future<void> rejectBooking(String bookingId) async {
+    final current = state.value ?? [];
+
+    isCancelling.value = true;
+    final result = await _repo.rejectBooking(bookingId);
+    isCancelling.value = false;
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) {
+        final updated = current.map((b) {
+          // if (b.bookingId == bookingId) {
+          //   return BookingUiModel(
+          //     bookingId: b.bookingId,
+          //     providerName: b.providerName,
+          //     providerImage: b.providerImage,
+          //     startTime: b.startTime,
+          //     endTime: b.endTime,
+          //     day: b.day,
+          //     status: BookingStatus.canceled,
+          //   );
+          // }
+          return b;
+        }).toList();
+
+        state = AsyncData(updated);
+      },
+      failure: (e) async {
+        await fetch(initial: true);
+      },
+    );
+  }
+}
+
+@riverpod
+class BookingDetailNotifier extends _$BookingDetailNotifier {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  @override
+  Future<BookingDetailModel?> build(String bookingId) async {
+    return fetch(bookingId);
+  }
+
+  Future<BookingDetailModel?> fetch(String bookingId) async {
+    final result = await _repo.getBookingDetail(bookingId);
+
+    return result.when(success: (data) => data, failure: (e) => throw e);
+  }
+
+  Future<void> refresh(String bookingId) async {
+    state = const AsyncLoading();
+
+    final result = await _repo.getBookingDetail(bookingId);
 
     state = result.when(
       success: AsyncData.new,

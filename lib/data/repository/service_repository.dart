@@ -8,6 +8,7 @@ import 'package:service_provider_umi/data/models/mock_service_provider_models.da
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 class ServiceRepository with SafeCall {
@@ -46,19 +47,24 @@ class ServiceRepository with SafeCall {
   // ── POST /bookings ────────────────────────────────────────────────────────────
   Future<Result<void, Failure>> createBooking(CreateBookingRequest request) =>
       asyncGuard(() => _remote.createBooking(request));
+  Future<Result<void, Failure>> acceptBooking(String bookingId) =>
+      asyncGuard(() => _remote.acceptBooking(bookingId));
+  Future<Result<void, Failure>> rejectBooking(String bookingId) =>
+      asyncGuard(() => _remote.rejectBooking(bookingId));
 
   // ── GET /bookings/my-bookings ─────────────────────────────────────────────────
   Future<Result<BookingsListResponse, Failure>> getMyBookings({
-    BookingStatus? status,
-    int page = 1,
-    int limit = 10,
+    required int page,
+    required BookingStatus status,
+    required AppRole appRole,
   }) => asyncGuard(
-    () => _remote.getMyBookings(status: status, page: page, limit: limit),
+    () => _remote.getMyBookings(page: page, status: status, appRole: appRole),
   );
 
   // ── GET /bookings/:id ─────────────────────────────────────────────────────────
-  Future<Result<BookingDetails, Failure>> getBookingDetail(String bookingId) =>
-      asyncGuard(() => _remote.getBookingDetail(bookingId));
+  Future<Result<BookingDetailModel, Failure>> getBookingDetail(
+    String bookingId,
+  ) => asyncGuard(() => _remote.getBookingDetail(bookingId));
 
   // ── GET /faqs ────────────────────────────────────────────────────────────────
   Future<Result<List<FaqItem>, Failure>> getFaqs(String serviceType) =>

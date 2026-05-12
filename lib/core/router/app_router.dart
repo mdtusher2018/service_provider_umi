@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
-import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_time_screen/booking_time_screen.dart';
@@ -323,19 +322,9 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.bookingDetail,
         builder: (context, state) {
-          final booking = state.extra as BookingItem?;
-          final fallback = BookingItem(
-            bookingId: '',
-            serviceName: '',
-            serviceImageUrl: '',
-            startTime: '',
-            endTime: '',
-            bookingDate: '',
-            bookingStatus: BookingStatus.cancelled,
-            paidOnDate: '',
-            price: 0,
-          );
-          return BookingDetailScreen(booking: booking ?? fallback);
+          final bookingId = state.pathParameters['bookingId'] ?? '';
+
+          return BookingDetailScreen(bookingId: bookingId);
         },
       ),
       GoRoute(

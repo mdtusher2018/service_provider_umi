@@ -42,7 +42,6 @@ Widget _buildHeader(BuildContext context) {
         10.horizontalSpace,
         Expanded(
           child: AppTextField(
-            enabled: false,
             hint: "Find the service you need",
             prefixIcon: kIsWeb
                 ? null
@@ -55,18 +54,23 @@ Widget _buildHeader(BuildContext context) {
         ),
 
         10.horizontalSpace,
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.black),
-          ),
-          child: const Icon(
-            Icons.favorite_border_rounded,
-            color: AppColors.black,
-            size: 20,
+        InkWell(
+          onTap: () {
+            context.go(AppRoutes.favourites);
+          },
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.black),
+            ),
+            child: const Icon(
+              Icons.favorite_border_rounded,
+              color: AppColors.black,
+              size: 20,
+            ),
           ),
         ),
       ],

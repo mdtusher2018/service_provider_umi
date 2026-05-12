@@ -7,6 +7,7 @@ import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 class MockServiceDataSource implements ServiceRemoteDataSource {
@@ -216,75 +217,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
 
   // ─── Mock Bookings ────────────────────────────────────────────────────────
 
-  static final List<BookingItem> _mockBookings = [
-    BookingItem(
-      bookingId: 'b_101',
-      bookingStatus: BookingStatus.accepted,
-      serviceName: 'Elderly Care',
-      serviceImageUrl: 'https://picsum.photos/seed/elderlycare/200',
-      bookingDate: DateTime.now().add(const Duration(days: 2)).toString(),
-      startTime: '10:00',
-      endTime: '12:00',
-      price: 30.0,
-      paidOnDate: DateTime.now().subtract(const Duration(days: 1)).toString(),
-    ),
-    BookingItem(
-      bookingId: 'b_102',
-      bookingStatus: BookingStatus.pending,
-      serviceName: 'Home Care',
-      serviceImageUrl: 'https://picsum.photos/seed/homecare/200',
-      bookingDate: DateTime.now().add(const Duration(days: 5)).toString(),
-      startTime: '14:00',
-      endTime: '16:00',
-      price: 24.0,
-      paidOnDate: DateTime.now().toString(),
-    ),
-    BookingItem(
-      bookingId: 'b_103',
-      bookingStatus: BookingStatus.completed,
-      serviceName: 'Cleaning',
-      serviceImageUrl: 'https://picsum.photos/seed/cleaning/200',
-      bookingDate: DateTime.now().subtract(const Duration(days: 3)).toString(),
-      startTime: '09:00',
-      endTime: '11:00',
-      price: 20.0,
-      paidOnDate: DateTime.now().subtract(const Duration(days: 5)).toString(),
-    ),
-    BookingItem(
-      bookingId: 'b_104',
-      bookingStatus: BookingStatus.cancelled,
-      serviceName: 'Child Care',
-      serviceImageUrl: 'https://picsum.photos/seed/childcare/200',
-      bookingDate: DateTime.now().subtract(const Duration(days: 7)).toString(),
-      startTime: '13:00',
-      endTime: '15:00',
-      price: 28.0,
-      paidOnDate: DateTime.now().subtract(const Duration(days: 8)).toString(),
-      cancelledBy: 'Sarah Ahmed',
-    ),
-    BookingItem(
-      bookingId: 'b_105',
-      bookingStatus: BookingStatus.ongoing,
-      serviceName: 'Elderly Care',
-      serviceImageUrl: 'https://picsum.photos/seed/elderlycare/200',
-      bookingDate: DateTime.now().toString(),
-      startTime: '08:00',
-      endTime: '10:00',
-      price: 30.0,
-      paidOnDate: DateTime.now().subtract(const Duration(days: 2)).toString(),
-    ),
-    BookingItem(
-      bookingId: 'b_106',
-      bookingStatus: BookingStatus.rejected,
-      serviceName: 'Pet Care',
-      serviceImageUrl: 'https://picsum.photos/seed/petcare/200',
-      bookingDate: DateTime.now().subtract(const Duration(days: 10)).toString(),
-      startTime: '11:00',
-      endTime: '12:00',
-      price: 15.0,
-      paidOnDate: DateTime.now().subtract(const Duration(days: 11)).toString(),
-    ),
-  ];
+  static final List<BookingModel> _mockBookings = [];
 
   // ─── Mock FAQs ────────────────────────────────────────────────────────────
 
@@ -494,54 +427,22 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
 
   @override
   Future<BookingsListResponse> getMyBookings({
-    BookingStatus? status,
-    int page = 1,
-    int limit = 10,
+    required int page,
+    required BookingStatus status,
+    required AppRole appRole,
   }) async {
     await _delay();
     var filtered = _mockBookings;
-    if (status != null) {
-      filtered = filtered.where((b) => b.bookingStatus == status).toList();
-    }
+    int limit = 10;
     final total = filtered.length;
     final start = ((page - 1) * limit).clamp(0, total);
     final end = (start + limit).clamp(0, total);
-    return BookingsListResponse(
-      bookings: filtered.sublist(start, end),
-      pagination: PaginationMeta(page: page, limit: limit, totalPage: total),
-    );
+    return BookingsListResponse(bookings: filtered.sublist(start, end));
   }
 
   @override
-  Future<BookingDetails> getBookingDetail(String bookingId) async {
-    await _delay();
-    return BookingDetails(
-      bookingId: bookingId,
-      status: BookingStatus.accepted,
-      provider: const BookingProvider(
-        id: 'provider_003',
-        name: 'Mr. Raju',
-        phone: '+880 1840-560614',
-        avatarUrl: 'https://i.pravatar.cc/150?img=3',
-        chatEnabled: true,
-      ),
-      comments: 'Please bring your own gloves.',
-      date: '2026-04-10',
-      startTime: '10:00',
-      endTime: '12:00',
-      durationMinutes: 120,
-      location: const BookingLocation(
-        address: 'Dhaka, Bangladesh',
-        coordinates: [23.8103, 90.4125],
-      ),
-      service: const BookingService(name: 'Elderly Care', pricePerHour: 15.0),
-      pricing: const BookingPricing(
-        bookingHours: 2,
-        subtotal: 30.0,
-        clientProtection: 0.0,
-        totalPrice: 30.0,
-      ),
-    );
+  Future<BookingDetailModel> getBookingDetail(String bookingId) async {
+    throw UnimplementedError();
   }
 
   @override
@@ -630,6 +531,18 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
     UpdateProviderRequest schedules,
   ) {
     // TODO: implement updateServiceProviderProfile
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> acceptBooking(String bookingId) {
+    // TODO: implement acceptBooking
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> rejectBooking(String bookingId) {
+    // TODO: implement rejectBooking
     throw UnimplementedError();
   }
 }

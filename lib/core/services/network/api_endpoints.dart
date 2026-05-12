@@ -47,8 +47,11 @@ class ApiEndpoints {
 
   // ─── Booking ────────────────────────────────────────────────────────────────
   static const String bookingDetail = '/bookings/{id}';
-  static const String myBookings = '/bookings';
+  static const String userBookings = '/bookings/user-booking';
+  static const String providerBookings = '/bookings/provider-booking';
   static const String createBooking = '/bookings';
+  static String acceptBooking(String id) => '/bookings/accept/$id';
+  static String cancelBooking(String id) => '/bookings/canceled/$id';
 
   // ─── FAQs ───────────────────────────────────────────────────────────────────
   static const String faqs = '/faqs';

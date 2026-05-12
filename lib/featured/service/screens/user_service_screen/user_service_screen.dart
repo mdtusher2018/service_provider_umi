@@ -29,17 +29,27 @@ class UserServiceScreen extends ConsumerStatefulWidget {
 class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ScrollController _scrollController;
 
   final _tabs = const [
-    BookingStatus.accepted,
-    BookingStatus.completed,
-    BookingStatus.cancelled,
+    BookingStatus.requested,
+    BookingStatus.complete,
+    BookingStatus.canceled,
   ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(bookingsProvider(_currentStatus).notifier).fetch();
+    }
   }
 
   BookingStatus get _currentStatus => _tabs[_tabController.index];
@@ -97,7 +107,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                 loading: () => const AppLoader(),
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
-                  final bookings = data.bookings;
+                  final bookings = data;
 
                   if (bookings.isEmpty) {
                     return const Center(
@@ -128,25 +138,22 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     );
   }
 
-  void _onCardTap(BookingItem item, BuildContext context) {
+  void _onCardTap(BookingModel item, BuildContext context) {
     if (kIsWeb) {
-      context.go(
-        AppRoutes.bookingDetail,
-        extra: item,
-      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+      context.go(AppRoutes.bookingDetailPath(item.id));
     } else {
-      context.push(AppRoutes.bookingDetail, extra: item);
+      context.push(AppRoutes.bookingDetailPath(item.id));
     }
   }
 
-  void _showRatingDialog(BookingItem item) {
+  void _showRatingDialog(BookingModel item) {
     showGeneralDialog(
       context: context,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.5),
       pageBuilder: (_, _, _) => RatingDialog(
-        serviceName: item.serviceName,
+        serviceName: "item.serviceName",
         onSubmit: (rating, tags, comment) {
           context.pop();
         },

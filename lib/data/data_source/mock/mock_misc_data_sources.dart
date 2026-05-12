@@ -59,6 +59,56 @@ class MockNotificationDataSource implements NotificationRemoteDataSource {
       isRead: true,
       type: AlertType.orderComplete,
     ),
+    NotificationItem(
+      id: 'n_1',
+      title: 'Booking Confirmed',
+      message: 'Your booking for Elderly Care on April 10 has been accepted.',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)).toString(),
+      isRead: false,
+      type: AlertType.orderComplete,
+    ),
+    NotificationItem(
+      id: 'n_2',
+      title: 'Payment Received',
+      message: 'Your payment of \$30.00 was successfully processed.',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)).toString(),
+      isRead: false,
+      type: AlertType.orderComplete,
+    ),
+    NotificationItem(
+      id: 'n_3',
+      title: 'New Review',
+      message: 'Ana Silva left you a 5-star review. Great work!',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)).toString(),
+      isRead: false,
+      type: AlertType.orderComplete,
+    ),
+    NotificationItem(
+      id: 'n_4',
+      title: 'Booking Reminder',
+      message: 'You have a booking tomorrow at 10:00 AM with Mr. Raju.',
+      createdAt: DateTime.now()
+          .subtract(const Duration(days: 1, hours: 3))
+          .toString(),
+      isRead: false,
+      type: AlertType.orderComplete,
+    ),
+    NotificationItem(
+      id: 'n_5',
+      title: 'Booking Cancelled',
+      message: 'Your booking for Child Care on April 5 was cancelled.',
+      createdAt: DateTime.now().subtract(const Duration(days: 3)).toString(),
+      isRead: true,
+      type: AlertType.orderComplete,
+    ),
+    NotificationItem(
+      id: 'n_6',
+      title: 'Profile Verified',
+      message: 'Congratulations! Your provider profile has been verified.',
+      createdAt: DateTime.now().subtract(const Duration(days: 7)).toString(),
+      isRead: true,
+      type: AlertType.orderComplete,
+    ),
   ];
 
   @override

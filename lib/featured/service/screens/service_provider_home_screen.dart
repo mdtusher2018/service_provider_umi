@@ -35,18 +35,17 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
 
   void _loadData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.read(bookingsProvider(BookingStatus.completed).notifier).fetch();
+      ref
+          .read(bookingsProvider(BookingStatus.accepted).notifier)
+          .fetch(initial: true);
     });
   }
 
-  void _onCardTap(BookingItem item, BuildContext context) {
+  void _onCardTap(BookingModel item, BuildContext context) {
     if (kIsWeb) {
-      context.push(
-        AppRoutes.bookingDetail,
-        extra: item,
-      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+      context.go(AppRoutes.bookingDetailPath(item.id));
     } else {
-      context.push(AppRoutes.bookingDetail, extra: item);
+      context.push(AppRoutes.bookingDetailPath(item.id));
     }
   }
 
@@ -70,7 +69,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                     loading: () => const AppLoader(),
                     error: (e, _) => Center(child: AppText.h3(e.toString())),
                     data: (data) {
-                      final bookings = data.bookings;
+                      final bookings = data;
 
                       if (bookings.isEmpty) {
                         return const Center(
@@ -86,7 +85,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                                   BookingStatus.accepted,
                                 ).notifier,
                               )
-                              .fetch();
+                              .fetch(initial: true);
                         },
                         child: BookingList(
                           items: bookings,

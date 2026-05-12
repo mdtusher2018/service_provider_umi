@@ -1,221 +1,455 @@
 // models/booking/booking_models.dart
-
-import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 // ── Request ───────────────────────────────────────────────────────────────────
 
-class BookingLocation {
-  final String address;
-  final List<double> coordinates;
-
-  const BookingLocation({required this.address, required this.coordinates});
-
-  Map<String, dynamic> toJson() => {
-    'address': address,
-    'coordinates': coordinates,
-  };
-
-  factory BookingLocation.fromJson(Map<String, dynamic> json) =>
-      BookingLocation(
-        address: json['address'] as String,
-        coordinates: List<double>.from(
-          (json['coordinates'] as List).map((e) => (e as num).toDouble()),
-        ),
-      );
-}
-
 class CreateBookingRequest {
-  final String serviceProvider;
-  final String date;
-  final String startTime;
-  final int duration;
-  final BookingLocation location;
-  final String? additionalInstruction;
+  final String providerId;
+  final double price;
+  final String startDate;
+  final int totalHours;
+  final String bookingType; // e.g. "weekly"
+  final List<BookingDayRequest> bookingDays;
 
   const CreateBookingRequest({
-    required this.serviceProvider,
-    required this.date,
-    required this.startTime,
-    required this.duration,
-    required this.location,
-    this.additionalInstruction,
+    required this.providerId,
+    required this.price,
+    required this.startDate,
+    required this.totalHours,
+    required this.bookingType,
+    required this.bookingDays,
   });
 
   Map<String, dynamic> toJson() => {
-    'service_provider': serviceProvider,
-    'date': date,
-    'start_time': startTime,
-    'duration': duration,
-    'location': location.toJson(),
-    if (additionalInstruction != null)
-      'additional_instruction': additionalInstruction,
+    "providerId": providerId,
+    "price": price,
+    "startDate": startDate,
+    "totalHours": totalHours,
+    "bookingType": bookingType,
+    "bookingDays": bookingDays.map((e) => e.toJson()).toList(),
   };
 }
 
-// ── Booking List Item ─────────────────────────────────────────────────────────
-
-class BookingItem {
-  final String bookingId;
-  final BookingStatus bookingStatus;
-  final String serviceName;
-  final String serviceImageUrl;
-  final String bookingDate;
+class BookingDayRequest {
+  final String day;
   final String startTime;
   final String endTime;
-  final double price;
-  final String paidOnDate;
-  final String? cancelledBy;
+  final int durationHours;
 
-  const BookingItem({
-    required this.bookingId,
-    required this.bookingStatus,
-    required this.serviceName,
-    required this.serviceImageUrl,
-    required this.bookingDate,
+  const BookingDayRequest({
+    required this.day,
     required this.startTime,
     required this.endTime,
-    required this.price,
-    required this.paidOnDate,
-    this.cancelledBy,
+    required this.durationHours,
   });
 
-  factory BookingItem.fromJson(Map<String, dynamic> json) => BookingItem(
-    bookingId: json['booking_id'] as String,
-    bookingStatus: BookingStatus.fromString(json['booking_status'] as String),
-    serviceName: json['service_name'] as String,
-    serviceImageUrl: json['service_image_url'] as String,
-    bookingDate: json['booking_date'] as String,
-    startTime: json['start_time'] as String,
-    endTime: json['end_time'] as String,
-    price: (json['price'] as num).toDouble(),
-    paidOnDate: json['paid_on_date'] as String,
-    cancelledBy: json['cancled_by'] as String?,
-  );
-}
-
-class BookingsListResponse {
-  final List<BookingItem> bookings;
-  final PaginationMeta pagination;
-
-  const BookingsListResponse({
-    required this.bookings,
-    required this.pagination,
-  });
-
-  factory BookingsListResponse.fromJson(Map<String, dynamic> json) =>
-      BookingsListResponse(
-        bookings: (json['data'] as List)
-            .map((e) => BookingItem.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        pagination: PaginationMeta.fromJson(
-          json['pagination'] as Map<String, dynamic>,
-        ),
-      );
+  Map<String, dynamic> toJson() => {
+    "day": day,
+    "startTime": startTime,
+    "endTime": endTime,
+    "durationHours": durationHours,
+  };
 }
 
 // ── Booking Details ───────────────────────────────────────────────────────────
 
-class BookingDetails {
-  final String bookingId;
-  final BookingStatus status;
-  final BookingProvider provider;
-  final String? comments;
-  final String date;
-  final String startTime;
-  final String endTime;
-  final int durationMinutes;
-  final BookingLocation location;
-  final BookingService service;
-  final BookingPricing pricing;
+class BookingDetailModel {
+  final String id;
+  final String userId;
+  final String providerId;
+  final bool isPaid;
+  final String bookingType;
+  final String status;
+  final int price;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int totalHours;
+  final bool isActive;
+  final String? nextBooking;
+  final bool isDeleted;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  const BookingDetails({
-    required this.bookingId,
+  final List<BookingTimeScheduleModel> bookingDays;
+  final BookedUserDetailModel? user;
+  final BookedProviderDetailModel? provider;
+  final List<dynamic> payments;
+
+  const BookingDetailModel({
+    required this.id,
+    required this.userId,
+    required this.providerId,
+    required this.isPaid,
+    required this.bookingType,
     required this.status,
+    required this.price,
+    required this.startDate,
+    required this.endDate,
+    required this.totalHours,
+    required this.isActive,
+    required this.nextBooking,
+    required this.isDeleted,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.user,
     required this.provider,
-    this.comments,
-    required this.date,
-    required this.startTime,
-    required this.endTime,
-    required this.durationMinutes,
-    required this.location,
-    required this.service,
-    required this.pricing,
+    required this.payments,
+    required this.bookingDays,
   });
 
-  factory BookingDetails.fromJson(Map<String, dynamic> json) => BookingDetails(
-    bookingId: json['booking_id'] as String,
-    status: BookingStatus.fromString(json['status'] as String),
-    provider: BookingProvider.fromJson(
-      json['provider'] as Map<String, dynamic>,
-    ),
-    comments: json['comments'] as String?,
-    date: json['date'] as String,
-    startTime: json['start_time'] as String,
-    endTime: json['end_time'] as String,
-    durationMinutes: json['duration_minutes'] as int,
-    location: BookingLocation.fromJson(
-      json['location'] as Map<String, dynamic>,
-    ),
-    service: BookingService.fromJson(json['service'] as Map<String, dynamic>),
-    pricing: BookingPricing.fromJson(json['pricing'] as Map<String, dynamic>),
-  );
+  factory BookingDetailModel.fromJson(Map<String, dynamic> json) {
+    return BookingDetailModel(
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      providerId: json['providerId'] ?? '',
+      isPaid: json['isPaid'] ?? false,
+      bookingType: json['bookingType'] ?? '',
+      status: json['status'] ?? '',
+      price: json['price'] ?? 0,
+      startDate: json['startDate'] != null
+          ? DateTime.tryParse(json['startDate'])
+          : null,
+      endDate: json['endDate'] != null
+          ? DateTime.tryParse(json['endDate'])
+          : null,
+      totalHours: json['totalHours'] ?? 0,
+      isActive: json['isActive'] ?? false,
+      nextBooking: json['nextBooking'],
+      isDeleted: json['isDeleted'] ?? false,
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'])
+          : null,
+      user: json['user'] != null
+          ? BookedUserDetailModel.fromJson(json['user'])
+          : null,
+      provider: json['provider'] != null
+          ? BookedProviderDetailModel.fromJson(json['provider'])
+          : null,
+      payments: json['payments'] ?? [],
+      bookingDays:
+          (json['bookingDays'] as List<dynamic>?)
+              ?.map((e) => BookingTimeScheduleModel.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
 }
 
-class BookingProvider {
+class BookedUserDetailModel {
   final String id;
   final String name;
-  final String phone;
-  final String avatarUrl;
-  final bool chatEnabled;
+  final String email;
+  final String? profile;
+  final String? phoneNumber;
 
-  const BookingProvider({
+  const BookedUserDetailModel({
     required this.id,
     required this.name,
-    required this.phone,
-    required this.avatarUrl,
-    required this.chatEnabled,
+    required this.email,
+    required this.profile,
+    required this.phoneNumber,
   });
 
-  factory BookingProvider.fromJson(Map<String, dynamic> json) =>
-      BookingProvider(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        phone: json['phone'] as String,
-        avatarUrl: json['avatar_url'] as String,
-        chatEnabled: json['chat_enabled'] as bool,
+  factory BookedUserDetailModel.fromJson(Map<String, dynamic> json) {
+    return BookedUserDetailModel(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      profile: json['profile'],
+      phoneNumber: json['phoneNumber'],
+    );
+  }
+}
+
+class BookedProviderDetailModel {
+  final String id;
+  final String name;
+  final String email;
+  final String? profile;
+  final String? phoneNumber;
+  final LocationModel? location;
+
+  const BookedProviderDetailModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.profile,
+    required this.phoneNumber,
+    required this.location,
+  });
+
+  factory BookedProviderDetailModel.fromJson(Map<String, dynamic> json) {
+    return BookedProviderDetailModel(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      profile: json['profile'],
+      phoneNumber: json['phoneNumber'],
+      location: json['location'] != null
+          ? LocationModel.fromJson(json['location'])
+          : null,
+    );
+  }
+}
+
+class LocationModel {
+  final String type;
+  final List<double> coordinates;
+
+  const LocationModel({required this.type, required this.coordinates});
+
+  factory LocationModel.fromJson(Map<String, dynamic> json) {
+    return LocationModel(
+      type: json['type'] ?? '',
+      coordinates: (json['coordinates'] as List<dynamic>? ?? [])
+          .map((e) => (e as num).toDouble())
+          .toList(),
+    );
+  }
+}
+
+// ── Booking List Item ─────────────────────────────────────────────────────────
+
+class BookingsListResponse {
+  final List<BookingModel> bookings;
+
+  const BookingsListResponse({required this.bookings});
+
+  factory BookingsListResponse.fromJson(Map<String, dynamic> json) =>
+      BookingsListResponse(
+        bookings: (json['data'] as List)
+            .map((e) => BookingModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 }
 
-class BookingService {
-  final String name;
-  final double pricePerHour;
+class BookingModel {
+  final String id;
+  final String userId;
+  final String providerId;
+  final bool isPaid;
+  final String bookingType;
+  final int price;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int totalHours;
+  final bool isActive;
+  final String? nextBooking;
+  final BookingStatus status;
+  final bool isDeleted;
 
-  const BookingService({required this.name, required this.pricePerHour});
+  final _BookedUserModel? user;
+  final _BookedProviderModel? provider;
+  final List<BookingTimeScheduleModel> bookingDays;
 
-  factory BookingService.fromJson(Map<String, dynamic> json) => BookingService(
-    name: json['name'] as String,
-    pricePerHour: (json['price_per_hour'] as num).toDouble(),
-  );
-}
-
-class BookingPricing {
-  final int bookingHours;
-  final double subtotal;
-  final double clientProtection;
-  final double totalPrice;
-
-  const BookingPricing({
-    required this.bookingHours,
-    required this.subtotal,
-    required this.clientProtection,
-    required this.totalPrice,
+  BookingModel({
+    required this.id,
+    required this.userId,
+    required this.providerId,
+    required this.isPaid,
+    required this.bookingType,
+    required this.price,
+    this.startDate,
+    this.endDate,
+    required this.totalHours,
+    required this.isActive,
+    this.nextBooking,
+    required this.status,
+    required this.isDeleted,
+    this.user,
+    this.provider,
+    required this.bookingDays,
   });
 
-  factory BookingPricing.fromJson(Map<String, dynamic> json) => BookingPricing(
-    bookingHours: json['booking_hours'] as int,
-    subtotal: (json['subtotal'] as num).toDouble(),
-    clientProtection: (json['client_protection'] as num).toDouble(),
-    totalPrice: (json['total_price'] as num).toDouble(),
+  factory BookingModel.fromJson(Map<String, dynamic> json) => BookingModel(
+    id: json['id'] ?? '',
+    userId: json['userId'] ?? '',
+    providerId: json['providerId'] ?? '',
+    isPaid: json['isPaid'] ?? false,
+    bookingType: json['bookingType'] ?? '',
+    price: json['price'] ?? 0,
+    startDate: json['startDate'] != null
+        ? DateTime.tryParse(json['startDate'])
+        : null,
+    endDate: json['endDate'] != null
+        ? DateTime.tryParse(json['endDate'])
+        : null,
+    totalHours: json['totalHours'] ?? 0,
+    isActive: json['isActive'] ?? false,
+    nextBooking: json['nextBooking'],
+    isDeleted: json['isDeleted'] ?? false,
+    user: json['user'] != null ? _BookedUserModel.fromJson(json['user']) : null,
+    provider: json['provider'] != null
+        ? _BookedProviderModel.fromJson(json['provider'])
+        : null,
+    bookingDays:
+        (json['bookingDays'] as List<dynamic>?)
+            ?.map((e) => BookingTimeScheduleModel.fromJson(e))
+            .toList() ??
+        [],
+    status: BookingStatus.fromString(json['status'] as String),
   );
 }
+
+class _BookedUserModel {
+  final String id;
+  final String name;
+  final String email;
+  final String profile;
+  final String phoneNumber;
+
+  _BookedUserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.profile,
+    required this.phoneNumber,
+  });
+
+  factory _BookedUserModel.fromJson(Map<String, dynamic> json) =>
+      _BookedUserModel(
+        id: json['id'] ?? '',
+        name: json['name'] ?? '',
+        email: json['email'] ?? '',
+        profile: json['profile'] ?? '',
+        phoneNumber: json['phoneNumber'] ?? '',
+      );
+}
+
+class _BookedProviderModel {
+  final String id;
+  final String name;
+  final String email;
+  final String profile;
+  final String phoneNumber;
+
+  _BookedProviderModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.profile,
+    required this.phoneNumber,
+  });
+
+  factory _BookedProviderModel.fromJson(Map<String, dynamic> json) =>
+      _BookedProviderModel(
+        id: json['id'] ?? '',
+        name: json['name'] ?? '',
+        email: json['email'] ?? '',
+        profile: json['profile'] ?? '',
+        phoneNumber: json['phoneNumber'] ?? '',
+      );
+}
+
+class BookingTimeScheduleModel {
+  final String id;
+  final String day;
+  final DateTime? startTime;
+  final DateTime? endTime;
+  final int durationHours;
+  final BookingStatus status;
+
+  BookingTimeScheduleModel({
+    required this.id,
+    required this.day,
+    this.startTime,
+    this.endTime,
+    required this.durationHours,
+    required this.status,
+  });
+
+  factory BookingTimeScheduleModel.fromJson(Map<String, dynamic> json) =>
+      BookingTimeScheduleModel(
+        id: json['id'] ?? '',
+        day: json['day'] ?? '',
+        startTime: json['startTime'] != null
+            ? DateTime.tryParse(json['startTime'])
+            : null,
+        endTime: json['endTime'] != null
+            ? DateTime.tryParse(json['endTime'])
+            : null,
+        durationHours: json['durationHours'] ?? 0,
+        status: BookingStatus.fromString(json['status'] as String),
+      );
+}
+
+extension BookingModelCopy on BookingModel {
+  BookingModel copyWith({
+    String? id,
+    String? userId,
+    String? providerId,
+    bool? isPaid,
+    String? bookingType,
+    int? price,
+    DateTime? startDate,
+    DateTime? endDate,
+    int? totalHours,
+    bool? isActive,
+    String? nextBooking,
+    BookingStatus? status,
+    bool? isDeleted,
+    _BookedUserModel? user,
+    _BookedProviderModel? provider,
+    List<BookingTimeScheduleModel>? bookingDays,
+  }) {
+    return BookingModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      providerId: providerId ?? this.providerId,
+      isPaid: isPaid ?? this.isPaid,
+      bookingType: bookingType ?? this.bookingType,
+      price: price ?? this.price,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      totalHours: totalHours ?? this.totalHours,
+      isActive: isActive ?? this.isActive,
+      nextBooking: nextBooking ?? this.nextBooking,
+      status: status ?? this.status,
+      isDeleted: isDeleted ?? this.isDeleted,
+      user: user ?? this.user,
+      provider: provider ?? this.provider,
+      bookingDays: bookingDays ?? this.bookingDays,
+    );
+  }
+}
+
+// extension BookingMapper on BookingModel {
+//   List<BookingUiModel> mapBookingsToBookingsUi() {
+//     return bookingDays.map((day) {
+//       return BookingUiModel(
+//         bookingId: id,
+//         providerName: provider?.name ?? '',
+//         providerImage: provider?.profile,
+//         startTime: day.startTime,
+//         endTime: day.endTime,
+//         day: day.day,
+//         status: day.status,
+//       );
+//     }).toList();
+//   }
+// }
+
+// class BookingUiModel {
+//   final String bookingId;
+//   final String providerName;
+//   final String? providerImage;
+
+//   final DateTime? startTime;
+//   final DateTime? endTime;
+//   final String day;
+
+//   final BookingStatus status;
+
+//   BookingUiModel({
+//     required this.bookingId,
+//     required this.providerName,
+//     required this.providerImage,
+//     required this.startTime,
+//     required this.endTime,
+//     required this.day,
+//     required this.status,
+//   });
+// }

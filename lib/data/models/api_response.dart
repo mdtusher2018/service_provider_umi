@@ -57,7 +57,7 @@ class PaginationMeta {
   factory PaginationMeta.fromJson(Map<String, dynamic> json) => PaginationMeta(
     page: json['page'] as int,
     limit: json['limit'] as int,
-    totalPage: json['totalPage'] as int,
-    hasMore: json['hasMore'] as bool,
+    totalPage: json['total'] as int,
+    hasMore: (json['hasMore'] ?? false) as bool,
   );
 }

@@ -26,17 +26,19 @@ class ProviderServiceScreen extends ConsumerStatefulWidget {
 class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  late ScrollController _scrollController;
   final _tabs = const [
-    BookingStatus.pending,
-    BookingStatus.ongoing,
-    BookingStatus.cancelled,
+    BookingStatus.requested,
+    BookingStatus.complete,
+    BookingStatus.canceled,
   ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
   }
 
   BookingStatus get _currentStatus => _tabs[_tabController.index];
@@ -45,6 +47,13 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadData();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(bookingsProvider(_currentStatus).notifier).fetch();
+    }
   }
 
   void _loadData() {
@@ -64,14 +73,11 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
     _loadData();
   }
 
-  void _onCardTap(BookingItem item, BuildContext context) {
+  void _onCardTap(BookingModel item, BuildContext context) {
     if (kIsWeb) {
-      context.go(
-        AppRoutes.bookingDetail,
-        extra: item,
-      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+      context.go(AppRoutes.bookingDetailPath(item.id));
     } else {
-      context.push(AppRoutes.bookingDetail, extra: item);
+      context.push(AppRoutes.bookingDetailPath(item.id));
     }
   }
 
@@ -122,7 +128,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                 loading: () => const AppLoader(),
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
-                  if (data.bookings.isEmpty) {
+                  if (data.isEmpty) {
                     return const Center(
                       child: AppText.bodyLg('No bookings found'),
                     );
@@ -135,7 +141,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                           .fetch();
                     },
                     child: BookingList(
-                      items: data.bookings,
+                      items: data,
                       emptyMessage: 'No bookings',
                       emptySubtitle: 'Your bookings will appear here',
                       onCardTap: (item) => _onCardTap(item, context),

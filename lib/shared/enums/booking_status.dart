@@ -1,42 +1,48 @@
+import 'package:service_provider_umi/core/logger/app_logger.dart';
+
 enum BookingStatus {
-  pending,
+  requested,
   accepted,
   ongoing,
-  completed,
-  cancelled,
-  rejected;
+  complete,
+  canceled;
 
   String get displayName {
     switch (this) {
-      case BookingStatus.pending:
+      case BookingStatus.requested:
         return 'Pending';
       case BookingStatus.accepted:
         return 'Accepted';
       case BookingStatus.ongoing:
-        return 'Ongoing';
-      case BookingStatus.completed:
+        return 'On Going';
+      case BookingStatus.complete:
         return 'Completed';
-      case BookingStatus.cancelled:
+      case BookingStatus.canceled:
         return 'Cancelled';
-      case BookingStatus.rejected:
-        return 'Rejected';
     }
   }
 
-  String get apiValue => name;
-
-  bool get isActive =>
-      this == BookingStatus.accepted || this == BookingStatus.ongoing;
   bool get isTerminal =>
-      this == BookingStatus.completed ||
-      this == BookingStatus.cancelled ||
-      this == BookingStatus.rejected;
+      this == BookingStatus.complete || this == BookingStatus.canceled;
 
   static BookingStatus fromString(String value) {
-    return BookingStatus.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => BookingStatus.pending,
-    );
+    final normalized = value.toLowerCase().trim();
+
+    AppLogger.info(value);
+    switch (normalized) {
+      case 'requested':
+        return BookingStatus.requested;
+      case 'accepted':
+        return BookingStatus.accepted;
+      case 'ongoing':
+        return BookingStatus.ongoing;
+      case 'complete': // 🔥 API VALUE
+        return BookingStatus.complete;
+      case 'canceled':
+        return BookingStatus.canceled;
+      default:
+        return BookingStatus.requested;
+    }
   }
 }
 
