@@ -19,7 +19,7 @@ class _CommentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final time = DateTime.tryParse(comment.createdAt) ?? DateTime.now();
+    final time = comment.createdAt ?? DateTime.now();
     return Padding(
       padding: 14.paddingBottom,
       child: Column(
@@ -27,7 +27,7 @@ class _CommentTile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              AppAvatar(name: comment.userImage, size: AvatarSize.sm),
+              AppAvatar(imageUrl: comment.userImage, size: AvatarSize.sm),
 
               10.horizontalSpace,
               Column(
@@ -42,21 +42,16 @@ class _CommentTile extends ConsumerWidget {
                   ),
                   Row(
                     children: [
-                      if (comment.userVerified) ...[
-                        Icon(
-                          Icons.verified_outlined,
-                          color: AppColors.primaryFor(
-                            ref.watch(appRoleProvider),
-                          ),
-                          size: 12,
+                      ...[
+                        Stack(
+                          alignment: AlignmentGeometry.center,
+                          children: [
+                            Icon(Icons.star, color: AppColors.black, size: 20),
+                            Icon(Icons.star, color: AppColors.star, size: 16),
+                          ],
                         ),
                         2.horizontalSpace,
-                        AppText.bodySm(
-                          'Verified service',
-                          color: AppColors.primaryFor(
-                            ref.watch(appRoleProvider),
-                          ),
-                        ),
+                        AppText.bodySm(comment.rating.toFixedString(1)),
                       ],
                     ],
                   ),

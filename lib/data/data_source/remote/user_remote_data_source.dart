@@ -4,7 +4,7 @@ import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
-import 'package:service_provider_umi/data/models/misc_models.dart';
+import 'package:service_provider_umi/data/models/mock_misc_models.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 
@@ -43,7 +43,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   // ── GET /users/:id ─────────────────────────────────────────────────────────
   @override
   Future<UserProfile> getUserById(String id) async {
-    final url = ApiEndpoints.getUserById.replaceFirst('{id}', id);
+    final url = ApiEndpoints.getUserById(id);
     final response = await _dio.get(url);
     return _parse(response, UserProfile.fromJson);
   }

@@ -15,7 +15,7 @@ class ApiEndpoints {
   static const String resendOtp = '/otp/resend-otp';
 
   // ─── User ───────────────────────────────────────────────────────────────────
-  static const String getUserById = '/users/{id}';
+  static String getUserById(String id) => '/users/$id';
   static const String myProfile = '/users/my-profile';
   static const String updateMyProfile = '/users/update-my-profile';
   static const String deleteMyAccount = '/users/delete-my-account';
@@ -54,17 +54,18 @@ class ApiEndpoints {
   static String cancelBooking(String id) => '/bookings/canceled/$id';
 
   // ─── FAQs ───────────────────────────────────────────────────────────────────
-  static const String faqs = '/faqs';
+  static const String faqs = '/faq';
 
   // ─── Provider ───────────────────────────────────────────────────────────────
-  static const String providerProfile = '/providers/{id}';
+  static String providerProfile(String id) => '/users/$id';
+  static String providerReviews(String id) => '/reviews/user/$id';
   static const String updateServiceProviderProfile =
       '/users/service-provider-info';
 
   // ─── Filters & Search ───────────────────────────────────────────────────────
   static const String serviceExperience = '/experience-options';
   static const String serviceOthersTaskOptions = '/others-task-options';
-  static const String searchProviders = '/providers/search';
+  static const String searchProviders = '/homepage';
 
   static const String workSchedule = '/workSchedule';
 

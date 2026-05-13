@@ -2,16 +2,16 @@ part of 'provider_profile_screen.dart';
 
 Widget _buildProfileHeader({
   required WidgetRef ref,
-  required ProviderProfile mockProvider,
+  required UserProfile data,
 }) {
   return Column(
     children: [
-      AppAvatar(name: mockProvider.name, size: AvatarSize.xl),
+      AppAvatar(name: data.name, size: AvatarSize.xl),
       12.verticalSpace,
-      AppText.h2(mockProvider.name),
+      AppText.h2(data.name),
       4.verticalSpace,
       AppText.labelLg(
-        mockProvider.serviceTitle,
+        data.serviceProviderInfo?.specialists.first.name ?? "N/A",
         color: AppColors.primaryFor(ref.watch(appRoleProvider)),
       ),
       16.verticalSpace,
@@ -32,10 +32,7 @@ Widget _buildProfileHeader({
               backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
             _StatDivider(),
-            _StatItem(
-              value: '${mockProvider.rating?.average ?? 0} ⭐',
-              label: '${mockProvider.rating?.totalReviews ?? 0} reviews',
-            ),
+            _StatItem(value: '${"static"} ⭐', label: '${"static"} reviews'),
             _StatDivider(),
             _StatItem(value: '${1}', label: 'Service'),
             _StatDivider(),

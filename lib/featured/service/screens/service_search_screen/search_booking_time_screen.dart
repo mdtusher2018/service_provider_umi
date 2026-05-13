@@ -15,14 +15,16 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 
-class BookingTimeScreen extends ConsumerStatefulWidget {
-  const BookingTimeScreen({super.key});
+class SearchBookingTimeScreen extends ConsumerStatefulWidget {
+  final String serviceId;
+  const SearchBookingTimeScreen({super.key, required this.serviceId});
 
   @override
-  ConsumerState<BookingTimeScreen> createState() => _BookingTimeScreenState();
+  ConsumerState<SearchBookingTimeScreen> createState() =>
+      _BookingTimeScreenState();
 }
 
-class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
+class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
   BookingFrequency _frequency = BookingFrequency.once;
   StartTimeType _startTimeType = StartTimeType.flexible;
   double _duration = 2;
@@ -359,7 +361,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.outline(
             label: 'Skip',
             onPressed: () {
-              context.go(AppRoutes.searchResults);
+              context.go(AppRoutes.searchResultPath(widget.serviceId));
             },
           ),
         ),
@@ -369,7 +371,7 @@ class _BookingTimeScreenState extends ConsumerState<BookingTimeScreen> {
           child: AppButton.primary(
             label: 'Search',
             onPressed: () {
-              context.go(AppRoutes.searchResults);
+              context.go(AppRoutes.searchResultPath(widget.serviceId));
             },
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/error/error_handler.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
@@ -9,7 +10,10 @@ mixin SafeCall {
     try {
       final result = await operation();
       return Success(result);
-    } catch (e) {
+    } catch (e, st) {
+      // 🔥 LOG HERE (handled errors)
+      debugPrint('❌ API ERROR: $e');
+      debugPrint('STACK: $st');
       return Error(ErrorHandler.handle(e));
     }
   }

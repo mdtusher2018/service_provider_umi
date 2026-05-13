@@ -3,6 +3,7 @@ part of "service_search_results_screen.dart";
 Widget _buildFaqOverlay({
   required Function()? show,
   required Function() hideBottomsheet,
+  required String serviceId,
 }) {
   return Positioned.fill(
     child: GestureDetector(
@@ -13,7 +14,7 @@ Widget _buildFaqOverlay({
           alignment: Alignment.bottomCenter,
           child: GestureDetector(
             onTap: () {},
-            child: _FaqSheet(onClose: hideBottomsheet),
+            child: _FaqSheet(onClose: hideBottomsheet, serviceId: serviceId),
           ),
         ),
       ),
@@ -23,7 +24,8 @@ Widget _buildFaqOverlay({
 
 class _FaqSheet extends ConsumerStatefulWidget {
   final VoidCallback onClose;
-  const _FaqSheet({required this.onClose});
+  final String serviceId;
+  const _FaqSheet({required this.onClose, required this.serviceId});
 
   @override
   ConsumerState<_FaqSheet> createState() => _FaqSheetState();
@@ -34,7 +36,7 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(faqProvider.notifier).fetch("elderly_care");
+      ref.read(faqProvider.notifier).fetch(widget.serviceId);
     });
   }
 
@@ -52,7 +54,30 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
       child: faqState.when(
         loading: () => const AppLoader(),
 
-        error: (e, _) => Center(child: AppText.bodyMd(e.toString())),
+        error: (e, _) {
+          return ListView(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppText.h3(
+                      'How does the Elderly care\nservice work?',
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: widget.onClose,
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              AppEmptyState(title: (e is Failure) ? e.message : e.toString()),
+            ],
+          );
+        },
 
         data: (faqs) {
           return SingleChildScrollView(

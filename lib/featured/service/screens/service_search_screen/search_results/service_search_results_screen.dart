@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,8 +20,9 @@ part '_faq_bottom_sheet.dart';
 part '_widgets.dart';
 
 class SearchResultsScreen extends ConsumerStatefulWidget {
+  final String serviceId;
 
-  const SearchResultsScreen({super.key});
+  const SearchResultsScreen({super.key, required this.serviceId});
 
   @override
   ConsumerState<SearchResultsScreen> createState() =>
@@ -51,17 +53,16 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             Column(
               children: [
                 _buildHeader(context),
-                _buildFilterRow(ref),
+                _buildFilterRow(ref,widget.serviceId),
                 _buildFaqBanner(),
-                Expanded(
-                  child: _buildResultsList( ref: ref),
-                ),
+                Expanded(child: _buildResultsList(ref: ref)),
               ],
             ),
             if (_showFaqSheet)
               _buildFaqOverlay(
                 show: () => setState(() => _showFaqSheet = true),
                 hideBottomsheet: () => setState(() => _showFaqSheet = false),
+                serviceId: widget.serviceId,
               ),
           ],
         ),

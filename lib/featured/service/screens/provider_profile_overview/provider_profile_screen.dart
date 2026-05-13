@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:service_provider_umi/core/error/app_exception.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
@@ -11,7 +12,9 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
@@ -19,9 +22,10 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/shared/widgets/app_rating_bar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:readmore/readmore.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 part '_buildComments.dart';
 part '../../../guest/guest_login_dialog.dart';
@@ -67,7 +71,7 @@ class _ProviderProfileOverviewScreenState
       backgroundColor: AppColors.background,
       body: state.when(
         loading: () => AppLoader(),
-        data: (providerProfile) => _buildProfileScreen(providerProfile),
+        data: (data) => _buildProfileScreen(data.$1, data.$2),
         error: (e, _) => Center(
           child: AppText.h4((e is AppException) ? e.message : e.toString()),
         ),
@@ -75,12 +79,15 @@ class _ProviderProfileOverviewScreenState
     );
   }
 
-  Widget _buildProfileScreen(ProviderProfile providerProfile) {
+  Widget _buildProfileScreen(
+    UserProfile profileData,
+    List<ProviderComment> reviews,
+  ) {
     return Stack(
       children: [
         Column(
           children: [
-            _buildAppBar(mockProvider: providerProfile, ref: ref),
+            _buildAppBar(data: profileData, ref: ref),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -90,22 +97,22 @@ class _ProviderProfileOverviewScreenState
                 child: Column(
                   spacing: 16,
                   children: [
-                    _buildProfileHeader(
-                      ref: ref,
-                      mockProvider: providerProfile,
+                    _buildProfileHeader(ref: ref, data: profileData),
+
+                    _buildAboutSection(profileData),
+                    AppDivider(),
+                    _buildGallery(
+                      ref,
+                      profileData.serviceProviderInfo?.images ?? [],
                     ),
 
-                    _buildAboutSection(providerProfile),
+                    // AppDivider(),
+                    // _buildQaSection(mockProvider: providerProfile),
+                    // AppDivider(),
+                    // if (providerProfile.rating != null)
+                    //   _buildRatingSection(providerProfile.rating!),
                     AppDivider(),
-                    _buildGallery(ref),
-                    AppDivider(),
-                    _buildQaSection(mockProvider: providerProfile),
-
-                    AppDivider(),
-                    if (providerProfile.rating != null)
-                      _buildRatingSection(providerProfile.rating!),
-                    AppDivider(),
-                    _buildComments(comments: providerProfile.comments),
+                    _buildComments(comments: reviews),
                     AppDivider(),
                     100.verticalSpace,
                   ],
@@ -118,39 +125,50 @@ class _ProviderProfileOverviewScreenState
           bottom: 0,
           left: 0,
           right: 0,
-          child: _buildBottomBar(providerProfile),
+          child: _buildBottomBar(profileData),
         ),
-        if (ref.watch(frequencySheetProvider))
-          _buildFrequencyOverlay(mockProvider: providerProfile, ref: ref),
+        if (ref.watch(frequencySheetProvider)) _buildFrequencyOverlay(ref: ref),
       ],
     );
   }
 
-  Widget _buildAboutSection(ProviderProfile providerProfile) {
+  Widget _buildAboutSection(UserProfile providerProfile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.h3('About me'),
+        Row(children: [AppText.h3('About me')]),
         10.verticalSpace,
-        AppText.bodyMd(providerProfile.about),
-        8.verticalSpace,
-        GestureDetector(
-          onTap: () {},
-          child: AppText.labelMd('+View more', fontWeight: FontWeight.w600),
+
+        ReadMoreText(
+          providerProfile.bio ?? 'N/A',
+          trimMode: TrimMode.Line,
+          trimLines: 2,
+          colorClickableText: AppColors.primary,
+
+          trimCollapsedText: '+View more',
+          trimExpandedText: ' View less',
+          moreStyle: AppTextStyles.bodyMd.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+          ),
+          lessStyle: AppTextStyles.bodyMd.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildRatingSection(ProviderRating rating) {
-    return AppRatingBreakdown(
-      overall: rating.average,
-      totalReviews: rating.totalReviews,
-      breakdown: rating.breakdown,
-    );
-  }
+  // Widget _buildRatingSection(ProviderRating rating) {
+  //   return AppRatingBreakdown(
+  //     overall: rating.average,
+  //     totalReviews: rating.totalReviews,
+  //     breakdown: rating.breakdown,
+  //   );
+  // }
 
-  Widget _buildBottomBar(ProviderProfile providerProfile) {
+  Widget _buildBottomBar(UserProfile providerProfile) {
     return Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -177,7 +195,7 @@ class _ProviderProfileOverviewScreenState
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppText.h1(
-                  '\$${providerProfile.hourlyRate.toStringAsFixed(0)}/h',
+                  '\$${providerProfile.serviceProviderInfo?.perHourPrice.toStringAsFixed(0)}/h',
                 ),
               ],
             ),

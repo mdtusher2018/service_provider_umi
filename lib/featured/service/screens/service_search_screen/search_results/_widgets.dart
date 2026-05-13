@@ -56,7 +56,10 @@ Widget _buildHeader(BuildContext context) {
         10.horizontalSpace,
         InkWell(
           onTap: () {
-            context.go(AppRoutes.favourites);
+            // context.go(AppRoutes.favourites);
+            context.push(
+              AppRoutes.providerProfilePath("69ca1d079d5373b1fc1189d3"),
+            );
           },
           child: Container(
             width: 40,
@@ -78,7 +81,7 @@ Widget _buildHeader(BuildContext context) {
   );
 }
 
-Widget _buildFilterRow(WidgetRef ref) {
+Widget _buildFilterRow(WidgetRef ref, String id) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     child: Row(
@@ -103,7 +106,7 @@ Widget _buildFilterRow(WidgetRef ref) {
             if (kIsWeb) {
               ref.context.go(AppRoutes.filter);
             } else {
-              ref.context.push(AppRoutes.filter);
+              ref.context.push(AppRoutes.filterPath(id));
             }
           },
         ),

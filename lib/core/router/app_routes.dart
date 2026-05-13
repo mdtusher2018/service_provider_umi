@@ -29,8 +29,8 @@ class AppRoutes {
 
   // ─── Service discovery ───────────────────────────────────
   static const String search = '/search';
-  static const String searchResults = '/search-results';
-  static const String filter = '/search-results/filter';
+  static const String searchResults = '/search-results/:serviceId';
+  static const String filter = '/search-results/:serviceId/filter';
   static const String providerProfileView = '/service-provider/:providerId';
   static const searchTime = ':serviceId/search-time';
 
@@ -68,6 +68,8 @@ class AppRoutes {
   // ─── Helpers ─────────────────────────────────────────────
   static String providerProfilePath(String id) => '/service-provider/$id';
   static String bookingDetailPath(String id) => '/booking/$id';
+  static String searchResultPath(String id) => '/search-results/$id';
+  static String filterPath(String id) => '/search-results/$id/filter';
   static String chatPath(String contactId) => '/chat/$contactId';
   static String audioCallPath(String contactId) => '/audio/$contactId';
   static String videoCallPath(String contactId) => '/video/$contactId';

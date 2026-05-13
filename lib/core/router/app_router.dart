@@ -6,7 +6,7 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
-import 'package:service_provider_umi/featured/service/screens/booking_time_screen/booking_time_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_booking_time_screen.dart';
 import 'package:service_provider_umi/shared/widgets/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/provider_phone_number_screen.dart';
@@ -40,7 +40,7 @@ import 'package:service_provider_umi/featured/service/screens/provider_service_s
 import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/filter_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_results/service_search_results_screen.dart';
-import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_category_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/user_home_screen/user_home_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/work_schedule_screen/work_schedule_screen.dart';
@@ -285,17 +285,29 @@ GoRouter appRouter(Ref ref) {
       // ── Service discovery ────────────────────────────────
       GoRoute(
         path: "${AppRoutes.userHome}/${AppRoutes.searchTime}",
-        builder: (_, __) => BookingTimeScreen(),
+        builder: (_, state) {
+          final id = state.pathParameters['serviceId']!;
+          return SearchBookingTimeScreen(serviceId: id);
+        },
       ),
       GoRoute(
         path: AppRoutes.search + AppRoutes.searchTime,
-        builder: (_, __) => BookingTimeScreen(),
+        builder: (_, state) {
+          final id = state.pathParameters['serviceId']!;
+          return SearchBookingTimeScreen(serviceId: id);
+        },
       ),
 
-      GoRoute(path: AppRoutes.search, builder: (_, __) => SearchScreen()),
+      GoRoute(
+        path: AppRoutes.search,
+        builder: (_, __) => SearchCategoryScreen(),
+      ),
       GoRoute(
         path: AppRoutes.searchResults,
-        builder: (_, __) => SearchResultsScreen(),
+        builder: (context, state) {
+          final id = state.pathParameters['serviceId']!;
+          return SearchResultsScreen(serviceId: id);
+        },
       ),
       GoRoute(path: AppRoutes.filter, builder: (_, __) => FilterScreen()),
       GoRoute(

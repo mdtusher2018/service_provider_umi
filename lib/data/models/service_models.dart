@@ -20,20 +20,3 @@ class ServiceModel {
     haveSubcategory: json['haveSubcategory'] ?? false,
   );
 }
-
-class CreateServiceRequest {
-  final String name;
-
-  const CreateServiceRequest({required this.name});
-
-  Map<String, dynamic> toJson() => {'name': name};
-}
-
-class UpdateServiceRequest {
-  final String? name;
-
-  const UpdateServiceRequest({this.name});
-
-  Map<String, dynamic> toJson() => {if (name != null) 'name': name};
-}
-

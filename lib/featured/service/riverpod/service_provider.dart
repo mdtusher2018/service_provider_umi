@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
+import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
-import 'package:service_provider_umi/data/models/misc_models.dart';
+import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 
@@ -280,10 +283,10 @@ class FaqNotifier extends _$FaqNotifier {
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> fetch(String type) async {
+  Future<void> fetch(String serviceId) async {
     state = const AsyncLoading();
 
-    final result = await _repo.getFaqs(type);
+    final result = await _repo.getFaqs(serviceId);
 
     state = result.when(
       success: (data) => AsyncData(data),
@@ -295,7 +298,7 @@ class FaqNotifier extends _$FaqNotifier {
 @riverpod
 class ProviderProfileNotifier extends _$ProviderProfileNotifier {
   @override
-  AsyncValue<ProviderProfile> build() {
+  AsyncValue<(UserProfile, List<ProviderComment>)> build() {
     return const AsyncLoading();
   }
 
@@ -304,10 +307,23 @@ class ProviderProfileNotifier extends _$ProviderProfileNotifier {
   Future<void> fetch(String providerId) async {
     state = const AsyncLoading();
 
-    final result = await _repo.getProviderProfile(providerId);
+    final results = await Future.wait([
+      _repo.getProviderProfile(providerId),
+      _repo.getProviderReviews(providerId),
+    ]);
 
-    state = result.when(
-      success: (data) => AsyncData(data),
+    final profileResult = results[0] as Result<UserProfile, Failure>;
+    final reviewsResult = results[1] as Result<List<ProviderComment>, Failure>;
+
+    // handle both results safely
+    state = profileResult.when(
+      success: (profile) {
+        return reviewsResult.when(
+          success: (reviews) =>
+              AsyncData((profile, reviews)), // ✅ tuple combined
+          failure: (e) => AsyncError(e, StackTrace.current),
+        );
+      },
       failure: (e) => AsyncError(e, StackTrace.current),
     );
   }

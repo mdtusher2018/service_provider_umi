@@ -1,10 +1,7 @@
 part of 'provider_profile_screen.dart';
 
 final frequencySheetProvider = StateProvider<bool>((ref) => false);
-Widget _buildFrequencyOverlay({
-  required WidgetRef ref,
-  required ProviderProfile mockProvider,
-}) {
+Widget _buildFrequencyOverlay({required WidgetRef ref}) {
   final showSheet = ref.watch(frequencySheetProvider);
 
   if (!showSheet) return const SizedBox.shrink();
@@ -21,7 +18,6 @@ Widget _buildFrequencyOverlay({
           child: GestureDetector(
             onTap: () {}, // prevent closing when tapping sheet
             child: _ServiceFrequencySheet(
-              pricePerHour: mockProvider.hourlyRate,
               onClose: () {
                 ref.read(frequencySheetProvider.notifier).state = false;
               },
@@ -34,12 +30,8 @@ Widget _buildFrequencyOverlay({
 }
 
 class _ServiceFrequencySheet extends StatefulWidget {
-  final double pricePerHour;
   final VoidCallback onClose;
-  const _ServiceFrequencySheet({
-    required this.pricePerHour,
-    required this.onClose,
-  });
+  const _ServiceFrequencySheet({required this.onClose});
 
   @override
   State<_ServiceFrequencySheet> createState() => _ServiceFrequencySheetState();

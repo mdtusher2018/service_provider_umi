@@ -2,11 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
-import 'package:service_provider_umi/data/models/misc_models.dart';
+import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 
 import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -22,7 +23,8 @@ abstract class ServiceRemoteDataSource {
     SearchProvidersRequest request,
   );
   Future<ServiceFiltersModel> getFilters();
-  Future<ProviderProfile> getProviderProfile(String providerId);
+  Future<UserProfile> getProviderProfile(String providerId);
+  Future<List<ProviderComment>> getProviderReviews(String providerId);
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
   Future<void> createBooking(CreateBookingRequest request);
@@ -36,13 +38,13 @@ abstract class ServiceRemoteDataSource {
   Future<BookingDetailModel> getBookingDetail(String bookingId);
 
   // ── FAQs ────────────────────────────────────────────────────────────────────
-  Future<List<FaqItem>> getFaqs(String serviceType);
+  Future<List<FaqItem>> getFaqs(String serviceId);
 
   Future<WorkScheduleListResponse> getWorkSchedule({int page, int limit});
   Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules);
   Future<void> updateWorkSchedule(List<WorkScheduleRequest> schedules);
 
-  Future<ProviderProfile> updateServiceProviderProfile(
+  Future<UserProfile> updateServiceProviderProfile(
     UpdateProviderRequest schedules,
   );
 }
@@ -105,9 +107,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   Future<SearchProvidersResponse> searchProviders(
     SearchProvidersRequest request,
   ) async {
-    final response = await _dio.post(
+    final response = await _dio.get(
       ApiEndpoints.searchProviders,
-      data: request.toJson(),
+      queryParameters: request.toQuery(),
     );
     return _parse(response, SearchProvidersResponse.fromJson);
   }
@@ -150,10 +152,25 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /service-providers/:id ───────────────────────────────────────────────
   @override
-  Future<ProviderProfile> getProviderProfile(String providerId) async {
-    final url = ApiEndpoints.providerProfile.replaceFirst('{id}', providerId);
+  Future<UserProfile> getProviderProfile(String providerId) async {
+    final url = ApiEndpoints.providerProfile(providerId);
     final response = await _dio.get(url);
-    return _parse(response, ProviderProfile.fromJson);
+    return _parse(response, UserProfile.fromJson);
+  }
+
+  @override
+  Future<List<ProviderComment>> getProviderReviews(String providerId) async {
+    final responses = await _dio.get(ApiEndpoints.providerReviews(providerId));
+    final othersTaskResponse = ApiResponse<List<ProviderComment>>.fromJson(
+      responses.data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => ProviderComment.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+    return othersTaskResponse.data ?? [];
   }
 
   // ── POST /bookings ───────────────────────────────────────────────────────────
@@ -239,10 +256,10 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /faqs?service_type=X ─────────────────────────────────────────────────
   @override
-  Future<List<FaqItem>> getFaqs(String serviceType) async {
+  Future<List<FaqItem>> getFaqs(String serviceId) async {
     final response = await _dio.get(
       ApiEndpoints.faqs,
-      queryParameters: {'service_type': serviceType},
+      queryParameters: {'categoryId': serviceId},
     );
     final apiResponse = ApiResponse<List<FaqItem>>.fromJson(
       response.data as Map<String, dynamic>,
@@ -321,7 +338,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── PATCH /updateServiceProviderProfile ──────────────────────────────────────────────────────
   @override
-  Future<ProviderProfile> updateServiceProviderProfile(
+  Future<UserProfile> updateServiceProviderProfile(
     UpdateProviderRequest data,
   ) async {
     final response = await _dio.patch(
@@ -331,6 +348,6 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         contentType: 'multipart/form-data', // ✅ explicit content type
       ),
     );
-    return _parse<ProviderProfile>(response, ProviderProfile.fromJson);
+    return _parse<UserProfile>(response, UserProfile.fromJson);
   }
 }

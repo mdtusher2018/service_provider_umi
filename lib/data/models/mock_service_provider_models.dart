@@ -7,30 +7,59 @@ import 'package:service_provider_umi/data/models/service_models.dart';
 class SearchProvidersRequest {
   final int page;
   final int limit;
-  final String? query;
-  final String? serviceId;
-  final String? serviceType;
-  final Map<String, dynamic>? filters;
+
+  final String? searchTerm;
+  final String? categoryId;
+  final String? experienceOptionId;
+  final List<String>? otherTaskIds;
+
+  final double? minPrice;
+  final double? maxPrice;
+
+  final String? date;
+  final String? startTime;
+  final String? endTime;
+
+  final String? sort;
 
   const SearchProvidersRequest({
     required this.page,
     required this.limit,
-    this.query,
-    this.serviceId,
-    this.serviceType,
-    this.filters,
+    this.searchTerm,
+    this.categoryId,
+    this.experienceOptionId,
+    this.otherTaskIds,
+    this.minPrice,
+    this.maxPrice,
+    this.date,
+    this.startTime,
+    this.endTime,
+    this.sort,
   });
 
-  Map<String, dynamic> toJson() => {
-    'page': page,
-    'limit': limit,
-    if (query != null) 'query': query,
-    if (serviceId != null) 'service_id': serviceId,
-    if (serviceType != null) 'service_type': serviceType,
-    if (filters != null) 'filters': filters,
-  };
-}
+  Map<String, dynamic> toQuery() {
+    return {
+      'page': page,
+      'limit': limit,
 
+      if (searchTerm != null) 'searchTerm': searchTerm,
+      if (categoryId != null) 'categoryId': categoryId,
+      if (experienceOptionId != null) 'experienceOptionId': experienceOptionId,
+
+      if (otherTaskIds != null && otherTaskIds!.isNotEmpty)
+        'otherTaskIds': otherTaskIds!.join(','),
+
+      if (minPrice != null) 'minPrice': minPrice,
+      if (maxPrice != null) 'maxPrice': maxPrice,
+
+      if (date != null) 'date': date,
+      if (startTime != null) 'startTime': startTime,
+      if (endTime != null) 'endTime': endTime,
+
+      if (sort != null) 'sort': sort,
+    };
+  }
+}
 // ── Search Providers Response ─────────────────────────────────────────────────
 
 class SearchProvidersResponse {
@@ -42,17 +71,14 @@ class SearchProvidersResponse {
     required this.pagination,
   });
 
-  factory SearchProvidersResponse.fromJson(Map<String, dynamic> json) =>
-      SearchProvidersResponse(
-        results: (json['results'] as List)
-            .map(
-              (e) => ProviderSearchResult.fromJson(e as Map<String, dynamic>),
-            )
-            .toList(),
-        pagination: PaginationMeta.fromJson(
-          json['pagination'] as Map<String, dynamic>,
-        ),
-      );
+  factory SearchProvidersResponse.fromJson(
+    Map<String, dynamic> json,
+  ) => SearchProvidersResponse(
+    results: (json['data'] as List)
+        .map((e) => ProviderSearchResult.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    pagination: PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
+  );
 }
 
 // ── Service Filters Model ─────────────────────────────────────────────────────
@@ -72,33 +98,10 @@ class ServiceFiltersModel {
 class FilterOptionModel {
   final String id;
   final String value;
-  final bool isDeleted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
-  const FilterOptionModel({
-    required this.id,
-    required this.value,
-    required this.isDeleted,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+  const FilterOptionModel({required this.id, required this.value});
 
   factory FilterOptionModel.fromJson(Map<String, dynamic> json) {
-    return FilterOptionModel(
-      id: json['id'] as String,
-      value: json['value'] as String,
-      isDeleted: json['isDeleted'] as bool,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-    );
+    return FilterOptionModel(id: json['id'] ?? "", value: json['value'] ?? "");
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'value': value,
-    'isDeleted': isDeleted,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
-  };
 }

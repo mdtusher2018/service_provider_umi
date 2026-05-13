@@ -12,14 +12,14 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
-class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+class SearchCategoryScreen extends ConsumerStatefulWidget {
+  const SearchCategoryScreen({super.key});
 
   @override
-  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchCategoryScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends ConsumerState<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
   final _searchController = TextEditingController();
 
   String _query = '';

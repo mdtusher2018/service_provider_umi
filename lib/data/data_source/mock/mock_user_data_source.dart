@@ -2,7 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
-import 'package:service_provider_umi/data/models/misc_models.dart';
+import 'package:service_provider_umi/data/models/mock_misc_models.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 
@@ -16,6 +16,7 @@ class MockUserDataSource implements UserRemoteDataSource {
     role: 'User',
     bio: 'I love getting things done around the house.',
     address: '301 Parker Rd, Dhaka, Bangladesh',
+    serviceProviderInfo: null,
   );
 
   final List<AddressModel> _addresses = [

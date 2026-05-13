@@ -1,5 +1,7 @@
 // ─── work_schedule_models.dart ────────────────────────────────────────────────
 
+import 'package:service_provider_umi/data/models/api_response.dart';
+
 class WorkScheduleModel {
   final String id;
   final String userId;
@@ -47,7 +49,7 @@ class WorkScheduleModel {
 
 class WorkScheduleListResponse {
   final List<WorkScheduleModel> data;
-  final WorkScheduleMeta meta;
+  final PaginationMeta meta;
 
   const WorkScheduleListResponse({required this.data, required this.meta});
 
@@ -57,28 +59,9 @@ class WorkScheduleListResponse {
       data: (inner['data'] as List)
           .map((e) => WorkScheduleModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      meta: WorkScheduleMeta.fromJson(inner['meta'] as Map<String, dynamic>),
+      meta: PaginationMeta.fromJson(inner['meta'] as Map<String, dynamic>),
     );
   }
-}
-
-class WorkScheduleMeta {
-  final int page;
-  final int limit;
-  final int total;
-
-  const WorkScheduleMeta({
-    required this.page,
-    required this.limit,
-    required this.total,
-  });
-
-  factory WorkScheduleMeta.fromJson(Map<String, dynamic> json) =>
-      WorkScheduleMeta(
-        page: json['page'] as int,
-        limit: json['limit'] as int,
-        total: json['total'] as int,
-      );
 }
 
 // ─── Request body item ────────────────────────────────────────────────────────

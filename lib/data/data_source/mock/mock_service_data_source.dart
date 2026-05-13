@@ -1,11 +1,12 @@
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
-import 'package:service_provider_umi/data/models/misc_models.dart';
+import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -15,52 +16,52 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
 
   static final List<ServiceModel> _allServices = [
     ServiceModel(
-      id: '1',
+      id: '6a02ca9deb8a6e52452763a4',
       name: 'Home',
       image:
           'https://static.vecteezy.com/system/resources/previews/010/151/123/original/house-symbol-and-home-icon-sign-design-free-png.png',
       haveSubcategory: false,
     ),
     ServiceModel(
-      id: '2',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Cleaning',
       image: 'https://cdn-icons-png.flaticon.com/256/12211/12211111.png',
       haveSubcategory: true,
     ),
     ServiceModel(
-      id: '3',
+      id: '6a02caceeb8a6e52452763a5',
       name: 'Care',
       image: 'https://cdn-icons-png.flaticon.com/512/6205/6205324.png',
       haveSubcategory: true,
     ),
     ServiceModel(
-      id: '4',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Pet Care',
       image: 'https://cdn-icons-png.flaticon.com/512/2138/2138410.png',
       haveSubcategory: false,
     ),
     ServiceModel(
-      id: '5',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Electrical',
       image:
           'https://tse3.mm.bing.net/th/id/OIP.yj0qQw6b2ZeMsAK1tL9TJAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3',
       haveSubcategory: false,
     ),
     ServiceModel(
-      id: '6',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Others',
       image:
           'https://static.vecteezy.com/system/resources/previews/016/327/497/original/gift-box-3d-icon-render-illustration-png.png',
       haveSubcategory: false,
     ),
     ServiceModel(
-      id: '7',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Plumbing',
       image: 'https://picsum.photos/seed/plumbing/200',
       haveSubcategory: false,
     ),
     ServiceModel(
-      id: '8',
+      id: '69c4fa8a6db7d36f60fec4ad',
       name: 'Electrical',
       image: 'https://picsum.photos/seed/electrical/200',
       haveSubcategory: false,
@@ -142,7 +143,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
 
   static final List<ProviderSearchResult> _mockProviders = [
     ProviderSearchResult(
-      id: 'provider_001',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'NB Sujon',
       avatarUrl: 'https://i.pravatar.cc/150?img=1',
       verified: true,
@@ -154,7 +155,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       repeatedCount: 4,
     ),
     ProviderSearchResult(
-      id: 'provider_002',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'Sarah Ahmed',
       avatarUrl: 'https://i.pravatar.cc/150?img=5',
       verified: true,
@@ -166,7 +167,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       repeatedCount: 9,
     ),
     ProviderSearchResult(
-      id: 'provider_003',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'Mr. Raju',
       avatarUrl: 'https://i.pravatar.cc/150?img=3',
       verified: false,
@@ -178,7 +179,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       repeatedCount: 2,
     ),
     ProviderSearchResult(
-      id: 'provider_004',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'Fatima Begum',
       avatarUrl: 'https://i.pravatar.cc/150?img=9',
       verified: true,
@@ -190,7 +191,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       repeatedCount: 15,
     ),
     ProviderSearchResult(
-      id: 'provider_005',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'Karim Uddin',
       avatarUrl: 'https://i.pravatar.cc/150?img=12',
       verified: false,
@@ -202,7 +203,7 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
       repeatedCount: 1,
     ),
     ProviderSearchResult(
-      id: 'provider_006',
+      id: '69ca1d079d5373b1fc1189d3',
       name: 'Nasrin Islam',
       avatarUrl: 'https://i.pravatar.cc/150?img=16',
       verified: true,
@@ -224,38 +225,11 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   static const Map<String, List<FaqItem>> _faqs = {
     'elderly_care': [
       FaqItem(
-        id: 1,
+        id: "1",
         question: 'How does this service work?',
         answer:
             'Select a service, choose your schedule, and book a provider. '
             'The provider will confirm and arrive at your location.',
-      ),
-      FaqItem(
-        id: 2,
-        question: 'Can I cancel a booking?',
-        answer:
-            'Yes, you can cancel a booking up to 24 hours before the start '
-            'time without any charge.',
-      ),
-      FaqItem(
-        id: 3,
-        question: 'Are providers background-checked?',
-        answer:
-            'All verified providers have undergone thorough background checks '
-            'and identity verification.',
-      ),
-      FaqItem(
-        id: 4,
-        question: 'What payment methods are accepted?',
-        answer:
-            'We accept all major credit/debit cards and mobile banking payments.',
-      ),
-      FaqItem(
-        id: 5,
-        question: 'How do I contact support?',
-        answer:
-            'You can reach our support team via the in-app support section '
-            'or call our helpline at any time.',
       ),
     ],
   };
@@ -311,113 +285,8 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<ProviderProfile> getProviderProfile(String providerId) async {
-    await _delay(ms: 700);
-    return ProviderProfile(
-      id: providerId,
-      name: _nameForProvider(providerId),
-      serviceTitle: 'Elderly Care Specialist',
-      profileImage:
-          'https://i.pravatar.cc/300?img=${_imgForProvider(providerId)}',
-      verified: true,
-      hourlyRate: 15.0,
-      about:
-          'I am a dedicated and compassionate care professional with over 6 years of experience '
-          'working with elderly clients. I specialize in dementia and palliative care, '
-          'and I always strive to provide the highest quality of service.',
-      rating: const ProviderRating(
-        average: 4.9,
-        totalReviews: 23,
-        breakdown: RatingBreakdown(
-          service: 5.0,
-          punctuality: 4.8,
-          kindness: 5.0,
-          valueForMoney: 4.9,
-          professionalism: 4.9,
-        ),
-      ),
-      gallery: [
-        'https://picsum.photos/seed/gallery1/400/300',
-        'https://picsum.photos/seed/gallery2/400/300',
-        'https://picsum.photos/seed/gallery3/400/300',
-        'https://picsum.photos/seed/gallery4/400/300',
-      ],
-      questions: const [
-        ProviderQuestion(
-          question: 'How much experience do you have as a carer?',
-          answer: '6–10 years of experience',
-        ),
-        ProviderQuestion(
-          question: 'Do you have a driving license?',
-          answer: 'Yes, I have a valid driving license.',
-        ),
-        ProviderQuestion(
-          question: 'Are you qualified in palliative care?',
-          answer: 'Yes, I hold a Level 3 certificate in palliative care.',
-        ),
-      ],
-      comments: [
-        ProviderComment(
-          id: 'r_1',
-          userName: 'Ana Silva',
-          userImage: 'https://i.pravatar.cc/100?img=20',
-          userVerified: true,
-          rating: 5.0,
-          comment:
-              'The service was outstanding. Very punctual and professional.',
-          createdAt: DateTime.now()
-              .subtract(const Duration(days: 5))
-              .toString(),
-        ),
-        ProviderComment(
-          id: 'r_2',
-          userName: 'Mark Johnson',
-          userImage: 'https://i.pravatar.cc/100?img=33',
-          userVerified: true,
-          rating: 4.8,
-          comment: 'Great with my mother. Would definitely book again.',
-          createdAt: DateTime.now()
-              .subtract(const Duration(days: 12))
-              .toString(),
-        ),
-        ProviderComment(
-          id: 'r_3',
-          userName: 'Layla Hassan',
-          userImage: 'https://i.pravatar.cc/100?img=47',
-          userVerified: true,
-          rating: 5.0,
-          comment: 'Very kind and attentive. Highly recommended!',
-          createdAt: DateTime.now()
-              .subtract(const Duration(days: 20))
-              .toString(),
-        ),
-      ],
-      availability: ProviderAvailability(
-        days: {
-          'monday': [
-            const AvailabilitySlot(start: '09:00', maxDurationMinutes: 480),
-          ],
-          'tuesday': [
-            const AvailabilitySlot(start: '09:00', maxDurationMinutes: 480),
-          ],
-          'wednesday': [
-            const AvailabilitySlot(start: '09:00', maxDurationMinutes: 240),
-            const AvailabilitySlot(start: '14:00', maxDurationMinutes: 240),
-          ],
-          'thursday': [
-            const AvailabilitySlot(start: '09:00', maxDurationMinutes: 480),
-          ],
-          'friday': [
-            const AvailabilitySlot(start: '09:00', maxDurationMinutes: 360),
-          ],
-          'saturday': [
-            const AvailabilitySlot(start: '10:00', maxDurationMinutes: 240),
-          ],
-          'sunday': [],
-        },
-        slotIntervalMinutes: 60,
-      ),
-    );
+  Future<UserProfile> getProviderProfile(String providerId) async {
+    throw UnimplementedError();
   }
 
   @override
@@ -453,28 +322,6 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
-
-  String _nameForProvider(String id) {
-    const names = {
-      'provider_001': 'NB Sujon',
-      'provider_002': 'Sarah Ahmed',
-      'provider_003': 'Mr. Raju',
-      'provider_004': 'Fatima Begum',
-      'provider_005': 'Karim Uddin',
-    };
-    return names[id] ?? 'Provider $id';
-  }
-
-  int _imgForProvider(String id) {
-    const imgs = {
-      'provider_001': 1,
-      'provider_002': 5,
-      'provider_003': 3,
-      'provider_004': 9,
-      'provider_005': 12,
-    };
-    return imgs[id] ?? 7;
-  }
 
   Future<void> _delay({int ms = 500}) =>
       Future.delayed(Duration(milliseconds: ms));
@@ -518,16 +365,16 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
           .skip(((page ?? 1) - 1) * (limit ?? 10))
           .take((limit ?? 10))
           .toList(),
-      meta: WorkScheduleMeta(
+      meta: PaginationMeta(
         page: (page ?? 1),
         limit: (limit ?? 10),
-        total: total,
+        totalPage: total,
       ),
     );
   }
 
   @override
-  Future<ProviderProfile> updateServiceProviderProfile(
+  Future<UserProfile> updateServiceProviderProfile(
     UpdateProviderRequest schedules,
   ) {
     // TODO: implement updateServiceProviderProfile
@@ -543,6 +390,12 @@ class MockServiceDataSource implements ServiceRemoteDataSource {
   @override
   Future<void> rejectBooking(String bookingId) {
     // TODO: implement rejectBooking
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<ProviderComment>> getProviderReviews(String providerId) {
+    // TODO: implement getProviderReviews
     throw UnimplementedError();
   }
 }

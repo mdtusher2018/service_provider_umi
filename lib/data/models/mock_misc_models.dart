@@ -26,58 +26,6 @@ class FavoritesResponse {
       );
 }
 
-// ── FAQs ──────────────────────────────────────────────────────────────────────
-
-class FaqItem {
-  final int id;
-  final String question;
-  final String answer;
-
-  const FaqItem({
-    required this.id,
-    required this.question,
-    required this.answer,
-  });
-
-  factory FaqItem.fromJson(Map<String, dynamic> json) => FaqItem(
-    id: json['id'] as int,
-    question: json['question'] as String,
-    answer: json['answer'] as String,
-  );
-}
-
-class FaqsResponse {
-  final List<FaqItem> faqs;
-
-  const FaqsResponse({required this.faqs});
-
-  factory FaqsResponse.fromJson(Map<String, dynamic> json) => FaqsResponse(
-    faqs: (json['faqs'] as List)
-        .map((e) => FaqItem.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-// ── Static Content ────────────────────────────────────────────────────────────
-
-enum ContentType {
-  privacyPolicy('privacy-policy'),
-  termsAndCondition('Terms-and-Condition'),
-  aboutUs('About-Us');
-
-  const ContentType(this.value);
-  final String value;
-}
-
-class ContentResponse {
-  final String content; // raw HTML
-
-  const ContentResponse({required this.content});
-
-  factory ContentResponse.fromJson(Map<String, dynamic> json) =>
-      ContentResponse(content: json['content'] as String);
-}
-
 // ── Support ───────────────────────────────────────────────────────────────────
 
 class SupportResponse {

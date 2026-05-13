@@ -1,10 +1,7 @@
 part of 'provider_profile_screen.dart';
 
 final _favoriteProvider = StateProvider<bool>((ref) => false);
-AppBar _buildAppBar({
-  required WidgetRef ref,
-  required ProviderProfile mockProvider,
-}) {
+AppBar _buildAppBar({required WidgetRef ref, required UserProfile data}) {
   final isFavorited = ref.watch(_favoriteProvider);
 
   return AppBar(
@@ -18,7 +15,7 @@ AppBar _buildAppBar({
               size: 20,
             ),
           ),
-    title: AppText.h3("${mockProvider.name}'s profile"),
+    title: AppText.h3("${data.name}'s profile"),
     centerTitle: true,
     backgroundColor: AppColors.background,
     surfaceTintColor: Colors.transparent,
