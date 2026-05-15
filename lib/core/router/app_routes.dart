@@ -35,7 +35,7 @@ class AppRoutes {
   static const searchTime = ':serviceId/search-time';
 
   // ─── Booking flow ────────────────────────────────────────
-  static const String bookingSchedule = '/booking/schedule';
+  static const String bookingSchedule = '/booking/schedule/:providerId';
   static const String bookingDetail = '/booking/:bookingId';
   static const String myBookings = '/booking/my-bookings';
 
@@ -68,6 +68,7 @@ class AppRoutes {
   // ─── Helpers ─────────────────────────────────────────────
   static String providerProfilePath(String id) => '/service-provider/$id';
   static String bookingDetailPath(String id) => '/booking/$id';
+  static String bookingSchedulePath(String id) => '/booking/schedule/$id';
   static String searchResultPath(String id) => '/search-results/$id';
   static String filterPath(String id) => '/search-results/$id/filter';
   static String chatPath(String contactId) => '/chat/$contactId';

@@ -4,8 +4,8 @@ import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
+import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
-import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 
 abstract class UserRemoteDataSource {
@@ -26,10 +26,8 @@ abstract class UserRemoteDataSource {
   Future<void> changePassword(ChangePasswordRequest request);
 
   // ── Favorites ──────────────────────────────────────────────────────────────
-  Future<List<ProviderSearchResult>> getFavorites({
-    int page = 1,
-    int limit = 10,
-  });
+  Future<List<FavoriteModel>> getFavorites({int page = 1, int limit = 10});
+  Future<void> toggleFavorite({required String id});
 
   // ── Support ────────────────────────────────────────────────────────────────
   Future<SupportResponse> getSupport();
@@ -116,22 +114,24 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   // ── GET /users/favorites ───────────────────────────────────────────────────
   @override
-  Future<List<ProviderSearchResult>> getFavorites({
+  Future<List<FavoriteModel>> getFavorites({
     int page = 1,
     int limit = 10,
   }) async {
     final response = await _dio.get(
       ApiEndpoints.favorites,
-      queryParameters: {'page': page, 'limit': limit},
+      queryParameters: {
+        'page': page,
+        'limit': limit,
+        "include": "serviceProvider",
+      },
     );
-    final apiResponse = ApiResponse<List<ProviderSearchResult>>.fromJson(
+    final apiResponse = ApiResponse<List<FavoriteModel>>.fromJson(
       response.data as Map<String, dynamic>,
       (data) {
-        final list = (data as Map<String, dynamic>)['results'] as List;
+        final list = (data as Map<String, dynamic>)['data'] as List;
         return list
-            .map(
-              (e) => ProviderSearchResult.fromJson(e as Map<String, dynamic>),
-            )
+            .map((e) => FavoriteModel.fromJson(e as Map<String, dynamic>))
             .toList();
       },
     );
@@ -141,6 +141,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       );
     }
     return apiResponse.data ?? [];
+  }
+
+  @override
+  Future<void> toggleFavorite({required String id}) async {
+    await _dio.post(ApiEndpoints.favorites, data: {"serviceProviderId": id});
   }
 
   // ── GET /support ───────────────────────────────────────────────────────────

@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/favourites/riverpod/favourites_notifire.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 
 import 'package:service_provider_umi/gen/assets.gen.dart';
@@ -87,7 +88,11 @@ class _ProviderProfileOverviewScreenState
       children: [
         Column(
           children: [
-            _buildAppBar(data: profileData, ref: ref),
+            _buildAppBar(
+              data: profileData,
+              ref: ref,
+              providerId: widget.providerId,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -127,7 +132,8 @@ class _ProviderProfileOverviewScreenState
           right: 0,
           child: _buildBottomBar(profileData),
         ),
-        if (ref.watch(frequencySheetProvider)) _buildFrequencyOverlay(ref: ref),
+        if (ref.watch(frequencySheetProvider))
+          _buildFrequencyOverlay(ref: ref, providerId: widget.providerId),
       ],
     );
   }

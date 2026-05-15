@@ -3,12 +3,33 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 // ── Request ───────────────────────────────────────────────────────────────────
 
+class BookingDayRequest {
+  final String day;
+  final DateTime startTime;
+  final DateTime endTime;
+  final double durationHours;
+
+  const BookingDayRequest({
+    required this.day,
+    required this.startTime,
+    required this.endTime,
+    required this.durationHours,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'day': day,
+    'startTime': startTime.toUtc().toIso8601String(),
+    'endTime': endTime.toUtc().toIso8601String(),
+    'durationHours': durationHours,
+  };
+}
+
 class CreateBookingRequest {
   final String providerId;
   final double price;
-  final String startDate;
-  final int totalHours;
-  final String bookingType; // e.g. "weekly"
+  final DateTime startDate;
+  final double totalHours;
+  final String bookingType; // 'weekly' | 'once'
   final List<BookingDayRequest> bookingDays;
 
   const CreateBookingRequest({
@@ -21,33 +42,12 @@ class CreateBookingRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "providerId": providerId,
-    "price": price,
-    "startDate": startDate,
-    "totalHours": totalHours,
-    "bookingType": bookingType,
-    "bookingDays": bookingDays.map((e) => e.toJson()).toList(),
-  };
-}
-
-class BookingDayRequest {
-  final String day;
-  final String startTime;
-  final String endTime;
-  final int durationHours;
-
-  const BookingDayRequest({
-    required this.day,
-    required this.startTime,
-    required this.endTime,
-    required this.durationHours,
-  });
-
-  Map<String, dynamic> toJson() => {
-    "day": day,
-    "startTime": startTime,
-    "endTime": endTime,
-    "durationHours": durationHours,
+    'providerId': providerId,
+    'price': price,
+    'startDate': startDate.toUtc().toIso8601String(),
+    'totalHours': totalHours,
+    'bookingType': bookingType,
+    'bookingDays': bookingDays.map((d) => d.toJson()).toList(),
   };
 }
 

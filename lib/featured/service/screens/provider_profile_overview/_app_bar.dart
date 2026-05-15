@@ -1,8 +1,20 @@
 part of 'provider_profile_screen.dart';
 
-final _favoriteProvider = StateProvider<bool>((ref) => false);
-AppBar _buildAppBar({required WidgetRef ref, required UserProfile data}) {
-  final isFavorited = ref.watch(_favoriteProvider);
+final favoriteProvider = Provider.family<bool, String>((ref, providerId) {
+  final asyncFavorites = ref.watch(favouritesNotifireProvider);
+
+  return asyncFavorites.when(
+    data: (list) => list.any((e) => e.serviceProviderId == providerId),
+    loading: () => false,
+    error: (_, __) => false,
+  );
+});
+AppBar _buildAppBar({
+  required WidgetRef ref,
+  required UserProfile data,
+  required String providerId,
+}) {
+  final isFavorited = ref.watch(favoriteProvider(providerId));
 
   return AppBar(
     leading: (kIsWeb)
@@ -27,15 +39,20 @@ AppBar _buildAppBar({required WidgetRef ref, required UserProfile data}) {
         ),
         onPressed: () {},
       ),
+
+      /// ❤️ FAVORITE BUTTON
       GestureDetector(
         onTap: () {
-          ref.read(_favoriteProvider.notifier).state = !isFavorited;
+          ref
+              .read(favouritesNotifireProvider.notifier)
+              .toggleFavorite(providerId);
         },
         child: Icon(
           isFavorited ? Icons.favorite_rounded : Icons.favorite_border_rounded,
           color: isFavorited ? AppColors.error : AppColors.textPrimary,
         ),
       ),
+
       24.horizontalSpace,
     ],
   );

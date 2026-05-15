@@ -2,6 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
+import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
@@ -34,6 +35,7 @@ class MockUserDataSource implements UserRemoteDataSource {
     ),
   ];
 
+  // ignore: unused_field
   final List<ProviderSearchResult> _favorites = [
     ProviderSearchResult(
       id: 'provider_002',
@@ -118,15 +120,11 @@ class MockUserDataSource implements UserRemoteDataSource {
   }
 
   @override
-  Future<List<ProviderSearchResult>> getFavorites({
+  Future<List<FavoriteModel>> getFavorites({
     int page = 1,
     int limit = 10,
   }) async {
-    await _delay();
-    final total = _favorites.length;
-    final start = ((page - 1) * limit).clamp(0, total);
-    final end = (start + limit).clamp(0, total);
-    return _favorites.sublist(start, end);
+    throw UnimplementedError();
   }
 
   @override
@@ -142,4 +140,10 @@ class MockUserDataSource implements UserRemoteDataSource {
 
   Future<void> _delay({int ms = 500}) =>
       Future.delayed(Duration(milliseconds: ms));
+
+  @override
+  Future<void> toggleFavorite({required String id}) {
+    // TODO: implement toggleFavorite
+    throw UnimplementedError();
+  }
 }

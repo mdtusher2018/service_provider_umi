@@ -165,18 +165,16 @@ class BookingsNotifier extends _$BookingsNotifier {
     _isFetching = false;
   }
 
-  Future<void> createBooking({required CreateBookingRequest request}) async {
+  Future<String?> createBooking({required CreateBookingRequest request}) async {
     final result = await _repo.createBooking(request);
 
-    if (!ref.mounted) return;
-
-    result.when(
+    return result.when(
       success: (_) async {
-        // 🔥 reload first page after create
         await fetch(initial: true);
+        return "Successfully Booked";
       },
       failure: (e) {
-        state = AsyncError(e, StackTrace.current);
+        return e.message;
       },
     );
   }

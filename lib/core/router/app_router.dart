@@ -328,7 +328,8 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) {
           final mode =
               state.extra as BookingFrequency? ?? BookingFrequency.once;
-          return BookingScheduleScreen(bookingMode: mode);
+          final id = state.pathParameters['providerId']!;
+          return BookingScheduleScreen(bookingMode: mode, providerId: id);
         },
       ),
       GoRoute(

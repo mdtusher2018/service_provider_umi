@@ -1,7 +1,10 @@
 part of 'provider_profile_screen.dart';
 
 final frequencySheetProvider = StateProvider<bool>((ref) => false);
-Widget _buildFrequencyOverlay({required WidgetRef ref}) {
+Widget _buildFrequencyOverlay({
+  required WidgetRef ref,
+  required String providerId,
+}) {
   final showSheet = ref.watch(frequencySheetProvider);
 
   if (!showSheet) return const SizedBox.shrink();
@@ -18,6 +21,7 @@ Widget _buildFrequencyOverlay({required WidgetRef ref}) {
           child: GestureDetector(
             onTap: () {}, // prevent closing when tapping sheet
             child: _ServiceFrequencySheet(
+              providerId: providerId,
               onClose: () {
                 ref.read(frequencySheetProvider.notifier).state = false;
               },
@@ -31,7 +35,11 @@ Widget _buildFrequencyOverlay({required WidgetRef ref}) {
 
 class _ServiceFrequencySheet extends StatefulWidget {
   final VoidCallback onClose;
-  const _ServiceFrequencySheet({required this.onClose});
+  const _ServiceFrequencySheet({
+    required this.onClose,
+    required this.providerId,
+  });
+  final String providerId;
 
   @override
   State<_ServiceFrequencySheet> createState() => _ServiceFrequencySheetState();
@@ -84,12 +92,12 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             onTap: () {
               if (kIsWeb) {
                 context.go(
-                  AppRoutes.bookingSchedule,
+                  AppRoutes.bookingSchedulePath(widget.providerId),
                   extra: BookingFrequency.weekly,
                 );
               } else {
                 context.push(
-                  AppRoutes.bookingSchedule,
+                  AppRoutes.bookingSchedulePath(widget.providerId),
                   extra: BookingFrequency.weekly,
                 );
               }
@@ -104,10 +112,17 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             subtitle: 'One-Time service',
 
             onTap: () {
-              context.push(
-                AppRoutes.bookingSchedule,
-                extra: BookingFrequency.once,
-              );
+              if (kIsWeb) {
+                context.go(
+                  AppRoutes.bookingSchedulePath(widget.providerId),
+                  extra: BookingFrequency.once,
+                );
+              } else {
+                context.push(
+                  AppRoutes.bookingSchedulePath(widget.providerId),
+                  extra: BookingFrequency.once,
+                );
+              }
             },
           ),
         ],
