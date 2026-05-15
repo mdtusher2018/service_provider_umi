@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/di/data_source_provider.dart';
 import 'package:service_provider_umi/data/repository/auth_repository.dart';
+import 'package:service_provider_umi/data/repository/chat_repository.dart';
 import 'package:service_provider_umi/data/repository/payment_repository.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/data/repository/notification_repository.dart';
@@ -39,3 +40,7 @@ StaticContentRepository staticContentRepository(Ref ref) =>
 @riverpod
 PaymentRepository paymentRepository(Ref ref) =>
     PaymentRepository(remote: ref.read(paymentDataSourceProvider));
+
+@riverpod
+ChatRepository chatRepository(Ref ref) =>
+    ChatRepository(remote: ref.read(chatRemoteDataSourceProvider));

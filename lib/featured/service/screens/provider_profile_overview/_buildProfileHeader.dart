@@ -3,6 +3,7 @@ part of 'provider_profile_screen.dart';
 Widget _buildProfileHeader({
   required WidgetRef ref,
   required UserProfile data,
+  required String chatId,
 }) {
   return Column(
     children: [
@@ -29,6 +30,30 @@ Widget _buildProfileHeader({
             AppAvatar(
               imageUrl: Assets.icons.chatIcon.keyName,
               size: AvatarSize.md,
+              onTap: () async {
+                final myUserId = await getMyUserId(ref);
+                if (kIsWeb) {
+                  ref.context.go(
+                    AppRoutes.chatPath((chatId.isEmpty) ? "123" : chatId),
+                    extra: {
+                      'otherUserId': data.id,
+                      'name': data.name,
+                      'myId': myUserId,
+                      'imageUrl': data.profileImage ?? "",
+                    },
+                  );
+                } else {
+                  ref.context.push(
+                    AppRoutes.chatPath((chatId.isEmpty) ? "123" : chatId),
+                    extra: {
+                      'otherUserId': data.id,
+                      'name': data.name,
+                      'myId': myUserId,
+                      'imageUrl': data.profileImage ?? "",
+                    },
+                  );
+                }
+              },
               backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
             _StatDivider(),

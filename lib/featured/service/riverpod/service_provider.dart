@@ -12,6 +12,7 @@ import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/service_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
+import 'package:service_provider_umi/data/repository/chat_repository.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -296,11 +297,12 @@ class FaqNotifier extends _$FaqNotifier {
 @riverpod
 class ProviderProfileNotifier extends _$ProviderProfileNotifier {
   @override
-  AsyncValue<(UserProfile, List<ProviderComment>)> build() {
+  AsyncValue<(UserProfile, List<ProviderComment>, String)> build() {
     return const AsyncLoading();
   }
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+  ChatRepository get _chatRepo => ref.read(chatRepositoryProvider);
 
   Future<void> fetch(String providerId) async {
     state = const AsyncLoading();
@@ -308,17 +310,23 @@ class ProviderProfileNotifier extends _$ProviderProfileNotifier {
     final results = await Future.wait([
       _repo.getProviderProfile(providerId),
       _repo.getProviderReviews(providerId),
+      _chatRepo.getChatId(providerId),
     ]);
 
     final profileResult = results[0] as Result<UserProfile, Failure>;
     final reviewsResult = results[1] as Result<List<ProviderComment>, Failure>;
+    final chatId = results[2] as Result<String, Failure>;
 
     // handle both results safely
     state = profileResult.when(
       success: (profile) {
         return reviewsResult.when(
-          success: (reviews) =>
-              AsyncData((profile, reviews)), // ✅ tuple combined
+          success: (data) {
+            return chatId.when(
+              success: (id) => AsyncData((profile, data, id)),
+              failure: (e) => AsyncError(e, StackTrace.current),
+            );
+          }, // ✅ tuple combined
           failure: (e) => AsyncError(e, StackTrace.current),
         );
       },

@@ -71,7 +71,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   // ── Subscriptions ─────────────────────────────────────────────────────────
   late final StreamSubscription<List<ChatMessage>> _historySub;
   late final StreamSubscription<String> _errorSub;
-  late final StreamSubscription<bool> _networkSub; // ← new
   // ─────────────────────────────────────────────────────────────────────────
   @override
   void initState() {
@@ -90,9 +89,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       _messages.addAll(cached.map(_UiMessage.fromSocket));
     }
 
-    _networkSub = ref.read(networkInfoProvider).onConnectivityChanged.listen((
-      connected,
-    ) {
+    initializedChatService();
+
+    ref.read(networkInfoProvider).onConnectivityChanged.listen((connected) {
       if (!mounted) return;
       setState(() => _isOffline = !connected);
       initializedChatService();
@@ -131,7 +130,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   void dispose() {
-    _networkSub.cancel();
     _historySub.cancel();
     _errorSub.cancel();
     _chatService.leaveConversation();

@@ -11,6 +11,7 @@ import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/favourites/riverpod/favourites_notifire.dart';
@@ -72,7 +73,7 @@ class _ProviderProfileOverviewScreenState
       backgroundColor: AppColors.background,
       body: state.when(
         loading: () => AppLoader(),
-        data: (data) => _buildProfileScreen(data.$1, data.$2),
+        data: (data) => _buildProfileScreen(data.$1, data.$2, data.$3),
         error: (e, _) => Center(
           child: AppText.h4((e is AppException) ? e.message : e.toString()),
         ),
@@ -83,6 +84,7 @@ class _ProviderProfileOverviewScreenState
   Widget _buildProfileScreen(
     UserProfile profileData,
     List<ProviderComment> reviews,
+    String chatId,
   ) {
     return Stack(
       children: [
@@ -102,7 +104,11 @@ class _ProviderProfileOverviewScreenState
                 child: Column(
                   spacing: 16,
                   children: [
-                    _buildProfileHeader(ref: ref, data: profileData),
+                    _buildProfileHeader(
+                      ref: ref,
+                      data: profileData,
+                      chatId: chatId,
+                    ),
 
                     _buildAboutSection(profileData),
                     AppDivider(),

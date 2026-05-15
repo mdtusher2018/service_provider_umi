@@ -6,6 +6,7 @@ import 'package:service_provider_umi/data/data_source/mock/mock_misc_data_source
 import 'package:service_provider_umi/data/data_source/mock/mock_service_data_source.dart';
 import 'package:service_provider_umi/data/data_source/mock/mock_user_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/auth_remote_data_source.dart';
+import 'package:service_provider_umi/data/data_source/remote/chat_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/payment_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/notification_remote_data_source.dart';
@@ -25,7 +26,7 @@ UserRemoteDataSource userRemoteDataSource(Ref ref) =>
 
 @riverpod
 NotificationRemoteDataSource notificationRemoteDataSource(Ref ref) =>
-    MockNotificationDataSource();
+    NotificationRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
 
 @riverpod
 ServiceRemoteDataSource serviceRemoteDataSource(Ref ref) =>
@@ -39,3 +40,7 @@ StaticContentRemoteDataSource staticContentRemoteDataSource(Ref ref) =>
 @riverpod
 PaymentRemoteDataSource paymentDataSource(Ref ref) =>
     PaymentRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+
+@riverpod
+ChatRemoteDataSource chatRemoteDataSource(Ref ref) =>
+    ChatRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));

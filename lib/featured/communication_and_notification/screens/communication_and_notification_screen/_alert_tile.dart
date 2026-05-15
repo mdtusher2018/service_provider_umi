@@ -27,6 +27,11 @@ class _AlertTile extends StatelessWidget {
         iconColor = AppColors.white;
         icon = Icons.cancel_outlined;
         break;
+      case AlertType.unknown:
+        iconBg = AppColors.primary;
+        iconColor = AppColors.white;
+        icon = Icons.cancel_outlined;
+        break;
     }
 
     return Container(
@@ -60,9 +65,12 @@ class _AlertTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.labelLg(alert.title),
+                  AppText.labelLg(alert.message),
                   2.verticalSpace,
-                  AppText.bodySm(alert.message, color: AppColors.textSecondary),
+                  AppText.bodySm(
+                    alert.description,
+                    color: AppColors.textSecondary,
+                  ),
                 ],
               ),
             ),
@@ -72,7 +80,7 @@ class _AlertTile extends StatelessWidget {
               children: [
                 Icon(Icons.watch_later_outlined, size: 16),
                 AppText.bodySm(
-                  DateTime.tryParse(alert.createdAt)?.toRelativeTime ?? "",
+                  alert.createdAt?.toRelativeTime ?? "",
                   color: AppColors.textgrey,
                 ),
               ],

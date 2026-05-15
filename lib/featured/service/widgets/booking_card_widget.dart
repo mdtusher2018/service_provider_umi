@@ -196,10 +196,20 @@ class _BookingCardState extends ConsumerState<BookingCard>
         );
 
       case BookingStatus.accepted:
-        return const _StatusBadge(
-          label: 'Accepted',
-          color: AppColors.success,
-          backgroundColor: AppColors.successLight,
+        return Row(
+          children: [
+            const _StatusBadge(
+              label: 'Accepted',
+              color: AppColors.success,
+              backgroundColor: AppColors.successLight,
+            ),
+            8.horizontalSpace,
+            const _StatusBadge(
+              label: 'Pay now',
+              color: AppColors.error,
+              backgroundColor: AppColors.errorLight,
+            ),
+          ],
         );
 
       case BookingStatus.ongoing:

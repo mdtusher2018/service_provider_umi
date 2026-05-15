@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:readmore/readmore.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/data/models/payment_card_model.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/payment_cards_provider.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/static_content_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -14,6 +19,7 @@ import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../../core/theme/app_colors.dart';
@@ -21,6 +27,9 @@ import '../../../../../../../core/theme/app_text_styles.dart';
 
 part '_congratulations_overlay.dart';
 part '_timeline_row.dart';
+part '_payment_cards.dart';
+part '_build_text_content_section.dart';
+part '_build_address.dart';
 
 class BookingDetailScreen extends ConsumerStatefulWidget {
   final String bookingId;
@@ -128,20 +137,24 @@ class _BookingDetailBody extends ConsumerWidget {
         children: [
           _buildProviderRow(ref, role),
           20.verticalSpace,
-          _buildSection('Comment', _buildComment()),
+          _buildTextContentSection(
+            "Comment",
+            "Service booked successfully for elder care. Please ensure assistance includes daily check-ins, medication reminders, and help with mobility as discussed.",
+          ),
           20.verticalSpace,
-          _buildSection('Date and time', _buildDateTime()),
+          _buildSection('Date and time', _buildDateTime(data)),
           20.verticalSpace,
-          _buildSection('Address', _buildAddress()),
+          _buildSection('Address', _buildAddress(data)),
           20.verticalSpace,
           _buildSection('Service price', _buildPrice()),
           40.verticalSpace,
 
           // ── Action buttons driven by real status ──────────────────
-          if (bookingStatus == BookingStatus.complete)
+          if (bookingStatus == BookingStatus.ongoing)
             AppButton.primary(label: "Complete", onPressed: onComplete),
 
-          if (bookingStatus == BookingStatus.requested)
+          if (bookingStatus == BookingStatus.requested &&
+              ref.read(appRoleProvider) == AppRole.provider)
             Row(
               spacing: 16,
               children: [
@@ -171,6 +184,11 @@ class _BookingDetailBody extends ConsumerWidget {
                 ),
               ],
             ),
+
+          const SizedBox(height: 20),
+          if (bookingStatus == BookingStatus.accepted &&
+              ref.read(appRoleProvider) == AppRole.user)
+            const PaymentMethodsSection(),
         ],
       ),
     );
@@ -206,83 +224,6 @@ class _BookingDetailBody extends ConsumerWidget {
           imageUrl: Assets.icons.chatIcon.keyName,
           size: AvatarSize.md,
           backgroundColor: AppColors.primaryFor(role),
-        ),
-      ],
-    );
-  }
-
-  // ─── Comment ──────────────────────────────────────────────────────────────
-  Widget _buildComment() {
-    // Replace with a real comment field from model when available
-    return AppText.bodySm(
-      'Service booked successfully for elder care. Please ensure '
-      'assistance includes daily check-ins, medication reminders, and help '
-      'with mobility as discussed.',
-    );
-  }
-
-  // ─── Date and time — iterate ALL booking days ─────────────────────────────
-  Widget _buildDateTime() {
-    if (data.bookingDays.isEmpty) {
-      return AppText.bodySm('No schedule available.');
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: data.bookingDays.map((day) {
-        // Use a helper instead of a context-dependent format
-        final start = day.startTime!.toDisplayTime;
-        final end = day.endTime!.toDisplayTime;
-
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Day label + relative date
-              Row(
-                children: [
-                  const Icon(Icons.calendar_month_outlined, size: 18),
-                  8.horizontalSpace,
-                  Flexible(
-                    child: AppText.bodyMd(
-                      '${day.day.capitalize}'
-                      '${day.startTime != null ? '  •  ${day.startTime!.toDisplayDate}' : ''}',
-                    ),
-                  ),
-                ],
-              ),
-              12.verticalSpace,
-              _TimelineRow(
-                startTime: start,
-                endTime: end,
-                duration: '${day.durationHours}h',
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  // ─── Address ──────────────────────────────────────────────────────────────
-  Widget _buildAddress() {
-    final coords = data.provider?.location?.coordinates;
-    final addressText = (coords != null && coords.length >= 2)
-        ? 'Lat: ${coords[1].toStringAsFixed(4)}, Lng: ${coords[0].toStringAsFixed(4)}'
-        : 'Address not available';
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(
-          Icons.location_on_outlined,
-          size: 18,
-          color: AppColors.grey400,
-        ),
-        8.horizontalSpace,
-        Expanded(
-          child: AppText.bodyMd(addressText, color: AppColors.textSecondary),
         ),
       ],
     );

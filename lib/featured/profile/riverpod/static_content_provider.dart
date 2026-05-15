@@ -18,7 +18,7 @@ abstract class StaticContentState with _$StaticContentState {
       StaticContentStateFailure;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class StaticContentNotifier extends _$StaticContentNotifier {
   @override
   StaticContentState build() => const StaticContentState.initial();

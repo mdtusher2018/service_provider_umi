@@ -16,7 +16,7 @@ Future<void> main() async {
   FlavorConfig.initialize(
     flavor: Flavor.dev,
     baseUrl: 'http://103.186.20.117:1000/api/v1',
-    socketUrl: 'http://103.186.20.117:1005',
+    socketUrl: 'http://103.186.20.117:6005',
     // baseUrl: 'http://10.10.10.21:3000',
     // socketUrl: 'http://10.10.10.21:3000',
     googleMapsApiKey: 'YOUR_KEY',

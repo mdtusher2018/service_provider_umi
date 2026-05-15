@@ -1,5 +1,49 @@
 part of 'booking_details_screen.dart';
 
+// ─── Date and time — iterate ALL booking days ─────────────────────────────
+Widget _buildDateTime(BookingDetailModel data) {
+  if (data.bookingDays.isEmpty) {
+    return AppText.bodySm('No schedule available.');
+  }
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: data.bookingDays.map((day) {
+      // Use a helper instead of a context-dependent format
+      final start = day.startTime!.toDisplayTime;
+      final end = day.endTime!.toDisplayTime;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Day label + relative date
+            Row(
+              children: [
+                const Icon(Icons.calendar_month_outlined, size: 18),
+                8.horizontalSpace,
+                Flexible(
+                  child: AppText.bodyMd(
+                    '${day.day.capitalize}'
+                    '${day.startTime != null ? '  •  ${day.startTime!.toDisplayDate}' : ''}',
+                  ),
+                ),
+              ],
+            ),
+            12.verticalSpace,
+            _TimelineRow(
+              startTime: start,
+              endTime: end,
+              duration: '${day.durationHours}h',
+            ),
+          ],
+        ),
+      );
+    }).toList(),
+  );
+}
+
 // ─── Timeline Row ─────────────────────────────────────────────
 class _TimelineRow extends StatelessWidget {
   final String startTime;

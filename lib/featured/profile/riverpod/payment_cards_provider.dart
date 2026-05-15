@@ -5,7 +5,7 @@ import 'package:service_provider_umi/data/repository/payment_repository.dart';
 
 part 'payment_cards_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PaymentCardsNotifier extends _$PaymentCardsNotifier {
   @override
   AsyncValue<List<PaymentCardModel>> build() {

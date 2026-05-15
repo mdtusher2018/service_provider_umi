@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,9 +94,24 @@ class _CommunicationAndNotificationScreenState
       ref.read(notificationsProvider.notifier).fetch();
     });
 
+    initializedChatService();
+
     _chatService.chatListStream.listen(_onChatList);
     _chatService.fetchChatList(onAck: (response) {});
     _errorSub = _chatService.errorStream.listen(_onSocketError);
+  }
+
+  Future<void> initializedChatService() async {
+    final token = await ref
+        .read(localStorageProvider)
+        .read(StorageKey.accessToken);
+
+    AppLogger.success("[Connected]: Chat Socket Sucessfully connected");
+
+    ChatSocketService.instance.init(
+      baseUrl: AppConfig.socketUrl,
+      token: token ?? "",
+    );
   }
 
   @override

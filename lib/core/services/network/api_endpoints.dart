@@ -45,6 +45,10 @@ class ApiEndpoints {
   // ─── Sub Categories ─────────────────────────────────────────────────────────
   static const String subCategories = '/sub-categories/{id}';
 
+  // ─── Chat ─────────────────────────────────────────────────────────
+  static String getChatId(String receiverId) =>
+      '/chat/get-by-user-id/$receiverId';
+
   // ─── Booking ────────────────────────────────────────────────────────────────
   static const String bookingDetail = '/bookings/{id}';
   static const String userBookings = '/bookings/user-booking';

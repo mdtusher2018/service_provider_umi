@@ -1,4 +1,4 @@
-enum AlertType { orderAccepted, orderComplete, cancelOrder }
+enum AlertType { orderAccepted, orderComplete, cancelOrder, unknown }
 
 enum CallType { audio, video }
 
