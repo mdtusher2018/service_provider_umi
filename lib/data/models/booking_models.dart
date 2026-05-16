@@ -325,6 +325,7 @@ class _BookedProviderModel {
   final String email;
   final String profile;
   final String phoneNumber;
+  final String serviceName;
 
   _BookedProviderModel({
     required this.id,
@@ -332,16 +333,21 @@ class _BookedProviderModel {
     required this.email,
     required this.profile,
     required this.phoneNumber,
+    required this.serviceName,
   });
 
-  factory _BookedProviderModel.fromJson(Map<String, dynamic> json) =>
-      _BookedProviderModel(
-        id: json['id'] ?? '',
-        name: json['name'] ?? '',
-        email: json['email'] ?? '',
-        profile: json['profile'] ?? '',
-        phoneNumber: json['phoneNumber'] ?? '',
-      );
+  factory _BookedProviderModel.fromJson(
+    Map<String, dynamic> json,
+  ) => _BookedProviderModel(
+    id: json['id'] ?? '',
+    name: json['name'] ?? '',
+    email: json['email'] ?? '',
+    profile: json['profile'] ?? '',
+    phoneNumber: json['phoneNumber'] ?? '',
+    serviceName:
+        json['serviceProviderInfo']?['specialistsIn']?[0]?['category']?['name'] ??
+        '',
+  );
 }
 
 class BookingTimeScheduleModel {
@@ -376,42 +382,3 @@ class BookingTimeScheduleModel {
       );
 }
 
-extension BookingModelCopy on BookingModel {
-  BookingModel copyWith({
-    String? id,
-    String? userId,
-    String? providerId,
-    bool? isPaid,
-    String? bookingType,
-    int? price,
-    DateTime? startDate,
-    DateTime? endDate,
-    int? totalHours,
-    bool? isActive,
-    String? nextBooking,
-    BookingStatus? status,
-    bool? isDeleted,
-    _BookedUserModel? user,
-    _BookedProviderModel? provider,
-    List<BookingTimeScheduleModel>? bookingDays,
-  }) {
-    return BookingModel(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      providerId: providerId ?? this.providerId,
-      isPaid: isPaid ?? this.isPaid,
-      bookingType: bookingType ?? this.bookingType,
-      price: price ?? this.price,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-      totalHours: totalHours ?? this.totalHours,
-      isActive: isActive ?? this.isActive,
-      nextBooking: nextBooking ?? this.nextBooking,
-      status: status ?? this.status,
-      isDeleted: isDeleted ?? this.isDeleted,
-      user: user ?? this.user,
-      provider: provider ?? this.provider,
-      bookingDays: bookingDays ?? this.bookingDays,
-    );
-  }
-}

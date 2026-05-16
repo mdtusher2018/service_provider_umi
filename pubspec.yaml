@@ -38,12 +38,15 @@ dependencies:
 
   # Maps
   google_maps_flutter: 
-  geolocator: 
+  geolocator: ^14.0.1 
+  google_places_flutter: ^2.1.1
+  geocoding: ^4.0.0
 
   # Notifications
 
   # Media
   image_picker: 
+  photo_view: ^0.15.0
 
 
   # Utils
@@ -67,7 +70,8 @@ dependencies:
   webview_flutter: ^4.13.1
   flutter_stripe: ^12.6.0
   readmore: ^3.0.0
-  photo_view: ^0.15.0
+ 
+
 
 
 dev_dependencies:

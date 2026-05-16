@@ -2,7 +2,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
+import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/data/repository/user_repository.dart';
 
 part 'user_provider.freezed.dart';
@@ -102,4 +104,64 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
   }
 
   void reset() => state = const ActionState.initial();
+}
+
+@riverpod
+class MyReviewNotifier extends _$MyReviewNotifier {
+  int _page = 1;
+  bool _hasMore = true;
+  bool _isFetching = false;
+
+  // 👇 expose to UI
+  bool get hasMore => _hasMore;
+
+  @override
+  AsyncValue<List<ProviderComment>> build() {
+    return const AsyncLoading();
+  }
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  // ── Initial fetch ─────────────────────────────
+  Future<void> fetch(String providerId) async {
+    _page = 1;
+    _hasMore = true;
+
+    state = const AsyncLoading();
+
+    final result = await _repo.getProviderReviews(providerId, page: _page);
+
+    state = result.when(
+      success: (data) {
+        _hasMore = data.length == 10;
+        return AsyncData(data);
+      },
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+
+  // ── Pagination ───────────────────────────────
+  Future<void> loadMore(String providerId) async {
+    if (!_hasMore || _isFetching) return;
+
+    _isFetching = true;
+    _page++;
+
+    final current = state.value ?? [];
+
+    final result = await _repo.getProviderReviews(providerId, page: _page);
+
+    result.when(
+      success: (data) {
+        _hasMore = data.isNotEmpty;
+
+        state = AsyncData([...current, ...data]);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+
+    _isFetching = false;
+  }
 }

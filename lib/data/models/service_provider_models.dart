@@ -1,6 +1,6 @@
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/search_models.dart';
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 
 // ── Search Providers Request ──────────────────────────────────────────────────
 
@@ -86,7 +86,7 @@ class SearchProvidersResponse {
 class ServiceFiltersModel {
   final List<FilterOptionModel> experienceOptions;
   final List<FilterOptionModel> othersTaskOptions;
-  final List<ServiceModel> category;
+  final List<CategoryModel> category;
 
   const ServiceFiltersModel({
     required this.experienceOptions,

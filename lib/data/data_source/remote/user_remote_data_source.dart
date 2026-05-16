@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
-import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
@@ -14,14 +12,6 @@ abstract class UserRemoteDataSource {
   Future<UserProfile> updateMyProfile(UpdateProfileRequest data);
   Future<void> deleteMyAccount();
 
-  // ── Addresses ──────────────────────────────────────────────────────────────
-  Future<List<AddressModel>> getSavedAddresses();
-  Future<void> addAddress({
-    required String name,
-    required String address,
-    required LatLng coordinates,
-  });
-
   // ── Password ───────────────────────────────────────────────────────────────
   Future<void> changePassword(ChangePasswordRequest request);
 
@@ -31,6 +21,7 @@ abstract class UserRemoteDataSource {
 
   // ── Support ────────────────────────────────────────────────────────────────
   Future<SupportResponse> getSupport();
+  Future<String> getStripeConnetedUrl();
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -68,42 +59,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<void> deleteMyAccount() async {
     await _dio.delete(ApiEndpoints.deleteMyAccount);
-  }
-
-  // ── GET /users/addresses ───────────────────────────────────────────────────
-  @override
-  Future<List<AddressModel>> getSavedAddresses() async {
-    final response = await _dio.get(ApiEndpoints.savedAddresses);
-    final apiResponse = ApiResponse<List<AddressModel>>.fromJson(
-      response.data as Map<String, dynamic>,
-      (data) => (data as List)
-          .map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-    if (!apiResponse.success) {
-      throw Exception(
-        apiResponse.error?.message ?? 'Failed to fetch addresses',
-      );
-    }
-    return apiResponse.data ?? [];
-  }
-
-  // ── POST /users/addresses ──────────────────────────────────────────────────
-  @override
-  Future<void> addAddress({
-    required String name,
-    required String address,
-    required LatLng coordinates,
-  }) async {
-    await _dio.post(
-      ApiEndpoints.addAddress,
-      data: {
-        'name': name,
-        'address': address,
-        'lat': coordinates.latitude,
-        'lng': coordinates.longitude,
-      },
-    );
   }
 
   // ── PATCH /auth/change-password ────────────────────────────────────────────
@@ -153,6 +108,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<SupportResponse> getSupport() async {
     final response = await _dio.get(ApiEndpoints.support);
     return _parse(response, SupportResponse.fromJson);
+  }
+
+  @override
+  Future<String> getStripeConnetedUrl() async {
+    final url = ApiEndpoints.stripeConnect;
+    final response = await _dio.get(url);
+
+    return response.data['data'] ?? "";
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────

@@ -45,7 +45,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
     _nameController.text = widget.user.name;
     _phoneController.text = widget.user.phoneNumber ?? "";
     _bioController.text = widget.user.bio ?? "";
-    _addressController.text = widget.user.address ?? "";
+    _addressController.text = "widget.user.address";
   }
 
   @override

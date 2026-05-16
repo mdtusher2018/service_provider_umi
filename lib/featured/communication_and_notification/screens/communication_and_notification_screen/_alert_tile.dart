@@ -30,7 +30,7 @@ class _AlertTile extends StatelessWidget {
       case AlertType.unknown:
         iconBg = AppColors.primary;
         iconColor = AppColors.white;
-        icon = Icons.cancel_outlined;
+        icon = Icons.notifications;
         break;
     }
 

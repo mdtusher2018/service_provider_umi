@@ -90,6 +90,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     name: profile.name,
                     phone: profile.phoneNumber ?? profile.email,
                     avaterUrl: profile.profileImage ?? "",
+                    isStripeConnected:
+                        profile.serviceProviderInfo?.stripeAccountId != null,
                   ),
                   failure: (_) => const Center(
                     child: AppText.bodyMd('Failed to load profile'),
@@ -141,10 +143,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         Icons.credit_card_outlined,
                         'Payments and refunds',
                         () {
+                          // if (kIsWeb) {
+                          //   context.go(AppRoutes.payments);
+                          // } else {
+                          //   context.push(AppRoutes.payments);
+                          // }
                           if (kIsWeb) {
-                            context.go(AppRoutes.payments);
+                            context.go(AppRoutes.paymentCardsPage);
                           } else {
-                            context.push(AppRoutes.payments);
+                            context.push(AppRoutes.paymentCardsPage);
                           }
                         },
                       ),
@@ -157,13 +164,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           context.push(AppRoutes.myBalance);
                         }
                       }),
-                      _Item(Icons.campaign, 'My listing', () {
-                        if (kIsWeb) {
-                          context.go(AppRoutes.providerListing);
-                        } else {
-                          context.push(AppRoutes.providerListing);
-                        }
-                      }),
+
                       _Item(Icons.tune, 'Booking preferences', () {
                         if (kIsWeb) {
                           context.go(AppRoutes.preferences);

@@ -7,9 +7,9 @@ import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
-import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/data/repository/chat_repository.dart';
@@ -24,7 +24,7 @@ part 'service_provider.g.dart';
 @riverpod
 class CategoriesNotifier extends _$CategoriesNotifier {
   @override
-  AsyncValue<List<ServiceModel>> build() {
+  AsyncValue<List<CategoryModel>> build() {
     return const AsyncLoading();
   }
 
@@ -49,7 +49,7 @@ class CategoriesNotifier extends _$CategoriesNotifier {
 @riverpod
 class SubCategoriesNotifier extends _$SubCategoriesNotifier {
   @override
-  AsyncValue<List<ServiceModel>> build() {
+  AsyncValue<List<CategoryModel>> build() {
     return const AsyncLoading();
   }
 
@@ -70,7 +70,7 @@ class SubCategoriesNotifier extends _$SubCategoriesNotifier {
 @riverpod
 class ServiceDetailsNotifier extends _$ServiceDetailsNotifier {
   @override
-  AsyncValue<ServiceModel> build() => const AsyncLoading();
+  AsyncValue<CategoryModel> build() => const AsyncLoading();
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
@@ -191,17 +191,6 @@ class BookingsNotifier extends _$BookingsNotifier {
     result.when(
       success: (_) {
         final updated = current.map((b) {
-          // if (b.id == bookingId) {
-          //   return BookingModel(
-          //     bookingId: b.bookingId,
-          //     providerName: b.providerName,
-          //     providerImage: b.providerImage,
-          //     startTime: b.startTime,
-          //     endTime: b.endTime,
-          //     day: b.day,
-          //     status: BookingStatus.accepted,
-          //   );
-          // }
           return b;
         }).toList();
 
@@ -225,17 +214,6 @@ class BookingsNotifier extends _$BookingsNotifier {
     result.when(
       success: (_) {
         final updated = current.map((b) {
-          // if (b.bookingId == bookingId) {
-          //   return BookingUiModel(
-          //     bookingId: b.bookingId,
-          //     providerName: b.providerName,
-          //     providerImage: b.providerImage,
-          //     startTime: b.startTime,
-          //     endTime: b.endTime,
-          //     day: b.day,
-          //     status: BookingStatus.canceled,
-          //   );
-          // }
           return b;
         }).toList();
 
@@ -251,6 +229,10 @@ class BookingsNotifier extends _$BookingsNotifier {
 @riverpod
 class BookingDetailNotifier extends _$BookingDetailNotifier {
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  final isAccepting = ValueNotifier<bool>(false);
+  final isCancelling = ValueNotifier<bool>(false);
+  final isConfirmimgPayment = ValueNotifier<bool>(false);
 
   @override
   Future<BookingDetailModel?> build(String bookingId) async {
@@ -273,6 +255,57 @@ class BookingDetailNotifier extends _$BookingDetailNotifier {
       failure: (e) => AsyncError(e, StackTrace.current),
     );
   }
+
+  Future<void> acceptBooking(String bookingId) async {
+    isAccepting.value = true;
+    final result = await _repo.acceptBooking(bookingId);
+    isAccepting.value = false;
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) {
+        fetch(bookingId);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+  }
+
+  Future<void> rejectBooking(String bookingId) async {
+    isCancelling.value = true;
+    final result = await _repo.rejectBooking(bookingId);
+    isCancelling.value = false;
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) {
+        fetch(bookingId);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+  }
+
+  Future<void> confirmPayment(String bookingId) async {
+    isConfirmimgPayment.value = true;
+    final result = await _repo.confirmPayment(bookingId);
+    isConfirmimgPayment.value = false;
+
+    if (!ref.mounted) return;
+
+    result.when(
+      success: (_) {
+        fetch(bookingId);
+      },
+      failure: (e) {
+        state = AsyncError(e, StackTrace.current);
+      },
+    );
+  }
 }
 
 @riverpod
@@ -289,47 +322,6 @@ class FaqNotifier extends _$FaqNotifier {
 
     state = result.when(
       success: (data) => AsyncData(data),
-      failure: (e) => AsyncError(e, StackTrace.current),
-    );
-  }
-}
-
-@riverpod
-class ProviderProfileNotifier extends _$ProviderProfileNotifier {
-  @override
-  AsyncValue<(UserProfile, List<ProviderComment>, String)> build() {
-    return const AsyncLoading();
-  }
-
-  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
-  ChatRepository get _chatRepo => ref.read(chatRepositoryProvider);
-
-  Future<void> fetch(String providerId) async {
-    state = const AsyncLoading();
-
-    final results = await Future.wait([
-      _repo.getProviderProfile(providerId),
-      _repo.getProviderReviews(providerId),
-      _chatRepo.getChatId(providerId),
-    ]);
-
-    final profileResult = results[0] as Result<UserProfile, Failure>;
-    final reviewsResult = results[1] as Result<List<ProviderComment>, Failure>;
-    final chatId = results[2] as Result<String, Failure>;
-
-    // handle both results safely
-    state = profileResult.when(
-      success: (profile) {
-        return reviewsResult.when(
-          success: (data) {
-            return chatId.when(
-              success: (id) => AsyncData((profile, data, id)),
-              failure: (e) => AsyncError(e, StackTrace.current),
-            );
-          }, // ✅ tuple combined
-          failure: (e) => AsyncError(e, StackTrace.current),
-        );
-      },
       failure: (e) => AsyncError(e, StackTrace.current),
     );
   }
@@ -418,6 +410,47 @@ class FilterNotifier extends _$FilterNotifier {
 //========================================
 //==========Service Profile API===========
 //========================================
+
+@riverpod
+class ProviderProfileNotifier extends _$ProviderProfileNotifier {
+  @override
+  AsyncValue<(UserProfile, List<ProviderComment>, String)> build() {
+    return const AsyncLoading();
+  }
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+  ChatRepository get _chatRepo => ref.read(chatRepositoryProvider);
+
+  Future<void> fetch(String providerId) async {
+    state = const AsyncLoading();
+
+    final results = await Future.wait([
+      _repo.getProviderProfile(providerId),
+      _repo.getProviderReviews(providerId),
+      _chatRepo.getChatId(providerId),
+    ]);
+
+    final profileResult = results[0] as Result<UserProfile, Failure>;
+    final reviewsResult = results[1] as Result<List<ProviderComment>, Failure>;
+    final chatId = results[2] as Result<String, Failure>;
+
+    // handle both results safely
+    state = profileResult.when(
+      success: (profile) {
+        return reviewsResult.when(
+          success: (data) {
+            return chatId.when(
+              success: (id) => AsyncData((profile, data, id)),
+              failure: (e) => AsyncError(e, StackTrace.current),
+            );
+          }, // ✅ tuple combined
+          failure: (e) => AsyncError(e, StackTrace.current),
+        );
+      },
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+}
 
 @riverpod
 class UpdateProviderNotifier extends _$UpdateProviderNotifier {

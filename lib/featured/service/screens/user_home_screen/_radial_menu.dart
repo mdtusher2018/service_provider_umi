@@ -2,7 +2,7 @@ part of 'user_home_screen.dart';
 
 class RadialMenu extends StatefulWidget {
   const RadialMenu({super.key, required this.menuItems});
-  final List<ServiceModel> menuItems;
+  final List<CategoryModel> menuItems;
 
   @override
   State<RadialMenu> createState() => _RadialMenuState();
@@ -176,7 +176,7 @@ class _RadialMenuState extends State<RadialMenu>
 }
 
 class _RadialMenuItem extends StatefulWidget {
-  final ServiceModel item;
+  final CategoryModel item;
   final double size;
 
   const _RadialMenuItem({required this.item, required this.size});

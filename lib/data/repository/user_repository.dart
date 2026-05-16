@@ -1,9 +1,7 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:service_provider_umi/core/base/repository.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
-import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
@@ -30,23 +28,6 @@ class UserRepository with SafeCall {
   // ── DELETE /users/delete-my-account ──────────────────────────────────────────
   Future<Result<void, Failure>> deleteMyAccount() =>
       asyncGuard(() => _remote.deleteMyAccount());
-
-  // ── GET /users/addresses ─────────────────────────────────────────────────────
-  Future<Result<List<AddressModel>, Failure>> getSavedAddresses() =>
-      asyncGuard(() => _remote.getSavedAddresses());
-
-  // ── POST /users/addresses ────────────────────────────────────────────────────
-  Future<Result<void, Failure>> addAddress({
-    required String name,
-    required String address,
-    required LatLng coordinates,
-  }) => asyncGuard(
-    () => _remote.addAddress(
-      name: name,
-      address: address,
-      coordinates: coordinates,
-    ),
-  );
 
   // ── PATCH /auth/change-password ──────────────────────────────────────────────
   Future<Result<void, Failure>> changePassword(ChangePasswordRequest request) =>

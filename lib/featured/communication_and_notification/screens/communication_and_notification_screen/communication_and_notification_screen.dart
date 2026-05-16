@@ -13,9 +13,10 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
+import 'package:service_provider_umi/data/models/history_model.dart';
 import 'package:service_provider_umi/data/models/notification_models.dart';
 import 'package:service_provider_umi/data/models/chat_models.dart';
-import 'package:service_provider_umi/featured/communication_and_notification/riverpod/notification_provider.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/riverpod/communication_and_notification_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
@@ -28,22 +29,6 @@ part '_history_tile.dart';
 part '_alert_tile.dart';
 part '_contact_tile.dart';
 part '_tab_bar.dart';
-
-class CallHistory {
-  final String id;
-  final String name;
-  final String? imageUrl;
-  final DateTime lastTime;
-  final CallType type; //audio,video
-
-  const CallHistory({
-    required this.id,
-    required this.name,
-    this.imageUrl,
-    required this.lastTime,
-    required this.type,
-  });
-}
 
 // ─── Screen ───────────────────────────────────────────────────
 class CommunicationAndNotificationScreen extends ConsumerStatefulWidget {
@@ -64,22 +49,6 @@ class _CommunicationAndNotificationScreenState
   late TabController _tabController;
   final _searchController = TextEditingController();
 
-  final List<CallHistory> _history = [
-    CallHistory(
-      id: '1',
-      name: 'Admin Maria',
-      lastTime: DateTime.now().subtract(const Duration(minutes: 5)),
-      type: CallType.audio,
-    ),
-    CallHistory(
-      id: '1',
-      name: 'Admin Maria',
-
-      lastTime: DateTime.now().subtract(const Duration(minutes: 5)),
-      type: CallType.video,
-    ),
-  ];
-
   final _chatService = ChatSocketService.instance;
   List<ChatRoom> _rooms = [];
   bool _isLoading = true;
@@ -92,6 +61,7 @@ class _CommunicationAndNotificationScreenState
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(notificationsProvider.notifier).fetch();
+      ref.read(callHistoryProvider.notifier).fetch();
     });
 
     initializedChatService();
@@ -255,41 +225,47 @@ class _CommunicationAndNotificationScreenState
   }
 
   Widget _buildHistoryTab() {
-    return Column(
-      children: [
-        // Contact list
-        Expanded(
-          child: _history.isEmpty
-              ? const AppEmptyState(
-                  title: 'No History',
-                  subtitle: 'Start messaging a provider',
-                )
-              : ListView.separated(
-                  padding: EdgeInsets.zero,
-                  separatorBuilder: (context, index) => 20.verticalSpace,
-                  itemCount: _history.length,
-                  itemBuilder: (_, i) {
-                    return _HistoryTile(
-                      history: _history[i],
+    final state = ref.watch(callHistoryProvider);
 
-                      onTap: () async {
-                        final myUserId = await getMyUserId(ref);
-                        AppLogger.info(_history.length.toString());
-                        context.push(
-                          AppRoutes.chatPath(_history[i].id),
-                          extra: {
-                            'otherUserId': _history[i].id,
-                            'name': "User 2",
-                            'myId': myUserId,
-                            'imageUrl': "User 2",
-                          },
-                        );
-                      },
-                    );
+    return state.when(
+      initial: () => const AppLoader(),
+      loading: () => const AppLoader(),
+      failure: (e) => Center(child: AppText(e.toString())),
+      success: (history) {
+        if (history.isEmpty) {
+          return const AppEmptyState(
+            title: 'No History',
+            subtitle: 'Start calling a provider',
+          );
+        }
+
+        return ListView.separated(
+          padding: EdgeInsets.zero,
+          separatorBuilder: (context, index) => 20.verticalSpace,
+          itemCount: history.length,
+          itemBuilder: (_, i) {
+            final item = history[i];
+
+            return _HistoryTile(
+              history: item,
+
+              onTap: () async {
+                final myUserId = await getMyUserId(ref);
+
+                context.push(
+                  AppRoutes.chatPath(item.receiver?.id ?? ''),
+                  extra: {
+                    'otherUserId': item.receiver?.id,
+                    'name': item.receiver?.name ?? "",
+                    'myId': myUserId,
+                    'imageUrl': item.receiver?.profile,
                   },
-                ),
-        ),
-      ],
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -300,36 +276,86 @@ class _CommunicationAndNotificationScreenState
       initial: () => const AppLoader(),
       loading: () => const AppLoader(),
       failure: (e) => Center(child: Text(e.toString())),
-      success: (alerts) => RefreshIndicator(
-        onRefresh: () async {
-          ref.read(notificationsProvider.notifier).fetch();
-        },
-        child: ListView.separated(
-          itemCount: alerts.length,
-          separatorBuilder: (_, __) => 16.verticalSpace,
-          itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
-        ),
-      ),
+      success: (alerts) {
+        /// ✅ FIX: return empty state
+        if (alerts.isEmpty) {
+          return const AppEmptyState(title: "No Alerts");
+        }
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.read(notificationsProvider.notifier).fetch();
+          },
+          child: ListView.separated(
+            itemCount: alerts.length,
+            separatorBuilder: (_, __) => 16.verticalSpace,
+            itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildLastAlertsTab() {
     final alertsAsync = ref.watch(notificationsProvider);
+    final markState = ref.watch(markNotificationsProvider);
 
     return alertsAsync.when(
       initial: () => const AppLoader(),
       loading: () => const AppLoader(),
       failure: (e) => Center(child: Text(e.toString())),
-      success: (alerts) => RefreshIndicator(
-        onRefresh: () async {
-          ref.read(notificationsProvider.notifier).fetch();
-        },
-        child: ListView.separated(
-          itemCount: alerts.length,
-          separatorBuilder: (_, __) => 16.verticalSpace,
-          itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
-        ),
-      ),
+      success: (List<NotificationItem> alerts) {
+        final unreadAlerts = alerts.where((e) => e.isRead != true).toList();
+
+        /// ✅ FIX: return empty state
+        if (unreadAlerts.isEmpty) {
+          return const AppEmptyState(title: "No Unread Alerts");
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.read(notificationsProvider.notifier).fetch();
+          },
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      await ref.read(markNotificationsProvider.notifier).mark();
+
+                      /// Optional: refresh list after marking
+                      ref.read(notificationsProvider.notifier).fetch();
+                    },
+                    child: AppText.bodyMd("Mark All Read"),
+                  ),
+                  8.horizontalSpace,
+
+                  /// ✅ FIX: Proper loading indicator
+                  if (markState is NotificationActionLoading)
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+
+                  20.horizontalSpace,
+                ],
+              ),
+              8.verticalSpace,
+              Expanded(
+                child: ListView.separated(
+                  itemCount: unreadAlerts.length,
+                  separatorBuilder: (_, __) => 16.verticalSpace,
+
+                  /// ✅ FIX: use unreadAlerts
+                  itemBuilder: (_, i) => _AlertTile(alert: unreadAlerts[i]),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

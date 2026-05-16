@@ -2,7 +2,7 @@ part of 'communication_and_notification_screen.dart';
 
 // ─── History Tile ─────────────────────────────────────────────
 class _HistoryTile extends ConsumerWidget {
-  final CallHistory history;
+  final CallHistoryItem history;
   final VoidCallback onTap;
   const _HistoryTile({required this.history, required this.onTap});
 
@@ -27,8 +27,8 @@ class _HistoryTile extends ConsumerWidget {
           child: Row(
             children: [
               AppAvatar(
-                name: history.name,
-                imageUrl: history.imageUrl,
+                name: history.receiver?.name,
+                imageUrl: history.receiver?.profile,
                 size: AvatarSize.md,
               ),
               12.horizontalSpace,
@@ -36,10 +36,10 @@ class _HistoryTile extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.labelLg(history.name),
+                    AppText.labelLg(history.receiver?.name ?? "Unnamed User"),
                     2.verticalSpace,
                     AppText.bodySm(
-                      history.lastTime.toRelativeTime,
+                      history.createdAt.toRelativeTime,
                       maxLines: 1,
                       color: AppColors.textSecondary,
                     ),

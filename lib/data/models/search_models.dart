@@ -8,7 +8,7 @@ class ProviderSearchResult {
   final String avatarUrl;
   final bool verified;
   final bool isLiked;
-  final double rating;
+  final num rating;
   final int reviewsCount;
   final int servicesCount;
   final double pricePerHour;
@@ -42,9 +42,9 @@ class ProviderSearchResult {
 
       isLiked: false, // not in API
 
-      rating: 0.0, // not in API
+      rating: user['avgRating'] ?? 0.0,
 
-      reviewsCount: 0, // not in API
+      reviewsCount: user['totalReview'] ?? 0.0,
 
       servicesCount: specialists.length,
 

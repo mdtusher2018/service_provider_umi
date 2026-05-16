@@ -22,6 +22,7 @@ class ApiEndpoints {
 
   // ─── Notifications ──────────────────────────────────────────────────────────
   static const String notifications = '/notifications';
+  static const String callHistory = '/call-history';
 
   // ─── Contents ───────────────────────────────────────────────────────────────
   static const String contents = '/contents';
@@ -30,8 +31,6 @@ class ApiEndpoints {
   static const String services = '/categories';
   static const String serviceById = '/categories/{id}';
 
-  // ─── MOCK ─────────────────────────────────────────────────────────────
-
   // ─── Support ────────────────────────────────────────────────────────────────
   static const String support = '/support';
 
@@ -39,8 +38,8 @@ class ApiEndpoints {
   static const String favorites = '/favorites';
 
   // ─── Address ────────────────────────────────────────────────────────────────
-  static const String addAddress = '/addresses';
-  static const String savedAddresses = '/addresses';
+  static const String addresses = '/address';
+  static String addressById(String id) => '/address/$id';
 
   // ─── Sub Categories ─────────────────────────────────────────────────────────
   static const String subCategories = '/sub-categories/{id}';
@@ -54,6 +53,8 @@ class ApiEndpoints {
   static const String userBookings = '/bookings/user-booking';
   static const String providerBookings = '/bookings/provider-booking';
   static const String createBooking = '/bookings';
+  static const String confirmPayment = '/payments/payout';
+
   static String acceptBooking(String id) => '/bookings/accept/$id';
   static String cancelBooking(String id) => '/bookings/canceled/$id';
 
@@ -65,7 +66,8 @@ class ApiEndpoints {
   static String providerReviews(String id) => '/reviews/user/$id';
   static const String updateServiceProviderProfile =
       '/users/service-provider-info';
-
+  static const String stripeConnect = '/stripe/connect';
+  
   // ─── Filters & Search ───────────────────────────────────────────────────────
   static const String serviceExperience = '/experience-options';
   static const String serviceOthersTaskOptions = '/others-task-options';

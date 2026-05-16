@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:readmore/readmore.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,14 +63,14 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
 
   void _accept() async {
     await ref
-        .read(bookingsProvider(BookingStatus.requested).notifier)
+        .read(bookingDetailProvider(widget.bookingId).notifier)
         .acceptBooking(widget.bookingId);
     ref.invalidate(bookingDetailProvider(widget.bookingId));
   }
 
   void _cancel() async {
     await ref
-        .read(bookingsProvider(BookingStatus.requested).notifier)
+        .read(bookingDetailProvider(widget.bookingId).notifier)
         .rejectBooking(widget.bookingId);
     ref.invalidate(bookingDetailProvider(widget.bookingId));
   }
@@ -126,9 +127,14 @@ class _BookingDetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(appRoleProvider);
     final bookingStatus = BookingStatus.fromString(data.status);
-    final notifier = ref.watch(
-      bookingsProvider(BookingStatus.requested).notifier,
-    );
+    final notifier = ref.watch(bookingDetailProvider(data.id).notifier);
+    ref.listen(bookingDetailProvider(data.id), (previous, next) {
+      next.whenOrNull(
+        error: (failure, _) {
+          context.showErrorSnackBar(failure.toString());
+        },
+      );
+    });
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
@@ -188,7 +194,7 @@ class _BookingDetailBody extends ConsumerWidget {
           const SizedBox(height: 20),
           if (bookingStatus == BookingStatus.accepted &&
               ref.read(appRoleProvider) == AppRole.user)
-            const PaymentMethodsSection(),
+            PaymentMethodsSection(bookingId: data.id),
         ],
       ),
     );

@@ -6,7 +6,7 @@ import 'package:service_provider_umi/core/error/app_exception.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
@@ -45,7 +45,7 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
     super.dispose();
   }
 
-  List<ServiceModel> _filtered(List<ServiceModel> services) {
+  List<CategoryModel> _filtered(List<CategoryModel> services) {
     if (_query.isEmpty) return services;
 
     return services
@@ -148,7 +148,7 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
 }
 
 class _ServiceListTile extends StatelessWidget {
-  final ServiceModel item;
+  final CategoryModel item;
   final VoidCallback? onTap;
 
   const _ServiceListTile({required this.item, this.onTap});

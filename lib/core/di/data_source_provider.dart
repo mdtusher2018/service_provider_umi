@@ -2,14 +2,12 @@
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/services/network/dio_client.dart';
-import 'package:service_provider_umi/data/data_source/mock/mock_misc_data_sources.dart';
-import 'package:service_provider_umi/data/data_source/mock/mock_service_data_source.dart';
-import 'package:service_provider_umi/data/data_source/mock/mock_user_data_source.dart';
+import 'package:service_provider_umi/data/data_source/remote/address_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/auth_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/chat_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/payment_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
-import 'package:service_provider_umi/data/data_source/remote/notification_remote_data_source.dart';
+import 'package:service_provider_umi/data/data_source/remote/notification_and_history_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/static_content_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
 
@@ -25,8 +23,11 @@ UserRemoteDataSource userRemoteDataSource(Ref ref) =>
 // MockUserDataSource();
 
 @riverpod
-NotificationRemoteDataSource notificationRemoteDataSource(Ref ref) =>
-    NotificationRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+NotificationAndHistoryRemoteDataSource notificationAndHistoryRemoteDataSource(
+  Ref ref,
+) => NotificationAndHistoryRemoteDataSourceImpl(
+  apiService: ref.read(dioClientProvider),
+);
 
 @riverpod
 ServiceRemoteDataSource serviceRemoteDataSource(Ref ref) =>
@@ -44,3 +45,7 @@ PaymentRemoteDataSource paymentDataSource(Ref ref) =>
 @riverpod
 ChatRemoteDataSource chatRemoteDataSource(Ref ref) =>
     ChatRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+
+@riverpod
+AddressRemoteDataSource addressRemoteDataSource(Ref ref) =>
+    AddressRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));

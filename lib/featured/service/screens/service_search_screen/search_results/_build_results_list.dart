@@ -25,7 +25,7 @@ Widget _buildResultsList({required WidgetRef ref}) {
           return ProviderCard(
             name: p.name,
 
-            rating: p.rating,
+            rating: p.rating.toDouble(),
             reviewCount: p.reviewsCount,
             serviceCount: p.servicesCount,
             pricePerHour: p.pricePerHour,

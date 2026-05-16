@@ -5,6 +5,7 @@ Widget _buildUserCard(
   required String name,
   required String phone,
   required String avaterUrl,
+  bool isStripeConnected = false,
 }) {
   return Row(
     children: [
@@ -18,8 +19,10 @@ Widget _buildUserCard(
             AppText.bodySm(phone, color: AppColors.textSecondary),
           if (ref.watch(appRoleProvider) == AppRole.provider)
             AppLinkText(
-              links: [AppTextLink(label: "Not verified", onTap: () {})],
-              "Verification : Not verified",
+              links: [AppTextLink(label: "Not Connected", onTap: () {
+                
+              })],
+              "Stripe : ${isStripeConnected ? "Connected" : "Not Connected"}",
               linkColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
         ],

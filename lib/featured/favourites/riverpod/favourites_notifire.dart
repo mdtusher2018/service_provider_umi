@@ -44,6 +44,7 @@ class FavouritesNotifire extends _$FavouritesNotifire {
       final newItem = FavoriteModel(
         id: DateTime.now().toString(),
         userId: '',
+        
         serviceProviderId: providerId,
         serviceProvider: currentList.isNotEmpty
             ? currentList.first.serviceProvider

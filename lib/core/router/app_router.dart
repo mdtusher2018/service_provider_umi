@@ -22,7 +22,7 @@ import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/featured/profile/screen/change_password_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/language_screen.dart';
-import 'package:service_provider_umi/featured/profile/screen/my_addresses_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/address/my_addresses_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_balance_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/payments_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/personal_details_screen.dart';
@@ -360,7 +360,9 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.addAddress,
         builder: (context, state) {
-          return AddressPage(address: state.extra as AddressModel?);
+          return AddAddressScreen(
+            existingAddress: state.extra as AddressModel?,
+          );
         },
       ),
       GoRoute(

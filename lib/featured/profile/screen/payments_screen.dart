@@ -39,18 +39,18 @@ class PaymentsScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _PaymentTile(
-                icon: Icons.receipt_long_outlined,
-                label: 'My booking',
-                onTap: () {
-                  if (kIsWeb) {
-                    context.go(AppRoutes.myBookings);
-                  } else {
-                    context.push(AppRoutes.myBookings);
-                  }
-                },
-              ),
-              const Divider(height: 1, indent: 52, color: AppColors.divider),
+              // _PaymentTile(
+              //   icon: Icons.receipt_long_outlined,
+              //   label: 'My booking',
+              //   onTap: () {
+              //     if (kIsWeb) {
+              //       context.go(AppRoutes.myBookings);
+              //     } else {
+              //       context.push(AppRoutes.myBookings);
+              //     }
+              //   },
+              // ),
+              // const Divider(height: 1, indent: 52, color: AppColors.divider),
               _PaymentTile(
                 icon: Icons.credit_card_outlined,
                 label: 'Payments methods',

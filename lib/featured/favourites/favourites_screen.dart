@@ -63,8 +63,10 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                   imageUrl: p.coverImage,
                   isFavorited: true,
 
-                  rating: 5.0,
-                  reviewCount: 5,
+                  rating: (favourites[i].userProfile?.avgRating ?? 0.0)
+                      .toDouble(),
+                  reviewCount: (favourites[i].userProfile?.totalReview ?? 0.0)
+                      .toInt(),
                   serviceCount: 1,
                   pricePerHour: p.perHourPrice,
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentWebViewScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class PaymentWebViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Complete Payment"),
+        title: AppText.bodyLg("Complete Payment"),
         backgroundColor: AppColors.white,
         surfaceTintColor: Colors.transparent,
       ),

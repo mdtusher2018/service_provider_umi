@@ -25,7 +25,7 @@ class _TabBar extends ConsumerWidget {
           Tab(child: AppText.labelLg("History", fontWeight: FontWeight.w600)),
         if (isNotification)
           Tab(
-            child: AppText.labelLg("Last Alerts", fontWeight: FontWeight.w600),
+            child: AppText.labelLg("New Alerts", fontWeight: FontWeight.w600),
           ),
       ],
     );

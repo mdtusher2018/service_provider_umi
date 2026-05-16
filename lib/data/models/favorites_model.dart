@@ -5,12 +5,14 @@ class FavoriteModel {
   final String userId;
   final String serviceProviderId;
   final ServiceProviderInfo? serviceProvider;
+  final UserProfile? userProfile;
 
   FavoriteModel({
     required this.id,
     required this.userId,
     required this.serviceProviderId,
-    required this.serviceProvider,
+    this.serviceProvider,
+    this.userProfile,
   });
 
   factory FavoriteModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,9 @@ class FavoriteModel {
       serviceProvider: json['serviceProvider'] == null
           ? null
           : ServiceProviderInfo.fromJson(json['serviceProvider']),
+      userProfile: json['user'] == null
+          ? null
+          : UserProfile.fromJson(json['serviceProvider']),
     );
   }
 }

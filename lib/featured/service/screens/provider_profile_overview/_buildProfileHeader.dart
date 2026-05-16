@@ -7,7 +7,11 @@ Widget _buildProfileHeader({
 }) {
   return Column(
     children: [
-      AppAvatar(name: data.name, size: AvatarSize.xl),
+      AppAvatar(
+        name: data.name,
+        imageUrl: data.profileImage,
+        size: AvatarSize.xl,
+      ),
       12.verticalSpace,
       AppText.h2(data.name),
       4.verticalSpace,

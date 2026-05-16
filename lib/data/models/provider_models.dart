@@ -7,83 +7,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-// class ProviderProfile {
-//   final String id;
-//   final String name;
-//   final String serviceTitle;
-//   final String profileImage;
-//   final bool verified;
-//   final double hourlyRate;
-//   final String about;
-//   final ProviderRating? rating;
-//   final List<String> gallery;
-//   final List<ProviderQuestion> questions;
-//   final List<ProviderComment> comments;
-//   final ProviderAvailability? availability;
-//   const ProviderProfile({
-//     required this.id,
-//     required this.name,
-//     required this.serviceTitle,
-//     required this.profileImage,
-//     required this.verified,
-//     required this.hourlyRate,
-//     required this.about,
-//     this.rating,
-//     required this.gallery,
-//     required this.questions,
-//     required this.comments,
-//     this.availability,
-//   });
-//   factory ProviderProfile.fromJson(
-//     Map<String, dynamic> json,
-//   ) => ProviderProfile(
-//     id: json['id'] as String? ?? '',
-//     name: json['name'] as String? ?? '',
-//     serviceTitle: json['service_title'] as String? ?? '',
-//     profileImage: json['profile_image'] as String? ?? '',
-//     verified: json['verified'] as bool? ?? false,
-//     hourlyRate: (json['hourly_rate'] as num?)?.toDouble() ?? 0.0,
-//     about: json['about'] as String? ?? '',
-//     rating: json['rating'] != null
-//         ? ProviderRating.fromJson(json['rating'] as Map<String, dynamic>)
-//         : null,
-//     gallery:
-//         (json['gallery'] as List?)?.map((e) => e as String? ?? '').toList() ??
-//         [],
-//     questions:
-//         (json['questions'] as List?)
-//             ?.map((e) => ProviderQuestion.fromJson(e as Map<String, dynamic>))
-//             .toList() ??
-//         [],
-//     comments:
-//         (json['comments'] as List?)
-//             ?.map((e) => ProviderComment.fromJson(e as Map<String, dynamic>))
-//             .toList() ??
-//         [],
-//     availability: json['availability'] != null
-//         ? ProviderAvailability.fromJson(
-//             json['availability'] as Map<String, dynamic>,
-//           )
-//         : null,
-//   );
-// }
-// class ProviderRating {
-//   final double average;
-//   final int totalReviews;
-//   final RatingBreakdown breakdown;
-//   const ProviderRating({
-//     required this.average,
-//     required this.totalReviews,
-//     required this.breakdown,
-//   });
-//   factory ProviderRating.fromJson(Map<String, dynamic> json) => ProviderRating(
-//     average: (json['average'] as num).toDouble(),
-//     totalReviews: json['total_reviews'] as int,
-//     breakdown: RatingBreakdown.fromJson(
-//       json['breakdown'] as Map<String, dynamic>,
-//     ),
-//   );
-// }
 class RatingBreakdown {
   final double service;
   final double punctuality;
@@ -107,16 +30,6 @@ class RatingBreakdown {
       );
 }
 
-class ProviderQuestion {
-  final String question;
-  final String answer;
-  const ProviderQuestion({required this.question, required this.answer});
-  factory ProviderQuestion.fromJson(Map<String, dynamic> json) =>
-      ProviderQuestion(
-        question: json['question'] as String,
-        answer: json['answer'] as String,
-      );
-}
 
 class ProviderComment {
   final String id;
@@ -164,52 +77,6 @@ class ProviderComment {
     );
   }
 }
-// class ProviderAvailability {
-//   final Map<String, List<AvailabilitySlot>> days;
-//   final int slotIntervalMinutes;
-//   const ProviderAvailability({
-//     required this.days,
-//     required this.slotIntervalMinutes,
-//   });
-//   factory ProviderAvailability.fromJson(Map<String, dynamic> json) {
-//     const dayNames = [
-//       'saturday',
-//       'sunday',
-//       'monday',
-//       'tuesday',
-//       'wednesday',
-//       'thursday',
-//       'friday',
-//     ];
-//     final days = <String, List<AvailabilitySlot>>{};
-//     for (final day in dayNames) {
-//       if (json[day] != null) {
-//         days[day] = (json[day] as List)
-//             .map((e) => AvailabilitySlot.fromJson(e as Map<String, dynamic>))
-//             .toList();
-//       }
-//     }
-//     return ProviderAvailability(
-//       days: days,
-//       slotIntervalMinutes: json['slot_interval_minutes'] as int,
-//     );
-//   }
-// }
-// class AvailabilitySlot {
-//   final String start;
-//   final int maxDurationMinutes;
-//   const AvailabilitySlot({
-//     required this.start,
-//     required this.maxDurationMinutes,
-//   });
-//   factory AvailabilitySlot.fromJson(Map<String, dynamic> json) =>
-//       AvailabilitySlot(
-//         start: json['start'] as String,
-//         maxDurationMinutes: json['max_duration_minutes'] as int,
-//       );
-// }
-
-// ── Create / Update Provider Request ─────────────────────────────────────────
 
 class UpdateProviderRequest {
   final String? serviceId;

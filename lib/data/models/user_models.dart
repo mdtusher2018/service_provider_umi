@@ -2,8 +2,9 @@
 
 import 'dart:io';
 
-import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/address_model.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 
 class UserProfile {
   final String id;
@@ -13,7 +14,9 @@ class UserProfile {
   final String? profileImage;
   final String? gender;
   final String? dateOfBirth;
-  final String? address;
+  final num? avgRating;
+  final num? totalReview;
+  final List<AddressModel>? address;
   final String? bio;
   final String? rank;
   final bool? privacySettings;
@@ -28,6 +31,8 @@ class UserProfile {
     required this.id,
     required this.name,
     required this.email,
+    this.totalReview,
+    this.avgRating,
     this.phoneNumber,
     this.profileImage,
     this.gender,
@@ -49,10 +54,14 @@ class UserProfile {
     name: json['name'] as String? ?? '',
     email: json['email'] as String? ?? '',
     phoneNumber: json['phoneNumber'] as String?,
+    avgRating: json['avgRating'] as num?,
+    totalReview: json['totalReview'] as num?,
     profileImage: json['profile'] as String?,
     gender: json['gender'] as String?,
     dateOfBirth: json['dateOfBirth'] as String?,
-    address: json['address'] as String?,
+    address: (json['address'] as List?)
+        ?.map((e) => AddressModel.fromJson(e))
+        .toList(),
     bio: json['bio'] as String?,
     rank: json['rank'] as String?,
     privacySettings: json['privacySettings'] as bool?,
@@ -72,6 +81,7 @@ class ServiceProviderInfo {
   final String? palliativeCare;
   final String? coverImage;
   final String? drivingLicense;
+  final String? stripeAccountId;
   final String? businessProfiles;
   final String? documents;
   final double perHourPrice;
@@ -82,7 +92,7 @@ class ServiceProviderInfo {
 
   final List<dynamic> images;
   final List<FilterOptionModel> otherTasks;
-  final List<ServiceModel> specialists;
+  final List<CategoryModel> specialists;
   final FilterOptionModel? experience;
 
   const ServiceProviderInfo({
@@ -90,6 +100,7 @@ class ServiceProviderInfo {
     this.palliativeCare,
     this.coverImage,
     this.drivingLicense,
+    this.stripeAccountId,
     this.businessProfiles,
     this.documents,
     required this.perHourPrice,
@@ -109,6 +120,7 @@ class ServiceProviderInfo {
       palliativeCare: json['palliativeCare'],
       coverImage: json['coverImage'],
       drivingLicense: json['drivingLicense'],
+      stripeAccountId: json['stripeAccountId'],
       businessProfiles: json['businessProfiles'],
       documents: json['documents'],
       perHourPrice: (json['perHourPrice'] as num?)?.toDouble() ?? 0.0,
@@ -132,7 +144,7 @@ class ServiceProviderInfo {
 
       specialists:
           (json['specialistsIn'] as List?)
-              ?.map((e) => ServiceModel.fromJson(e['category'] ?? {}))
+              ?.map((e) => CategoryModel.fromJson(e['category'] ?? {}))
               .toList() ??
           [],
 

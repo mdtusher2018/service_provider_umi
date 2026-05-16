@@ -4,9 +4,9 @@ import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
-import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -19,15 +19,15 @@ class ServiceRepository with SafeCall {
     : _remote = remote;
 
   // ── GET /categories ──────────────────────────────────────────────────────────
-  Future<Result<List<ServiceModel>, Failure>> getAllCategories() =>
+  Future<Result<List<CategoryModel>, Failure>> getAllCategories() =>
       asyncGuard(() => _remote.getAllCategories());
 
   // ── GET /categories/:id ──────────────────────────────────────────────────────
-  Future<Result<ServiceModel, Failure>> getServiceById(String id) =>
+  Future<Result<CategoryModel, Failure>> getServiceById(String id) =>
       asyncGuard(() => _remote.getServiceById(id));
 
   // ── GET /categories/:id/subcategories ────────────────────────────────────────
-  Future<Result<List<ServiceModel>, Failure>> getSubCategories(
+  Future<Result<List<CategoryModel>, Failure>> getSubCategories(
     String serviceId,
   ) => asyncGuard(() => _remote.getSubCategories(serviceId));
 
@@ -45,8 +45,12 @@ class ServiceRepository with SafeCall {
       asyncGuard(() => _remote.getProviderProfile(providerId));
 
   Future<Result<List<ProviderComment>, Failure>> getProviderReviews(
-    String providerId,
-  ) => asyncGuard(() => _remote.getProviderReviews(providerId));
+    String providerId, {
+    int page = 1,
+  }) {
+    return asyncGuard(() => _remote.getProviderReviews(providerId, page: page));
+  }
+
   // ── POST /bookings ────────────────────────────────────────────────────────────
   Future<Result<void, Failure>> createBooking(CreateBookingRequest request) =>
       asyncGuard(() => _remote.createBooking(request));
@@ -54,6 +58,8 @@ class ServiceRepository with SafeCall {
       asyncGuard(() => _remote.acceptBooking(bookingId));
   Future<Result<void, Failure>> rejectBooking(String bookingId) =>
       asyncGuard(() => _remote.rejectBooking(bookingId));
+  Future<Result<void, Failure>> confirmPayment(String bookingId) =>
+      asyncGuard(() => _remote.confirmPayment(bookingId));
 
   // ── GET /bookings/my-bookings ─────────────────────────────────────────────────
   Future<Result<BookingsListResponse, Failure>> getMyBookings({

@@ -3,10 +3,10 @@ import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
-import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 
-import 'package:service_provider_umi/data/models/service_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -14,9 +14,9 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 abstract class ServiceRemoteDataSource {
   // ── Categories ──────────────────────────────────────────────────────────────
-  Future<List<ServiceModel>> getAllCategories();
-  Future<ServiceModel> getServiceById(String id);
-  Future<List<ServiceModel>> getSubCategories(String serviceId);
+  Future<List<CategoryModel>> getAllCategories();
+  Future<CategoryModel> getServiceById(String id);
+  Future<List<CategoryModel>> getSubCategories(String serviceId);
 
   // ── Providers ───────────────────────────────────────────────────────────────
   Future<SearchProvidersResponse> searchProviders(
@@ -24,12 +24,16 @@ abstract class ServiceRemoteDataSource {
   );
   Future<ServiceFiltersModel> getFilters();
   Future<UserProfile> getProviderProfile(String providerId);
-  Future<List<ProviderComment>> getProviderReviews(String providerId);
+  Future<List<ProviderComment>> getProviderReviews(
+    String providerId, {
+    int page = 1,
+  });
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
   Future<void> createBooking(CreateBookingRequest request);
   Future<void> acceptBooking(String bookingId);
   Future<void> rejectBooking(String bookingId);
+  Future<void> confirmPayment(String bookingId);
   Future<BookingsListResponse> getMyBookings({
     required int page,
     required BookingStatus status,
@@ -56,12 +60,12 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /categories ─────────────────────────────────────────────────────────
   @override
-  Future<List<ServiceModel>> getAllCategories() async {
+  Future<List<CategoryModel>> getAllCategories() async {
     final response = await _dio.get(ApiEndpoints.services);
-    final apiResponse = ApiResponse<List<ServiceModel>>.fromJson(
+    final apiResponse = ApiResponse<List<CategoryModel>>.fromJson(
       response.data as Map<String, dynamic>,
       (data) => (data['data'] as List)
-          .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
     if (!apiResponse.success) {
@@ -74,23 +78,23 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /categories/:id ─────────────────────────────────────────────────────
   @override
-  Future<ServiceModel> getServiceById(String id) async {
+  Future<CategoryModel> getServiceById(String id) async {
     final url = ApiEndpoints.serviceById.replaceFirst('{id}', id);
     final response = await _dio.get(url);
-    return _parse(response, ServiceModel.fromJson);
+    return _parse(response, CategoryModel.fromJson);
   }
 
   // ── GET /categories/:id/subcategories ───────────────────────────────────────
   @override
-  Future<List<ServiceModel>> getSubCategories(String serviceId) async {
+  Future<List<CategoryModel>> getSubCategories(String serviceId) async {
     final url = ApiEndpoints.subCategories.replaceFirst('{id}', serviceId);
     final response = await _dio.get(url);
-    final apiResponse = ApiResponse<List<ServiceModel>>.fromJson(
+    final apiResponse = ApiResponse<List<CategoryModel>>.fromJson(
       response.data as Map<String, dynamic>,
       (data) {
         final list = data is List ? data : (data['data'] as List);
         return list
-            .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
+            .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
             .toList();
       },
     );
@@ -159,9 +163,16 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<List<ProviderComment>> getProviderReviews(String providerId) async {
-    final responses = await _dio.get(ApiEndpoints.providerReviews(providerId));
-    final othersTaskResponse = ApiResponse<List<ProviderComment>>.fromJson(
+  Future<List<ProviderComment>> getProviderReviews(
+    String providerId, {
+    int page = 1,
+  }) async {
+    final responses = await _dio.get(
+      ApiEndpoints.providerReviews(providerId),
+      queryParameters: {"page": page},
+    );
+
+    final parsed = ApiResponse<List<ProviderComment>>.fromJson(
       responses.data as Map<String, dynamic>,
       (data) {
         final list = data is List ? data : (data['data'] as List);
@@ -170,7 +181,8 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
             .toList();
       },
     );
-    return othersTaskResponse.data ?? [];
+
+    return parsed.data ?? [];
   }
 
   // ── POST /bookings ───────────────────────────────────────────────────────────
@@ -187,6 +199,14 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   @override
   Future<void> rejectBooking(String bookingId) async {
     await _dio.patch(ApiEndpoints.cancelBooking(bookingId));
+  }
+
+  @override
+  Future<void> confirmPayment(String bookingId) async {
+    await _dio.post(
+      ApiEndpoints.confirmPayment,
+      data: {"bookingId": bookingId},
+    );
   }
 
   // ── GET /bookings/my-bookings ────────────────────────────────────────────────

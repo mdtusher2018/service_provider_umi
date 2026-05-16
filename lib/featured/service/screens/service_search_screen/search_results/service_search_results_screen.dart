@@ -6,7 +6,7 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
-import 'package:service_provider_umi/data/models/mock_service_provider_models.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';

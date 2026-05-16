@@ -9,7 +9,8 @@ final selectedCardProvider = StateProvider<String?>((ref) => null);
 /// Payment Section (FULL UI)
 /// ─────────────────────────────────────────────
 class PaymentMethodsSection extends ConsumerStatefulWidget {
-  const PaymentMethodsSection({super.key});
+  final String bookingId;
+  const PaymentMethodsSection({super.key, required this.bookingId});
 
   @override
   ConsumerState<PaymentMethodsSection> createState() =>
@@ -29,6 +30,10 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
   Widget build(BuildContext context) {
     final cardsState = ref.watch(paymentCardsProvider);
     final staticState = ref.watch(staticContentProvider);
+    final bookingNotifier = ref.watch(
+      bookingDetailProvider(widget.bookingId).notifier,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -105,7 +110,21 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
           },
         ),
         20.verticalSpace,
-        AppButton.primary(label: "Pay now"),
+        ValueListenableBuilder(
+          valueListenable: bookingNotifier.isConfirmimgPayment,
+          builder: (context, value, child) {
+            return AppButton.primary(
+              label: "Pay now",
+              isLoading: value,
+              onPressed: () async {
+                await ref
+                    .read(bookingDetailProvider(widget.bookingId).notifier)
+                    .confirmPayment(widget.bookingId);
+                ref.invalidate(bookingDetailProvider(widget.bookingId));
+              },
+            );
+          },
+        ),
       ],
     );
   }

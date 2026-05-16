@@ -1,11 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/di/data_source_provider.dart';
+import 'package:service_provider_umi/data/repository/address_repository.dart';
 import 'package:service_provider_umi/data/repository/auth_repository.dart';
 import 'package:service_provider_umi/data/repository/chat_repository.dart';
 import 'package:service_provider_umi/data/repository/payment_repository.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
-import 'package:service_provider_umi/data/repository/notification_repository.dart';
+import 'package:service_provider_umi/data/repository/notification_and_history_repositiry.dart';
 import 'package:service_provider_umi/data/repository/static_content_repository.dart';
 import 'package:service_provider_umi/data/repository/user_repository.dart';
 
@@ -22,9 +23,9 @@ UserRepository userRepository(Ref ref) =>
     UserRepository(remote: ref.read(userRemoteDataSourceProvider));
 
 @riverpod
-NotificationRepository notificationRepository(Ref ref) =>
-    NotificationRepository(
-      remote: ref.read(notificationRemoteDataSourceProvider),
+NotificationAndHistoryRepositiry notificationAndHistoryRepositiry(Ref ref) =>
+    NotificationAndHistoryRepositiry(
+      remote: ref.read(notificationAndHistoryRemoteDataSourceProvider),
     );
 
 @riverpod
@@ -44,3 +45,8 @@ PaymentRepository paymentRepository(Ref ref) =>
 @riverpod
 ChatRepository chatRepository(Ref ref) =>
     ChatRepository(remote: ref.read(chatRemoteDataSourceProvider));
+
+@riverpod
+AddressRepository addressRepository(Ref ref) {
+  return AddressRepository(remote: ref.read(addressRemoteDataSourceProvider));
+}

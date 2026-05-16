@@ -116,7 +116,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.labelLg(
-                        "widget.item.serviceName",
+                        "${widget.item.provider?.name ?? ""} (${widget.item.provider?.serviceName ?? ""})",
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -196,20 +196,21 @@ class _BookingCardState extends ConsumerState<BookingCard>
         );
 
       case BookingStatus.accepted:
-        return Row(
-          children: [
-            const _StatusBadge(
-              label: 'Accepted',
-              color: AppColors.success,
-              backgroundColor: AppColors.successLight,
-            ),
-            8.horizontalSpace,
-            const _StatusBadge(
-              label: 'Pay now',
-              color: AppColors.error,
-              backgroundColor: AppColors.errorLight,
-            ),
-          ],
+        if (role == AppRole.user) {
+          return Row(
+            children: [
+              const _StatusBadge(
+                label: 'Accepted Pay now',
+                color: AppColors.success,
+                backgroundColor: AppColors.successLight,
+              ),
+            ],
+          );
+        }
+        return const _StatusBadge(
+          label: 'Payment Pending',
+          color: AppColors.primary,
+          backgroundColor: AppColors.primaryLight,
         );
 
       case BookingStatus.ongoing:

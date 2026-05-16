@@ -17,9 +17,7 @@ Future<void> main() async {
     flavor: Flavor.dev,
     baseUrl: 'http://103.186.20.117:1000/api/v1',
     socketUrl: 'http://103.186.20.117:6005',
-    // baseUrl: 'http://10.10.10.21:3000',
-    // socketUrl: 'http://10.10.10.21:3000',
-    googleMapsApiKey: 'YOUR_KEY',
+    googleMapsApiKey: 'AIzaSyAicZRwkffHVARNs1m6LKk_5lsA2LYAb6U',
     agoraAppId: '87317ef9a331453ca1463797ba82cd41',
     stripePublishableKey: 'STRIPE_KEY',
   );
@@ -29,7 +27,7 @@ Future<void> main() async {
   await localStorage.init();
 
   Stripe.publishableKey =
-      "pk_test_51RINl1PG9XHOcPc0EWzFHpb89UURpt1siYriwsWyU3EUfozu15bmm4M0x7t0KBDZ8FMTHGfo7xoD00SjmA5uK11A00htzh5FBi";
+      "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";
   await Stripe.instance.applySettings();
 
   if (kDebugMode) {
