@@ -57,11 +57,11 @@
 //   // AppLocalizations get l10n => AppLocalizations.of(this)!;
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 extension BuildContextExtensions on BuildContext {
   // ─── Theme ───────────────────────────────────────────────
@@ -116,6 +116,21 @@ extension BuildContextExtensions on BuildContext {
       showSnackBar(message, isError: false);
   void showErrorSnackBar(String message) =>
       showSnackBar(message, isError: true);
+
+  void showLoader() {
+    showDialog(
+      context: this,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.3),
+      builder: (_) => const LoaderDialog(),
+    );
+  }
+
+  void hideLoader() {
+    if (Navigator.of(this, rootNavigator: true).canPop()) {
+      Navigator.of(this, rootNavigator: true).pop();
+    }
+  }
 
   // ─── Localization ────────────────────────────────────────
   // Uncomment once generated:

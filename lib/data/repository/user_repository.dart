@@ -45,4 +45,7 @@ class UserRepository with SafeCall {
   // ── GET /support ─────────────────────────────────────────────────────────────
   Future<Result<SupportResponse, Failure>> getSupport() =>
       asyncGuard(() => _remote.getSupport());
+
+  Future<Result<String, Failure>> getStripeConnetedUrl() =>
+      asyncGuard(() => _remote.getStripeConnetedUrl());
 }

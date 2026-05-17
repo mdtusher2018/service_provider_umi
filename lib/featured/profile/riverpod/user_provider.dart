@@ -28,6 +28,16 @@ abstract class ActionState with _$ActionState {
   const factory ActionState.failure(Failure failure) = ActionStateFailure;
 }
 
+@freezed
+abstract class StripeConnectState with _$StripeConnectState {
+  const factory StripeConnectState.initial() = StripeConnectStateInitial;
+  const factory StripeConnectState.loading() = StripeConnectStateLoading;
+  const factory StripeConnectState.success(String url) =
+      StripeConnectStateSuccess;
+  const factory StripeConnectState.failure(Failure failure) =
+      StripeConnectStateFailure;
+}
+
 // ── GET /users/:id ────────────────────────────────────────────────────────────
 
 @riverpod
@@ -164,4 +174,25 @@ class MyReviewNotifier extends _$MyReviewNotifier {
 
     _isFetching = false;
   }
+}
+
+@riverpod
+class StripeConnectNotifier extends _$StripeConnectNotifier {
+  @override
+  StripeConnectState build() => const StripeConnectState.initial();
+
+  UserRepository get _repo => ref.read(userRepositoryProvider);
+
+  Future<void> getStripeUrl() async {
+    state = const StripeConnectState.loading();
+
+    final result = await _repo.getStripeConnetedUrl();
+
+    state = result.when(
+      success: (url) => StripeConnectState.success(url),
+      failure: StripeConnectState.failure,
+    );
+  }
+
+  void reset() => state = const StripeConnectState.initial();
 }

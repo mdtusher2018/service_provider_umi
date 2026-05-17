@@ -2,6 +2,7 @@ import 'package:service_provider_umi/core/base/repository.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/data_source/remote/service_remote_data_source.dart';
+import 'package:service_provider_umi/data/models/availability_model.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
@@ -81,9 +82,8 @@ class ServiceRepository with SafeCall {
 
   // ── GET /workSchedule ────────────────────────────────────────────────────────
   Future<Result<WorkScheduleListResponse, Failure>> getWorkSchedule({
-    int page = 1,
-    int limit = 10,
-  }) => asyncGuard(() => _remote.getWorkSchedule(page: page, limit: limit));
+    required String userId,
+  }) => asyncGuard(() => _remote.getWorkSchedule(userId: userId));
 
   // ── POST /workSchedule ───────────────────────────────────────────────────────
   Future<Result<void, Failure>> createWorkSchedule(
@@ -99,4 +99,8 @@ class ServiceRepository with SafeCall {
   Future<Result<UserProfile, Failure>> updateServiceProviderProfile(
     UpdateProviderRequest schedules,
   ) => asyncGuard(() => _remote.updateServiceProviderProfile(schedules));
+
+  Future<Result<List<AvailabilitySlot>, Failure>> getAvailability(
+    AvailabilityRequest request,
+  ) => asyncGuard(() => _remote.getAvailability(request));
 }

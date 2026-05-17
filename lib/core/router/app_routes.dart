@@ -68,8 +68,12 @@ class AppRoutes {
   // ─── Helpers ─────────────────────────────────────────────
   static String providerProfilePath(String id) => '/service-provider/$id';
   static String bookingDetailPath(String id) => '/booking/$id';
-  static String bookingSchedulePath(String id) => '/booking/schedule/$id';
-  static String searchResultPath(String id) => '/search-results/$id';
+  static String bookingSchedulePath(
+    String id, {
+    required price,
+    required frequency,
+  }) => '/booking/schedule/$id?price=$price&frequency=$frequency';
+
   static String filterPath(String id) => '/search-results/$id/filter';
   static String chatPath(String contactId) => '/chat/$contactId';
   static String audioCallPath(String contactId) => '/audio/$contactId';
@@ -77,5 +81,119 @@ class AppRoutes {
   static String staticPagePath(String type) => '/profile/$type';
   static String searchTimePath(String serviceId) {
     return '$userHome/$serviceId/search-time';
+  }
+
+  static String searchResultPath(
+    String serviceId, {
+    // Scheduling
+    String? bookingType,
+    String? date,
+    String? days,
+    String? startTimeType,
+    String? flexibleSlot,
+    String? startTime,
+    String? endTime,
+    String? duration,
+    // Text / Category
+    String? searchTerm,
+    String? categoryId,
+
+    // Filters
+    String? experienceOptionId,
+    String? otherTaskIds,
+    String? minPrice,
+    String? maxPrice,
+    String? qualifiedCarer,
+    String? palliativeCare,
+    String? drivingLicense,
+    String? businessProfiles,
+    // Pagination / Sort
+    String? page,
+    String? limit,
+  }) {
+    final q = <String, String>{};
+
+    void add(String key, String? value) {
+      if (value != null && value.isNotEmpty) q[key] = value;
+    }
+
+    add('bookingType', bookingType);
+    add('date', date);
+    add('days', days);
+    add('startTimeType', startTimeType);
+    add('flexibleSlot', flexibleSlot);
+    add('startTime', startTime);
+    add('endTime', endTime);
+    add('duration', duration);
+    add('searchTerm', searchTerm);
+    add('categoryId', categoryId);
+    add('experienceOptionId', experienceOptionId);
+    add('otherTaskIds', otherTaskIds);
+    add('minPrice', minPrice);
+    add('maxPrice', maxPrice);
+    add('qualifiedCarer', qualifiedCarer);
+    add('palliativeCare', palliativeCare);
+    add('drivingLicense', drivingLicense);
+    add('businessProfiles', businessProfiles);
+    add('page', page);
+    add('limit', limit);
+
+    return Uri(
+      path: '/search-results/$serviceId',
+      queryParameters: q.isEmpty ? null : q,
+    ).toString();
+  }
+
+  // ── Helper: merge existing params with new filter overrides ───────────────
+  /// Call this from FilterScreen / header search to build the new path while
+  /// keeping all existing scheduling params intact.
+  static String searchResultPathMerged({
+    required String serviceId,
+    required Map<String, String> existingParams,
+    // any of these non-null values WIN over the existing params:
+    String? searchTerm,
+    String? categoryId,
+
+    String? experienceOptionId,
+    String? otherTaskIds,
+    String? minPrice,
+    String? maxPrice,
+    String? qualifiedCarer,
+    String? palliativeCare,
+    String? drivingLicense,
+    String? businessProfiles,
+  }) {
+    // Start from existing params, then selectively override.
+    final merged = Map<String, String>.from(existingParams);
+
+    void override(String key, String? value) {
+      if (value != null) {
+        if (value.isEmpty) {
+          merged.remove(key); // empty string = clear the param
+        } else {
+          merged[key] = value;
+        }
+      }
+    }
+
+    // Reset to page 1 whenever filters change.
+    merged['page'] = '1';
+
+    override('searchTerm', searchTerm);
+    override('categoryId', categoryId);
+
+    override('experienceOptionId', experienceOptionId);
+    override('otherTaskIds', otherTaskIds);
+    override('minPrice', minPrice);
+    override('maxPrice', maxPrice);
+    override('qualifiedCarer', qualifiedCarer);
+    override('palliativeCare', palliativeCare);
+    override('drivingLicense', drivingLicense);
+    override('businessProfiles', businessProfiles);
+
+    return Uri(
+      path: '/search-results/$serviceId',
+      queryParameters: merged.isEmpty ? null : merged,
+    ).toString();
   }
 }

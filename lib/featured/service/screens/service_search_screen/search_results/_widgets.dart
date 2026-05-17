@@ -94,7 +94,7 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
               ref.context.go(AppRoutes.searchTimePath("2"));
             }
             ref.context.push(
-              AppRoutes.searchTimePath("2"),
+              AppRoutes.searchTimePath(id),
             ); //replace with actual id or params if needed
           },
         ),
@@ -104,9 +104,11 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
           label: 'Filters',
           onTap: () {
             if (kIsWeb) {
-              ref.context.go(AppRoutes.filter);
+              ref.context.go(AppRoutes.filterPath(id));
             } else {
-              ref.context.push(AppRoutes.filterPath(id));
+              ref.context.push(AppRoutes.filterPath(id)).then((value) {
+                AppLogger.debug("POP========>>>>>");
+              });
             }
           },
         ),

@@ -229,3 +229,18 @@ class AppBadge extends StatelessWidget {
     );
   }
 }
+
+class LoaderDialog extends StatelessWidget {
+  const LoaderDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: SizedBox(
+        height: 50,
+        width: 50,
+        child: CircularProgressIndicator(strokeWidth: 3),
+      ),
+    );
+  }
+}

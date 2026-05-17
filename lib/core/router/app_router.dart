@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
@@ -68,7 +69,10 @@ GoRouter appRouter(Ref ref) {
 
     redirect: (context, state) {
       final location = state.matchedLocation;
-
+      // ✅ Allow schedule during onboarding
+      if (location == AppRoutes.workSchedule) {
+        return null;
+      }
       // ← NEW: if already logged in, skip login screen
       if (location == AppRoutes.login) {
         if (role == AppRole.user) return AppRoutes.userHome;
@@ -78,11 +82,13 @@ GoRouter appRouter(Ref ref) {
 
       // Guard: provider can't access user shell
       if (role == AppRole.provider && location.startsWith('/user')) {
+        AppLogger.debug("user redirect");
         return AppRoutes.providerHome;
       }
 
       // Guard: user/guest can't access provider shell
       if (role != AppRole.provider && location.startsWith('/provider')) {
+        AppLogger.debug("provider redirect");
         return AppRoutes.userHome;
       }
 
@@ -305,11 +311,30 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.searchResults,
         builder: (context, state) {
+          final queryParams = Map<String, String>.from(
+            state.uri.queryParameters,
+          );
           final id = state.pathParameters['serviceId']!;
-          return SearchResultsScreen(serviceId: id);
+          return SearchResultsScreen(serviceId: id, queryParams: queryParams);
         },
       ),
-      GoRoute(path: AppRoutes.filter, builder: (_, __) => FilterScreen()),
+      GoRoute(
+        path: AppRoutes.filter,
+        builder: (context, state) {
+          // FilterScreen is pushed with `extra` on mobile so scheduling params
+          // are not lost (they don't fit cleanly in a push path).
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+          final serviceId = state.pathParameters['serviceId'] ?? '';
+          final existingParams = Map<String, String>.from(
+            extra['existingParams'] as Map? ?? {},
+          );
+
+          return FilterScreen(
+            serviceId: serviceId,
+            existingParams: existingParams,
+          );
+        },
+      ),
       GoRoute(
         path: AppRoutes.providerProfileView,
         builder: (context, state) {
@@ -326,10 +351,20 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.bookingSchedule,
         builder: (context, state) {
-          final mode =
-              state.extra as BookingFrequency? ?? BookingFrequency.once;
+          final price =
+              num.tryParse(state.uri.queryParameters['price'] ?? '') ?? 0;
+
+          final frequency = state.uri.queryParameters['frequency'] ?? 'once';
+
+          final mode = frequency == 'weekly'
+              ? BookingFrequency.weekly
+              : BookingFrequency.once;
           final id = state.pathParameters['providerId']!;
-          return BookingScheduleScreen(bookingMode: mode, providerId: id);
+          return BookingScheduleScreen(
+            bookingMode: mode,
+            providerId: id,
+            pricePerHour: price.toDouble(),
+          );
         },
       ),
       GoRoute(

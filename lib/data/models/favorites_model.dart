@@ -25,7 +25,7 @@ class FavoriteModel {
           : ServiceProviderInfo.fromJson(json['serviceProvider']),
       userProfile: json['user'] == null
           ? null
-          : UserProfile.fromJson(json['serviceProvider']),
+          : UserProfile.fromJson(json['user']),
     );
   }
 }

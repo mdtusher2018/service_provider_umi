@@ -11,6 +11,7 @@ import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:service_provider_umi/featured/profile/screen/payment_webview.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
@@ -67,7 +68,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final userState = ref.watch(myProfileProvider);
     final role = ref.watch(appRoleProvider);
+    ref.listen(stripeConnectProvider, (previous, next) {
+      next.whenOrNull(
+        loading: () {
+          context.showLoader(); // your loader
+        },
+        success: (url) {
+          context.hideLoader();
 
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => PaymentWebViewScreen(url: url)),
+          );
+        },
+        failure: (failure) {
+          context.hideLoader();
+          context.showSnackBar(failure.message);
+        },
+      );
+    });
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -97,9 +116,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     child: AppText.bodyMd('Failed to load profile'),
                   ),
                 ),
-                16.verticalSpace,
-                // Switch to professional (if needed)
-                _buildSwitchTile(ref),
+                // 16.verticalSpace,
+
+                // _buildSwitchTile(ref),
                 20.verticalSpace,
                 // Section label
                 AppText.labelLg(

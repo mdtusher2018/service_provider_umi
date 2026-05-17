@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
+import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
@@ -331,16 +333,15 @@ class FaqNotifier extends _$FaqNotifier {
 class WorkScheduleNotifier extends _$WorkScheduleNotifier {
   @override
   AsyncValue<WorkScheduleListResponse> build() {
-    fetch();
     return const AsyncLoading();
   }
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> fetch({int page = 1, int limit = 10}) async {
+  Future<void> fetch(WidgetRef widref) async {
     state = const AsyncLoading();
-
-    final result = await _repo.getWorkSchedule(page: page, limit: limit);
+    final userId = await getMyUserId(widref);
+    final result = await _repo.getWorkSchedule(userId: userId);
     if (!ref.mounted) return;
 
     state = result.when(
@@ -364,9 +365,7 @@ class SaveWorkScheduleNotifier extends _$SaveWorkScheduleNotifier {
   }) async {
     state = const AsyncLoading();
 
-    final result = isUpdate
-        ? await _repo.updateWorkSchedule(schedules)
-        : await _repo.createWorkSchedule(schedules);
+    final result = await _repo.createWorkSchedule(schedules);
 
     if (!ref.mounted) return false;
 

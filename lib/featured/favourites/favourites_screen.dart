@@ -59,7 +59,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                 final p = favourites[i].serviceProvider;
                 if (p == null) return SizedBox.shrink();
                 return ProviderCard(
-                  name: "Static",
+                  name: favourites[i].userProfile?.name ?? "Unnamed user",
                   imageUrl: p.coverImage,
                   isFavorited: true,
 

@@ -76,6 +76,14 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
   /// Stays null until the GET response arrives (drives the loading state).
   List<WorkScheduleModel>? _days;
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(workScheduleProvider.notifier).fetch(ref);
+    });
+    super.initState();
+  }
+
   // ── Seed once – called from build() via whenData ──────────────────────────
 
   void _seedFromApi(List<WorkScheduleModel> apiData) {

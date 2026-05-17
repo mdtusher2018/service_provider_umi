@@ -67,7 +67,7 @@ class ApiEndpoints {
   static const String updateServiceProviderProfile =
       '/users/service-provider-info';
   static const String stripeConnect = '/stripe/connect';
-  
+
   // ─── Filters & Search ───────────────────────────────────────────────────────
   static const String serviceExperience = '/experience-options';
   static const String serviceOthersTaskOptions = '/others-task-options';
@@ -81,4 +81,6 @@ class ApiEndpoints {
   static String setDefaultPaymentCard(String paymentMethodId) =>
       "/stripe/payment-method/default/$paymentMethodId";
   static const String getAddCardLink = "/stripe/payment-method/add-link";
+
+  static const String availability = "/homepage/availability";
 }

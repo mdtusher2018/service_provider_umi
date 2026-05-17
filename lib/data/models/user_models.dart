@@ -25,6 +25,7 @@ class UserProfile {
   final String? agreements;
   final String? referralCode;
   final String role;
+
   final ServiceProviderInfo? serviceProviderInfo;
 
   const UserProfile({
@@ -206,7 +207,7 @@ class UpdateProfileRequest {
       if (gender != null) 'gender': gender,
       if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
       if (phoneNumber != null) 'phoneNumber': phoneNumber,
-      if (address != null) 'address': address,
+      // if (address != null) 'address': address,
       if (customerId != null) 'customerId': customerId,
       if (privacySettings != null) 'privacySettings': privacySettings,
       if (businessClassTrained != null)

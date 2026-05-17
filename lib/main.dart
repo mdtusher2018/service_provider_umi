@@ -28,7 +28,9 @@ Future<void> main() async {
 
   Stripe.publishableKey =
       "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";
-  await Stripe.instance.applySettings();
+  if (!kIsWeb) {
+    await Stripe.instance.applySettings();
+  }
 
   if (kDebugMode) {
     /// 🔴 Flutter framework errors

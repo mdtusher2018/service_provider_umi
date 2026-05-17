@@ -1,5 +1,6 @@
 part of "profile_screen.dart";
 
+// ignore: unused_element
 Widget _buildSwitchTile(WidgetRef ref) {
   final currentRole = ref.watch(appRoleProvider);
   final isProvider = currentRole == AppRole.provider;

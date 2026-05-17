@@ -354,25 +354,110 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     );
   }
 
+  // Widget _buildActions() {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: AppButton.outline(
+  //           label: 'Skip',
+  //           onPressed: () {
+  //             context.go(
+  //               AppRoutes.searchResultPath(
+  //                 widget.serviceId,
+  //                 bookingType: _frequency == BookingFrequency.once
+  //                     ? "one_time"
+  //                     : "weekly",
+  //                 date: _frequency == BookingFrequency.once
+  //                     ? _selectedDate.toIso8601String().split('T').first
+  //                     : null,
+  //                 days: _frequency == BookingFrequency.weekly
+  //                     ? _selectedWeekDays.join(',')
+  //                     : null,
+  //                 startTimeType: _startTimeType == StartTimeType.flexible
+  //                     ? "flexible"
+  //                     : "exact",
+  //                 flexibleSlot: _startTimeType == StartTimeType.flexible
+  //                     ? _selectedTimeSlot ?? ""
+  //                     : null,
+  //                 duration: (_duration * 60).toInt().toString(),
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //       14.horizontalSpace,
+  //       Expanded(
+  //         child: AppButton.primary(
+  //           label: 'Search',
+  //           onPressed: () {
+  //             context.go(AppRoutes.searchResultPath(widget.serviceId));
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // ── Only the _buildActions method changes; drop this in to replace the old one.
+
   Widget _buildActions() {
+    // Helper: converts duration in fractional hours → minutes string
+    final durationMinutes = (_duration * 60).toInt().toString();
+
+    // Helper: converts _startTimeType + _selectedTimeSlot → startTime/endTime
+    // For exact time, _TimeSpinner values would be read; here we use flexible slot.
+    String? resolvedFlexibleSlot;
+    if (_startTimeType == StartTimeType.flexible && _selectedTimeSlot != null) {
+      // Normalise e.g. "9 - 12" → "9-12"  (strip spaces)
+      resolvedFlexibleSlot = _selectedTimeSlot!.replaceAll(' ', '');
+    }
+
+    void _navigate({required bool skip}) {
+      context.go(
+        AppRoutes.searchResultPath(
+          widget.serviceId,
+          // ── Scheduling ──────────────────────────────
+          bookingType: _frequency == BookingFrequency.once
+              ? 'one_time'
+              : 'weekly',
+          date: _frequency == BookingFrequency.once
+              ? _selectedDate.toIso8601String().split('T').first
+              : null,
+          days:
+              _frequency == BookingFrequency.weekly &&
+                  _selectedWeekDays.isNotEmpty
+              ? _selectedWeekDays.join(',')
+              : null,
+          startTimeType: _startTimeType == StartTimeType.flexible
+              ? 'flexible'
+              : 'exact',
+          flexibleSlot: _startTimeType == StartTimeType.flexible
+              ? resolvedFlexibleSlot
+              : null,
+          // For exact time you would read the _TimeSpinner state;
+          // wire those controllers and pass here:
+          // startTime: _startTimeType == StartTimeType.exact ? _exactStartTime : null,
+          duration: durationMinutes,
+          // ── Pagination defaults ──────────────────────
+          page: '1',
+          limit: '10',
+        ),
+      );
+    }
+
     return Row(
       children: [
         Expanded(
           child: AppButton.outline(
             label: 'Skip',
-            onPressed: () {
-              context.go(AppRoutes.searchResultPath(widget.serviceId));
-            },
+            onPressed: () => _navigate(skip: true),
           ),
         ),
-
         14.horizontalSpace,
         Expanded(
           child: AppButton.primary(
             label: 'Search',
-            onPressed: () {
-              context.go(AppRoutes.searchResultPath(widget.serviceId));
-            },
+            onPressed: () => _navigate(skip: false),
           ),
         ),
       ],

@@ -139,7 +139,12 @@ class _ProviderProfileOverviewScreenState
           child: _buildBottomBar(profileData),
         ),
         if (ref.watch(frequencySheetProvider))
-          _buildFrequencyOverlay(ref: ref, providerId: widget.providerId),
+          _buildFrequencyOverlay(
+            ref: ref,
+            providerId: widget.providerId,
+            price:
+                profileData.serviceProviderInfo?.perHourPrice.toString() ?? "0",
+          ),
       ],
     );
   }

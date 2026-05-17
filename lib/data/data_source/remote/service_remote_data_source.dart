@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
+import 'package:service_provider_umi/data/models/availability_model.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
@@ -44,9 +45,11 @@ abstract class ServiceRemoteDataSource {
   // ── FAQs ────────────────────────────────────────────────────────────────────
   Future<List<FaqItem>> getFaqs(String serviceId);
 
-  Future<WorkScheduleListResponse> getWorkSchedule({int page, int limit});
+  Future<WorkScheduleListResponse> getWorkSchedule({required String userId});
   Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules);
   Future<void> updateWorkSchedule(List<WorkScheduleRequest> schedules);
+
+  Future<List<AvailabilitySlot>> getAvailability(AvailabilityRequest request);
 
   Future<UserProfile> updateServiceProviderProfile(
     UpdateProviderRequest schedules,
@@ -313,12 +316,11 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   @override
   Future<WorkScheduleListResponse> getWorkSchedule({
-    int page = 1,
-    int limit = 10,
+    required String userId,
   }) async {
     final response = await _dio.get(
       ApiEndpoints.workSchedule,
-      queryParameters: {'page': page, 'limit': limit},
+      queryParameters: {'userId': userId},
     );
     final apiResponse = ApiResponse<WorkScheduleListResponse>.fromJson(
       response.data as Map<String, dynamic>,
@@ -369,5 +371,30 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
       ),
     );
     return _parse<UserProfile>(response, UserProfile.fromJson);
+  }
+
+  @override
+  Future<List<AvailabilitySlot>> getAvailability(
+    AvailabilityRequest request,
+  ) async {
+    final response = await _dio.post(
+      ApiEndpoints.availability,
+      data: request.toJson(),
+    );
+    final apiResponse = ApiResponse<List<AvailabilitySlot>>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => AvailabilitySlot.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+    if (!apiResponse.success) {
+      throw Exception(
+        apiResponse.error?.message ?? 'Failed to fetch availability',
+      );
+    }
+    return apiResponse.data ?? [];
   }
 }

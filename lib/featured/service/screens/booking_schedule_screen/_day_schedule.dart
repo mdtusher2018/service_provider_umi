@@ -12,6 +12,8 @@ class _DayRow extends ConsumerWidget {
   final String day;
   final _DaySchedule? schedule;
   final bool isExpanded;
+  final String providerId; // ← add
+  final DateTime date; // ← add
   final VoidCallback onAdd;
   final VoidCallback onDelete;
   final void Function(String from, String to) onTimeSaved;
@@ -20,6 +22,8 @@ class _DayRow extends ConsumerWidget {
     required this.day,
     required this.schedule,
     required this.isExpanded,
+    required this.providerId, // ← add
+    required this.date, // ← add
     required this.onAdd,
     required this.onDelete,
     required this.onTimeSaved,
@@ -83,6 +87,8 @@ class _DayRow extends ConsumerWidget {
               day: day,
               onSaved: onTimeSaved,
               bgColor: AppColors.white,
+              providerId: providerId, // ← add
+              date: date, // ← add
             ),
         ],
       ),

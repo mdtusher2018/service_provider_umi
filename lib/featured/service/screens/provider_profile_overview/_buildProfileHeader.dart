@@ -61,7 +61,10 @@ Widget _buildProfileHeader({
               backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
             _StatDivider(),
-            _StatItem(value: '${"static"} ⭐', label: '${"static"} reviews'),
+            _StatItem(
+              value: '${data.avgRating} ⭐',
+              label: '${data.totalReview} reviews',
+            ),
             _StatDivider(),
             _StatItem(value: '${1}', label: 'Service'),
             _StatDivider(),

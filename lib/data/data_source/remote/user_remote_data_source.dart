@@ -78,7 +78,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       queryParameters: {
         'page': page,
         'limit': limit,
-        "include": "serviceProvider",
+        "include": "serviceProvider,user",
       },
     );
     final apiResponse = ApiResponse<List<FavoriteModel>>.fromJson(
@@ -113,7 +113,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<String> getStripeConnetedUrl() async {
     final url = ApiEndpoints.stripeConnect;
-    final response = await _dio.get(url);
+    final response = await _dio.patch(url);
 
     return response.data['data'] ?? "";
   }

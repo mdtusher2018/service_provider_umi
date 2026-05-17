@@ -19,11 +19,15 @@ Widget _buildUserCard(
             AppText.bodySm(phone, color: AppColors.textSecondary),
           if (ref.watch(appRoleProvider) == AppRole.provider)
             AppLinkText(
-              links: [AppTextLink(label: "Not Connected", onTap: () {
-                
-              })],
+              links: [
+                AppTextLink(
+                  label: "Not Connected",
+                  onTap: () {
+                    ref.read(stripeConnectProvider.notifier).getStripeUrl();
+                  },
+                ),
+              ],
               "Stripe : ${isStripeConnected ? "Connected" : "Not Connected"}",
-              linkColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
         ],
       ),

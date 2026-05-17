@@ -38,9 +38,15 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
       state.when(
         initial: () {},
         loading: () {},
-        success: () {
-          ref.read(appRoleProvider.notifier).loginAsUser();
-          context.go(AppRoutes.userHome);
+        success: () async {
+          final role = await getMyRoleId(ref);
+          if (role == 'user') {
+            ref.read(appRoleProvider.notifier).loginAsUser();
+            context.go(AppRoutes.userHome);
+          } else {
+            ref.read(appRoleProvider.notifier).loginAsProvider();
+            context.go(AppRoutes.providerHome);
+          }
         },
         failure: (error) => context.showErrorSnackBar(error.message),
       );

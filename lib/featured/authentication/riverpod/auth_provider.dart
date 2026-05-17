@@ -233,6 +233,8 @@ class LogoutNotifier extends _$LogoutNotifier {
   Future<void> logout() async {
     state = const AuthState.loading();
     await ref.read(authRepositoryProvider).logout();
+    // Reset all providers
+    ref.container.dispose();
     state = const AuthState.initial();
   }
 }

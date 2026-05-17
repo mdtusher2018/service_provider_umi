@@ -4,6 +4,7 @@ final frequencySheetProvider = StateProvider<bool>((ref) => false);
 Widget _buildFrequencyOverlay({
   required WidgetRef ref,
   required String providerId,
+  required String price,
 }) {
   final showSheet = ref.watch(frequencySheetProvider);
 
@@ -22,6 +23,7 @@ Widget _buildFrequencyOverlay({
             onTap: () {}, // prevent closing when tapping sheet
             child: _ServiceFrequencySheet(
               providerId: providerId,
+              price: price,
               onClose: () {
                 ref.read(frequencySheetProvider.notifier).state = false;
               },
@@ -35,11 +37,14 @@ Widget _buildFrequencyOverlay({
 
 class _ServiceFrequencySheet extends StatefulWidget {
   final VoidCallback onClose;
+
   const _ServiceFrequencySheet({
     required this.onClose,
     required this.providerId,
+    required this.price,
   });
   final String providerId;
+  final String price;
 
   @override
   State<_ServiceFrequencySheet> createState() => _ServiceFrequencySheetState();
@@ -92,12 +97,19 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             onTap: () {
               if (kIsWeb) {
                 context.go(
-                  AppRoutes.bookingSchedulePath(widget.providerId),
-                  extra: BookingFrequency.weekly,
+                  AppRoutes.bookingSchedulePath(
+                    widget.providerId,
+                    frequency: BookingFrequency.weekly.name,
+                    price: widget.price,
+                  ),
                 );
               } else {
                 context.push(
-                  AppRoutes.bookingSchedulePath(widget.providerId),
+                  AppRoutes.bookingSchedulePath(
+                    widget.providerId,
+                    frequency: BookingFrequency.weekly.name,
+                    price: widget.price,
+                  ),
                   extra: BookingFrequency.weekly,
                 );
               }
@@ -114,12 +126,20 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
             onTap: () {
               if (kIsWeb) {
                 context.go(
-                  AppRoutes.bookingSchedulePath(widget.providerId),
+                  AppRoutes.bookingSchedulePath(
+                    widget.providerId,
+                    frequency: BookingFrequency.weekly.name,
+                    price: widget.price,
+                  ),
                   extra: BookingFrequency.once,
                 );
               } else {
                 context.push(
-                  AppRoutes.bookingSchedulePath(widget.providerId),
+                  AppRoutes.bookingSchedulePath(
+                    widget.providerId,
+                    frequency: BookingFrequency.weekly.name,
+                    price: widget.price,
+                  ),
                   extra: BookingFrequency.once,
                 );
               }

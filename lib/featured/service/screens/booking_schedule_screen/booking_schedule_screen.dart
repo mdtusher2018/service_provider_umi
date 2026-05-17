@@ -8,11 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
+import 'package:service_provider_umi/data/models/availability_model.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/availability_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/shared/widgets/app_chip.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -59,9 +60,8 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
     'Thursday': null,
     'Friday': null,
     'Saturday': null,
+    'Sunday': null,
   };
-
-  static const _unavailableDays = ['Sunday'];
 
   String? _expandedDay;
 
@@ -122,6 +122,8 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
                 day: day,
                 schedule: _schedule[day],
                 isExpanded: _expandedDay == day,
+                providerId: widget.providerId, // ← add
+                date: _nextWeekday(DateTime.now(), _weekdayIndex(day)), // ← add
                 onAdd: () => setState(
                   () => _expandedDay = _expandedDay == day ? null : day,
                 ),
@@ -132,23 +134,6 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
                     _expandedDay = null;
                   });
                 },
-              ),
-            ),
-          ),
-          ..._unavailableDays.map(
-            (d) => Container(
-              margin: 10.paddingBottom,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: AppColors.grey100,
-                borderRadius: 14.circular,
-              ),
-              child: Row(
-                children: [
-                  AppText.labelLg(d, color: AppColors.textSecondary),
-                  const Spacer(),
-                  AppText.labelSm('Not available', color: AppColors.grey400),
-                ],
               ),
             ),
           ),
@@ -190,6 +175,8 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
                   child: _TimePickerPanel(
                     day: _selectedDate.getDayOfWeek,
                     bgColor: Colors.transparent,
+                    providerId: widget.providerId, // ← add
+                    date: _selectedDate, // ← add
                     onSaved: (from, to) {
                       setState(() {
                         _singleFrom = from;
@@ -306,9 +293,12 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
         : _singleFrom != null;
 
     final totalCost = _mode == BookingFrequency.weekly
-        ? _schedule.values
-              .where((v) => v != null)
-              .fold<double>(0, (sum, _) => sum + widget.pricePerHour)
+        ? _schedule.values.where((v) => v != null).fold<double>(0, (sum, v) {
+            final from = _parseTime(v!.from, DateTime.now());
+            final to = _parseTime(v.to, DateTime.now());
+            final hours = to.difference(from).inMinutes / 60.0;
+            return sum + (widget.pricePerHour * hours);
+          })
         : _singleFrom != null && _singleTo != null
         ? () {
             final from = _parseTime(_singleFrom!, _selectedDate);
@@ -440,7 +430,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
         price: widget.pricePerHour * durationHours,
         startDate: from,
         totalHours: durationHours,
-        bookingType: '',
+        bookingType: 'one_time',
         bookingDays: [
           BookingDayRequest(
             day: dayAbbr,
