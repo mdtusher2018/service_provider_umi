@@ -19,7 +19,7 @@ class _SegmentedTabBar extends StatelessWidget {
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
-            children: ['Upcoming', 'Past', 'Cancelled'].asMap().entries.map((
+            children: ['Requested', 'Upcoming', 'Cancelled'].asMap().entries.map((
               e,
             ) {
               final isSelected = controller.index == e.key;

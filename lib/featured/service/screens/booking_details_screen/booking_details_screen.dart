@@ -192,7 +192,7 @@ class _BookingDetailBody extends ConsumerWidget {
             ),
 
           const SizedBox(height: 20),
-          if (bookingStatus == BookingStatus.accepted &&
+          if (bookingStatus == BookingStatus.pending &&
               ref.read(appRoleProvider) == AppRole.user)
             PaymentMethodsSection(bookingId: data.id),
         ],

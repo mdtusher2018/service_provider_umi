@@ -1,6 +1,7 @@
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 
 enum BookingStatus {
+  pending,
   requested,
   accepted,
   ongoing,
@@ -9,6 +10,8 @@ enum BookingStatus {
 
   String get displayName {
     switch (this) {
+      case BookingStatus.pending:
+        return 'Not Paid';
       case BookingStatus.requested:
         return 'Pending';
       case BookingStatus.accepted:
@@ -30,6 +33,8 @@ enum BookingStatus {
 
     AppLogger.info(value);
     switch (normalized) {
+      case 'pending':
+        return BookingStatus.pending;
       case 'requested':
         return BookingStatus.requested;
       case 'accepted':

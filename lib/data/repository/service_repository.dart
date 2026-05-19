@@ -53,7 +53,7 @@ class ServiceRepository with SafeCall {
   }
 
   // ── POST /bookings ────────────────────────────────────────────────────────────
-  Future<Result<void, Failure>> createBooking(CreateBookingRequest request) =>
+  Future<Result<String, Failure>> createBooking(CreateBookingRequest request) =>
       asyncGuard(() => _remote.createBooking(request));
   Future<Result<void, Failure>> acceptBooking(String bookingId) =>
       asyncGuard(() => _remote.acceptBooking(bookingId));

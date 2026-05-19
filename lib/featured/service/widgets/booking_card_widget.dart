@@ -195,12 +195,12 @@ class _BookingCardState extends ConsumerState<BookingCard>
           backgroundColor: AppColors.primaryLight,
         );
 
-      case BookingStatus.accepted:
+      case BookingStatus.pending:
         if (role == AppRole.user) {
           return Row(
             children: [
               const _StatusBadge(
-                label: 'Accepted Pay now',
+                label: 'Pay now',
                 color: AppColors.success,
                 backgroundColor: AppColors.successLight,
               ),
@@ -214,6 +214,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
         );
 
       case BookingStatus.ongoing:
+      case BookingStatus.accepted:
         if (role == AppRole.provider) {
           return const _StatusBadge(
             label: 'Ongoing',

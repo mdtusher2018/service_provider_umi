@@ -172,9 +172,9 @@ class BookingsNotifier extends _$BookingsNotifier {
     final result = await _repo.createBooking(request);
 
     return result.when(
-      success: (_) async {
+      success: (data) async {
         await fetch(initial: true);
-        return "Successfully Booked";
+        return "Successfully Booked: $data";
       },
       failure: (e) {
         return e.message;

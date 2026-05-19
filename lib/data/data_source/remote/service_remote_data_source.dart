@@ -31,7 +31,7 @@ abstract class ServiceRemoteDataSource {
   });
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
-  Future<void> createBooking(CreateBookingRequest request);
+  Future<String> createBooking(CreateBookingRequest request);
   Future<void> acceptBooking(String bookingId);
   Future<void> rejectBooking(String bookingId);
   Future<void> confirmPayment(String bookingId);
@@ -190,8 +190,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── POST /bookings ───────────────────────────────────────────────────────────
   @override
-  Future<void> createBooking(CreateBookingRequest request) async {
-    await _dio.post(ApiEndpoints.createBooking, data: request.toJson());
+  Future<String> createBooking(CreateBookingRequest request) async {
+    final response= await _dio.post(ApiEndpoints.createBooking, data: request.toJson());
+return response.data['data']?['id']??"";
   }
 
   @override
@@ -224,14 +225,14 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         : ApiEndpoints.providerBookings;
 
     // 🔥 CASE: accepted tab → call twice
-    if (status == BookingStatus.accepted || status == BookingStatus.requested) {
+    if (status == BookingStatus.accepted || status == BookingStatus.ongoing) {
       final responses = await Future.wait([
         _dio.get(
           endpoint,
           queryParameters: {
             'page': page,
             'include': 'user,provider,bookingDays',
-            'status': BookingStatus.requested.name,
+            'status': BookingStatus.accepted.name,
           },
         ),
         _dio.get(
@@ -239,7 +240,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
           queryParameters: {
             'page': page,
             'include': 'user,provider,bookingDays',
-            'status': BookingStatus.accepted.name,
+            'status': BookingStatus.ongoing.name,
           },
         ),
       ]);

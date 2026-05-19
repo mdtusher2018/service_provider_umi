@@ -33,7 +33,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
   final _tabs = const [
     BookingStatus.requested,
-    BookingStatus.complete,
+    BookingStatus.accepted,
     BookingStatus.canceled,
   ];
 
@@ -49,6 +49,16 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       ref.read(bookingsProvider(_currentStatus).notifier).fetch();
+    }
+  }
+
+    void _openCompleted() {
+    if (kIsWeb) {
+      context.go(
+        AppRoutes.providerCompletedServiceScreen,
+      ); //replace extra with a approch by id and pass in params else navigation back will caused runtime null vaule
+    } else {
+      context.push(AppRoutes.providerCompletedServiceScreen);
     }
   }
 
@@ -87,9 +97,19 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
-              child: AppText.h1('Service'),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
+                  child: AppText.h1('Service'),
+                ),        Padding(
+                  padding: 20.paddingRight,
+                  child: InkWell(
+                              onTap: _openCompleted,
+                              child: Icon(Icons.domain_verification_rounded),
+                            ),
+                ),
+              ],
             ),
 
             Padding(

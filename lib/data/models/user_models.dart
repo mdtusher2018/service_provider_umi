@@ -167,7 +167,7 @@ class UpdateProfileRequest {
   final String? gender;
   final String? dateOfBirth;
   final String? phoneNumber;
-  final String? address;
+  final AddressModel? address;
   final String? customerId;
   final bool? privacySettings;
   final bool? businessClassTrained;
@@ -207,7 +207,7 @@ class UpdateProfileRequest {
       if (gender != null) 'gender': gender,
       if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
       if (phoneNumber != null) 'phoneNumber': phoneNumber,
-      // if (address != null) 'address': address,
+      // if (address != null) 'address': address!.toJson(),
       if (customerId != null) 'customerId': customerId,
       if (privacySettings != null) 'privacySettings': privacySettings,
       if (businessClassTrained != null)

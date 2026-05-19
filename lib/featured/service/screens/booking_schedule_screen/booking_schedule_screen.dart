@@ -365,8 +365,12 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
     if (message != null && !message.contains("Successfully Booked")) {
       context.showErrorSnackBar(message);
     } else if (message != null) {
-      context.go(AppRoutes.services);
-      context.showSuccessSnackBar(message);
+       if (kIsWeb) {
+      context.go(AppRoutes.bookingDetailPath(message.split(" ").last));
+    } else {
+      context.push(AppRoutes.bookingDetailPath(message.split(" ").last));
+    }
+    
     }
   }
 
