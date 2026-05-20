@@ -30,10 +30,18 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
   Widget build(BuildContext context) {
     final cardsState = ref.watch(paymentCardsProvider);
     final staticState = ref.watch(staticContentProvider);
-    final bookingNotifier = ref.watch(
-      bookingDetailProvider(widget.bookingId).notifier,
-    );
+    final confrimPayment = ref.watch(confirmPaymentProvider);
 
+    ref.listen(confirmPaymentProvider, (previous, next) {
+      next.whenOrNull(
+        error: (failure, _) {
+          AppLogger.error(failure.toString());
+          context.showErrorSnackBar(
+            (failure is Failure) ? failure.message : failure.toString(),
+          );
+        },
+      );
+    });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,19 +118,14 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
           },
         ),
         20.verticalSpace,
-        ValueListenableBuilder(
-          valueListenable: bookingNotifier.isConfirmimgPayment,
-          builder: (context, value, child) {
-            return AppButton.primary(
-              label: "Pay now",
-              isLoading: value,
-              onPressed: () async {
-                await ref
-                    .read(bookingDetailProvider(widget.bookingId).notifier)
-                    .confirmPayment(widget.bookingId);
-                ref.invalidate(bookingDetailProvider(widget.bookingId));
-              },
-            );
+        AppButton.primary(
+          label: "Pay now",
+          isLoading: confrimPayment.isLoading,
+          onPressed: () async {
+            await ref
+                .read(confirmPaymentProvider.notifier)
+                .confirm(widget.bookingId);
+            ref.invalidate(bookingDetailProvider(widget.bookingId));
           },
         ),
       ],

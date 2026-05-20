@@ -51,6 +51,14 @@ class CreateBookingRequest {
   };
 }
 
+class UpdateBookingRequest {
+  final String bookingId;
+
+  const UpdateBookingRequest({required this.bookingId});
+
+  Map<String, dynamic> toJson() => {'bookingId': bookingId};
+}
+
 // ── Booking Details ───────────────────────────────────────────────────────────
 
 class BookingDetailModel {
@@ -381,4 +389,3 @@ class BookingTimeScheduleModel {
         status: BookingStatus.fromString(json['status'] as String),
       );
 }
-

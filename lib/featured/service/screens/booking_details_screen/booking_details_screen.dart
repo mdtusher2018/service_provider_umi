@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:readmore/readmore.dart';
+import 'package:service_provider_umi/core/error/failure.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
@@ -42,7 +44,7 @@ class BookingDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
-  void _complete() {
+  void showCongratulations() {
     final role = ref.read(appRoleProvider);
     final primary = AppColors.primaryFor(role);
 
@@ -62,16 +64,12 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
   }
 
   void _accept() async {
-    await ref
-        .read(bookingDetailProvider(widget.bookingId).notifier)
-        .acceptBooking(widget.bookingId);
+    await ref.read(acceptBookingProvider.notifier).accept(widget.bookingId);
     ref.invalidate(bookingDetailProvider(widget.bookingId));
   }
 
   void _cancel() async {
-    await ref
-        .read(bookingDetailProvider(widget.bookingId).notifier)
-        .rejectBooking(widget.bookingId);
+    await ref.read(rejectBookingProvider.notifier).reject(widget.bookingId);
     ref.invalidate(bookingDetailProvider(widget.bookingId));
   }
 
@@ -97,7 +95,12 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
           return _BookingDetailBody(
             data: data,
             primary: primary,
-            onComplete: _complete,
+            onComplete: () async {
+              await ref
+                  .read(completeBookingProvider.notifier)
+                  .complete(widget.bookingId);
+              showCongratulations();
+            },
             onAccept: _accept,
             onCancel: _cancel,
           );
@@ -127,8 +130,24 @@ class _BookingDetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(appRoleProvider);
     final bookingStatus = BookingStatus.fromString(data.status);
-    final notifier = ref.watch(bookingDetailProvider(data.id).notifier);
+    final acceptState = ref.watch(acceptBookingProvider);
+    final rejectState = ref.watch(rejectBookingProvider);
+
     ref.listen(bookingDetailProvider(data.id), (previous, next) {
+      next.whenOrNull(
+        error: (failure, _) {
+          context.showErrorSnackBar(failure.toString());
+        },
+      );
+    });
+    ref.listen(acceptBookingProvider, (previous, next) {
+      next.whenOrNull(
+        error: (failure, _) {
+          context.showErrorSnackBar(failure.toString());
+        },
+      );
+    });
+    ref.listen(rejectBookingProvider, (previous, next) {
       next.whenOrNull(
         error: (failure, _) {
           context.showErrorSnackBar(failure.toString());
@@ -156,8 +175,9 @@ class _BookingDetailBody extends ConsumerWidget {
           40.verticalSpace,
 
           // ── Action buttons driven by real status ──────────────────
-          if (bookingStatus == BookingStatus.ongoing)
-            AppButton.primary(label: "Complete", onPressed: onComplete),
+          if (bookingStatus == BookingStatus.pending &&
+              ref.read(appRoleProvider) == AppRole.user)
+            PaymentMethodsSection(bookingId: data.id),
 
           if (bookingStatus == BookingStatus.requested &&
               ref.read(appRoleProvider) == AppRole.provider)
@@ -165,36 +185,45 @@ class _BookingDetailBody extends ConsumerWidget {
               spacing: 16,
               children: [
                 Expanded(
-                  child: ValueListenableBuilder(
-                    valueListenable: notifier.isAccepting,
-                    builder: (context, isloading, child) {
-                      return AppButton.primary(
-                        label: "Accept",
-                        onPressed: onAccept,
-                        isLoading: isloading,
-                      );
-                    },
+                  child: AppButton.primary(
+                    label: "Accept",
+                    onPressed: onAccept,
+                    isLoading: acceptState.isLoading,
                   ),
                 ),
                 Expanded(
-                  child: ValueListenableBuilder(
-                    valueListenable: notifier.isCancelling,
-                    builder: (context, isloading, child) {
-                      return AppButton.outline(
-                        label: "Cancel",
-                        onPressed: onCancel,
-                        isLoading: isloading,
-                      );
-                    },
+                  child: AppButton.outline(
+                    label: "Cancel",
+                    onPressed: onCancel,
+                    isLoading: rejectState.isLoading,
                   ),
                 ),
               ],
             ),
 
-          const SizedBox(height: 20),
-          if (bookingStatus == BookingStatus.pending &&
-              ref.read(appRoleProvider) == AppRole.user)
-            PaymentMethodsSection(bookingId: data.id),
+          if (bookingStatus == BookingStatus.ongoing)
+            Row(
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: AppButton.primary(
+                    label: "Complete",
+                    onPressed: onComplete,
+                    isLoading: ref.watch(completeBookingProvider).isLoading,
+                  ),
+                ),
+                Expanded(
+                  child: AppButton.outline(
+                    label: "Cancel",
+                    onPressed: onCancel,
+                    isLoading: rejectState.isLoading,
+                  ),
+                ),
+              ],
+            ),
+
+          if (bookingStatus == BookingStatus.complete)
+            AppText.bodyLg("This Bokking has been Completed"),
         ],
       ),
     );

@@ -26,8 +26,10 @@ Future<void> main() async {
   final localStorage = LocalStorageServiceImpl();
   await localStorage.init();
 
+  // Stripe.publishableKey =
+  //     "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";
   Stripe.publishableKey =
-      "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";
+      "pk_test_51RINl1PG9XHOcPc0EWzFHpb89UURpt1siYriwsWyU3EUfozu15bmm4M0x7t0KBDZ8FMTHGfo7xoD00SjmA5uK11A00htzh5FBi";
   if (!kIsWeb) {
     await Stripe.instance.applySettings();
   }

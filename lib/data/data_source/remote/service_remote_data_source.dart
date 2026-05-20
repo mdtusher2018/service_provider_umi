@@ -34,6 +34,7 @@ abstract class ServiceRemoteDataSource {
   Future<String> createBooking(CreateBookingRequest request);
   Future<void> acceptBooking(String bookingId);
   Future<void> rejectBooking(String bookingId);
+  Future<void> completeBooking(String bookingId);
   Future<void> confirmPayment(String bookingId);
   Future<BookingsListResponse> getMyBookings({
     required int page,
@@ -191,8 +192,11 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   // ── POST /bookings ───────────────────────────────────────────────────────────
   @override
   Future<String> createBooking(CreateBookingRequest request) async {
-    final response= await _dio.post(ApiEndpoints.createBooking, data: request.toJson());
-return response.data['data']?['id']??"";
+    final response = await _dio.post(
+      ApiEndpoints.createBooking,
+      data: request.toJson(),
+    );
+    return response.data['data']?['id'] ?? "";
   }
 
   @override
@@ -203,6 +207,11 @@ return response.data['data']?['id']??"";
   @override
   Future<void> rejectBooking(String bookingId) async {
     await _dio.patch(ApiEndpoints.cancelBooking(bookingId));
+  }
+
+  @override
+  Future<void> completeBooking(String bookingId) async {
+    await _dio.patch(ApiEndpoints.completeBooking(bookingId));
   }
 
   @override
@@ -225,14 +234,14 @@ return response.data['data']?['id']??"";
         : ApiEndpoints.providerBookings;
 
     // 🔥 CASE: accepted tab → call twice
-    if (status == BookingStatus.accepted || status == BookingStatus.ongoing) {
+    if (status == BookingStatus.requested || status == BookingStatus.pending) {
       final responses = await Future.wait([
         _dio.get(
           endpoint,
           queryParameters: {
             'page': page,
             'include': 'user,provider,bookingDays',
-            'status': BookingStatus.accepted.name,
+            'status': BookingStatus.requested.name,
           },
         ),
         _dio.get(
@@ -240,7 +249,7 @@ return response.data['data']?['id']??"";
           queryParameters: {
             'page': page,
             'include': 'user,provider,bookingDays',
-            'status': BookingStatus.ongoing.name,
+            'status': BookingStatus.pending.name,
           },
         ),
       ]);

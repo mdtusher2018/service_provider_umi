@@ -29,7 +29,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   late ScrollController _scrollController;
   final _tabs = const [
     BookingStatus.requested,
-    BookingStatus.complete,
+    BookingStatus.ongoing,
     BookingStatus.canceled,
   ];
 
@@ -136,9 +136,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
                   return RefreshIndicator(
                     onRefresh: () async {
-                      await ref
-                          .read(bookingsProvider(_currentStatus).notifier)
-                          .fetch();
+                      ref.invalidate(bookingsProvider(_currentStatus));
                     },
                     child: BookingList(
                       items: data,

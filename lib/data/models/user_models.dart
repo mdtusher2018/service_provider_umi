@@ -1,7 +1,6 @@
 // ── User Profile ──────────────────────────────────────────────────────────────
 
 import 'dart:io';
-
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/data/models/category_models.dart';
@@ -17,6 +16,7 @@ class UserProfile {
   final num? avgRating;
   final num? totalReview;
   final List<AddressModel>? address;
+  final LocationModel? locaation;
   final String? bio;
   final String? rank;
   final bool? privacySettings;
@@ -39,6 +39,7 @@ class UserProfile {
     this.gender,
     this.dateOfBirth,
     this.address,
+    this.locaation,
     this.bio,
     this.rank,
     this.privacySettings,
@@ -74,6 +75,9 @@ class UserProfile {
     serviceProviderInfo: (json['serviceProviderInfo'] == null)
         ? null
         : ServiceProviderInfo.fromJson(json['serviceProviderInfo']),
+    locaation: (json['location'] == null)
+        ? null
+        : LocationModel.fromJson(json['location']),
   );
 }
 
@@ -156,7 +160,38 @@ class ServiceProviderInfo {
   }
 }
 
-// ── Update Profile Request ────────────────────────────────────────────────────
+class LocationModel {
+  final String type;
+  final String address;
+  final List<double> coordinates;
+
+  LocationModel({
+    required this.type,
+    required this.address,
+    required this.coordinates,
+  });
+
+  factory LocationModel.fromJson(Map<String, dynamic> json) {
+    return LocationModel(
+      type: json['type'] ?? '',
+      address: json['address'] ?? '',
+      coordinates:
+          (json['coordinates'] as List<dynamic>?)
+              ?.map((e) => (e is num) ? (e).toDouble() : double.parse(e))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'type': type, 'address': address, 'coordinates': coordinates};
+  }
+
+  // Optional: helpers for clarity
+  double? get latitude => coordinates.length > 1 ? coordinates[1] : null;
+
+  double? get longitude => coordinates.isNotEmpty ? coordinates[0] : null;
+}
 
 // ── Update Profile Request ────────────────────────────────────────────────────
 
@@ -167,7 +202,7 @@ class UpdateProfileRequest {
   final String? gender;
   final String? dateOfBirth;
   final String? phoneNumber;
-  final AddressModel? address;
+  final LocationModel? address;
   final String? customerId;
   final bool? privacySettings;
   final bool? businessClassTrained;
@@ -207,7 +242,7 @@ class UpdateProfileRequest {
       if (gender != null) 'gender': gender,
       if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
       if (phoneNumber != null) 'phoneNumber': phoneNumber,
-      // if (address != null) 'address': address!.toJson(),
+      if (address != null) 'location': address!.toJson(),
       if (customerId != null) 'customerId': customerId,
       if (privacySettings != null) 'privacySettings': privacySettings,
       if (businessClassTrained != null)

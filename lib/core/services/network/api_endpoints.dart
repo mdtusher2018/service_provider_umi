@@ -57,6 +57,9 @@ class ApiEndpoints {
 
   static String acceptBooking(String id) => '/bookings/accept/$id';
   static String cancelBooking(String id) => '/bookings/canceled/$id';
+  static String completeBooking(String id) => '/bookings/complete/$id';
+  static String updateBooking(String id) =>
+      '/bookings/$id?include=user,provider,payments';
 
   // ─── FAQs ───────────────────────────────────────────────────────────────────
   static const String faqs = '/faq';

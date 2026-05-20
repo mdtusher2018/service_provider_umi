@@ -3,7 +3,6 @@ import 'package:service_provider_umi/core/logger/app_logger.dart';
 enum BookingStatus {
   pending,
   requested,
-  accepted,
   ongoing,
   complete,
   canceled;
@@ -14,8 +13,6 @@ enum BookingStatus {
         return 'Not Paid';
       case BookingStatus.requested:
         return 'Pending';
-      case BookingStatus.accepted:
-        return 'Accepted';
       case BookingStatus.ongoing:
         return 'On Going';
       case BookingStatus.complete:
@@ -37,8 +34,7 @@ enum BookingStatus {
         return BookingStatus.pending;
       case 'requested':
         return BookingStatus.requested;
-      case 'accepted':
-        return BookingStatus.accepted;
+
       case 'ongoing':
         return BookingStatus.ongoing;
       case 'complete': // 🔥 API VALUE

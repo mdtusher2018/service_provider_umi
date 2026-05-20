@@ -181,73 +181,20 @@ class BookingsNotifier extends _$BookingsNotifier {
       },
     );
   }
-
-  Future<void> acceptBooking(String bookingId) async {
-    final current = state.value ?? [];
-    isAccepting.value = true;
-    final result = await _repo.acceptBooking(bookingId);
-    isAccepting.value = false;
-
-    if (!ref.mounted) return;
-
-    result.when(
-      success: (_) {
-        final updated = current.map((b) {
-          return b;
-        }).toList();
-
-        state = AsyncData(updated);
-      },
-      failure: (e) async {
-        await fetch(initial: true);
-      },
-    );
-  }
-
-  Future<void> rejectBooking(String bookingId) async {
-    final current = state.value ?? [];
-
-    isCancelling.value = true;
-    final result = await _repo.rejectBooking(bookingId);
-    isCancelling.value = false;
-
-    if (!ref.mounted) return;
-
-    result.when(
-      success: (_) {
-        final updated = current.map((b) {
-          return b;
-        }).toList();
-
-        state = AsyncData(updated);
-      },
-      failure: (e) async {
-        await fetch(initial: true);
-      },
-    );
-  }
 }
 
 @riverpod
-class BookingDetailNotifier extends _$BookingDetailNotifier {
+class BookingDetail extends _$BookingDetail {
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
-
-  final isAccepting = ValueNotifier<bool>(false);
-  final isCancelling = ValueNotifier<bool>(false);
-  final isConfirmimgPayment = ValueNotifier<bool>(false);
 
   @override
   Future<BookingDetailModel?> build(String bookingId) async {
-    return fetch(bookingId);
-  }
-
-  Future<BookingDetailModel?> fetch(String bookingId) async {
     final result = await _repo.getBookingDetail(bookingId);
 
     return result.when(success: (data) => data, failure: (e) => throw e);
   }
 
-  Future<void> refresh(String bookingId) async {
+  Future<void> refresh() async {
     state = const AsyncLoading();
 
     final result = await _repo.getBookingDetail(bookingId);
@@ -257,56 +204,97 @@ class BookingDetailNotifier extends _$BookingDetailNotifier {
       failure: (e) => AsyncError(e, StackTrace.current),
     );
   }
+}
 
-  Future<void> acceptBooking(String bookingId) async {
-    isAccepting.value = true;
+@riverpod
+class AcceptBooking extends _$AcceptBooking {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> accept(String bookingId) async {
+    state = const AsyncLoading();
+
     final result = await _repo.acceptBooking(bookingId);
-    isAccepting.value = false;
 
-    if (!ref.mounted) return;
-
-    result.when(
-      success: (_) {
-        fetch(bookingId);
-      },
-      failure: (e) {
-        state = AsyncError(e, StackTrace.current);
-      },
+    state = result.when(
+      success: (_) => const AsyncData(null),
+      failure: (e) => AsyncError(e, StackTrace.current),
     );
-  }
 
-  Future<void> rejectBooking(String bookingId) async {
-    isCancelling.value = true;
+    if (state is AsyncData) {
+      ref.invalidate(bookingDetailProvider(bookingId));
+    }
+  }
+}
+
+@riverpod
+class RejectBooking extends _$RejectBooking {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> reject(String bookingId) async {
+    state = const AsyncLoading();
+
     final result = await _repo.rejectBooking(bookingId);
-    isCancelling.value = false;
 
-    if (!ref.mounted) return;
-
-    result.when(
-      success: (_) {
-        fetch(bookingId);
-      },
-      failure: (e) {
-        state = AsyncError(e, StackTrace.current);
-      },
+    state = result.when(
+      success: (_) => const AsyncData(null),
+      failure: (e) => AsyncError(e, StackTrace.current),
     );
+
+    if (state is AsyncData) {
+      ref.invalidate(bookingDetailProvider(bookingId));
+    }
   }
+}
 
-  Future<void> confirmPayment(String bookingId) async {
-    isConfirmimgPayment.value = true;
-    final result = await _repo.confirmPayment(bookingId);
-    isConfirmimgPayment.value = false;
+@riverpod
+class CompleteBooking extends _$CompleteBooking {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-    if (!ref.mounted) return;
+  @override
+  FutureOr<void> build() {}
 
-    result.when(
-      success: (_) {
-        fetch(bookingId);
-      },
-      failure: (e) {
-        state = AsyncError(e, StackTrace.current);
-      },
+  Future<void> complete(String bookingId) async {
+    state = const AsyncLoading();
+
+    final result = await _repo.completeBooking(bookingId);
+
+    state = result.when(
+      success: (_) => const AsyncData(null),
+      failure: (e) => AsyncError(e, StackTrace.current),
     );
+
+    if (state is AsyncData) {
+      ref.invalidate(bookingDetailProvider(bookingId));
+    }
+  }
+}
+
+@riverpod
+class ConfirmPayment extends _$ConfirmPayment {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> confirm(String bookingId) async {
+    state = const AsyncLoading();
+
+    final result = await _repo.confirmPayment(bookingId);
+
+    state = result.when(
+      success: (_) => const AsyncData(null),
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+
+    if (state is AsyncData) {
+      ref.invalidate(bookingDetailProvider(bookingId));
+    }
   }
 }
 

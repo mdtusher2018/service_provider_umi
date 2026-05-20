@@ -204,6 +204,12 @@ class _BookingCardState extends ConsumerState<BookingCard>
                 color: AppColors.success,
                 backgroundColor: AppColors.successLight,
               ),
+              8.horizontalSpace,
+              const _StatusBadge(
+                label: 'Pending',
+                color: AppColors.primary,
+                backgroundColor: AppColors.primaryLight,
+              ),
             ],
           );
         }
@@ -214,7 +220,6 @@ class _BookingCardState extends ConsumerState<BookingCard>
         );
 
       case BookingStatus.ongoing:
-      case BookingStatus.accepted:
         if (role == AppRole.provider) {
           return const _StatusBadge(
             label: 'Ongoing',

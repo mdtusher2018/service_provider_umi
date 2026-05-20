@@ -176,14 +176,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ],
                     if (role == AppRole.provider) ...[
-                      _Item(Icons.credit_card, 'My balance', () {
-                        if (kIsWeb) {
-                          context.go(AppRoutes.myBalance);
-                        } else {
-                          context.push(AppRoutes.myBalance);
-                        }
-                      }),
-
+                      // _Item(Icons.credit_card, 'My balance', () {
+                      //   if (kIsWeb) {
+                      //     context.go(AppRoutes.myBalance);
+                      //   } else {
+                      //     context.push(AppRoutes.myBalance);
+                      //   }
+                      // }),
                       _Item(Icons.tune, 'Booking preferences', () {
                         if (kIsWeb) {
                           context.go(AppRoutes.preferences);

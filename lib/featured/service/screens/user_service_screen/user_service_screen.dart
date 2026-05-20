@@ -33,7 +33,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
   final _tabs = const [
     BookingStatus.requested,
-    BookingStatus.accepted,
+    BookingStatus.ongoing,
     BookingStatus.canceled,
   ];
 
@@ -52,7 +52,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     }
   }
 
-    void _openCompleted() {
+  void _openCompleted() {
     if (kIsWeb) {
       context.go(
         AppRoutes.providerCompletedServiceScreen,
@@ -97,17 +97,19 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
                   child: AppText.h1('Service'),
-                ),        Padding(
+                ),
+                Padding(
                   padding: 20.paddingRight,
                   child: InkWell(
-                              onTap: _openCompleted,
-                              child: Icon(Icons.domain_verification_rounded),
-                            ),
+                    onTap: _openCompleted,
+                    child: Icon(Icons.domain_verification_rounded),
+                  ),
                 ),
               ],
             ),
@@ -137,9 +139,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
                   return RefreshIndicator(
                     onRefresh: () async {
-                      await ref
-                          .read(bookingsProvider(_currentStatus).notifier)
-                          .fetch();
+                      ref.invalidate(bookingsProvider(_currentStatus));
                     },
                     child: BookingList(
                       items: bookings,

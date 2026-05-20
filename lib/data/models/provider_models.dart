@@ -30,7 +30,6 @@ class RatingBreakdown {
       );
 }
 
-
 class ProviderComment {
   final String id;
   final String userName;
@@ -79,7 +78,6 @@ class ProviderComment {
 }
 
 class UpdateProviderRequest {
-  final String? serviceId;
   final double? hourlyRate;
   final double? minimumPrice;
   final List<String>? tasks;
@@ -89,9 +87,10 @@ class UpdateProviderRequest {
   final File? businessProfilesOnly;
   final File? qualifiedOnly;
   final File? palliativeCare;
+  final File? coverImage;
+  final List<File> images;
 
   const UpdateProviderRequest({
-    this.serviceId,
     this.hourlyRate,
     this.minimumPrice,
     this.tasks,
@@ -101,10 +100,11 @@ class UpdateProviderRequest {
     this.businessProfilesOnly,
     this.qualifiedOnly,
     this.palliativeCare,
+    this.coverImage,
+    this.images = const [],
   });
 
   Future<FormData> toFormData() async {
-    // ── JSON blob that goes into the "data" key ──────────────
     final Map<String, dynamic> dataMap = {};
 
     if (hourlyRate != null) dataMap['perHourPrice'] = hourlyRate;
@@ -112,36 +112,49 @@ class UpdateProviderRequest {
     if (specializations != null) dataMap['specialistsIn'] = specializations;
     if (tasks != null) dataMap['othersRequiredTasks'] = tasks;
 
-    // ── File fields ──────────────────────────────────────────
-    Future<MapEntry<String, MultipartFile>> toFile(
-      String key,
-      File file,
-    ) async => MapEntry(
-      key,
-      await MultipartFile.fromFile(
-        file.path,
-        filename: file.path.split('/').last,
-      ),
-    );
+    final Map<String, dynamic> formMap = {'data': jsonEncode(dataMap)};
 
-    final fileFields = <MapEntry<String, MultipartFile>>[];
-
+    // ── Single files ─────────────────────────────
     if (drivingLicense != null) {
-      fileFields.add(await toFile('drivingLicense', drivingLicense!));
-    }
-    if (businessProfilesOnly != null) {
-      fileFields.add(await toFile('businessProfiles', businessProfilesOnly!));
-    }
-    if (qualifiedOnly != null) {
-      fileFields.add(await toFile('qualifiedCarer', qualifiedOnly!));
-    }
-    if (palliativeCare != null) {
-      fileFields.add(await toFile('palliativeCare', palliativeCare!));
+      formMap['drivingLicense'] = await MultipartFile.fromFile(
+        drivingLicense!.path,
+      );
     }
 
-    return FormData.fromMap({
-      'data': jsonEncode(dataMap), // ✅ JSON string under "data" key
-      for (final e in fileFields) e.key: e.value,
-    });
+    if (businessProfilesOnly != null) {
+      formMap['businessProfiles'] = await MultipartFile.fromFile(
+        businessProfilesOnly!.path,
+      );
+    }
+
+    if (qualifiedOnly != null) {
+      formMap['qualifiedCarer'] = await MultipartFile.fromFile(
+        qualifiedOnly!.path,
+      );
+    }
+
+    if (palliativeCare != null) {
+      formMap['palliativeCare'] = await MultipartFile.fromFile(
+        palliativeCare!.path,
+      );
+    }
+
+    if (coverImage != null) {
+      formMap['coverImage'] = await MultipartFile.fromFile(coverImage!.path);
+    }
+
+    // ── MULTIPLE IMAGES 🔥 ───────────────────────
+    if (images.isNotEmpty) {
+      formMap['images'] = await Future.wait(
+        images.map(
+          (file) => MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        ),
+      );
+    }
+
+    return FormData.fromMap(formMap);
   }
 }

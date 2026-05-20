@@ -47,6 +47,12 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
         loading: () => const AppLoader(),
         error: (e, _) => Center(child: AppText.h3(e.toString())),
         data: (favourites) {
+          if (favourites.isEmpty) {
+            return AppEmptyState(
+              title: "No Favorites Found",
+              icon: Icon(Icons.favorite),
+            );
+          }
           return RefreshIndicator(
             onRefresh: () async {
               ref.read(favouritesNotifireProvider.notifier).fetch();

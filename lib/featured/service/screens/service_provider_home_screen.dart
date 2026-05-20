@@ -36,7 +36,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   void _loadData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref
-          .read(bookingsProvider(BookingStatus.accepted).notifier)
+          .read(bookingsProvider(BookingStatus.ongoing).notifier)
           .fetch(initial: true);
     });
   }
@@ -53,7 +53,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
     final primary = AppColors.primaryFor(role);
-    final state = ref.watch(bookingsProvider(BookingStatus.accepted));
+    final state = ref.watch(bookingsProvider(BookingStatus.ongoing));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -82,7 +82,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                           await ref
                               .read(
                                 bookingsProvider(
-                                  BookingStatus.accepted,
+                                  BookingStatus.ongoing,
                                 ).notifier,
                               )
                               .fetch(initial: true);

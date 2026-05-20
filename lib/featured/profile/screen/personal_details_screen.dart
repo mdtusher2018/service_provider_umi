@@ -4,13 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
-import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
-import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
@@ -42,7 +40,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   final _addressController = TextEditingController();
 
   File? _pickedImage;
-  AddressModel? _selectedAddress;
+  LocationModel? _selectedAddress;
 
   @override
   void initState() {
@@ -50,7 +48,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
     _nameController.text = widget.user.name;
     _phoneController.text = widget.user.phoneNumber ?? "";
     _bioController.text = widget.user.bio ?? "";
-    _addressController.text = widget.user.address.toString();
+    _addressController.text = widget.user.locaation?.address ?? "";
   }
 
   @override
@@ -62,59 +60,16 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
     super.dispose();
   }
 
-  Future<void> _buildAddressModelFromLatLng(double lat, double lng) async {
-    final url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${AppConfig.googleMapsApiKey}";
-
-    final response = await ref.read(dioClientProvider).get(url);
-    final data = response.data;
-
-    if (data["status"] != "OK") return;
-
-    final results = data["results"] as List;
-    if (results.isEmpty) return;
-
-    final components = results.first["address_components"] ?? [];
-
-    String? getComponent(List<String> types) {
-      for (final type in types) {
-        for (final c in components) {
-          if ((c["types"] as List).contains(type)) {
-            return c["long_name"];
-          }
-        }
-      }
-      return null;
-    }
-
-    final streetNumber = getComponent(["street_number"]);
-    final route = getComponent(["route"]);
-    final subLocality = getComponent([
-      "sublocality",
-      "sublocality_level_1",
-      "neighborhood",
-    ]);
-    final city = getComponent(["locality"]);
-    final state = getComponent(["administrative_area_level_1"]);
-    final country = getComponent(["country"]);
-    final postal = getComponent(["postal_code"]);
-
-    final line1 = [
-      streetNumber,
-      route,
-    ].where((e) => e != null && e.isNotEmpty).join(' ');
-
+  Future<void> _buildAddressModelFromLatLng(
+    String address,
+    double lat,
+    double lng,
+  ) async {
     setState(() {
-      _selectedAddress = AddressModel(
-        id: '',
-        addressLine1: line1.isNotEmpty ? line1 : (route ?? ''),
-        addressLine2: subLocality ?? '',
-        city: city ?? '',
-        state: state ?? '',
-        postalCode: postal ?? '',
-        country: country ?? '',
-        location: AddressLocation(coordinates: [lat, lng]),
-        userId: widget.user.id,
+      _selectedAddress = LocationModel(
+        type: 'Points',
+        address: address,
+        coordinates: [lng, lat],
       );
     });
   }
@@ -238,13 +193,54 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
                 controller: _bioController,
               ),
               12.verticalSpace,
+
               GooglePlaceAutoCompleteTextField(
                 textEditingController: _addressController,
                 googleAPIKey: AppConfig.googleMapsApiKey,
-
                 inputDecoration: InputDecoration(
                   hintText: 'Search your address…',
-                  prefixIcon: const Icon(Icons.search),
+                  hintStyle: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    color: AppColors.grey400,
+                    size: 20,
+                  ),
+                  suffixIcon: ValueListenableBuilder(
+                    valueListenable: _addressController,
+                    builder: (_, v, __) => v.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.close, size: 18),
+                            color: AppColors.grey400,
+                            onPressed: () {
+                              _addressController.clear();
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  filled: true,
+                  fillColor: AppColors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
                 ),
 
                 itemClick: (prediction) {
@@ -257,11 +253,16 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
 
                   if (lat == null || lng == null) return;
 
-                  await _buildAddressModelFromLatLng(lat, lng);
+                  await _buildAddressModelFromLatLng(
+                    prediction.description ?? "N/A",
+                    lat,
+                    lng,
+                  );
                 },
 
-                isCrossBtnShown: true,
+                isCrossBtnShown: false,
               ),
+
               12.verticalSpace,
             ],
 
