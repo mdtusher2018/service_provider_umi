@@ -62,8 +62,16 @@ class ServiceRepository with SafeCall {
   Future<Result<void, Failure>> completeBooking(String bookingId) =>
       asyncGuard(() => _remote.completeBooking(bookingId));
 
-  Future<Result<void, Failure>> confirmPayment(String bookingId) =>
-      asyncGuard(() => _remote.confirmPayment(bookingId));
+  Future<Result<void, Failure>> confirmPayment(
+    String bookingId,
+    String? additionalComment,
+  ) => asyncGuard(() => _remote.confirmPayment(bookingId, additionalComment));
+
+  Future<Result<void, Failure>> giveReviews(
+    String userId,
+    String review,
+    double rating,
+  ) => asyncGuard(() => _remote.giveReview(userId, review, rating));
 
   // ── GET /bookings/my-bookings ─────────────────────────────────────────────────
   Future<Result<BookingsListResponse, Failure>> getMyBookings({

@@ -57,8 +57,25 @@ class _ProviderCompletedServiceScreenState
               emptyMessage: 'No bookings',
               emptySubtitle: 'Your bookings will appear here',
               onCardTap: (item) => _onCardTap(item, context),
+              onRatingTap: _showRatingDialog,
             ),
           );
+        },
+      ),
+    );
+  }
+
+  void _showRatingDialog(BookingModel item) {
+    showGeneralDialog(
+      context: context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      barrierColor: Colors.black.withOpacity(0.5),
+      pageBuilder: (_, _, _) => RatingDialog(
+        providerId: item.provider?.id ?? "N/A",
+        onSubmit: () {
+          AppLogger.debug("${item.provider?.id}");
+          context.pop();
         },
       ),
     );

@@ -1,31 +1,31 @@
 part of 'user_service_screen.dart';
 
 // ─── Rating Dialog ────────────────────────────────────────────
-class RatingDialog extends StatefulWidget {
-  final String serviceName;
-  final void Function(int rating, List<String> tags, String comment) onSubmit;
+class RatingDialog extends ConsumerStatefulWidget {
+  final String providerId;
+  final void Function() onSubmit;
 
   const RatingDialog({
     super.key,
-    required this.serviceName,
+    required this.providerId,
     required this.onSubmit,
   });
 
   @override
-  State<RatingDialog> createState() => _RatingDialogState();
+  ConsumerState<RatingDialog> createState() => _RatingDialogState();
 }
 
-class _RatingDialogState extends State<RatingDialog> {
+class _RatingDialogState extends ConsumerState<RatingDialog> {
   int _rating = 5;
-  final Set<String> _selectedTags = {'Overall Service', 'Repair Quality'};
+  // final Set<String> _selectedTags = {'Overall Service', 'Repair Quality'};
   final _commentController = TextEditingController(text: 'Nice work');
 
-  static const _tags = [
-    'Overall Service',
-    'Customer Support',
-    'Speed and Efficiency',
-    'Repair Quality',
-  ];
+  // static const _tags = [
+  //   'Overall Service',
+  //   'Customer Support',
+  //   'Speed and Efficiency',
+  //   'Repair Quality',
+  // ];
 
   @override
   void dispose() {
@@ -35,6 +35,17 @@ class _RatingDialogState extends State<RatingDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(giveReviewProvider, (previous, next) {
+      if (previous?.isLoading == true && next.isLoading == false) {
+        if (next.hasError) {
+          AppLogger.error("Failed to submit review: ${next.error}");
+          context.showErrorSnackBar('Failed to submit review');
+        } else {
+          context.showSuccessSnackBar("Review submitted successfully");
+        }
+      }
+    });
+
     return Dialog(
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: 20.circular),
@@ -97,45 +108,45 @@ class _RatingDialogState extends State<RatingDialog> {
               'Tell us what can be Improved?',
               color: AppColors.textPrimary,
             ),
-            10.verticalSpace,
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _tags.map((tag) {
-                final isSelected = _selectedTags.contains(tag);
-                return GestureDetector(
-                  onTap: () => setState(() {
-                    isSelected
-                        ? _selectedTags.remove(tag)
-                        : _selectedTags.add(tag);
-                  }),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary : AppColors.white,
-                      borderRadius: 20.circular,
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.border,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: AppText.labelMd(
-                      tag,
-                      color: isSelected
-                          ? AppColors.white
-                          : AppColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
+            // 10.verticalSpace,
+            // Wrap(
+            //   spacing: 8,
+            //   runSpacing: 8,
+            //   children: _tags.map((tag) {
+            //     final isSelected = _selectedTags.contains(tag);
+            //     return GestureDetector(
+            //       onTap: () => setState(() {
+            //         isSelected
+            //             ? _selectedTags.remove(tag)
+            //             : _selectedTags.add(tag);
+            //       }),
+            //       child: AnimatedContainer(
+            //         duration: const Duration(milliseconds: 180),
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: 14,
+            //           vertical: 8,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           color: isSelected ? AppColors.primary : AppColors.white,
+            //           borderRadius: 20.circular,
+            //           border: Border.all(
+            //             color: isSelected
+            //                 ? AppColors.primary
+            //                 : AppColors.border,
+            //             width: 1.5,
+            //           ),
+            //         ),
+            //         child: AppText.labelMd(
+            //           tag,
+            //           color: isSelected
+            //               ? AppColors.white
+            //               : AppColors.textPrimary,
+            //           fontWeight: FontWeight.w500,
+            //         ),
+            //       ),
+            //     );
+            //   }).toList(),
+            // ),
             16.verticalSpace,
 
             // ─── Comment box ─────────────────────────
@@ -164,11 +175,21 @@ class _RatingDialogState extends State<RatingDialog> {
             // ─── Submit ──────────────────────────────
             AppButton.primary(
               label: 'Submit',
-              onPressed: () => widget.onSubmit(
-                _rating,
-                _selectedTags.toList(),
-                _commentController.text,
-              ),
+              isLoading: ref.watch(giveReviewProvider).isLoading,
+              onPressed: () async {
+                AppLogger.debug(
+                  "Submitting review for provider: ${widget.providerId}",
+                );
+                await ref
+                    .read(giveReviewProvider.notifier)
+                    .giveReview(
+                      widget.providerId,
+
+                      _commentController.text,
+                      _rating.toDouble(),
+                    );
+                widget.onSubmit();
+              },
             ),
           ],
         ),

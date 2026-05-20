@@ -35,7 +35,8 @@ abstract class ServiceRemoteDataSource {
   Future<void> acceptBooking(String bookingId);
   Future<void> rejectBooking(String bookingId);
   Future<void> completeBooking(String bookingId);
-  Future<void> confirmPayment(String bookingId);
+  Future<void> confirmPayment(String bookingId, String? additionalComment);
+  Future<void> giveReview(String userId, String review, double rating);
   Future<BookingsListResponse> getMyBookings({
     required int page,
     required BookingStatus status,
@@ -215,10 +216,21 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<void> confirmPayment(String bookingId) async {
+  Future<void> giveReview(String userId, String review, double rating) async {
+    await _dio.post(
+      ApiEndpoints.giveReview,
+      data: {"rating": rating, "review": review, "userId": userId},
+    );
+  }
+
+  @override
+  Future<void> confirmPayment(
+    String bookingId,
+    String? additionalComment,
+  ) async {
     await _dio.post(
       ApiEndpoints.confirmPayment,
-      data: {"bookingId": bookingId},
+      data: {"bookingId": bookingId, "additionalComment": ?additionalComment},
     );
   }
 

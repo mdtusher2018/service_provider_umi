@@ -232,9 +232,15 @@ class _BookingDetailBody extends ConsumerWidget {
   // ─── Provider row ─────────────────────────────────────────────────────────
   Widget _buildProviderRow(WidgetRef ref, AppRole role) {
     // Show the other party: if viewing as provider → show user, else → show provider
-    final name = data.user?.name ?? data.provider?.name ?? '—';
-    final phone = data.user?.phoneNumber ?? data.provider?.phoneNumber ?? '—';
-    final profileUrl = data.user?.profile ?? data.provider?.profile;
+    final name = (role == AppRole.provider)
+        ? data.user?.name ?? '—'
+        : data.provider?.name ?? '—';
+    final phone = (role == AppRole.provider)
+        ? data.user?.phoneNumber ?? '—'
+        : data.provider?.phoneNumber ?? '—';
+    final profileUrl = (role == AppRole.provider)
+        ? data.user?.profile
+        : data.provider?.profile;
 
     return Row(
       children: [

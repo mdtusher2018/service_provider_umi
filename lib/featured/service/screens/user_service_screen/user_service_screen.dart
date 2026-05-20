@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
 
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
-import 'package:service_provider_umi/core/utils/animations.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
@@ -146,7 +148,6 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                       emptyMessage: 'No bookings',
                       emptySubtitle: 'Your bookings will appear here',
                       onCardTap: (item) => _onCardTap(item, context),
-                      onRatingTap: _showRatingDialog,
                     ),
                   );
                 },
@@ -164,20 +165,5 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
     } else {
       context.push(AppRoutes.bookingDetailPath(item.id));
     }
-  }
-
-  void _showRatingDialog(BookingModel item) {
-    showGeneralDialog(
-      context: context,
-      transitionDuration: dialogSlidingFadeTransitionDuration,
-      transitionBuilder: dialogSlideFadeTransition,
-      barrierColor: Colors.black.withOpacity(0.5),
-      pageBuilder: (_, _, _) => RatingDialog(
-        serviceName: "item.serviceName",
-        onSubmit: (rating, tags, comment) {
-          context.pop();
-        },
-      ),
-    );
   }
 }

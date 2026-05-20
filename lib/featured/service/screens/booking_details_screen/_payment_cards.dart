@@ -26,6 +26,8 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
     super.initState();
   }
 
+  TextEditingController additionalCommentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final cardsState = ref.watch(paymentCardsProvider);
@@ -103,7 +105,11 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
                 ),
 
                 8.verticalSpace,
-                AppTextField(maxLines: 3, borderRadious: 8),
+                AppTextField(
+                  maxLines: 3,
+                  borderRadious: 8,
+                  controller: additionalCommentController,
+                ),
 
                 20.verticalSpace,
 
@@ -124,7 +130,7 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
           onPressed: () async {
             await ref
                 .read(confirmPaymentProvider.notifier)
-                .confirm(widget.bookingId);
+                .confirm(widget.bookingId, additionalCommentController.text);
             ref.invalidate(bookingDetailProvider(widget.bookingId));
           },
         ),

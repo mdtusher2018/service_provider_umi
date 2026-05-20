@@ -282,10 +282,10 @@ class ConfirmPayment extends _$ConfirmPayment {
   @override
   FutureOr<void> build() {}
 
-  Future<void> confirm(String bookingId) async {
+  Future<void> confirm(String bookingId, String? additionalComment) async {
     state = const AsyncLoading();
 
-    final result = await _repo.confirmPayment(bookingId);
+    final result = await _repo.confirmPayment(bookingId, additionalComment);
 
     state = result.when(
       success: (_) => const AsyncData(null),
@@ -466,5 +466,24 @@ class UpdateProviderNotifier extends _$UpdateProviderNotifier {
     );
 
     return success;
+  }
+}
+
+@riverpod
+class GiveReviewNotifier extends _$GiveReviewNotifier {
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> giveReview(String userId, String review, double rating) async {
+    state = const AsyncLoading();
+
+    final result = await _repo.giveReviews(userId, review, rating);
+
+    state = result.when(
+      success: (_) => const AsyncData(null),
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
   }
 }

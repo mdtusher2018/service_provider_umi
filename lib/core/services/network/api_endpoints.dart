@@ -63,6 +63,7 @@ class ApiEndpoints {
 
   // ─── FAQs ───────────────────────────────────────────────────────────────────
   static const String faqs = '/faq';
+  static const String giveReview = '/reviews';
 
   // ─── Provider ───────────────────────────────────────────────────────────────
   static String providerProfile(String id) => '/users/$id';
