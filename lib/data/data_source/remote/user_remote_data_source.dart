@@ -11,6 +11,7 @@ abstract class UserRemoteDataSource {
   Future<UserProfile> getMyProfile();
   Future<UserProfile> updateMyProfile(UpdateProfileRequest data);
   Future<void> deleteMyAccount();
+  Future<bool> profileVerified();
 
   // ── Password ───────────────────────────────────────────────────────────────
   Future<void> changePassword(ChangePasswordRequest request);
@@ -59,6 +60,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<void> deleteMyAccount() async {
     await _dio.delete(ApiEndpoints.deleteMyAccount);
+  }
+
+  @override
+  Future<bool> profileVerified() async {
+    // final response = await _dio.get(ApiEndpoints.profileVerified);
+    // final isVerified = response.data['data'] ?? false;
+    Future.delayed(Duration(seconds: 5));
+    return false;
   }
 
   // ── PATCH /auth/change-password ────────────────────────────────────────────

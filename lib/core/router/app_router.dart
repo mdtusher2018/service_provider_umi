@@ -69,10 +69,7 @@ GoRouter appRouter(Ref ref) {
 
     redirect: (context, state) {
       final location = state.matchedLocation;
-      // ✅ Allow schedule during onboarding
-      if (location == AppRoutes.workSchedule) {
-        return null;
-      }
+
       // ← NEW: if already logged in, skip login screen
       if (location == AppRoutes.login) {
         if (role == AppRole.user) return AppRoutes.userHome;

@@ -39,33 +39,33 @@ class AppRoleNotifier extends Notifier<AppRole> {
     await storage.write(StorageKey.userRole, _roleToString(role));
   }
 
-  void setRole(AppRole role) {
+  Future<void> setRole(AppRole role) async {
     state = role;
-    _persist(role);
+    await _persist(role);
   }
 
-  void switchRole() {
+  Future<void> switchRole() async {
     if (state == AppRole.user) {
       state = AppRole.provider;
     } else if (state == AppRole.provider) {
       state = AppRole.user;
     }
-    _persist(state);
+    await _persist(state);
   }
 
-  void loginAsUser() {
+  Future<void> loginAsUser() async {
     state = AppRole.user;
-    _persist(AppRole.user);
+    await _persist(AppRole.user);
   }
 
-  void loginAsProvider() {
+  Future<void> loginAsProvider() async {
     state = AppRole.provider;
-    _persist(AppRole.provider);
+    await _persist(AppRole.provider);
   }
 
-  void logout() {
+  Future<void> logout() async {
     state = AppRole.guest;
-    _persist(AppRole.guest);
+    await _persist(AppRole.guest);
   }
 }
 

@@ -154,6 +154,31 @@ class $AssetsServiceProviderImagesGen {
   ];
 }
 
+class $AssetsWebGen {
+  const $AssetsWebGen();
+
+  /// File path: assets/web/24_7.png
+  AssetGenImage get a247 => const AssetGenImage('assets/web/24_7.png');
+
+  /// File path: assets/web/care1.png
+  AssetGenImage get care1 => const AssetGenImage('assets/web/care1.png');
+
+  /// File path: assets/web/care2.png
+  AssetGenImage get care2 => const AssetGenImage('assets/web/care2.png');
+
+  /// File path: assets/web/client.png
+  AssetGenImage get client => const AssetGenImage('assets/web/client.png');
+
+  /// File path: assets/web/send.png
+  AssetGenImage get send => const AssetGenImage('assets/web/send.png');
+
+  /// File path: assets/web/weblogo.png
+  AssetGenImage get weblogo => const AssetGenImage('assets/web/weblogo.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [a247, care1, care2, client, send, weblogo];
+}
+
 class $AssetsWelcomeGen {
   const $AssetsWelcomeGen();
 
@@ -185,6 +210,7 @@ class Assets {
   static const $AssetsServiceProviderImagesGen serviceProviderImages =
       $AssetsServiceProviderImagesGen();
   static const AssetGenImage support = AssetGenImage('assets/support.png');
+  static const $AssetsWebGen web = $AssetsWebGen();
   static const $AssetsWelcomeGen welcome = $AssetsWelcomeGen();
 
   /// List of all assets

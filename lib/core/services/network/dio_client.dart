@@ -13,7 +13,7 @@ Dio dioClient(Ref ref) {
       baseUrl: AppConfig.baseUrl,
       connectTimeout: Duration(milliseconds: AppConfig.connectTimeout),
       receiveTimeout: Duration(milliseconds: AppConfig.receiveTimeout),
-      sendTimeout: Duration(milliseconds: AppConfig.sendTimeout),
+      // sendTimeout: Duration(milliseconds: AppConfig.sendTimeout),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

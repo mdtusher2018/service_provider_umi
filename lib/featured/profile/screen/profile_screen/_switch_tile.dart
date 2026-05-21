@@ -14,16 +14,16 @@ Widget _buildSwitchTile(WidgetRef ref) {
                 as String? ??
             "";
         if (token.decodeJwt['role'] == 'service_provider') {
-          AppLogger.debug("===========>>>>>>>>> 1");
+
           ref.context.go(AppRoutes.providerHome);
         } else {
-          AppLogger.debug("===========>>>>>>>>> 2");
+      
           ref.context.go(AppRoutes.providerOnboarding);
         }
 
         return;
       }
-      AppLogger.debug("===========>>>>>>>>> 3");
+
       ref.context.go(AppRoutes.userHome);
     },
     child: Container(

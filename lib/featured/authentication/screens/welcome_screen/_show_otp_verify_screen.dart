@@ -88,7 +88,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
             } else if (widget.role == AppRole.provider) {
               AppLogger.debug("Going to provider onboarding");
               ref.read(appRoleProvider.notifier).loginAsProvider();
-              context.go(AppRoutes.workSchedule);
+              // context.go(AppRoutes.providerProfile+AppRoutes.workSchedule);
             } else {
               context.showSnackBar("Please select your role");
             }

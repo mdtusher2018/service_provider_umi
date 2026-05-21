@@ -477,32 +477,30 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                             if (ref.watch(appRoleProvider) ==
                                 AppRole.provider) {
                               // Provider profile update flow (unchanged)
-                              if (kIsWeb) {
-                                context.go(AppRoutes.profilePicture);
-                              } else {
-                                await ref
-                                    .read(updateProviderProvider.notifier)
-                                    .update(
-                                      UpdateProviderRequest(
-                                        hourlyRate: _hourlyPrice,
-                                        businessProfilesOnly: _businessImage,
-                                        drivingLicense: _drivingImage,
-                                        experience: _selectedExperiences?.id,
-                                        palliativeCare: _palliativeImage,
-                                        qualifiedOnly: _qualifiedImage,
-                                        coverImage: _businessImage,
-                                        minimumPrice: _hourlyPrice,
 
-                                        images: _images,
-                                        specializations: [
-                                          _selectedCategory?.id ?? '',
-                                        ],
-                                        tasks: _selectedTasks
-                                            .map((e) => e.id)
-                                            .toList(),
-                                      ),
-                                    );
-                              }
+                              await ref
+                                  .read(updateProviderProvider.notifier)
+                                  .update(
+                                    UpdateProviderRequest(
+                                      hourlyRate: _hourlyPrice,
+                                      businessProfilesOnly: _businessImage,
+                                      drivingLicense: _drivingImage,
+                                      experience: _selectedExperiences?.id,
+                                      palliativeCare: _palliativeImage,
+                                      qualifiedOnly: _qualifiedImage,
+                                      coverImage: _businessImage,
+                                      minimumPrice: _hourlyPrice,
+
+                                      images: _images,
+                                      specializations: [
+                                        _selectedCategory?.id ?? '',
+                                      ],
+                                      tasks: _selectedTasks
+                                          .map((e) => e.id)
+                                          .toList(),
+                                    ),
+                                  );
+
                               return;
                             } else {
                               // User / search filter flow:

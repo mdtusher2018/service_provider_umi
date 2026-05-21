@@ -34,12 +34,12 @@ class RefreshTokenInterceptor extends Interceptor {
           _isRefreshing = false;
           return handler.next(err);
         }
-        final refreshDio = await Dio(
+        final refreshDio = Dio(
           BaseOptions(
             baseUrl: AppConfig.baseUrl,
             connectTimeout: Duration(milliseconds: AppConfig.connectTimeout),
             receiveTimeout: Duration(milliseconds: AppConfig.receiveTimeout),
-            sendTimeout: Duration(milliseconds: AppConfig.sendTimeout),
+            // sendTimeout: Duration(milliseconds: AppConfig.sendTimeout),
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',

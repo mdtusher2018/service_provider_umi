@@ -205,7 +205,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _dispatchMessage(_UiMessage optimistic) {
-    AppLogger.debug("Rety called");
     _chatService.sendMessage(
       payload: SendMessagePayload(
         receiverId: widget.otherUserId,
@@ -267,7 +266,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
 
     // ── Socket is ready — dispatch ─────────────────────────────────────────
-    AppLogger.debug('[Chat] Dispatching — attempt $attempt');
+    AppLogger.warning('[Chat] Dispatching — attempt $attempt');
     _dispatchMessage(msg);
   }
 

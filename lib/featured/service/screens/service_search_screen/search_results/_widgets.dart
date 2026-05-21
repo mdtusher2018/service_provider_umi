@@ -106,9 +106,7 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
             if (kIsWeb) {
               ref.context.go(AppRoutes.filterPath(id));
             } else {
-              ref.context.push(AppRoutes.filterPath(id)).then((value) {
-                AppLogger.debug("POP========>>>>>");
-              });
+              ref.context.push(AppRoutes.filterPath(id)).then((value) {});
             }
           },
         ),

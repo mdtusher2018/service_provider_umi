@@ -94,6 +94,7 @@ flutter:
     - assets/service_provider_images/
     - assets/welcome/
     - assets/cards/
+    - assets/web/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

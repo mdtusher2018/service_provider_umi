@@ -18,10 +18,10 @@ class _LoginDialog extends ConsumerStatefulWidget {
 
 class _LoginDialogState extends ConsumerState<_LoginDialog> {
   final _emailController = TextEditingController(
-    text: kDebugMode ? "verohof419@codoteam.com" : null,
+    text: kDebugMode ? "vosod13349@getasail.com" : null,
   );
   final _passwordController = TextEditingController(
-    text: kDebugMode ? "verohof419@codoteam.com" : null,
+    text: kDebugMode ? "vosod13349@getasail.com" : null,
   );
   final _formKey = GlobalKey<FormState>();
 

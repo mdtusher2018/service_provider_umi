@@ -177,9 +177,6 @@ class _RatingDialogState extends ConsumerState<RatingDialog> {
               label: 'Submit',
               isLoading: ref.watch(giveReviewProvider).isLoading,
               onPressed: () async {
-                AppLogger.debug(
-                  "Submitting review for provider: ${widget.providerId}",
-                );
                 await ref
                     .read(giveReviewProvider.notifier)
                     .giveReview(

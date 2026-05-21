@@ -1,6 +1,5 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
-import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -167,7 +166,6 @@ class _BookingCardState extends ConsumerState<BookingCard>
   }
 
   Widget _buildStatusRow(AppRole role) {
-    AppLogger.debug(widget.item.status.toString());
     switch (widget.item.status) {
       case BookingStatus.requested:
         if (role == AppRole.provider) {

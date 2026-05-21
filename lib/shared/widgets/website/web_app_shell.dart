@@ -6,9 +6,13 @@ import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+part 'website_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
@@ -86,11 +90,12 @@ class WebAppShell extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
+      endDrawer: AppDrawer(role: role),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // ── Full-width header ────────────────────────────────────────────
-            _WebsiteHeader(role: role),
+            WebsiteHeader(role: role),
 
             // ── Phone container ──────────────────────────────────────────────
             Center(
@@ -118,296 +123,6 @@ class WebAppShell extends ConsumerWidget {
             // ── Footer ───────────────────────────────────────────────────────
             _WebsiteFooter(role: role),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HEADER  — role-aware nav links + log-out / download buttons
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _WebsiteHeader extends ConsumerStatefulWidget {
-  final AppRole role;
-  const _WebsiteHeader({required this.role});
-
-  @override
-  ConsumerState<_WebsiteHeader> createState() => _WebsiteHeaderState();
-}
-
-class _WebsiteHeaderState extends ConsumerState<_WebsiteHeader> {
-  @override
-  Widget build(BuildContext context) {
-    if (!kIsWeb) return const SizedBox.shrink();
-
-    return Container(
-      height: 80,
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-        border: Border(bottom: BorderSide(color: AppColors.border, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Row(
-              children: [
-                _HeaderLogo(),
-                const Spacer(),
-                _NavLinks(role: widget.role),
-                const Spacer(),
-                _HeaderActions(role: widget.role),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Logo ─────────────────────────────────────────────────────────────────────
-
-class _HeaderLogo extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(4),
-      onTap: () => ref.read(appRouterProvider).go(AppRoutes.userHome),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        child: RichText(
-          text: const TextSpan(
-            children: [
-              TextSpan(
-                text: 'i',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              TextSpan(
-                text: 'Badi',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Nav links — role-aware ───────────────────────────────────────────────────
-
-/// Uses [appRouterProvider] to get the current location because [WebAppShell]
-/// lives inside MaterialApp.router's builder — outside the GoRouter subtree —
-/// so [GoRouterState.of(context)] would throw.
-class _NavLinks extends ConsumerWidget {
-  final AppRole role;
-  const _NavLinks({required this.role});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final items = role == AppRole.provider ? _providerNavItems : _userNavItems;
-
-    // .matches can be empty during a redirect frame (e.g. login → home).
-    // Use a safe helper instead of .last directly.
-    final router = ref.watch(appRouterProvider);
-    final matches = router.routerDelegate.currentConfiguration.matches;
-    final currentLocation = matches.isNotEmpty
-        ? matches.last.matchedLocation
-        : '';
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: items.map((item) {
-        final isActive =
-            currentLocation == item.route ||
-            currentLocation.startsWith('${item.route}/');
-        return _NavLinkButton(
-          item: item,
-          isActive: isActive,
-          onTap: () => router.go(item.route),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _NavLinkButton extends StatefulWidget {
-  final _NavItem item;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _NavLinkButton({
-    required this.item,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  State<_NavLinkButton> createState() => _NavLinkButtonState();
-}
-
-class _NavLinkButtonState extends State<_NavLinkButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: widget.isActive
-                ? AppColors.primary.withOpacity(0.12)
-                : _hovered
-                ? AppColors.primary.withOpacity(0.06)
-                : Colors.transparent,
-          ),
-          child: Text(
-            widget.item.label,
-            style: TextStyle(
-              color: widget.isActive ? AppColors.primary : Colors.black87,
-              fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.normal,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Header action buttons — Log Out / Download ───────────────────────────────
-
-class _HeaderActions extends ConsumerWidget {
-  final AppRole role;
-  const _HeaderActions({required this.role});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _OutlinedActionButton(
-          label: role == AppRole.guest ? 'Log In' : 'Log Out',
-          onTap: () => ref.read(appRouterProvider).go(AppRoutes.login),
-        ),
-        const SizedBox(width: 10),
-        _FilledActionButton(
-          label: 'Download',
-          onTap: () {
-            // TODO: open app-store / play-store link
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _OutlinedActionButton extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _OutlinedActionButton({required this.label, required this.onTap});
-
-  @override
-  State<_OutlinedActionButton> createState() => _OutlinedActionButtonState();
-}
-
-class _OutlinedActionButtonState extends State<_OutlinedActionButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          decoration: BoxDecoration(
-            color: _hovered
-                ? AppColors.primary.withOpacity(0.08)
-                : Colors.transparent,
-            border: Border.all(color: AppColors.primary, width: 1.5),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            widget.label,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FilledActionButton extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _FilledActionButton({required this.label, required this.onTap});
-
-  @override
-  State<_FilledActionButton> createState() => _FilledActionButtonState();
-}
-
-class _FilledActionButtonState extends State<_FilledActionButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          decoration: BoxDecoration(
-            color: _hovered ? AppColors.primaryDark : AppColors.primary,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            widget.label,
-            style: const TextStyle(
-              color: AppColors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
         ),
       ),
     );
@@ -528,9 +243,6 @@ class _FooterNavItemState extends ConsumerState<_FooterNavItem> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 abstract class _T {
-  static const Color primary = Color(0xFF00BFA5);
-  static const Color primaryLight = Color(0xFFE0F7F4);
-  static const Color primaryDark = Color(0xFF00897B);
   static const Color textDark = Color(0xFF1A2332);
   static const Color textBody = Color(0xFF6B7A8D);
   static const Color textMuted = Color(0xFF9AA5B4);
@@ -626,7 +338,7 @@ class _AboutImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 340,
+      height: 400,
       child: Stack(
         children: [
           Positioned(
@@ -636,7 +348,7 @@ class _AboutImage extends StatelessWidget {
             top: 20,
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: _T.primary, width: 3),
+                border: Border.all(color: AppColors.primary, width: 3),
               ),
             ),
           ),
@@ -646,14 +358,8 @@ class _AboutImage extends StatelessWidget {
             right: 20,
             bottom: 20,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Container(
-                color: const Color(0xFFCFD8DC),
-                child: const _PlaceholderPhoto(
-                  label: 'Caregiver & elderly patient',
-                  icon: Icons.elderly,
-                ),
-              ),
+              borderRadius: 4.circular,
+              child: Image.asset(Assets.web.care1.keyName, fit: BoxFit.cover),
             ),
           ),
         ],
@@ -671,26 +377,20 @@ class _AboutText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'About Us',
-          style: TextStyle(
-            color: _T.textDark,
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            height: 1.2,
-          ),
-        ),
+        AppText.h1('About Us', fontSize: 32),
         const SizedBox(height: 16),
-        const Text(
+        AppText.labelLg(
           'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '
           'placerat faucibus nam purus sem. Uma pulvinar porttitor '
           'dignissim congue pellentesque ac hac.',
-          style: TextStyle(color: _T.textBody, fontSize: 14.5, height: 1.65),
         ),
         const SizedBox(height: 20),
         ...checks.map((text) => _CheckItem(text: text)),
         const SizedBox(height: 28),
-        _PrimaryButton(label: 'Booking', onTap: () {}),
+        Container(
+          constraints: BoxConstraints(maxWidth: 120),
+          child: AppButton.primary(label: 'Booking', onPressed: () {}),
+        ),
       ],
     );
   }
@@ -707,26 +407,9 @@ class _CheckItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.only(top: 1),
-            padding: const EdgeInsets.all(3),
-            decoration: const BoxDecoration(
-              color: _T.primaryLight,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.check, color: _T.checkIcon, size: 12),
-          ),
+          const Icon(Icons.library_add_check_outlined, color: _T.checkIcon),
           const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: _T.textBody,
-                fontSize: 13.5,
-                height: 1.5,
-              ),
-            ),
-          ),
+          Expanded(child: AppText.labelLg(text)),
         ],
       ),
     );
@@ -746,14 +429,14 @@ class _OurServicesSection extends StatelessWidget {
       icon: Icons.home_work_outlined,
       body:
           'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: true,
+      hasBg: false,
     ),
     _ServiceData(
       title: 'Elderly Nutrition',
       icon: Icons.restaurant_menu_outlined,
       body:
           'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: true,
+      hasBg: false,
     ),
     _ServiceData(
       title: 'Resident Care',
@@ -787,7 +470,7 @@ class _OurServicesSection extends StatelessWidget {
               const Text(
                 'Our Services',
                 style: TextStyle(
-                  color: _T.primary,
+                  color: AppColors.primary,
                   fontSize: 30,
                   fontWeight: FontWeight.w700,
                 ),
@@ -859,7 +542,7 @@ class _ServiceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: data.hasBg ? _T.primaryLight : _T.white,
+        color: data.hasBg ? AppColors.primaryLight : _T.white,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: data.hasBg ? Colors.transparent : _T.cardBorder,
@@ -873,7 +556,7 @@ class _ServiceCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: _T.primary,
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(data.icon, color: _T.white, size: 22),
@@ -925,7 +608,7 @@ class _ClientReviewsSection extends StatelessWidget {
               const Text(
                 'Client Reviews',
                 style: TextStyle(
-                  color: _T.primary,
+                  color: AppColors.primary,
                   fontSize: 30,
                   fontWeight: FontWeight.w700,
                 ),
@@ -934,12 +617,12 @@ class _ClientReviewsSection extends StatelessWidget {
               Stack(
                 children: [
                   Positioned(
-                    top: -8,
+                    top: 0,
                     left: 0,
                     child: Text(
                       '\u201C',
                       style: TextStyle(
-                        color: _T.primary.withOpacity(0.5),
+                        color: AppColors.primary.withOpacity(0.5),
                         fontSize: 80,
                         height: 0.8,
                         fontWeight: FontWeight.w900,
@@ -952,7 +635,7 @@ class _ClientReviewsSection extends StatelessWidget {
                     child: Text(
                       '\u201D',
                       style: TextStyle(
-                        color: _T.primary.withOpacity(0.5),
+                        color: AppColors.primary.withOpacity(0.5),
                         fontSize: 80,
                         height: 0.8,
                         fontWeight: FontWeight.w900,
@@ -987,23 +670,15 @@ class _ClientReviewsSection extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CircleAvatar(
-                              radius: 22,
-                              backgroundColor: _T.primaryLight,
-                              child: const Icon(
-                                Icons.person,
-                                color: _T.primary,
-                                size: 24,
-                              ),
-                            ),
+                            Image.asset(Assets.web.client.keyName, width: 50),
                             const SizedBox(width: 12),
                             const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                AppText(
                                   'James Smith',
                                   style: TextStyle(
-                                    color: _T.primary,
+                                    color: AppColors.primary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -1055,7 +730,7 @@ class _Dot extends StatelessWidget {
       width: active ? 22 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: active ? _T.primary : _T.primaryLight,
+        color: active ? AppColors.primary : AppColors.primaryLight,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -1133,7 +808,10 @@ class _BestCenterText extends StatelessWidget {
           style: TextStyle(color: _T.textBody, fontSize: 14, height: 1.7),
         ),
         const SizedBox(height: 28),
-        _PrimaryButton(label: 'Booking', onTap: () {}),
+        Container(
+          constraints: BoxConstraints(maxWidth: 120),
+          child: AppButton.primary(label: 'Booking', onPressed: () {}),
+        ),
       ],
     );
   }
@@ -1145,12 +823,9 @@ class _BestCenterPhoto extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        height: 320,
+        height: 400,
         color: const Color(0xFFCFD8DC),
-        child: const _PlaceholderPhoto(
-          label: 'Nurse assisting elderly man',
-          icon: Icons.medical_services_outlined,
-        ),
+        child: Image.asset(Assets.web.care2.keyName, fit: BoxFit.cover),
       ),
     );
   }
@@ -1205,7 +880,15 @@ class _CtaBannerSection extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        _OutlinedWhiteButton(label: 'Booking', onTap: () {}),
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 120),
+                          child: AppButton.outline(
+                            label: 'Booking',
+                            borderColor: AppColors.white,
+                            textColor: AppColors.white,
+                            onPressed: () {},
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -1213,13 +896,9 @@ class _CtaBannerSection extends StatelessWidget {
                     const SizedBox(width: 48),
                     Column(
                       children: [
-                        _Badge247(),
-                        const SizedBox(height: 20),
-                        const Icon(
-                          Icons.send,
-                          color: Color(0xAAFFFFFF),
-                          size: 40,
-                        ),
+                        Image.asset(Assets.web.a247.keyName, width: 80),
+
+                        Image.asset(Assets.web.send.keyName, width: 100),
                       ],
                     ),
                   ],
@@ -1227,152 +906,6 @@ class _CtaBannerSection extends StatelessWidget {
               );
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Badge247 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 88,
-      height: 88,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.redAccent, width: 3),
-        color: _T.white.withOpacity(0.12),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '24/7',
-            style: TextStyle(
-              color: _T.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-              height: 1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Shared small widgets
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _PrimaryButton extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _PrimaryButton({required this.label, required this.onTap});
-
-  @override
-  State<_PrimaryButton> createState() => _PrimaryButtonState();
-}
-
-class _PrimaryButtonState extends State<_PrimaryButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-          decoration: BoxDecoration(
-            color: _hovered ? _T.primaryDark : _T.primary,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            widget.label,
-            style: const TextStyle(
-              color: _T.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OutlinedWhiteButton extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _OutlinedWhiteButton({required this.label, required this.onTap});
-
-  @override
-  State<_OutlinedWhiteButton> createState() => _OutlinedWhiteButtonState();
-}
-
-class _OutlinedWhiteButtonState extends State<_OutlinedWhiteButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-          decoration: BoxDecoration(
-            color: _hovered ? _T.white.withOpacity(0.15) : Colors.transparent,
-            border: Border.all(color: _T.white, width: 1.5),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            widget.label,
-            style: const TextStyle(
-              color: _T.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PlaceholderPhoto extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _PlaceholderPhoto({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFCFD8DC),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 48, color: Colors.white54),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white70, fontSize: 12),
-              ),
-            ),
-          ],
         ),
       ),
     );

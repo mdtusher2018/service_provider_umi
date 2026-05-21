@@ -47,17 +47,18 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ─── Back ─────────────────────────────
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: GestureDetector(
-                    onTap: _onBackPressed,
-                    child: Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: primary,
-                      size: 22,
+                if (!kIsWeb)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    child: GestureDetector(
+                      onTap: _onBackPressed,
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: primary,
+                        size: 22,
+                      ),
                     ),
                   ),
-                ),
                 16.verticalSpace,
 
                 Expanded(

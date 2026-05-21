@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -42,7 +41,6 @@ class MyPaymentCardsPage extends ConsumerWidget {
 
               return;
             }
-            AppLogger.debug(clientSecret);
 
             /// 2. Init PaymentSheet
             await Stripe.instance.initPaymentSheet(

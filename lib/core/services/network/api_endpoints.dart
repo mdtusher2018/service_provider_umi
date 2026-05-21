@@ -19,6 +19,7 @@ class ApiEndpoints {
   static const String myProfile = '/users/my-profile';
   static const String updateMyProfile = '/users/update-my-profile';
   static const String deleteMyAccount = '/users/delete-my-account';
+  static const String profileVerified = '/users/profile-verified';
 
   // ─── Notifications ──────────────────────────────────────────────────────────
   static const String notifications = '/notifications';

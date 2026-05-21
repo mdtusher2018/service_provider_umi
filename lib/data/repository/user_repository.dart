@@ -48,4 +48,7 @@ class UserRepository with SafeCall {
 
   Future<Result<String, Failure>> getStripeConnetedUrl() =>
       asyncGuard(() => _remote.getStripeConnetedUrl());
+
+  Future<Result<bool, Failure>> profileVerified() =>
+      asyncGuard(() => _remote.profileVerified());
 }

@@ -74,7 +74,6 @@ class _ProviderCompletedServiceScreenState
       pageBuilder: (_, _, _) => RatingDialog(
         providerId: item.provider?.id ?? "N/A",
         onSubmit: () {
-          AppLogger.debug("${item.provider?.id}");
           context.pop();
         },
       ),

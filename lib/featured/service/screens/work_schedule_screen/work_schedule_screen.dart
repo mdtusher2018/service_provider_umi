@@ -233,10 +233,16 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded, color: primary, size: 20),
-          onPressed: () => context.pop(),
-        ),
+        leading: (kIsWeb)
+            ? null
+            : IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: primary,
+                  size: 20,
+                ),
+                onPressed: () => context.pop(),
+              ),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
