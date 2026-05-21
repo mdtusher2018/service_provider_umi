@@ -63,7 +63,7 @@ class _GuestOnboardingScreenState extends ConsumerState<GuestOnboardingScreen> {
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(_onboardingIndexProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [

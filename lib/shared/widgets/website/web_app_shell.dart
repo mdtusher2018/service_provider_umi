@@ -89,7 +89,7 @@ class WebAppShell extends ConsumerWidget {
         : kWebAppMaxHeight;
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppColors.background,
       endDrawer: AppDrawer(role: role),
       body: SingleChildScrollView(
         child: Column(

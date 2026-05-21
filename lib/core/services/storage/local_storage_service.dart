@@ -14,7 +14,4 @@ abstract class LocalStorageService {
   Future<void> clearPrefs();
   Future<void> clearSecure();
   Future<void> clearAll();
-
-  void disableSessionMode(bool value);
-  bool get isSessionMode;
 }

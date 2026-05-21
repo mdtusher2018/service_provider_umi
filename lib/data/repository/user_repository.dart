@@ -6,6 +6,7 @@ import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/verification_provider.dart';
 
 class UserRepository with SafeCall {
   final UserRemoteDataSource _remote;
@@ -49,6 +50,7 @@ class UserRepository with SafeCall {
   Future<Result<String, Failure>> getStripeConnetedUrl() =>
       asyncGuard(() => _remote.getStripeConnetedUrl());
 
-  Future<Result<bool, Failure>> profileVerified() =>
-      asyncGuard(() => _remote.profileVerified());
+  Future<Result<bool, Failure>> submitVerification(
+    VerificationRequest request,
+  ) => asyncGuard(() => _remote.submitVerification(request));
 }

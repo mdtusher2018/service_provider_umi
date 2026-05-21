@@ -234,15 +234,20 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppToggleTile(
-                          label: 'Palliative care',
-                          subtitle:
-                              'Only show professionals specialising in palliative care.',
-                          value: _palliativeCare,
-                          onChanged: (v) => setState(() => _palliativeCare = v),
-                        ),
-                        const AppDivider(height: 40, color: AppColors.grey400),
-
+                        if (ref.read(appRoleProvider) == AppRole.user) ...[
+                          AppToggleTile(
+                            label: 'Palliative care',
+                            subtitle:
+                                'Only show professionals specialising in palliative care.',
+                            value: _palliativeCare,
+                            onChanged: (v) =>
+                                setState(() => _palliativeCare = v),
+                          ),
+                          const AppDivider(
+                            height: 40,
+                            color: AppColors.grey400,
+                          ),
+                        ],
                         // ─── Price slider ──────────────────────────────
                         (ref.read(appRoleProvider) == AppRole.provider)
                             ? AppPriceSlider(
@@ -304,32 +309,41 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         const AppDivider(height: 40, color: AppColors.grey400),
 
                         // ─── Toggles ───────────────────────────────────
-                        AppToggleTile(
-                          label: 'Driving licence',
-                          subtitle:
-                              'Only show professionals with a driving licence',
-                          value: _drivingLicence,
-                          onChanged: (v) => setState(() => _drivingLicence = v),
-                        ),
-                        const AppDivider(height: 40, color: AppColors.grey400),
-                        AppToggleTile(
-                          label: 'Business profiles',
-                          subtitle:
-                              'Only profiles that correspond to a validated business or self employed professional.',
-                          value: _businessProfile,
-                          onChanged: (v) =>
-                              setState(() => _businessProfile = v),
-                        ),
-                        const AppDivider(height: 40, color: AppColors.grey400),
-                        AppToggleTile(
-                          label: 'Qualified carer',
-                          subtitle:
-                              'Only show caregivers with a qualification, diploma or degree as health personal',
-                          value: _qualifiedCarer,
-                          onChanged: (v) => setState(() => _qualifiedCarer = v),
-                        ),
-                        32.verticalSpace,
-
+                        if (ref.read(appRoleProvider) == AppRole.user) ...[
+                          AppToggleTile(
+                            label: 'Driving licence',
+                            subtitle:
+                                'Only show professionals with a driving licence',
+                            value: _drivingLicence,
+                            onChanged: (v) =>
+                                setState(() => _drivingLicence = v),
+                          ),
+                          const AppDivider(
+                            height: 40,
+                            color: AppColors.grey400,
+                          ),
+                          AppToggleTile(
+                            label: 'Business profiles',
+                            subtitle:
+                                'Only profiles that correspond to a validated business or self employed professional.',
+                            value: _businessProfile,
+                            onChanged: (v) =>
+                                setState(() => _businessProfile = v),
+                          ),
+                          const AppDivider(
+                            height: 40,
+                            color: AppColors.grey400,
+                          ),
+                          AppToggleTile(
+                            label: 'Qualified carer',
+                            subtitle:
+                                'Only show caregivers with a qualification, diploma or degree as health personal',
+                            value: _qualifiedCarer,
+                            onChanged: (v) =>
+                                setState(() => _qualifiedCarer = v),
+                          ),
+                          32.verticalSpace,
+                        ],
                         // ─── Provider-only image uploads ───────────────
                         if (ref.watch(appRoleProvider) == AppRole.provider) ...[
                           AppText.h4('Images'),

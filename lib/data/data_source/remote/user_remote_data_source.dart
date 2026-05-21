@@ -5,13 +5,13 @@ import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/service/riverpod/verification_provider.dart';
 
 abstract class UserRemoteDataSource {
   Future<UserProfile> getUserById(String id);
   Future<UserProfile> getMyProfile();
   Future<UserProfile> updateMyProfile(UpdateProfileRequest data);
   Future<void> deleteMyAccount();
-  Future<bool> profileVerified();
 
   // ── Password ───────────────────────────────────────────────────────────────
   Future<void> changePassword(ChangePasswordRequest request);
@@ -23,6 +23,7 @@ abstract class UserRemoteDataSource {
   // ── Support ────────────────────────────────────────────────────────────────
   Future<SupportResponse> getSupport();
   Future<String> getStripeConnetedUrl();
+  Future<bool> submitVerification(VerificationRequest request);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -60,14 +61,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<void> deleteMyAccount() async {
     await _dio.delete(ApiEndpoints.deleteMyAccount);
-  }
-
-  @override
-  Future<bool> profileVerified() async {
-    // final response = await _dio.get(ApiEndpoints.profileVerified);
-    // final isVerified = response.data['data'] ?? false;
-    Future.delayed(Duration(seconds: 5));
-    return false;
   }
 
   // ── PATCH /auth/change-password ────────────────────────────────────────────
@@ -150,5 +143,64 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     }
     if (apiResponse.data == null) throw Exception('Empty response data');
     return apiResponse.data as T;
+  }
+
+  // Add to UserRemoteDataSourceImpl:
+  @override
+  Future<bool> submitVerification(VerificationRequest request) async {
+    final formMap = <String, dynamic>{};
+    final List<MultipartFile> images = [];
+
+    if (request.palliativeCare != null) {
+      images.add(
+        await MultipartFile.fromFile(
+          request.palliativeCare!.path,
+          filename: 'palliative_care.jpg',
+        ),
+      );
+    }
+    if (request.drivingLicense != null) {
+      images.add(
+        await MultipartFile.fromFile(
+          request.drivingLicense!.path,
+          filename: 'driving_license.jpg',
+        ),
+      );
+    }
+    if (request.businessProfilesOnly != null) {
+      images.add(
+        await MultipartFile.fromFile(
+          request.businessProfilesOnly!.path,
+          filename: 'business_profile.jpg',
+        ),
+      );
+    }
+    if (request.qualifiedOnly != null) {
+      images.add(
+        await MultipartFile.fromFile(
+          request.qualifiedOnly!.path,
+          filename: 'qualified_carer.jpg',
+        ),
+      );
+    }
+
+    formMap['images'] = images;
+
+    final response = await _dio.post(
+      ApiEndpoints.profileVerificationSubmit,
+      data: FormData.fromMap(formMap),
+    );
+
+    final apiResponse = ApiResponse<bool>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) => true,
+    );
+
+    if (!apiResponse.success) {
+      throw Exception(
+        apiResponse.error?.message ?? 'Verification submission failed',
+      );
+    }
+    return true;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'local_storage_service.dart';
@@ -32,28 +33,12 @@ final class LocalStorageServiceImpl implements LocalStorageService {
     _cache[StorageKey.selectedLocale.key] = _prefs.getString(
       StorageKey.selectedLocale.key,
     );
-
-    _cache[StorageKey.rememberMe.key] = _prefs.getBool(
-      StorageKey.rememberMe.key,
+    _cache[StorageKey.accessToken.key] = _prefs.getString(
+      StorageKey.accessToken.key,
     );
-    _cache[StorageKey.userRole.key] = _prefs.getString(StorageKey.userRole.key);
-
-    /// determine session mode
-    _isSessionMode = !(_cache[StorageKey.rememberMe.key] ?? false);
   }
 
   // ================= SESSION MODE =================
-  @override
-  void disableSessionMode(bool value) {
-    _isSessionMode = value;
-
-    if (!_isSessionMode) {
-      _sessionCache.clear();
-    }
-  }
-
-  @override
-  bool get isSessionMode => _isSessionMode;
 
   // ================= WRITE =================
   @override
@@ -73,7 +58,13 @@ final class LocalStorageServiceImpl implements LocalStorageService {
         break;
 
       case StorageKeyType.secureString:
-        await _secureStorage.write(key: key.key, value: value as String);
+        if (kIsWeb) {
+          await _prefs.setString(key.key, (value as String?) ?? "");
+        }
+        await _secureStorage.write(
+          key: key.key,
+          value: (value as String?) ?? "",
+        );
         break;
 
       case StorageKeyType.bool:

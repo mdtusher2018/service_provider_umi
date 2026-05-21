@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
-import 'package:service_provider_umi/featured/service/riverpod/profile_status_provider.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -36,17 +35,8 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   }
 
   void _loadData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await ref.read(myProfileStatusProvider.notifier).fetch();
-      AppLogger.info("Result: ==============>>>>>>> $result");
-      if (result == false) {
-        context.go(AppRoutes.workSchedule);
-        return;
-      }
-
-      ref
-          .read(bookingsProvider(BookingStatus.ongoing).notifier)
-          .fetch(initial: true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(myProfileProvider.notifier).fetch();
     });
   }
 
@@ -63,7 +53,24 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
     final role = ref.watch(appRoleProvider);
     final primary = AppColors.primaryFor(role);
     final state = ref.watch(bookingsProvider(BookingStatus.ongoing));
+    ref.listen(myProfileProvider, (previous, next) {
+      next.whenOrNull(
+        success: (profile) {
+          final isVerified = profile.isVerified ?? false;
 
+          if (!context.mounted) return;
+
+          if (!isVerified) {
+            context.go(AppRoutes.verificationProviderDocument);
+            return;
+          } else {
+            ref
+                .read(bookingsProvider(BookingStatus.ongoing).notifier)
+                .fetch(initial: true);
+          }
+        },
+      );
+    });
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(

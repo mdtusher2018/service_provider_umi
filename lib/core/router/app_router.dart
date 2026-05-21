@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
+import 'package:service_provider_umi/featured/service/screens/service_provider_verification/service_provider_verification.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_booking_time_screen.dart';
 import 'package:service_provider_umi/shared/widgets/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
@@ -69,6 +70,7 @@ GoRouter appRouter(Ref ref) {
 
     redirect: (context, state) {
       final location = state.matchedLocation;
+      final role = ref.watch(appRoleProvider);
 
       // ← NEW: if already logged in, skip login screen
       if (location == AppRoutes.login) {
@@ -278,6 +280,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.providerOnboarding,
         builder: (_, __) => const ServiceProviderOnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.verificationProviderDocument,
+        builder: (_, __) => const ServiceProviderVerification(),
       ),
 
       GoRoute(

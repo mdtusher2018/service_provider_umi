@@ -26,6 +26,8 @@ class AppRoutes {
   static const String verifyOtp = '/auth/verify-otp';
   static const String profilePicture = '/auth/profile-picture';
   static const String providerOnboarding = '/service-provider-onboarding';
+  static const String verificationProviderDocument =
+      '/service-provider-document-verification';
 
   // ─── Service discovery ───────────────────────────────────
   static const String search = '/search';

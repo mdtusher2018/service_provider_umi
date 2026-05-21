@@ -25,6 +25,7 @@ class UserProfile {
   final String? agreements;
   final String? referralCode;
   final String role;
+  final bool? isVerified;
 
   final ServiceProviderInfo? serviceProviderInfo;
 
@@ -47,6 +48,7 @@ class UserProfile {
     this.fleet,
     this.agreements,
     this.referralCode,
+    this.isVerified,
     required this.role,
     required this.serviceProviderInfo,
   });
@@ -57,6 +59,7 @@ class UserProfile {
     email: json['email'] as String? ?? '',
     phoneNumber: json['phoneNumber'] as String?,
     avgRating: json['avgRating'] as num?,
+    isVerified: json['isVerified'] as bool?,
     totalReview: json['totalReview'] as num?,
     profileImage: json['profile'] as String?,
     gender: json['gender'] as String?,
