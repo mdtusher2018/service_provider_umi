@@ -81,8 +81,11 @@ class _DesktopHeader extends ConsumerWidget {
                 child: AppButton.outline(
                   label: role == AppRole.guest ? 'Log In' : 'Log Out',
                   borderRadius: 8.circular,
-                  onPressed: () =>
-                      ref.read(appRouterProvider).go(AppRoutes.login),
+                  textColor: AppColors.primaryFor(ref.read(appRoleProvider)),
+                  onPressed: () {
+                    ref.read(logoutProvider.notifier).logout();
+                    ref.read(appRouterProvider).go(AppRoutes.login);
+                  },
                 ),
               ),
               10.horizontalSpace,

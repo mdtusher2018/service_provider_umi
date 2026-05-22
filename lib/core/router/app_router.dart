@@ -419,10 +419,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.preferences,
         builder: (_, __) => const PreferencesScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.workAreas,
-        builder: (_, __) => const WorkAreasScreen(),
-      ),
+      GoRoute(path: AppRoutes.workAreas, builder: (_, __) => WorkAreasScreen()),
       GoRoute(
         path: AppRoutes.workSchedule,
         builder: (_, __) => WorkScheduleScreen(),

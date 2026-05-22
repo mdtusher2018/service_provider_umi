@@ -1,77 +1,83 @@
 part of 'welcome_screen.dart';
 
 void _showRoleSelectionDialog(WidgetRef ref) {
-  showGeneralDialog(
-    context: ref.context,
-    transitionDuration: dialogSlidingFadeTransitionDuration,
-    transitionBuilder: dialogSlideFadeTransition,
-    pageBuilder: (context, animation, secondaryAnimation) {
-      return Dialog(
-        backgroundColor: AppColors.background,
-        shape: RoundedRectangleBorder(borderRadius: 20.circular),
-        insetPadding: 20.paddingH,
-        child: Padding(
-          padding: 20.paddingAll,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: AlignmentGeometry.topLeft,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(ref.context);
-                  },
-                  child: Icon(Icons.arrow_back),
-                ),
-              ),
-              const AppText.h2(
-                "What will you do on iumi?",
-                color: AppColors.textSecondary,
-              ),
+  if (kIsWeb) {
+    if (kIsWeb) {
+      showWebOverlay(ref, _showRoleSelectionWidget(ref));
+    }
+  } else {
+    showGeneralDialog(
+      context: ref.context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Dialog(
+          backgroundColor: AppColors.background,
+          shape: RoundedRectangleBorder(borderRadius: 20.circular),
+          insetPadding: 20.paddingH,
+          child: _showRoleSelectionWidget(ref),
+        );
+      },
+    );
+  }
+}
 
-              10.verticalSpace,
-
-              const AppText.bodySm(
-                "This decision is not final. You can later be both a client\nand a professional from the account if you wish.",
-                textAlign: TextAlign.center,
-              ),
-
-              20.verticalSpace,
-
-              InkWell(
-                onTap: () {
-                  ref.context.pop();
-                  _showAuthBottomSheet(ref, isLogin: false, role: AppRole.user);
-                },
-                child: _categoryCard(
-                  "Book a service",
-                  "I am a Client",
-                  Assets.welcome.bookService.keyName,
-                ),
-              ),
-
-              12.verticalSpace,
-
-              InkWell(
-                onTap: () {
-                  ref.context.pop();
-                  _showAuthBottomSheet(
-                    ref,
-                    isLogin: false,
-                    role: AppRole.provider,
-                  );
-                },
-                child: _categoryCard(
-                  "Offer services",
-                  "I am a Professional",
-                  Assets.welcome.offerService.keyName,
-                ),
-              ),
-            ],
+Widget _showRoleSelectionWidget(WidgetRef ref) {
+  return Padding(
+    padding: 20.paddingAll,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: AlignmentGeometry.topLeft,
+          child: InkWell(
+            onTap: () async {
+              await _close(ref);
+            },
+            child: Icon(Icons.arrow_back),
           ),
         ),
-      );
-    },
+        const AppText.h2(
+          "What will you do on iumi?",
+          color: AppColors.textSecondary,
+        ),
+
+        10.verticalSpace,
+
+        const AppText.bodySm(
+          "This decision is not final. You can later be both a client\nand a professional from the account if you wish.",
+          textAlign: TextAlign.center,
+        ),
+
+        20.verticalSpace,
+
+        InkWell(
+          onTap: () async {
+            await _close(ref);
+            showAuthUI(ref, isLogin: false, role: AppRole.user);
+          },
+          child: _categoryCard(
+            "Book a service",
+            "I am a Client",
+            Assets.welcome.bookService.keyName,
+          ),
+        ),
+
+        12.verticalSpace,
+
+        InkWell(
+          onTap: () async {
+            await _close(ref);
+            showAuthUI(ref, isLogin: false, role: AppRole.provider);
+          },
+          child: _categoryCard(
+            "Offer services",
+            "I am a Professional",
+            Assets.welcome.offerService.keyName,
+          ),
+        ),
+      ],
+    ),
   );
 }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "344570934631",
+    "project_id": "serviceprovideriumi",
+    "storage_bucket": "serviceprovideriumi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344570934631:android:a100595b41a1694c402bc2",
+        "android_client_info": {
+          "package_name": "com.example.service_provider_umi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcnSdcDZadf2_Rctszs6AF-MzmmFNAd0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

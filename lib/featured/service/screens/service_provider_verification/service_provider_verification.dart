@@ -120,7 +120,7 @@ class _ServiceProviderVerificationState
     final role = ref.watch(appRoleProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -128,27 +128,27 @@ class _ServiceProviderVerificationState
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (!kIsWeb)
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_back_ios_rounded,
-                            color: AppColors.primaryFor(role),
-                            size: 18,
-                          ),
-                          8.horizontalSpace,
-                          AppText.h1(
-                            'Back',
-                            color: AppColors.primaryFor(role),
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ],
-                      ),
-                    ),
+                  // if (!kIsWeb)
+                  //   GestureDetector(
+                  //     onTap: () => context.pop(),
+                  //     child: Row(
+                  //       children: [
+                  //         Icon(
+                  //           Icons.arrow_back_ios_rounded,
+                  //           color: AppColors.primaryFor(role),
+                  //           size: 18,
+                  //         ),
+                  //         8.horizontalSpace,
+                  //         AppText.h1(
+                  //           'Back',
+                  //           color: AppColors.primaryFor(role),
+                  //           fontWeight: FontWeight.w700,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
                   InkWell(
                     onTap: () {
                       ref.read(logoutProvider.notifier).logout();

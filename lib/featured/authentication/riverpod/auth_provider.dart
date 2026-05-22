@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
+import 'package:service_provider_umi/core/services/notification_service.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/repository/auth_repository.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -31,8 +33,9 @@ class LoginNotifier extends _$LoginNotifier {
   /// Email + password login  →  POST /auth/login
   Future<void> withEmail(String email, String password) async {
     state = const AuthState.loading();
+    final fcmToken = await NotificationService.messaging.getToken();
     final result = await _repo.loginWithEmail(
-      LoginEmailRequest(email: email, password: password),
+      LoginEmailRequest(email: email, password: password, fcmToken: fcmToken),
     );
     state = result.when(
       success: (_) => const AuthState.success(),
@@ -232,7 +235,9 @@ class LogoutNotifier extends _$LogoutNotifier {
 
   Future<void> logout() async {
     state = const AuthState.loading();
+    await ref.read(appRoleProvider.notifier).setRole(AppRole.guest);
     await ref.read(authRepositoryProvider).logout();
+
     state = const AuthState.initial();
   }
 }

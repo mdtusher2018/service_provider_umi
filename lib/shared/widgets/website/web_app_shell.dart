@@ -2,16 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/featured/authentication/riverpod/auth_provider.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
 part 'website_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -80,6 +83,7 @@ class WebAppShell extends ConsumerWidget {
     final real = MediaQuery.of(context);
     final screenWidth = real.size.width;
     final screenHeight = real.size.height;
+    final overlayContent = ref.watch(overlayProvider);
 
     final double containerWidth = screenWidth < kWebAppMaxWidth
         ? screenWidth
@@ -91,44 +95,53 @@ class WebAppShell extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       endDrawer: AppDrawer(role: role),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // ── Full-width header ────────────────────────────────────────────
-            WebsiteHeader(role: role),
-
-            // ── Phone container ──────────────────────────────────────────────
-            Center(
-              child: SizedBox(
-                width: containerWidth,
-                height: containerHeight,
-                child: MediaQuery(
-                  data: real.copyWith(
-                    size: Size(containerWidth, containerHeight),
-                    devicePixelRatio: real.devicePixelRatio.clamp(1.0, 3.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: child,
+      // ── Stack wraps the ENTIRE body ─────────────────────────────────────
+      body: Stack(
+        children: [
+          // ── Scrollable content (phone + website) ──────────────────────
+          SingleChildScrollView(
+            // 👇 disable scroll physics when overlay is open
+            physics: overlayContent != null
+                ? const NeverScrollableScrollPhysics()
+                : const ClampingScrollPhysics(),
+            child: Column(
+              children: [
+                WebsiteHeader(role: role),
+                Center(
+                  child: SizedBox(
+                    width: containerWidth,
+                    height: containerHeight,
+                    child: MediaQuery(
+                      data: real.copyWith(
+                        size: Size(containerWidth, containerHeight),
+                        devicePixelRatio: real.devicePixelRatio.clamp(1.0, 3.0),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: child,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 48),
+                const WebsiteBody(),
+                _WebsiteFooter(role: role),
+              ],
             ),
+          ),
 
-            const SizedBox(height: 48),
-
-            // ── Website sections ─────────────────────────────────────────────
-            const WebsiteBody(),
-
-            // ── Footer ───────────────────────────────────────────────────────
-            _WebsiteFooter(role: role),
-          ],
-        ),
+          // ── Overlay (sits above everything, covers full viewport) ──────
+          if (overlayContent != null)
+            WebOverlayWrapper(
+              key: overlayDismissKey,
+              onDismiss: () => ref.read(overlayProvider.notifier).dismiss(),
+              child: overlayContent,
+            ),
+        ],
       ),
     );
   }
 }
-
 // ─────────────────────────────────────────────────────────────────────────────
 // FOOTER — role-aware nav links
 // ─────────────────────────────────────────────────────────────────────────────

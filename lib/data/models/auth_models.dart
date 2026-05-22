@@ -30,10 +30,19 @@ class SignupRequest {
 class LoginEmailRequest {
   final String email;
   final String password;
+  final String? fcmToken;
 
-  const LoginEmailRequest({required this.email, required this.password});
+  const LoginEmailRequest({
+    required this.email,
+    required this.password,
+    required this.fcmToken,
+  });
 
-  Map<String, dynamic> toJson() => {'email': email, 'password': password};
+  Map<String, dynamic> toJson() => {
+    'email': email,
+    'password': password,
+    'fcmToken': fcmToken,
+  };
 }
 
 class GoogleLoginRequest {

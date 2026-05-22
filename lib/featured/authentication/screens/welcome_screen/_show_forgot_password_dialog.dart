@@ -1,16 +1,26 @@
 part of 'welcome_screen.dart';
 
 void _showForgotPasswordDialog(WidgetRef ref) {
-  showGeneralDialog(
-    context: ref.context,
-    transitionDuration: dialogSlidingFadeTransitionDuration,
-    transitionBuilder: dialogSlideFadeTransition,
-    pageBuilder: (_, _, _) => const _ForgotPasswordDialog(),
-  );
+  if (kIsWeb) {
+    showWebOverlay(ref, _ForgotPasswordDialog(parentRef: ref));
+  } else {
+    showGeneralDialog(
+      context: ref.context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (_, _, _) => Dialog(
+        backgroundColor: AppColors.background,
+        shape: RoundedRectangleBorder(borderRadius: 20.circular),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: _ForgotPasswordDialog(parentRef: ref),
+      ),
+    );
+  }
 }
 
 class _ForgotPasswordDialog extends ConsumerStatefulWidget {
-  const _ForgotPasswordDialog();
+  const _ForgotPasswordDialog({required this.parentRef});
+  final WidgetRef parentRef;
 
   @override
   ConsumerState<_ForgotPasswordDialog> createState() =>
@@ -35,9 +45,11 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
         loading: () {},
         success: () {
           // Dismiss this dialog then open Reset Password dialog
-          context.pop();
+          if (!kIsWeb) {
+            context.pop();
+          }
           _showOTPVerifyDialog(
-            ref,
+            widget.parentRef,
             email: _emailCtrl.text.trim(),
             isSignup: false,
           );
@@ -48,64 +60,49 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
 
     final isLoading = ref.watch(forgotPasswordProvider) is AuthLoading;
 
-    return Dialog(
-      backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: 20.circular),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      child: Padding(
-        padding: 24.paddingAll,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const AppText.h2('Forgot Password'),
-                  InkWell(
-                    onTap: isLoading ? null : () => context.pop(),
-                    child: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              12.verticalSpace,
-              const AppText.bodyMd(
-                'Enter your email and we\'ll send you a reset OTP.',
-                color: AppColors.textSecondary,
-              ),
-              24.verticalSpace,
-              AppTextField(
-                controller: _emailCtrl,
-                hint: 'Enter your email',
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) => Validators.email(v),
-              ),
-              24.verticalSpace,
-              AppButton.primary(
-                label: 'Send OTP',
-                isLoading: isLoading,
-                onPressed: isLoading ? null : _submit,
-              ),
-              12.verticalSpace,
-              Center(
-                child: AppLinkText(
-                  'Back to  Login',
-                  links: [
-                    AppTextLink(
-                      label: 'Login',
-                      onTap: () {
-                        context.pop();
-                        _showLoginAccountDialog(ref);
-                      },
-                    ),
-                  ],
+    return Padding(
+      padding: 24.paddingAll,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const AppText.h2('Forgot Password'),
+                InkWell(
+                  onTap: isLoading
+                      ? null
+                      : () async {
+                          await _close(ref);
+                        },
+                  child: const Icon(Icons.close),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            12.verticalSpace,
+            const AppText.bodyMd(
+              'Enter your email and we\'ll send you a reset OTP.',
+              color: AppColors.textSecondary,
+            ),
+            24.verticalSpace,
+            AppTextField(
+              controller: _emailCtrl,
+              hint: 'Enter your email',
+              keyboardType: TextInputType.emailAddress,
+              validator: (v) => Validators.email(v),
+            ),
+            24.verticalSpace,
+            AppButton.primary(
+              label: 'Send OTP',
+              isLoading: isLoading,
+              onPressed: isLoading ? null : _submit,
+            ),
+            12.verticalSpace,
+          ],
         ),
       ),
     );

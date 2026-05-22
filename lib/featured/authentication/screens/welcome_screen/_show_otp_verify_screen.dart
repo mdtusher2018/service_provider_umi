@@ -6,23 +6,47 @@ void _showOTPVerifyDialog(
   required bool isSignup,
   AppRole? role,
 }) {
-  showGeneralDialog(
-    context: ref.context,
-    transitionDuration: dialogSlidingFadeTransitionDuration,
-    transitionBuilder: dialogSlideFadeTransition,
-    pageBuilder: (_, _, _) =>
-        _OTPVerifyDialog(email: email, isSignup: isSignup, role: role),
-  );
+  if (kIsWeb) {
+    showWebOverlay(
+      ref,
+      _OTPVerifyDialog(
+        email: email,
+        isSignup: isSignup,
+        role: role,
+        parentRef: ref,
+      ),
+    );
+  } else {
+    showGeneralDialog(
+      context: ref.context,
+      transitionDuration: dialogSlidingFadeTransitionDuration,
+      transitionBuilder: dialogSlideFadeTransition,
+      pageBuilder: (_, _, _) => Dialog(
+        backgroundColor: AppColors.background,
+        shape: RoundedRectangleBorder(borderRadius: 20.circular),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+
+        child: _OTPVerifyDialog(
+          email: email,
+          isSignup: isSignup,
+          role: role,
+          parentRef: ref,
+        ),
+      ),
+    );
+  }
 }
 
 class _OTPVerifyDialog extends ConsumerStatefulWidget {
   final String email;
   final bool isSignup;
   final AppRole? role;
+  final WidgetRef parentRef;
   const _OTPVerifyDialog({
     required this.email,
     required this.isSignup,
     required this.role,
+    required this.parentRef,
   });
 
   @override
@@ -79,21 +103,28 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
       state.when(
         initial: () {},
         loading: () {},
-        success: () {
+        success: () async {
+          if (!kIsWeb) {
+            context.pop();
+          }
+
           if (widget.isSignup) {
             if (widget.role == AppRole.user) {
               AppLogger.debug("Going to user home page");
-              ref.read(appRoleProvider.notifier).loginAsUser();
-              context.go(AppRoutes.userHome);
+              widget.parentRef.read(appRoleProvider.notifier).loginAsUser();
+              widget.parentRef.context.go(AppRoutes.userHome);
             } else if (widget.role == AppRole.provider) {
               AppLogger.debug("Going to provider onboarding");
-              ref.read(appRoleProvider.notifier).loginAsProvider();
-              // context.go(AppRoutes.providerProfile+AppRoutes.workSchedule);
+              widget.parentRef.read(appRoleProvider.notifier).loginAsProvider();
+              // widget.parentRef.context.go(AppRoutes.providerProfile+AppRoutes.workSchedule);
             } else {
-              context.showSnackBar("Please select your role");
+              widget.parentRef.context.showSnackBar("Please select your role");
             }
           } else {
-            _showResetPasswordDialog(ref, email: widget.email);
+            AppLogger.debug(
+              "OTP verified for forgot password flow, showing reset password dialog",
+            );
+            _showResetPasswordDialog(widget.parentRef, email: widget.email);
           }
         },
         failure: (error) => context.showErrorSnackBar(error.message),
@@ -116,76 +147,71 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
         ref.watch(otpVerifyProvider) is AuthLoading ||
         ref.watch(resendOtpProvider) is AuthLoading;
 
-    return Dialog(
-      backgroundColor: AppColors.background,
-      shape: RoundedRectangleBorder(borderRadius: 20.circular),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      child: Padding(
-        padding: 24.paddingAll,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const AppText.h2('Verify OTP'),
-                  InkWell(
-                    onTap: isLoading ? null : () => context.pop(),
-                    child: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              12.verticalSpace,
-              if (widget.email.isNotEmpty)
-                AppText.bodyMd(
-                  'Enter the OTP sent to ${widget.email}',
-                  color: AppColors.textSecondary,
+    return Padding(
+      padding: 24.paddingAll,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const AppText.h2('Verify OTP'),
+                InkWell(
+                  onTap: isLoading ? null : () => context.pop(),
+                  child: const Icon(Icons.close),
                 ),
-              24.verticalSpace,
-
-              AppTextField(
-                controller: _otpController,
-                hint: 'Enter the OTP',
-                keyboardType: TextInputType.number,
-                validator: (v) => Validators.otp(v),
+              ],
+            ),
+            12.verticalSpace,
+            if (widget.email.isNotEmpty)
+              AppText.bodyMd(
+                'Enter the OTP sent to ${widget.email}',
+                color: AppColors.textSecondary,
               ),
-              24.verticalSpace,
+            24.verticalSpace,
 
-              AppButton.primary(
-                label: 'Verify',
-                isLoading: isLoading,
-                onPressed: isLoading ? null : _onOTPVerify,
-              ),
-              16.verticalSpace,
+            AppTextField(
+              controller: _otpController,
+              hint: 'Enter the OTP',
+              keyboardType: TextInputType.number,
+              validator: (v) => Validators.otp(v),
+            ),
+            24.verticalSpace,
 
-              // Resend countdown / button
-              canResend
-                  ? AppLinkText(
-                      'Didn\'t receive OTP?  Resend',
-                      links: [
-                        AppTextLink(
-                          label: 'Resend',
-                          onTap: () {
-                            if (isLoading) return;
-                            if (widget.email.isNotEmpty) {
-                              ref
-                                  .read(resendOtpProvider.notifier)
-                                  .resendOtp(widget.email);
-                            }
-                          },
-                        ),
-                      ],
-                    )
-                  : AppText.bodyMd(
-                      'Resend OTP in ${seconds}s',
-                      color: AppColors.textSecondary,
-                    ),
-              10.verticalSpace,
-            ],
-          ),
+            AppButton.primary(
+              label: 'Verify',
+              isLoading: isLoading,
+              onPressed: isLoading ? null : _onOTPVerify,
+            ),
+            16.verticalSpace,
+
+            // Resend countdown / button
+            canResend
+                ? AppLinkText(
+                    'Didn\'t receive OTP?  Resend',
+                    links: [
+                      AppTextLink(
+                        label: 'Resend',
+                        onTap: () {
+                          if (isLoading) return;
+                          if (widget.email.isNotEmpty) {
+                            ref
+                                .read(resendOtpProvider.notifier)
+                                .resendOtp(widget.email);
+                          }
+                        },
+                      ),
+                    ],
+                  )
+                : AppText.bodyMd(
+                    'Resend OTP in ${seconds}s',
+                    color: AppColors.textSecondary,
+                  ),
+            10.verticalSpace,
+          ],
         ),
       ),
     );

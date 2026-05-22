@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -21,6 +23,7 @@ import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
 part '_show_privacy_policy_bottom_sheet.dart';
 part '_show_role_selection_dialog.dart';
 part '_showAuthBottomSheet.dart';
@@ -29,7 +32,7 @@ part '_show_login_account_dialog.dart';
 part '_show_otp_verify_screen.dart';
 part '_show_forgot_password_dialog.dart';
 part '_show_reset_password_soalog.dart';
-
+part '_helper.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
@@ -187,7 +190,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.white, // glass effect
+                color: kIsWeb
+                    ? Colors.transparent
+                    : AppColors.white, // glass effect
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(24),
                   topRight: Radius.circular(24),
@@ -210,7 +215,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   AppButton.secondary(
                     label: "Log in",
                     onPressed: () {
-                      _showAuthBottomSheet(ref, isLogin: true);
+                      showAuthUI(ref, isLogin: true);
                     },
                   ),
 

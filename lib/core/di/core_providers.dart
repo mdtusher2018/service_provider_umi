@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/services/network/interceptors/auth_interceptor.dart';
 import 'package:service_provider_umi/core/services/network/interceptors/refresh_token_interceptor.dart';
@@ -37,4 +39,15 @@ LocalStorageService localStorage(Ref ref) {
 @riverpod
 PermissionService permissionService(Ref ref) {
   return PermissionService();
+}
+
+final overlayProvider = StateNotifierProvider<OverlayNotifier, Widget?>((ref) {
+  return OverlayNotifier();
+});
+
+class OverlayNotifier extends StateNotifier<Widget?> {
+  OverlayNotifier() : super(null);
+
+  void show(Widget content) => state = content;
+  void dismiss() => state = null;
 }
