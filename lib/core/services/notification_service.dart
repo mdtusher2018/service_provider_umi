@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:service_provider_umi/core/logger/app_logger.dart';
+import 'package:service_provider_umi/core/services/call_kit_service.dart';
 import 'package:service_provider_umi/firebase_options.dart';
 
 class NotificationService {
@@ -10,7 +12,18 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  /// 🔹 BACKGROUND HANDLER (TOP LEVEL REQUIRED)
+  // /// 🔹 BACKGROUND HANDLER (TOP LEVEL REQUIRED)
+  // @pragma('vm:entry-point')
+  // static Future<void> firebaseMessagingBackgroundHandler(
+  //   RemoteMessage message,
+  // ) async {
+  //   await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.currentPlatform,
+  //   );
+  //   log('Background message: ${message.messageId}');
+  // }
+
+  // Top-level — handles FCM when app is KILLED or BACKGROUND
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
     RemoteMessage message,
@@ -18,7 +31,16 @@ class NotificationService {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    log('Background message: ${message.messageId}');
+    if (message.data['type'] == 'incoming_call') {
+      await CallKitService.showIncomingCall(
+        callId: message.data['callId'],
+        callerId: message.data['callerId'],
+        callerName: message.data['callerName'],
+        callerImage: message.data['callerImage'],
+        channelId: message.data['channelId'],
+        isVideo: message.data['callType'] == 'video',
+      );
+    }
   }
 
   /// 🔹 INITIALIZE EVERYTHING
@@ -74,9 +96,23 @@ class NotificationService {
   }
 
   /// 🔹 FOREGROUND MESSAGE HANDLER
-  static void _onForegroundMessage(RemoteMessage message) {
+  static void _onForegroundMessage(RemoteMessage message) async {
     log('Foreground message received');
-    _showLocalNotification(message);
+
+    AppLogger.info(message.data.toString());
+
+    if (message.data['type'] == 'incoming_call') {
+      await CallKitService.showIncomingCall(
+        callId: message.data['callId'],
+        callerId: message.data['callerId'],
+        callerName: message.data['callerName'],
+        callerImage: message.data['callerImage'],
+        channelId: message.data['channelId'],
+        isVideo: message.data['callType'] == 'video',
+      );
+    } else {
+      _showLocalNotification(message);
+    }
   }
 
   /// 🔹 SHOW LOCAL NOTIFICATION

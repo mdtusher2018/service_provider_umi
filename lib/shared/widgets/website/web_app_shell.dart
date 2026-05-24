@@ -8,12 +8,14 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/data/models/website_models.dart';
 import 'package:service_provider_umi/featured/authentication/riverpod/auth_provider.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/website/riverpod/website_provider.dart';
 import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
 part 'website_header.dart';
 
@@ -263,7 +265,6 @@ abstract class _T {
   static const Color bgLight = Color(0xFFF7F9FC);
   static const Color bgReviews = Color(0xFFE8FAF7);
   static const Color bgCta = Color(0xFF00BFA5);
-  static const Color cardBorder = Color(0xFFECF0F5);
   static const Color checkIcon = Color(0xFF00BFA5);
 
   static const double maxWidth = 1100.0;
@@ -275,17 +276,38 @@ abstract class _T {
 // WebsiteBody — all landing sections
 // ─────────────────────────────────────────────────────────────────────────────
 
-class WebsiteBody extends StatelessWidget {
+class WebsiteBody extends ConsumerStatefulWidget {
   const WebsiteBody({super.key});
 
   @override
+  ConsumerState<WebsiteBody> createState() => _WebsiteBodyState();
+}
+
+class _WebsiteBodyState extends ConsumerState<WebsiteBody> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(websiteProvider.notifier).refresh();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.read(websiteProvider);
     if (!kIsWeb) return const SizedBox.shrink();
 
-    return const Column(
+    return Column(
       children: [
         _AboutUsSection(),
-        _OurServicesSection(),
+        state.when(
+          data: (data) {
+            final services = data.services;
+            return _OurServicesSection(services: services);
+          },
+          error: (error, stackTrace) => _OurServicesSection(services: []),
+          loading: () => _OurServicesSection(services: []),
+        ),
         _ClientReviewsSection(),
         _BestCenterSection(),
         _CtaBannerSection(),
@@ -434,38 +456,36 @@ class _CheckItem extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _OurServicesSection extends StatelessWidget {
-  const _OurServicesSection();
+  final List<WebsiteServiceModel> services;
+  const _OurServicesSection({
+    this.services = const [
+      WebsiteServiceModel(
+        name: 'Resident Care',
+        image: "https://cdn-icons-png.flaticon.com/512/12943/12943025.png",
+        description:
+            'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
+      ),
+      WebsiteServiceModel(
+        name: 'Elderly Nutrition',
+        image: "https://cdn-icons-png.flaticon.com/512/12943/12943025.png",
+        description:
+            'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
+      ),
 
-  static const _services = [
-    _ServiceData(
-      title: 'Resident Care',
-      icon: Icons.home_work_outlined,
-      body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: false,
-    ),
-    _ServiceData(
-      title: 'Elderly Nutrition',
-      icon: Icons.restaurant_menu_outlined,
-      body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: false,
-    ),
-    _ServiceData(
-      title: 'Resident Care',
-      icon: Icons.home_work_outlined,
-      body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: false,
-    ),
-    _ServiceData(
-      title: 'Elderly Nutrition',
-      icon: Icons.restaurant_menu_outlined,
-      body:
-          'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
-      hasBg: false,
-    ),
-  ];
+      WebsiteServiceModel(
+        name: 'Resident Care',
+        image: "https://cdn-icons-png.flaticon.com/512/12943/12943025.png",
+        description:
+            'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
+      ),
+      WebsiteServiceModel(
+        name: 'Elderly Nutrition',
+        image: "https://cdn-icons-png.flaticon.com/512/12943/12943025.png",
+        description:
+            'Lorem ipsum dolor sit amet consectetur. Augue non malesuada placerat faucibus nam purus sem. Uma pulvinar porttitor dignissim congue pellentesque ac hac.',
+      ),
+    ],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -497,24 +517,24 @@ class _OurServicesSection extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Expanded(child: _ServiceCard(data: _services[0])),
+                            Expanded(child: _ServiceCard(data: services[0])),
                             const SizedBox(width: 24),
-                            Expanded(child: _ServiceCard(data: _services[1])),
+                            Expanded(child: _ServiceCard(data: services[1])),
                           ],
                         ),
                         const SizedBox(height: 24),
                         Row(
                           children: [
-                            Expanded(child: _ServiceCard(data: _services[2])),
+                            Expanded(child: _ServiceCard(data: services[2])),
                             const SizedBox(width: 24),
-                            Expanded(child: _ServiceCard(data: _services[3])),
+                            Expanded(child: _ServiceCard(data: services[3])),
                           ],
                         ),
                       ],
                     );
                   }
                   return Column(
-                    children: _services
+                    children: services
                         .map(
                           (s) => Padding(
                             padding: const EdgeInsets.only(bottom: 16),
@@ -533,21 +553,8 @@ class _OurServicesSection extends StatelessWidget {
   }
 }
 
-class _ServiceData {
-  final String title;
-  final IconData icon;
-  final String body;
-  final bool hasBg;
-  const _ServiceData({
-    required this.title,
-    required this.icon,
-    required this.body,
-    required this.hasBg,
-  });
-}
-
 class _ServiceCard extends StatelessWidget {
-  final _ServiceData data;
+  final WebsiteServiceModel data;
   const _ServiceCard({required this.data});
 
   @override
@@ -555,12 +562,9 @@ class _ServiceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: data.hasBg ? AppColors.primaryLight : _T.white,
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: data.hasBg ? Colors.transparent : _T.cardBorder,
-          width: 1,
-        ),
+        border: Border.all(width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,11 +576,11 @@ class _ServiceCard extends StatelessWidget {
               color: AppColors.primary,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(data.icon, color: _T.white, size: 22),
+            child: Image.network(data.image, color: _T.white),
           ),
           const SizedBox(height: 14),
           Text(
-            data.title,
+            data.name,
             style: const TextStyle(
               color: _T.textDark,
               fontSize: 15,
@@ -585,7 +589,7 @@ class _ServiceCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            data.body,
+            data.description,
             style: const TextStyle(
               color: _T.textBody,
               fontSize: 13.5,

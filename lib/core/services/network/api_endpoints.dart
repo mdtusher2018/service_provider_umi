@@ -89,4 +89,7 @@ class ApiEndpoints {
   static const String getAddCardLink = "/stripe/payment-method/add-link";
 
   static const String availability = "/homepage/availability";
+
+  static const String websiteServices = '/services';
+  static const String websiteAboutUs = '/contents/web-about-us';
 }

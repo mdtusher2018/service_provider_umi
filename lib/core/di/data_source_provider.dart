@@ -10,6 +10,7 @@ import 'package:service_provider_umi/data/data_source/remote/service_remote_data
 import 'package:service_provider_umi/data/data_source/remote/notification_and_history_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/static_content_remote_data_source.dart';
 import 'package:service_provider_umi/data/data_source/remote/user_remote_data_source.dart';
+import 'package:service_provider_umi/data/data_source/remote/website_remote_data_source.dart';
 
 part 'data_source_provider.g.dart';
 
@@ -49,3 +50,8 @@ ChatRemoteDataSource chatRemoteDataSource(Ref ref) =>
 @riverpod
 AddressRemoteDataSource addressRemoteDataSource(Ref ref) =>
     AddressRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+
+@riverpod
+WebsiteRemoteDataSource websiteRemoteDataSource(Ref ref) {
+  return WebsiteRemoteDataSourceImpl(apiService: ref.read(dioClientProvider));
+}

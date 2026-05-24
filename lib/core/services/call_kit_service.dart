@@ -19,7 +19,7 @@ class CallKitService {
     final params = CallKitParams(
       id: callId,
       nameCaller: callerName,
-      appName: 'YourAppName', // <-- change this
+      appName: 'iUmi', // <-- change this
       avatar: callerImage,
       handle: callerId,
       type: isVideo ? 1 : 0, // 0=audio, 1=video

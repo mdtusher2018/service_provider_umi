@@ -9,6 +9,7 @@ import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/data/repository/notification_and_history_repositiry.dart';
 import 'package:service_provider_umi/data/repository/static_content_repository.dart';
 import 'package:service_provider_umi/data/repository/user_repository.dart';
+import 'package:service_provider_umi/data/repository/website_repository.dart';
 
 part 'repository_providers.g.dart';
 
@@ -49,4 +50,9 @@ ChatRepository chatRepository(Ref ref) =>
 @riverpod
 AddressRepository addressRepository(Ref ref) {
   return AddressRepository(remote: ref.read(addressRemoteDataSourceProvider));
+}
+
+@riverpod
+WebsiteRepository websiteRepository(Ref ref) {
+  return WebsiteRepository(remote: ref.read(websiteRemoteDataSourceProvider));
 }
