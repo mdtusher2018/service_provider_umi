@@ -150,9 +150,13 @@ class _RadialMenuState extends State<RadialMenu>
                 AppButton.primary(
                   label: 'Call',
                   prefixIcon: Icon(Icons.call, color: AppColors.white),
-                  onPressed: () {
-                    // Call action
+                  onPressed: () async {
+                    const phoneNumber = "017XXXXXXXX"; // your number
+
+                    await Clipboard.setData(ClipboardData(text: phoneNumber));
                     context.pop();
+                    context.showSnackBar("Phone number copied to clipboard");
+
                     print("Call pressed");
                   },
                 ),
@@ -160,9 +164,13 @@ class _RadialMenuState extends State<RadialMenu>
                 AppButton.primary(
                   label: 'Message',
                   prefixIcon: Icon(Icons.message, color: AppColors.white),
-                  onPressed: () {
-                    // Message action
+                  onPressed: () async {
+                    const phoneNumber = "iumi@support.com"; // your number
+
+                    await Clipboard.setData(ClipboardData(text: phoneNumber));
                     context.pop();
+                    context.showSnackBar("Email copied to clipboard");
+
                     print("Message pressed");
                   },
                 ),
