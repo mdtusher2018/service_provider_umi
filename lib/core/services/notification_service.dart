@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -64,7 +65,7 @@ class NotificationService {
     );
 
     await _localNotifications.initialize(settings: initSettings);
-    final token = await messaging.getToken();
+    final token =(Platform.isIOS)?"cusP6eRhQcOu_qjZfcYoiU:APA91bFFhk6FQPYuuV_BQ_enOMIyZ-DQHvg_6mc2BHL6NJJnnst8vKjBw7qe4UrHApTM5SS9e5FBQqm6_68eLL36SQKkNRRSff4860V_x7Xx7JAupj1jFVY": await messaging.getToken();
     log('📱 FCM Token: $token');
 
     // 3️⃣ Listen for FCM token safely (iOS-safe)

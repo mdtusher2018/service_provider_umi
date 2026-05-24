@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -33,7 +35,7 @@ class LoginNotifier extends _$LoginNotifier {
   /// Email + password login  →  POST /auth/login
   Future<void> withEmail(String email, String password) async {
     state = const AuthState.loading();
-    final fcmToken = await NotificationService.messaging.getToken();
+    final fcmToken =(Platform.isIOS)?null: await NotificationService.messaging.getToken();
     final result = await _repo.loginWithEmail(
       LoginEmailRequest(email: email, password: password, fcmToken: fcmToken),
     );

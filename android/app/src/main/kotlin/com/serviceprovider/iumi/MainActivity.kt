@@ -1,4 +1,4 @@
-package com.example.service_provider_umi
+package com.serviceprovider.iumi
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

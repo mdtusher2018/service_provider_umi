@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.service_provider_umi"
+    namespace = "com.serviceprovider.iumi"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
              multiDexEnabled = true
-        applicationId = "com.example.service_provider_umi"
+        applicationId = "com.serviceprovider.iumi"
         
         
         minSdk = flutter.minSdkVersion
