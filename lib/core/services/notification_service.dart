@@ -12,17 +12,6 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  // /// 🔹 BACKGROUND HANDLER (TOP LEVEL REQUIRED)
-  // @pragma('vm:entry-point')
-  // static Future<void> firebaseMessagingBackgroundHandler(
-  //   RemoteMessage message,
-  // ) async {
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.currentPlatform,
-  //   );
-  //   log('Background message: ${message.messageId}');
-  // }
-
   // Top-level — handles FCM when app is KILLED or BACKGROUND
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
@@ -40,6 +29,11 @@ class NotificationService {
         channelId: message.data['channelId'],
         isVideo: message.data['callType'] == 'video',
       );
+    } else if (message.data['type'] == 'end_call') {
+      final callId = message.data['callId'] ?? '';
+      if (callId.isNotEmpty) await CallKitService.endCall(callId);
+      // If the app somehow has a context, pop the screen too
+      CallKitListenerService.popCallScreen();
     }
   }
 
@@ -110,6 +104,11 @@ class NotificationService {
         channelId: message.data['channelId'],
         isVideo: message.data['callType'] == 'video',
       );
+    } else if (message.data['type'] == 'end_call') {
+      // Remote side ended the call while this app is in foreground
+      final callId = message.data['callId'] ?? '';
+      if (callId.isNotEmpty) await CallKitService.endCall(callId);
+      CallKitListenerService.popCallScreen();
     } else {
       _showLocalNotification(message);
     }

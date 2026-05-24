@@ -273,9 +273,9 @@ class _BookingDetailBody extends ConsumerWidget {
   // ─── Price breakdown ──────────────────────────────────────────────────────
   Widget _buildPrice() {
     final rows = [
-      ('Service', '\$${data.price}', false),
+      ('Service', '\$${data.price.toStringAsFixed(2)}', false),
       ('Booking hours', '${data.totalHours}h', false),
-      ('Subtotal', '\$${data.price}', false),
+      ('Subtotal', '\$${data.price.toStringAsFixed(2)}', false),
       ('Client protection', 'Free', false),
     ];
 
@@ -299,7 +299,7 @@ class _BookingDetailBody extends ConsumerWidget {
           children: [
             AppText.bodyMd('Total'),
             AppText(
-              '\$${data.price}',
+              '\$${data.price.toStringAsFixed(2)}',
               style: AppTextStyles.labelLg.copyWith(
                 fontWeight: FontWeight.w700,
               ),

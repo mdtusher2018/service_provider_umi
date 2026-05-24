@@ -54,14 +54,15 @@ import 'app_routes.dart';
 
 part 'app_router.g.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
   final role = ref.watch(appRoleProvider);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
+
     initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
     errorBuilder: (context, state) {
@@ -489,13 +490,15 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'];
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
-          return CallScreen(
-            contactId: contactId,
-            contactName: contactName,
-            contactImageUrl: imageUrl,
-            channelId: channelId,
-            isIncoming: isIncoming,
-            callType: CallType.audio,
+          return MaterialApp(
+            builder: (context, child) => CallScreen(
+              contactId: contactId,
+              contactName: contactName,
+              contactImageUrl: imageUrl,
+              channelId: channelId,
+              isIncoming: isIncoming,
+              callType: CallType.audio,
+            ),
           );
         },
       ),
@@ -508,13 +511,15 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'] ?? '';
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
-          return CallScreen(
-            contactId: contactId,
-            contactName: contactName,
-            contactImageUrl: imageUrl,
-            channelId: channelId,
-            isIncoming: isIncoming,
-            callType: CallType.video,
+          return MaterialApp(
+            builder: (context, child) => CallScreen(
+              contactId: contactId,
+              contactName: contactName,
+              contactImageUrl: imageUrl,
+              channelId: channelId,
+              isIncoming: isIncoming,
+              callType: CallType.video,
+            ),
           );
         },
       ),

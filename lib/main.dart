@@ -5,6 +5,7 @@ import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/config/flavor_config.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
+import 'package:service_provider_umi/core/services/call_kit_service.dart';
 import 'package:service_provider_umi/core/services/notification_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
     // baseUrl: 'https://api.iumi.ro/api/v1',
     // socketUrl: 'https://socket.iumi.ro',
     baseUrl: 'http://103.186.20.117:1000/api/v1',
-    socketUrl: 'http://103.186.20.117:1000',
+    socketUrl: 'http://103.186.20.117:6005',
     googleMapsApiKey: 'AIzaSyCSZNISQRt33W-FMIM8E-IL8vxo2H',
     agoraAppId: '179414c55d6b478e85009d175097a22e',
     stripePublishableKey:
@@ -36,6 +37,8 @@ Future<void> main() async {
   // Init LocalStorageService (SharedPreferences + SecureStorage) + Hive
   final localStorage = LocalStorageServiceImpl();
   await localStorage.init();
+  // Start listening to CallKit accept / decline / end events
+  CallKitListenerService.init();
 
   // Stripe.publishableKey =
   //     "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";

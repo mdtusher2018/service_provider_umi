@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/error/app_exception.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
@@ -11,13 +13,14 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/category_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 part '_radial_menu.dart';
 
@@ -35,6 +38,28 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(categoriesProvider.notifier).fetch();
     });
+  }
+
+  final _addressController = TextEditingController();
+  LocationModel? _selectedAddress;
+  Future<void> _buildAddressModelFromLatLng(
+    String address,
+    double lat,
+    double lng,
+  ) async {
+    setState(() {
+      _selectedAddress = LocationModel(
+        type: 'Points',
+        address: address,
+        coordinates: [lng, lat],
+      );
+    });
+  }
+
+  Future<void> _save() async {
+    await ref
+        .read(updateProfileProvider.notifier)
+        .update(UpdateProfileRequest(address: _selectedAddress));
   }
 
   @override
@@ -123,7 +148,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                 padding: 16.paddingV,
                 child: TextButton.icon(
                   onPressed: () {
-                    showAddAddress(context);
+                    showAddAddress(ref);
                   },
                   icon: const Icon(Icons.add, color: AppColors.primary),
                   label: Row(
@@ -175,7 +200,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     );
   }
 
-  void showAddAddress(BuildContext context) {
+  void showAddAddress(WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.background,
@@ -183,6 +208,8 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
+        final updateState = ref.watch(updateProfileProvider);
+        final isLoading = updateState is UserStateLoading;
         return Padding(
           padding: 20.paddingAll,
           child: Column(
@@ -215,9 +242,73 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                 children: [
                   Icon(Icons.check_circle),
                   Expanded(
-                    child: AppTextField(
-                      hint: "Enter your address",
-                      fillColor: AppColors.white,
+                    child: GooglePlaceAutoCompleteTextField(
+                      textEditingController: _addressController,
+                      googleAPIKey: AppConfig.googleMapsApiKey,
+                      inputDecoration: InputDecoration(
+                        hintText: 'Search your address…',
+                        hintStyle: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
+                          color: AppColors.grey400,
+                          size: 20,
+                        ),
+                        suffixIcon: ValueListenableBuilder(
+                          valueListenable: _addressController,
+                          builder: (_, v, __) => v.text.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.close, size: 18),
+                                  color: AppColors.grey400,
+                                  onPressed: () {
+                                    _addressController.clear();
+                                  },
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                        filled: true,
+                        fillColor: AppColors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: AppColors.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: AppColors.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+
+                      itemClick: (prediction) {
+                        _addressController.text = prediction.description ?? '';
+                      },
+
+                      getPlaceDetailWithLatLng: (prediction) async {
+                        final lat = double.tryParse(prediction.lat ?? '');
+                        final lng = double.tryParse(prediction.lng ?? '');
+
+                        if (lat == null || lng == null) return;
+
+                        await _buildAddressModelFromLatLng(
+                          prediction.description ?? "N/A",
+                          lat,
+                          lng,
+                        );
+                      },
+
+                      isCrossBtnShown: false,
                     ),
                   ),
                   Icon(Icons.edit),
@@ -227,16 +318,10 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
               const AppDivider(height: 20),
               16.verticalSpace,
 
-              Container(
-                height: 50,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryFor(ref.watch(appRoleProvider)),
-                  borderRadius: 12.circular,
-                ),
-                child: const Center(
-                  child: AppText.labelLg("Add address", color: AppColors.white),
-                ),
+              AppButton.primary(
+                label: 'Save',
+                isLoading: isLoading,
+                onPressed: isLoading ? null : _save,
               ),
               16.verticalSpace,
             ],

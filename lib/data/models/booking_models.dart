@@ -7,7 +7,7 @@ class BookingDayRequest {
   final String day;
   final DateTime startTime;
   final DateTime endTime;
-  final double durationHours;
+  final num durationHours;
 
   const BookingDayRequest({
     required this.day,
@@ -26,9 +26,9 @@ class BookingDayRequest {
 
 class CreateBookingRequest {
   final String providerId;
-  final double price;
+  final num price;
   final DateTime startDate;
-  final double totalHours;
+  final num totalHours;
   final String bookingType; // 'weekly' | 'once'
   final List<BookingDayRequest> bookingDays;
 
@@ -68,10 +68,10 @@ class BookingDetailModel {
   final bool isPaid;
   final String bookingType;
   final String status;
-  final int price;
+  final num price;
   final DateTime? startDate;
   final DateTime? endDate;
-  final int totalHours;
+  final num totalHours;
   final bool isActive;
   final String? nextBooking;
   final bool isDeleted;
@@ -113,7 +113,7 @@ class BookingDetailModel {
       isPaid: json['isPaid'] ?? false,
       bookingType: json['bookingType'] ?? '',
       status: json['status'] ?? '',
-      price: json['price'] ?? 0,
+      price: (json['price'] ?? 0).toDouble(),
       startDate: json['startDate'] != null
           ? DateTime.tryParse(json['startDate'])
           : null,
@@ -240,10 +240,10 @@ class BookingModel {
   final String providerId;
   final bool isPaid;
   final String bookingType;
-  final int price;
+  final num price;
   final DateTime? startDate;
   final DateTime? endDate;
-  final int totalHours;
+  final num totalHours;
   final bool isActive;
   final String? nextBooking;
   final BookingStatus status;
@@ -363,7 +363,7 @@ class BookingTimeScheduleModel {
   final String day;
   final DateTime? startTime;
   final DateTime? endTime;
-  final int durationHours;
+  final num durationHours;
   final BookingStatus status;
 
   BookingTimeScheduleModel({
