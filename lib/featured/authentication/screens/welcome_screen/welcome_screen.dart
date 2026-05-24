@@ -23,7 +23,6 @@ import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-import 'package:service_provider_umi/shared/widgets/website/riverpod/website_provider.dart';
 import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
 part '_show_privacy_policy_bottom_sheet.dart';
 part '_show_role_selection_dialog.dart';
@@ -106,10 +105,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _startAnimation();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(websiteProvider.notifier).refresh();
-    });
   }
 
   Future<void> _startAnimation() async {
