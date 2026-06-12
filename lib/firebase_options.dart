@@ -47,29 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBcpCuHKsRjoDkOAfOoT92H5Hrl3HNbtGs',
-    appId: '1:344570934631:web:fec9a9525662db01402bc2',
-    messagingSenderId: '344570934631',
-    projectId: 'serviceprovideriumi',
-    authDomain: 'serviceprovideriumi.firebaseapp.com',
-    storageBucket: 'serviceprovideriumi.firebasestorage.app',
-    measurementId: 'G-DXP80VXNJX',
+    apiKey: 'AIzaSyCWB7U6dQQEApekMWaFoQ_dgJWIzXLA-Bo',
+    appId: '1:19594974478:web:d82fc1adf0095d3418335f',
+    messagingSenderId: '19594974478',
+    projectId: 'iubi-a26c0',
+    authDomain: 'iubi-a26c0.firebaseapp.com',
+    storageBucket: 'iubi-a26c0.firebasestorage.app',
+    measurementId: 'G-VJGDWVRK2G',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBcnSdcDZadf2_Rctszs6AF-MzmmFNAd0Y',
-    appId: '1:344570934631:android:a100595b41a1694c402bc2',
-    messagingSenderId: '344570934631',
-    projectId: 'serviceprovideriumi',
-    storageBucket: 'serviceprovideriumi.firebasestorage.app',
+    apiKey: 'AIzaSyCWq7CM8DUH8ZGWHha4gFutwxgaCV8lZK0',
+    appId: '1:19594974478:android:aeeb6d9ea9d32a6318335f',
+    messagingSenderId: '19594974478',
+    projectId: 'iubi-a26c0',
+    storageBucket: 'iubi-a26c0.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCyMKaOsSLgOGHFOf4zHa3tFSZwnLprS2I',
-    appId: '1:344570934631:ios:20233ecab97f9108402bc2',
-    messagingSenderId: '344570934631',
-    projectId: 'serviceprovideriumi',
-    storageBucket: 'serviceprovideriumi.firebasestorage.app',
-    iosBundleId: 'com.example.serviceProviderUmi',
+    apiKey: 'AIzaSyD4o6d5V6cUHBCYxka1g4wKjjj0t25pOxk',
+    appId: '1:19594974478:ios:3c370ef9f74703f018335f',
+    messagingSenderId: '19594974478',
+    projectId: 'iubi-a26c0',
+    storageBucket: 'iubi-a26c0.firebasestorage.app',
+    androidClientId: '19594974478-h7q84rqsdd36r6guochkbkbfr0kn09lq.apps.googleusercontent.com',
+    iosClientId: '19594974478-248ujh2slv4t9bf9gva0t2c1bhm0ee1p.apps.googleusercontent.com',
+    iosBundleId: 'com.serviceprovider.iumi',
   );
 }

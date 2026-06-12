@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
@@ -34,9 +35,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   // ── POST /auth/google-login ──────────────────────────────────────────────────
   @override
   Future<SignInResponse> loginWithGoogle(GoogleLoginRequest request) async {
+     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+
+    await googleSignIn.initialize(
+      serverClientId:
+          '19594974478-njkblhi8r2ihgv7idb0l64ktb4jt7sbc.apps.googleusercontent.com',
+    );
+
+    final user = await googleSignIn.authenticate();
+
+    final email = user.email;
+
     final response = await _dio.post(
       ApiEndpoints.googleLogin,
-      data: request.toJson(),
+      data: {
+        "token": email,
+      }
     );
     return _parse(response, SignInResponse.fromJson);
   }

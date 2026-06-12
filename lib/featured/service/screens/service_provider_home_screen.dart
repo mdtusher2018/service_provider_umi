@@ -61,7 +61,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           if (!context.mounted) return;
 
           if (!isVerified) {
-            context.go(AppRoutes.verificationProviderDocument);
+            context.go(AppRoutes.providerOnboarding);
             return;
           } else {
             ref

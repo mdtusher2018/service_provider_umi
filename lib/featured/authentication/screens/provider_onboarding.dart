@@ -48,7 +48,7 @@ class _ServiceProviderOnboardingScreenState
   void nextPage() {
     final currentIndex = ref.read(_onboardingIndexProvider);
     if (currentIndex == onboardingData.length - 1) {
-      context.go(AppRoutes.workSchedule);
+      context.go(AppRoutes.verificationProviderDocument);
     } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -58,7 +58,7 @@ class _ServiceProviderOnboardingScreenState
   }
 
   void skip() {
-    context.go(AppRoutes.workSchedule);
+      context.go(AppRoutes.verificationProviderDocument);
   }
 
   @override

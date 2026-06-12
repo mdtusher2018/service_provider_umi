@@ -1,20 +1,54 @@
 part of 'welcome_screen.dart';
 
-void showAuthUI(WidgetRef ref, {required bool isLogin, AppRole? role}) {
+void showAuthUI(WidgetRef parentRef, {required bool isLogin, AppRole? role}) {
   if (kIsWeb) {
     showWebOverlay(
-      ref,
-      _signinSignupSelectionWidget(ref, isLogin: isLogin, role: role),
+      parentRef,
+      _signinSignupSelectionWidget(parentRef, isLogin: isLogin, role: role),
     );
   } else {
     showModalBottomSheet(
-      context: ref.context,
+      context: parentRef.context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) {
-        return _signinSignupSelectionWidget(ref, isLogin: isLogin, role: role);
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, child) {
+             ref.listen<AuthState>(loginProvider, (_, state) {
+      state.when(
+        initial: () {},
+        loading: () {},
+        success: () async {
+          final role = await getMyRoleId(ref);
+          if (role == 'user') {
+            if (kIsWeb) {
+              await _close(parentRef);
+            }
+            parentRef.read(appRoleProvider.notifier).loginAsUser();
+            context.go(AppRoutes.userHome);
+          } else {
+            if (kIsWeb) {
+              await _close(parentRef);
+            }
+            parentRef.read(appRoleProvider.notifier).loginAsProvider();
+            context.go(AppRoutes.providerHome);
+          }
+        },
+        failure: (error) { 
+          Navigator.of(context).pop(); // Close the bottom sheet on error
+          AppLogger.error("FAILURE: ${error.message}");
+          context.showErrorSnackBar(error.message); },
+      );
+    });
+            return _signinSignupSelectionWidget(
+              ref,
+              isLogin: isLogin,
+              role: role,
+            );
+          },
+        );
       },
     );
   }
@@ -25,34 +59,37 @@ Widget _signinSignupSelectionWidget(
   required bool isLogin,
   AppRole? role,
 }) {
+  final isLoading = ref.watch(loginProvider) is AuthLoading;
   return Padding(
     padding: 24.paddingAll,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         AppText.h2(isLogin ? "Login" : "Create Account"),
-        24.verticalSpace,
-        AppButton(
-          label: "Continue with Apple",
-          variant: AppButtonVariant.social,
-          backgroundColor: AppColors.black,
-          textColor: AppColors.white,
-
-          prefixIcon: Icon(Icons.apple, color: AppColors.white),
-        ),
-        12.verticalSpace,
-        AppButton.outline(
-          label: "Continue with Facebook",
-          backgroundColor: Color(0xFF1877F2),
-          textColor: AppColors.white,
-          prefixIcon: Icon(Icons.facebook, color: AppColors.white),
-        ),
+        // 24.verticalSpace,
+        // AppButton(
+        //   label: "Continue with Apple",
+        //   variant: AppButtonVariant.social,
+        //   backgroundColor: AppColors.black,
+        //   textColor: AppColors.white,
+        //   prefixIcon: Icon(Icons.apple, color: AppColors.white),
+        // ),
+        // 12.verticalSpace,
+        // AppButton.outline(
+        //   label: "Continue with Facebook",
+        //   backgroundColor: Color(0xFF1877F2),
+        //   textColor: AppColors.white,
+        //   prefixIcon: Icon(Icons.facebook, color: AppColors.white),
+        // ),
         12.verticalSpace,
         AppButton.outline(
           label: "Continue with Google",
+          isLoading: isLoading,
           borderColor: AppColors.black,
           prefixIcon: Icon(Icons.g_mobiledata),
-          onPressed: () {},
+          onPressed: () {
+            ref.read(loginProvider.notifier).withGoogle();
+          },
         ),
         16.verticalSpace,
         Row(

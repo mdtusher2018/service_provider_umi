@@ -110,7 +110,13 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                   padding: 20.paddingRight,
                   child: InkWell(
                     onTap: _openCompleted,
-                    child: Icon(Icons.domain_verification_rounded),
+                    child: Column(
+                      children: [
+                        Icon(Icons.domain_verification_rounded),
+                        8.verticalSpace,
+                        AppText.bodyMd("Completed Services"),
+                      ],
+                    ),
                   ),
                 ),
               ],

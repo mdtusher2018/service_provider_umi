@@ -35,7 +35,9 @@ class LoginNotifier extends _$LoginNotifier {
   /// Email + password login  →  POST /auth/login
   Future<void> withEmail(String email, String password) async {
     state = const AuthState.loading();
-    final fcmToken =(Platform.isIOS)?null: await NotificationService.messaging.getToken();
+    final fcmToken = (Platform.isIOS)
+        ? null
+        : await NotificationService.messaging.getToken();
     final result = await _repo.loginWithEmail(
       LoginEmailRequest(email: email, password: password, fcmToken: fcmToken),
     );
@@ -46,11 +48,13 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   /// Google login  →  POST /auth/google-login
-  Future<void> withGoogle(String token) async {
+  Future<void> withGoogle() async {
     state = const AuthState.loading();
+
     final result = await _repo.loginWithGoogle(
-      GoogleLoginRequest(token: token),
+      GoogleLoginRequest(token: "email"),
     );
+    if (!ref.mounted) return;
     state = result.when(
       success: (_) => const AuthState.success(),
       failure: AuthState.failure,
