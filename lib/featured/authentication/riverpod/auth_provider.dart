@@ -35,9 +35,12 @@ class LoginNotifier extends _$LoginNotifier {
   /// Email + password login  →  POST /auth/login
   Future<void> withEmail(String email, String password) async {
     state = const AuthState.loading();
-    final fcmToken = (Platform.isIOS)
-        ? null
-        : await NotificationService.messaging.getToken();
+    String? fcmToken;
+    if (!Platform.isIOS) {
+      try {
+        fcmToken = await NotificationService.messaging.getToken();
+      } catch (_) {}
+    }
     final result = await _repo.loginWithEmail(
       LoginEmailRequest(email: email, password: password, fcmToken: fcmToken),
     );

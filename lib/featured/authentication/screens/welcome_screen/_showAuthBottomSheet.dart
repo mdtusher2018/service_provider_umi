@@ -22,6 +22,7 @@ void showAuthUI(WidgetRef parentRef, {required bool isLogin, AppRole? role}) {
         loading: () {},
         success: () async {
           final role = await getMyRoleId(ref);
+          if (!context.mounted) return;
           if (role == 'user') {
             if (kIsWeb) {
               await _close(parentRef);

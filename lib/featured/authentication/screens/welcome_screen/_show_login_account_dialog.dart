@@ -40,6 +40,7 @@ class _LoginDialog extends ConsumerWidget {
         loading: () {},
         success: () async {
           final role = await getMyRoleId(ref);
+          if (!context.mounted) return;
           if (role == 'user') {
             if (kIsWeb) {
               await _close(parentRef);
@@ -75,9 +76,7 @@ class _LoginDialog extends ConsumerWidget {
                 InkWell(
                   onTap: isLoading
                       ? null
-                      : () async {
-                          await _close(parentRef);
-                        },
+                      : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
                 ),
               ],
@@ -112,8 +111,8 @@ class _LoginDialog extends ConsumerWidget {
                 links: [
                   AppTextLink(
                     label: 'Forgot password?',
-                    onTap: () async {
-                      await _close(parentRef);
+                    onTap: () {
+                      Navigator.of(context).pop();
                       _showForgotPasswordDialog(parentRef);
                     },
                   ),
