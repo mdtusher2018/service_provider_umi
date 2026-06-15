@@ -5,7 +5,7 @@ void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
     showWebOverlay(ref, _SignupDialog(role: role, parentRef: ref));
   } else {
     showGeneralDialog(
-      context: ref.context,
+      context: rootNavigatorKey.currentContext!,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       pageBuilder: (_, _, _) => Dialog(

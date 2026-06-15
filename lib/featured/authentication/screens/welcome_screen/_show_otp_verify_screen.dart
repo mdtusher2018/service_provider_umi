@@ -18,7 +18,7 @@ void _showOTPVerifyDialog(
     );
   } else {
     showGeneralDialog(
-      context: ref.context,
+      context: rootNavigatorKey.currentContext!,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       pageBuilder: (_, _, _) => Dialog(
@@ -104,27 +104,36 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
         initial: () {},
         loading: () {},
         success: () async {
-          if (!kIsWeb) {
-            context.pop();
+          context.showSnackBar('OTP Verified Successfully');
+          if (!kIsWeb && mounted) {
+            Navigator.of(context).pop();
           }
 
           if (widget.isSignup) {
             if (widget.role == AppRole.user) {
               AppLogger.debug("Going to user home page");
-              widget.parentRef.read(appRoleProvider.notifier).loginAsUser();
-              widget.parentRef.context.go(AppRoutes.userHome);
+              if (widget.parentRef.context.mounted) {
+                widget.parentRef.read(appRoleProvider.notifier).loginAsUser();
+                widget.parentRef.context.go(AppRoutes.userHome);
+              }
             } else if (widget.role == AppRole.provider) {
               AppLogger.debug("Going to provider onboarding");
-              widget.parentRef.read(appRoleProvider.notifier).loginAsProvider();
-              widget.parentRef.context.go(AppRoutes.providerHome);
+              if (widget.parentRef.context.mounted) {
+                widget.parentRef.read(appRoleProvider.notifier).loginAsProvider();
+                widget.parentRef.context.go(AppRoutes.providerHome);
+              }
             } else {
-              widget.parentRef.context.showSnackBar("Please select your role");
+              if (widget.parentRef.context.mounted) {
+                widget.parentRef.context.showSnackBar("Please select your role");
+              }
             }
           } else {
             AppLogger.debug(
               "OTP verified for forgot password flow, showing reset password dialog",
             );
-            _showResetPasswordDialog(widget.parentRef, email: widget.email);
+            if (widget.parentRef.context.mounted) {
+              _showResetPasswordDialog(widget.parentRef, email: widget.email);
+            }
           }
         },
         failure: (error) => context.showErrorSnackBar(error.message),
@@ -160,7 +169,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
               children: [
                 const AppText.h2('Verify OTP'),
                 InkWell(
-                  onTap: isLoading ? null : () => context.pop(),
+                  onTap: isLoading ? null : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
                 ),
               ],

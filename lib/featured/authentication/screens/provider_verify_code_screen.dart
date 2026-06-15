@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/config/app_constants.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -11,6 +12,8 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../core/di/app_role_provider.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../shared/enums/app_enums.dart';
+import '../riverpod/auth_provider.dart';
 
 class VerifyOTPScreen extends ConsumerStatefulWidget {
   final String phoneNumber;
@@ -21,12 +24,15 @@ class VerifyOTPScreen extends ConsumerStatefulWidget {
 }
 
 class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
-  // 4 separate controllers, one per digit box
+  // Use AppConstants.otpLength instead of hardcoded 4
   final List<TextEditingController> _controllers = List.generate(
-    4,
+    AppConstants.otpLength,
     (_) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(
+    AppConstants.otpLength,
+    (_) => FocusNode(),
+  );
 
   @override
   void dispose() {
@@ -41,10 +47,10 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
 
   String get _code => _controllers.map((c) => c.text).join();
 
-  bool get _isComplete => _code.length == 4;
+  bool get _isComplete => _code.length == AppConstants.otpLength;
 
   void _onDigitChanged(int index, String value) {
-    if (value.length == 1 && index < 3) {
+    if (value.length == 1 && index < AppConstants.otpLength - 1) {
       // Auto-advance to next box
       _focusNodes[index + 1].requestFocus();
     } else if (value.isEmpty && index > 0) {
@@ -56,17 +62,35 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
   Future<void> _done() async {
     if (!_isComplete) return;
 
-    // Simulate verification
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (!mounted) return;
-
-    context.go(AppRoutes.userHome);
+    ref.read(otpVerifyProvider.notifier).verifyOtp(_code);
   }
 
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
     final primary = AppColors.primaryFor(role);
+    final otpState = ref.watch(otpVerifyProvider);
+    final isLoading = otpState is AuthLoading;
+
+    ref.listen<AuthState>(otpVerifyProvider, (previous, next) {
+      next.when(
+        initial: () {},
+        loading: () {},
+        success: () {
+          context.showSnackBar("OTP Verified Successfully");
+          if (role == AppRole.provider) {
+            ref.read(appRoleProvider.notifier).loginAsProvider();
+            context.go(AppRoutes.providerHome);
+          } else {
+            ref.read(appRoleProvider.notifier).loginAsUser();
+            context.go(AppRoutes.userHome);
+          }
+        },
+        failure: (failure) {
+          context.showErrorSnackBar(failure.message);
+        },
+      );
+    });
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -79,35 +103,44 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
               const Spacer(),
 
               // ─── Title ──────────────────────────────
-              AppText('Enter 4 digits code', style: AppTextStyles.h1),
+              AppText(
+                'Enter ${AppConstants.otpLength} digits code',
+                style: AppTextStyles.h1,
+              ),
               10.verticalSpace,
               AppText.bodyMd(
-                'Enter the 4 digits code that you received on you\nphone number',
-
+                'Enter the ${AppConstants.otpLength} digits code that you received on you\nphone number',
                 textAlign: TextAlign.center,
               ),
               40.verticalSpace,
 
-              // ─── 4 digit boxes ───────────────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (i) {
-                  return Padding(
-                    padding: 8.paddingH,
-                    child: _DigitBox(
-                      controller: _controllers[i],
-                      focusNode: _focusNodes[i],
-                      primary: primary,
-                      onChanged: (v) => _onDigitChanged(i, v),
-                    ),
-                  );
-                }),
+              // ─── Digit boxes ───────────────────────
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(AppConstants.otpLength, (i) {
+                    return Padding(
+                      padding: 4.paddingH,
+                      child: _DigitBox(
+                        controller: _controllers[i],
+                        focusNode: _focusNodes[i],
+                        primary: primary,
+                        onChanged: (v) => _onDigitChanged(i, v),
+                      ),
+                    );
+                  }),
+                ),
               ),
 
               const Spacer(),
 
               // ─── Done button ─────────────────────────
-              AppButton.primary(label: "Done", onPressed: _done),
+              AppButton.primary(
+                label: "Done",
+                onPressed: isLoading ? null : _done,
+                isLoading: isLoading,
+              ),
 
               16.verticalSpace,
 
@@ -155,7 +188,6 @@ class _DigitBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 56,
-
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: 12.circular,
@@ -185,3 +217,4 @@ class _DigitBox extends StatelessWidget {
     );
   }
 }
+

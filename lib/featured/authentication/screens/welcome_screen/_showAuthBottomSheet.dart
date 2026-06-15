@@ -27,20 +27,29 @@ void showAuthUI(WidgetRef parentRef, {required bool isLogin, AppRole? role}) {
             if (kIsWeb) {
               await _close(parentRef);
             }
-            parentRef.read(appRoleProvider.notifier).loginAsUser();
-            context.go(AppRoutes.userHome);
+            if (parentRef.context.mounted) {
+              parentRef.read(appRoleProvider.notifier).loginAsUser();
+              context.go(AppRoutes.userHome);
+            }
           } else {
             if (kIsWeb) {
               await _close(parentRef);
             }
-            parentRef.read(appRoleProvider.notifier).loginAsProvider();
-            context.go(AppRoutes.providerHome);
+            if (parentRef.context.mounted) {
+              parentRef.read(appRoleProvider.notifier).loginAsProvider();
+              context.go(AppRoutes.providerHome);
+            }
           }
         },
-        failure: (error) { 
-          Navigator.of(context).pop(); // Close the bottom sheet on error
+        failure: (error) {
+          if (context.mounted) {
+            Navigator.of(context).pop(); // Close the bottom sheet on error
+          }
           AppLogger.error("FAILURE: ${error.message}");
-          context.showErrorSnackBar(error.message); },
+          if (parentRef.context.mounted) {
+            parentRef.context.showErrorSnackBar(error.message);
+          }
+        },
       );
     });
             return _signinSignupSelectionWidget(

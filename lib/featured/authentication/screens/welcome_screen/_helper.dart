@@ -4,6 +4,8 @@ Future<void> _close(WidgetRef ref) async {
   if (kIsWeb) {
     await dismissWebOverlay(ref);
   } else {
-    ref.context.pop();
+    if (ref.context.mounted) {
+      Navigator.of(ref.context).pop();
+    }
   }
 }

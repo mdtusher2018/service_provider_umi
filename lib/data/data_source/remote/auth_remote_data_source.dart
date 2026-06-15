@@ -35,22 +35,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   // ── POST /auth/google-login ──────────────────────────────────────────────────
   @override
   Future<SignInResponse> loginWithGoogle(GoogleLoginRequest request) async {
-     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-
-    await googleSignIn.initialize(
-      serverClientId:
-          '19594974478-njkblhi8r2ihgv7idb0l64ktb4jt7sbc.apps.googleusercontent.com',
-    );
-
-    final user = await googleSignIn.authenticate();
-
-    final email = user.email;
+    final user = await GoogleSignIn.instance.authenticate();
 
     final response = await _dio.post(
       ApiEndpoints.googleLogin,
-      data: {
-        "token": email,
-      }
+      data: {"token": user.email},
     );
     return _parse(response, SignInResponse.fromJson);
   }

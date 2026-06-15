@@ -5,7 +5,7 @@ void _showResetPasswordDialog(WidgetRef ref, {required String email}) {
     showWebOverlay(ref, _ResetPasswordDialog(email: email, parentRef: ref));
   } else {
     showGeneralDialog(
-      context: ref.context,
+      context: rootNavigatorKey.currentContext!,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       pageBuilder: (_, _, _) => Dialog(
@@ -48,13 +48,17 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
         initial: () {},
         loading: () {},
         success: () async {
-          await _close(ref);
-          widget.parentRef.context.showSnackBar(
+          if (!context.mounted) return;
+          Navigator.of(context).pop();
+          rootNavigatorKey.currentContext?.showSnackBar(
             'Password reset successfully. Please log in.',
           );
           _showLoginAccountDialog(widget.parentRef);
         },
-        failure: (e) => widget.parentRef.context.showErrorSnackBar(e.message),
+        failure: (e) {
+          if (!context.mounted) return;
+          context.showErrorSnackBar(e.message);
+        },
       );
     });
 
@@ -76,7 +80,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
               children: [
                 const AppText.h2('Reset Password'),
                 InkWell(
-                  onTap: isLoading ? null : () => context.pop(),
+                  onTap: isLoading ? null : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
                 ),
               ],

@@ -5,7 +5,7 @@ void _showLoginAccountDialog(WidgetRef ref) {
     showWebOverlay(ref, _LoginDialog(parentRef: ref));
   } else {
     showGeneralDialog(
-      context: ref.context,
+      context: rootNavigatorKey.currentContext!,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       pageBuilder: (_, _, _) => Dialog(
@@ -45,14 +45,18 @@ class _LoginDialog extends ConsumerWidget {
             if (kIsWeb) {
               await _close(parentRef);
             }
-            parentRef.read(appRoleProvider.notifier).loginAsUser();
-            context.go(AppRoutes.userHome);
+            if (parentRef.context.mounted) {
+              parentRef.read(appRoleProvider.notifier).loginAsUser();
+              context.go(AppRoutes.userHome);
+            }
           } else {
             if (kIsWeb) {
               await _close(parentRef);
             }
-            parentRef.read(appRoleProvider.notifier).loginAsProvider();
-            context.go(AppRoutes.providerHome);
+            if (parentRef.context.mounted) {
+              parentRef.read(appRoleProvider.notifier).loginAsProvider();
+              context.go(AppRoutes.providerHome);
+            }
           }
         },
         failure: (error) => context.showErrorSnackBar(error.message),

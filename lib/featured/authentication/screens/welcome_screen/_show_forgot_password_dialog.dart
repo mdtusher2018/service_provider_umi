@@ -5,7 +5,7 @@ void _showForgotPasswordDialog(WidgetRef ref) {
     showWebOverlay(ref, _ForgotPasswordDialog(parentRef: ref));
   } else {
     showGeneralDialog(
-      context: ref.context,
+      context: rootNavigatorKey.currentContext!,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       pageBuilder: (_, _, _) => Dialog(
@@ -45,14 +45,16 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
         loading: () {},
         success: () {
           // Dismiss this dialog then open Reset Password dialog
-          if (!kIsWeb) {
-            context.pop();
+          if (!kIsWeb && mounted) {
+            Navigator.of(context).pop();
           }
-          _showOTPVerifyDialog(
-            widget.parentRef,
-            email: _emailCtrl.text.trim(),
-            isSignup: false,
-          );
+          if (widget.parentRef.context.mounted) {
+            _showOTPVerifyDialog(
+              widget.parentRef,
+              email: _emailCtrl.text.trim(),
+              isSignup: false,
+            );
+          }
         },
         failure: (e) => context.showErrorSnackBar(e.message),
       );
@@ -76,9 +78,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
                 InkWell(
                   onTap: isLoading
                       ? null
-                      : () async {
-                          await _close(ref);
-                        },
+                      : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
                 ),
               ],

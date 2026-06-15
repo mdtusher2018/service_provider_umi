@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/config/flavor_config.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -33,6 +34,13 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.init();
+
+  if (!kIsWeb) {
+    await GoogleSignIn.instance.initialize(
+      serverClientId:
+          '19594974478-njkblhi8r2ihgv7idb0l64ktb4jt7sbc.apps.googleusercontent.com',
+    );
+  }
 
   // Init LocalStorageService (SharedPreferences + SecureStorage) + Hive
   final localStorage = LocalStorageServiceImpl();
