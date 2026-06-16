@@ -57,20 +57,18 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCWq7CM8DUH8ZGWHha4gFutwxgaCV8lZK0',
-    appId: '1:19594974478:android:aeeb6d9ea9d32a6318335f',
-    messagingSenderId: '19594974478',
-    projectId: 'iubi-a26c0',
-    storageBucket: 'iubi-a26c0.firebasestorage.app',
+    apiKey: 'AIzaSyA3zBymrj0SfV1OBcO_ktI4fH487hWeiy0',
+    appId: '1:102179953373:android:8cc5c14cacbb3c44211934',
+    messagingSenderId: '102179953373',
+    projectId: 'service-provider-umi',
+    storageBucket: 'service-provider-umi.firebasestorage.app',
   );
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD4o6d5V6cUHBCYxka1g4wKjjj0t25pOxk',
-    appId: '1:19594974478:ios:3c370ef9f74703f018335f',
-    messagingSenderId: '19594974478',
-    projectId: 'iubi-a26c0',
-    storageBucket: 'iubi-a26c0.firebasestorage.app',
-    androidClientId: '19594974478-h7q84rqsdd36r6guochkbkbfr0kn09lq.apps.googleusercontent.com',
-    iosClientId: '19594974478-248ujh2slv4t9bf9gva0t2c1bhm0ee1p.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAMhkfME8ZowWx85LK_7AyW1Gr5X6VglRU',
+    appId: '1:102179953373:ios:1bc8b14a5a5c4f2d211934',
+    messagingSenderId: '102179953373',
+    projectId: 'service-provider-umi',
+    storageBucket: 'service-provider-umi.firebasestorage.app',
     iosBundleId: 'com.serviceprovider.iumi',
   );
 }
