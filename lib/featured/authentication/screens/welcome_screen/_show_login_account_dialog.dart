@@ -41,22 +41,19 @@ class _LoginDialog extends ConsumerWidget {
         success: () async {
           final role = await getMyRoleId(ref);
           if (!context.mounted) return;
+          // Capture notifier before closing — refs become invalid after pop
+          final roleNotifier = parentRef.read(appRoleProvider.notifier);
+          await _close(parentRef);
           if (role == 'user') {
-            if (kIsWeb) {
-              await _close(parentRef);
-            }
-            if (parentRef.context.mounted) {
-              parentRef.read(appRoleProvider.notifier).loginAsUser();
-              context.go(AppRoutes.userHome);
-            }
+            roleNotifier.loginAsUser();
           } else {
-            if (kIsWeb) {
-              await _close(parentRef);
-            }
-            if (parentRef.context.mounted) {
-              parentRef.read(appRoleProvider.notifier).loginAsProvider();
-              context.go(AppRoutes.providerHome);
-            }
+            roleNotifier.loginAsProvider();
+          }
+          final navContext = rootNavigatorKey.currentContext;
+          if (navContext != null && navContext.mounted) {
+            navContext.go(
+              role == 'user' ? AppRoutes.userHome : AppRoutes.providerHome,
+            );
           }
         },
         failure: (error) => context.showErrorSnackBar(error.message),

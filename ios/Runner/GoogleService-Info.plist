@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAMhkfME8ZowWx85LK_7AyW1Gr5X6VglRU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>102179953373</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.serviceprovider.iumi</string>
+	<key>PROJECT_ID</key>
+	<string>service-provider-umi</string>
+	<key>STORAGE_BUCKET</key>
+	<string>service-provider-umi.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:102179953373:ios:1bc8b14a5a5c4f2d211934</string>
+</dict>
+</plist>

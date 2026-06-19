@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 abstract class AuthRemoteDataSource {
   Future<SignInResponse> loginWithEmail(LoginEmailRequest request);
@@ -35,16 +36,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   // ── POST /auth/google-login ──────────────────────────────────────────────────
   @override
   Future<SignInResponse> loginWithGoogle(GoogleLoginRequest request) async {
-    final user = await GoogleSignIn.instance.authenticate();
+    // 1. Sign in with Google
+    final googleUser = await GoogleSignIn.instance.authenticate();
+    final googleAuth = googleUser.authentication;
 
+    // 2. Create Firebase credential from Google tokens
+    final credential = firebase_auth.GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
+
+    // 3. Sign in to Firebase with that credential
+    final userCredential = await firebase_auth.FirebaseAuth.instance
+        .signInWithCredential(credential);
+
+    // 4. Get the FIREBASE ID token (not Google's token)
+    final firebaseIdToken = await userCredential.user!.getIdToken();
+
+    // 5. Send Firebase ID token to YOUR backend
     final response = await _dio.post(
       ApiEndpoints.googleLogin,
-      data: {"token": user.email},
+      data: {"token": firebaseIdToken},
     );
     return _parse(response, SignInResponse.fromJson);
   }
 
-  // ── POST /users (register) ───────────────────────────────────────────────────
   @override
   Future<SignUpOtpTokenResponse> signup(SignupRequest request) async {
     final response = await _dio.post(

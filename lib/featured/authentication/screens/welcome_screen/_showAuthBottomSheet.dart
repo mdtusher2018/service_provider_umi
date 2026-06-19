@@ -16,46 +16,47 @@ void showAuthUI(WidgetRef parentRef, {required bool isLogin, AppRole? role}) {
       builder: (context) {
         return Consumer(
           builder: (context, ref, child) {
-             ref.listen<AuthState>(loginProvider, (_, state) {
-      state.when(
-        initial: () {},
-        loading: () {},
-        success: () async {
-          final role = await getMyRoleId(ref);
-          if (!context.mounted) return;
-          if (role == 'user') {
-            if (kIsWeb) {
-              await _close(parentRef);
-            }
-            if (parentRef.context.mounted) {
-              parentRef.read(appRoleProvider.notifier).loginAsUser();
-              context.go(AppRoutes.userHome);
-            }
-          } else {
-            if (kIsWeb) {
-              await _close(parentRef);
-            }
-            if (parentRef.context.mounted) {
-              parentRef.read(appRoleProvider.notifier).loginAsProvider();
-              context.go(AppRoutes.providerHome);
-            }
-          }
-        },
-        failure: (error) {
-          if (context.mounted) {
-            Navigator.of(context).pop(); // Close the bottom sheet on error
-          }
-          AppLogger.error("FAILURE: ${error.message}");
-          if (parentRef.context.mounted) {
-            parentRef.context.showErrorSnackBar(error.message);
-          }
-        },
-      );
-    });
+            ref.listen<AuthState>(loginProvider, (_, state) {
+              state.when(
+                initial: () {},
+                loading: () {},
+                success: () async {
+                  // Capture notifier before any await — parentRef is WelcomeScreen's stable ref
+                  final roleNotifier = parentRef.read(appRoleProvider.notifier);
+                  final role = await getMyRoleId(ref);
+                  if (!context.mounted) return;
+                  await _close(parentRef);
+                  if (role == 'user') {
+                    roleNotifier.loginAsUser();
+                  } else {
+                    roleNotifier.loginAsProvider();
+                  }
+                  final navContext = rootNavigatorKey.currentContext;
+                  if (navContext != null && navContext.mounted) {
+                    navContext.go(
+                      role == 'user'
+                          ? AppRoutes.userHome
+                          : AppRoutes.providerHome,
+                    );
+                  }
+                },
+                failure: (error) {
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                  AppLogger.error("FAILURE: ${error.message}");
+                  if (parentRef.context.mounted) {
+                    parentRef.context.showErrorSnackBar(error.message);
+                  }
+                },
+              );
+            });
+            // Pass parentRef (stable) so child dialogs don't use the Consumer's transient ref
             return _signinSignupSelectionWidget(
               ref,
               isLogin: isLogin,
               role: role,
+              stableRef: parentRef,
             );
           },
         );
@@ -68,6 +69,7 @@ Widget _signinSignupSelectionWidget(
   WidgetRef ref, {
   required bool isLogin,
   AppRole? role,
+  WidgetRef? stableRef,
 }) {
   final isLoading = ref.watch(loginProvider) is AuthLoading;
   return Padding(
@@ -76,21 +78,6 @@ Widget _signinSignupSelectionWidget(
       mainAxisSize: MainAxisSize.min,
       children: [
         AppText.h2(isLogin ? "Login" : "Create Account"),
-        // 24.verticalSpace,
-        // AppButton(
-        //   label: "Continue with Apple",
-        //   variant: AppButtonVariant.social,
-        //   backgroundColor: AppColors.black,
-        //   textColor: AppColors.white,
-        //   prefixIcon: Icon(Icons.apple, color: AppColors.white),
-        // ),
-        // 12.verticalSpace,
-        // AppButton.outline(
-        //   label: "Continue with Facebook",
-        //   backgroundColor: Color(0xFF1877F2),
-        //   textColor: AppColors.white,
-        //   prefixIcon: Icon(Icons.facebook, color: AppColors.white),
-        // ),
         12.verticalSpace,
         AppButton.outline(
           label: "Continue with Google",
@@ -114,13 +101,12 @@ Widget _signinSignupSelectionWidget(
         AppButton.outline(
           label: isLogin ? "Login with email" : "Create with email",
           borderColor: AppColors.black,
-
           onPressed: () async {
             await _close(ref);
             if (isLogin) {
-              _showLoginAccountDialog(ref);
+              _showLoginAccountDialog(stableRef ?? ref);
             } else if (role != null) {
-              _showCreateAccountDialog(ref, role: role);
+              _showCreateAccountDialog(stableRef ?? ref, role: role);
             }
           },
         ),
@@ -128,7 +114,6 @@ Widget _signinSignupSelectionWidget(
         if (!isLogin)
           AppLinkText(
             "By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy",
-
             links: [
               AppTextLink(
                 label: "Terms and Condition",

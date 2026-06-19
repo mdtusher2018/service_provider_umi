@@ -36,10 +36,14 @@ Future<void> main() async {
   await NotificationService.init();
 
   if (!kIsWeb) {
-    await GoogleSignIn.instance.initialize(
-      serverClientId:
-          '19594974478-njkblhi8r2ihgv7idb0l64ktb4jt7sbc.apps.googleusercontent.com',
-    );
+    try {
+      await GoogleSignIn.instance.initialize(
+        serverClientId: '102179953373-b3hvjstdcj7mgfla8r9tv8adehre2ccj.apps.googleusercontent.com',
+      );
+      debugPrint('✅ GoogleSignIn initialized successfully');
+    } catch (e) {
+      debugPrint('❌ GoogleSignIn initialize failed: $e');
+    }
   }
 
   // Init LocalStorageService (SharedPreferences + SecureStorage) + Hive

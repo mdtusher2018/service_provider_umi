@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "102179953373",
+    "project_id": "service-provider-umi",
+    "storage_bucket": "service-provider-umi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102179953373:android:8cc5c14cacbb3c44211934",
+        "android_client_info": {
+          "package_name": "com.serviceprovider.iumi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102179953373-q02prakc76oj0d6ic2ik0h9jpefh5jvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.serviceprovider.iumi",
+            "certificate_hash": "36a9f28378633bfc6d8c1688f9011dd799a01cba"
+          }
+        },
+        {
+          "client_id": "102179953373-b3hvjstdcj7mgfla8r9tv8adehre2ccj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3zBymrj0SfV1OBcO_ktI4fH487hWeiy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102179953373-b3hvjstdcj7mgfla8r9tv8adehre2ccj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "102179953373-meigkp1hbep8u42mkegl7njcnjb393v2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.serviceprovider.iumi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
