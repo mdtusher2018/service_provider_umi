@@ -78,8 +78,9 @@ class ServiceRepository with SafeCall {
     required int page,
     required BookingStatus status,
     required AppRole appRole,
+    String? date,
   }) => asyncGuard(
-    () => _remote.getMyBookings(page: page, status: status, appRole: appRole),
+    () => _remote.getMyBookings(page: page, status: status, appRole: appRole, date: date),
   );
 
   // ── GET /bookings/:id ─────────────────────────────────────────────────────────

@@ -267,6 +267,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
           color: AppColors.error,
           backgroundColor: AppColors.errorLight,
         );
+      case BookingStatus.upcoming:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }

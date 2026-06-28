@@ -41,6 +41,7 @@ abstract class ServiceRemoteDataSource {
     required int page,
     required BookingStatus status,
     required AppRole appRole,
+    String? date,
   });
   Future<BookingDetailModel> getBookingDetail(String bookingId);
 
@@ -240,6 +241,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     int page = 1,
     required BookingStatus status,
     required AppRole appRole,
+    String? date,
   }) async {
     final endpoint = (appRole == AppRole.user)
         ? ApiEndpoints.userBookings
@@ -254,6 +256,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
             'page': page,
             'include': 'user,provider,bookingDays',
             'status': BookingStatus.requested.name,
+            if (date != null) 'date': date,
           },
         ),
         _dio.get(
@@ -262,6 +265,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
             'page': page,
             'include': 'user,provider,bookingDays',
             'status': BookingStatus.pending.name,
+            if (date != null) 'date': date,
           },
         ),
       ]);
@@ -276,14 +280,17 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     }
 
     // ✅ NORMAL FLOW
-    final response = await _dio.get(
-      endpoint,
-      queryParameters: {
-        'page': page,
-        'include': 'user,provider,bookingDays',
+    final queryParams = <String, dynamic>{
+      'page': page,
+      'include': 'user,provider,bookingDays',
+      if (status == BookingStatus.upcoming)
+        'upcoming': true
+      else
         'status': status.name,
-      },
-    );
+      'date': ?date,
+    };
+
+    final response = await _dio.get(endpoint, queryParameters: queryParams);
 
     return _parse(response, BookingsListResponse.fromJson);
   }

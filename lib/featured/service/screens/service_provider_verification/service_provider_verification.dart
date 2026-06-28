@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,7 +56,7 @@ class _ServiceProviderVerificationState
     return true;
   }
 
-  void _submit() async {
+  void _onNext() {
     if (!_isValid) {
       context.showErrorSnackBar(
         'Please upload an image for each selected option.',
@@ -65,9 +64,8 @@ class _ServiceProviderVerificationState
       return;
     }
 
-    await ref
-        .read(verificationProvider.notifier)
-        .create(
+    // Hold the request — will be submitted after work schedule is confirmed.
+    ref.read(pendingVerificationProvider.notifier).hold(
           VerificationRequest(
             palliativeCare: _palliativeCare ? _palliativeImage : null,
             drivingLicense: _drivingLicence ? _drivingImage : null,
@@ -75,48 +73,12 @@ class _ServiceProviderVerificationState
             qualifiedOnly: _qualifiedCarer ? _qualifiedImage : null,
           ),
         );
-  }
 
-  void _showSuccessDialog() {
-    if (!context.mounted) return;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: AppText('Verification Submitted'),
-          content: AppText(
-            'Your request has been submitted successfully.\n\nPlease login again with another account.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                ref.read(logoutProvider.notifier).logout();
-                context.go(AppRoutes.login);
-              },
-              child: AppText('Logout'),
-            ),
-          ],
-        );
-      },
-    );
+    context.push(AppRoutes.workSchedule);
   }
 
   @override
   Widget build(BuildContext context) {
-    // ─── Listen for success / error ───────────────────────────────────────
-    ref.listen<AsyncValue<bool?>>(verificationProvider, (prev, next) {
-      next.whenOrNull(
-        error: (e, _) => context.showErrorSnackBar(e.toString()),
-        data: (success) {
-          if (success == true) {
-            _showSuccessDialog();
-          }
-        },
-      );
-    });
-    final isLoading = ref.watch(verificationProvider).isLoading;
     final role = ref.watch(appRoleProvider);
 
     return Scaffold(
@@ -243,14 +205,9 @@ class _ServiceProviderVerificationState
                         onTap: () => _pickImage((f) => _qualifiedImage = f),
                       ),
 
-                    // ─── Submit ───────────────────────────────────────────
                     AppButton.primary(
-                      label: 'Submit',
-                      isLoading: isLoading,
-                      // Only providers can submit; button disabled for other roles
-                      onPressed: role == AppRole.provider && !isLoading
-                          ? _submit
-                          : null,
+                      label: 'Next',
+                      onPressed: role == AppRole.provider ? _onNext : null,
                     ),
                     32.verticalSpace,
                   ],

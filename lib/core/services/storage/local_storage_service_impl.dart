@@ -29,13 +29,13 @@ final class LocalStorageServiceImpl implements LocalStorageService {
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
 
-    /// preload important keys
-    _cache[StorageKey.selectedLocale.key] = _prefs.getString(
-      StorageKey.selectedLocale.key,
-    );
-    _cache[StorageKey.accessToken.key] = _prefs.getString(
-      StorageKey.accessToken.key,
-    );
+    // Preload SharedPreferences keys
+    _cache[StorageKey.selectedLocale.key] = _prefs.getString(StorageKey.selectedLocale.key);
+    _cache[StorageKey.userRole.key] = _prefs.getString(StorageKey.userRole.key);
+
+    // Preload secure storage keys (needed for sync reads on startup)
+    _cache[StorageKey.accessToken.key] = await _secureStorage.read(key: StorageKey.accessToken.key);
+    _cache[StorageKey.refreshToken.key] = await _secureStorage.read(key: StorageKey.refreshToken.key);
   }
 
   // ================= SESSION MODE =================
@@ -147,7 +147,7 @@ final class LocalStorageServiceImpl implements LocalStorageService {
   Future<void> clearAll() async {
     _cache.clear();
     _sessionCache.clear();
-    _isSessionMode = true;
+    _isSessionMode = false;
 
     await clearPrefs();
     await clearSecure();

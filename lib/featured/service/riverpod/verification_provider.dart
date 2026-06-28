@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/data/repository/user_repository.dart';
@@ -17,6 +18,21 @@ class VerificationRequest {
     this.qualifiedOnly,
   });
 }
+
+// Holds verification data between the verification screen and work schedule screen.
+// Uses manual NotifierProvider (keepAlive by default) — no code-gen needed.
+class _PendingVerificationNotifier extends Notifier<VerificationRequest?> {
+  @override
+  VerificationRequest? build() => null;
+
+  void hold(VerificationRequest request) => state = request;
+  void clear() => state = null;
+}
+
+final pendingVerificationProvider =
+    NotifierProvider<_PendingVerificationNotifier, VerificationRequest?>(
+  _PendingVerificationNotifier.new,
+);
 
 @riverpod
 class Verification extends _$Verification {

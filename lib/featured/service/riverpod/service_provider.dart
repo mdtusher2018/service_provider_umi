@@ -21,6 +21,7 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 part 'service_provider.g.dart';
 
+
 // ── GET /categories ───────────────────────────────────────────────────────────
 
 @riverpod
@@ -113,6 +114,7 @@ class BookingsNotifier extends _$BookingsNotifier {
   bool _hasMore = true;
   bool _isFetching = false;
   BookingStatus? bookingStatus;
+  String? _selectedDate;
   final isAccepting = ValueNotifier<bool>(false);
   final isCancelling = ValueNotifier<bool>(false);
 
@@ -126,12 +128,13 @@ class BookingsNotifier extends _$BookingsNotifier {
     return const AsyncLoading();
   }
 
-  Future<void> fetch({bool initial = false}) async {
+  Future<void> fetch({bool initial = false, String? date}) async {
     if (_isFetching) return;
 
     if (initial) {
       _page = 1;
       _hasMore = true;
+      if (date != null) _selectedDate = date;
       state = const AsyncLoading();
     }
 
@@ -143,6 +146,7 @@ class BookingsNotifier extends _$BookingsNotifier {
       page: _page,
       status: bookingStatus!,
       appRole: ref.read(appRoleProvider),
+      date: _selectedDate,
     );
 
     if (!ref.mounted) return;

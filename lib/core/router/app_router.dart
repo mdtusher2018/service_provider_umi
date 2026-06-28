@@ -11,6 +11,7 @@ import 'package:service_provider_umi/featured/service/screens/service_provider_v
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_booking_time_screen.dart';
 import 'package:service_provider_umi/shared/widgets/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
+import 'package:service_provider_umi/featured/splash/splash_screen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/provider_phone_number_screen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/profile_picture_screen/profile_picture_screen.dart';
 import 'package:service_provider_umi/featured/authentication/screens/provider_onboarding.dart';
@@ -63,7 +64,7 @@ GoRouter appRouter(Ref ref) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
 
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     errorBuilder: (context, state) {
       return NotFoundScreen(error: state.error.toString());
@@ -72,6 +73,9 @@ GoRouter appRouter(Ref ref) {
     redirect: (context, state) {
       final location = state.matchedLocation;
       final role = ref.watch(appRoleProvider);
+
+      // Splash handles its own navigation — never redirect it
+      if (location == AppRoutes.splash) return null;
 
       // ← NEW: if already logged in, skip login screen
       if (location == AppRoutes.login) {
@@ -246,6 +250,12 @@ GoRouter appRouter(Ref ref) {
             ],
           ),
         ],
+      ),
+
+      // ── Splash ──────────────────────────────────────────
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (_, __) => const SplashScreen(),
       ),
 
       // ── Login / Welcome ──────────────────────────────────

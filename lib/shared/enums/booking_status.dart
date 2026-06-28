@@ -4,6 +4,7 @@ enum BookingStatus {
   pending,
   requested,
   ongoing,
+  upcoming,
   complete,
   canceled;
 
@@ -15,6 +16,8 @@ enum BookingStatus {
         return 'Pending';
       case BookingStatus.ongoing:
         return 'On Going';
+      case BookingStatus.upcoming:
+        return 'Upcoming';
       case BookingStatus.complete:
         return 'Completed';
       case BookingStatus.canceled:
@@ -37,6 +40,8 @@ enum BookingStatus {
 
       case 'ongoing':
         return BookingStatus.ongoing;
+      case 'upcoming':
+        return BookingStatus.upcoming;
       case 'complete': // 🔥 API VALUE
         return BookingStatus.complete;
       case 'canceled':

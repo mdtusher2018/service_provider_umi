@@ -6,9 +6,13 @@ import 'package:service_provider_umi/shared/enums/app_enums.dart';
 class AppRoleNotifier extends Notifier<AppRole> {
   @override
   AppRole build() {
-    // Read persisted role on startup
     final storage = ref.read(localStorageProvider);
     final saved = storage.readSync<String>(StorageKey.userRole);
+    final token = storage.readSync<String>(StorageKey.accessToken);
+
+    // No token → force guest regardless of saved role
+    if (token == null || token.isEmpty) return AppRole.guest;
+
     return _roleFromString(saved) ?? AppRole.guest;
   }
 

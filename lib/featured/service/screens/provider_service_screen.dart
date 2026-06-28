@@ -106,7 +106,11 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
         actions: [
           InkWell(
             onTap: _openCompleted,
-            child: Icon(Icons.domain_verification_rounded),
+            child: _StatusBadge(
+              label: 'Completed',
+              color: AppColors.success,
+              backgroundColor: AppColors.white,
+            ),
           ),
           16.horizontalSpace,
         ],
@@ -153,6 +157,35 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color backgroundColor;
+  final bool isInteractive;
+
+  const _StatusBadge({
+    required this.label,
+    required this.color,
+    required this.backgroundColor,
+    this.isInteractive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: 8.circular,
+        border: isInteractive
+            ? Border.all(color: color.withOpacity(0.3))
+            : null,
+      ),
+      child: AppText.bodySm(label, color: color, fontWeight: FontWeight.w700),
     );
   }
 }

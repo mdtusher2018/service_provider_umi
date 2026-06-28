@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -12,7 +13,9 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/category_models.dart';
+import 'package:service_provider_umi/featured/authentication/riverpod/auth_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/featured/service/riverpod/verification_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
@@ -50,7 +53,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   late double _hourlyPrice;
 
   final Set<FilterOptionModel> _selectedTasks = {};
-  CategoryModel? _selectedCategory;
+  final Set<CategoryModel> _selectedCategories = {};
   FilterOptionModel? _selectedExperiences;
 
   // ─── Image states (provider only) ────────────────────────────────────────
@@ -96,7 +99,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       _priceRange = const RangeValues(0, 50);
       _hourlyPrice = 50;
       _selectedTasks.clear();
-      _selectedCategory = null;
+      _selectedCategories.clear();
       _selectedExperiences = null;
       _coverImage = null;
       _palliativeImage = null;
@@ -126,8 +129,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
   // ── Apply: merge filter state back into existing params ───────────────────
   void _applyFilters() {
-    // categoryId from filter selection takes priority over the existing one.
-    final newCategoryId = _selectedCategory?.id;
+    final newCategoryId = _selectedCategories.isNotEmpty
+        ? _selectedCategories.map((c) => c.id).join(',')
+        : null;
 
     // Build comma-separated otherTaskIds
     final newTaskIds = _selectedTasks.isNotEmpty
@@ -158,11 +162,14 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(filterProvider);
 
+    final pendingVerification = ref.watch(pendingVerificationProvider);
+
     ref.listen<AsyncValue<bool>>(updateProviderProvider, (prev, next) {
       if (next is AsyncError) {
         context.showErrorSnackBar(next.error.toString());
       }
-      if (next is AsyncData && next.value == true) {
+      // Only auto-navigate on update flow; submit flow handles its own navigation
+      if (next is AsyncData && next.value == true && pendingVerification == null) {
         context.go(AppRoutes.providerHome);
         context.showSuccessSnackBar('Updated successfully');
       }
@@ -301,9 +308,12 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         ...categories.map(
                           (c) => AppCheckboxTile(
                             label: c.name,
-                            value: _selectedCategory == c,
-                            onChanged: (_) =>
-                                setState(() => _selectedCategory = c),
+                            value: _selectedCategories.contains(c),
+                            onChanged: (_) => setState(() {
+                              _selectedCategories.contains(c)
+                                  ? _selectedCategories.remove(c)
+                                  : _selectedCategories.add(c);
+                            }),
                           ),
                         ),
                         const AppDivider(height: 40, color: AppColors.grey400),
@@ -482,16 +492,11 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         // ─── Apply / Update button ─────────────────────
                         AppButton.primary(
                           label: ref.read(appRoleProvider) == AppRole.provider
-                              ? 'Update'
+                              ? (pendingVerification != null ? 'Submit' : 'Update')
                               : 'Apply filters',
-                          isLoading: ref
-                              .watch(updateProviderProvider)
-                              .isLoading,
+                          isLoading: ref.watch(updateProviderProvider).isLoading,
                           onPressed: () async {
-                            if (ref.watch(appRoleProvider) ==
-                                AppRole.provider) {
-                              // Provider profile update flow (unchanged)
-
+                            if (ref.watch(appRoleProvider) == AppRole.provider) {
                               await ref
                                   .read(updateProviderProvider.notifier)
                                   .update(
@@ -504,20 +509,34 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                       qualifiedOnly: _qualifiedImage,
                                       coverImage: _businessImage,
                                       minimumPrice: _hourlyPrice,
-
                                       images: _images,
-                                      specializations: [
-                                        _selectedCategory?.id ?? '',
-                                      ],
+                                      specializations: _selectedCategories
+                                          .map((c) => c.id)
+                                          .toList(),
                                       tasks: _selectedTasks
                                           .map((e) => e.id)
                                           .toList(),
                                     ),
                                   );
 
-                              return;
+                              if (!mounted) return;
+
+                              // Submit flow: after profile update, call verification API
+                              final pending = ref.read(pendingVerificationProvider);
+                              if (pending != null) {
+                                final result = await ref
+                                    .read(userRepositoryProvider)
+                                    .submitVerification(pending);
+                                if (!mounted) return;
+                                result.when(
+                                  success: (_) {
+                                    ref.read(pendingVerificationProvider.notifier).clear();
+                                    _showVerificationSuccessDialog();
+                                  },
+                                  failure: (f) => context.showErrorSnackBar(f.message),
+                                );
+                              }
                             } else {
-                              // User / search filter flow:
                               _applyFilters();
                             }
                           },
@@ -570,19 +589,41 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       }
     }
 
-    // Category
-    final catId = p['categoryId'];
-    if (catId != null && _selectedCategory == null) {
-      final match = data.category.cast<CategoryModel?>().firstWhere(
-        (c) => c?.id == catId,
-        orElse: () => null,
-      );
-      if (match != null) {
+    // Categories (multi-select)
+    final catIds = (p['categoryId'] ?? '')
+        .split(',')
+        .where((s) => s.isNotEmpty)
+        .toSet();
+    if (catIds.isNotEmpty && _selectedCategories.isEmpty) {
+      final matches = data.category.where((c) => catIds.contains(c.id)).toSet();
+      if (matches.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) setState(() => _selectedCategory = match);
+          if (mounted) setState(() => _selectedCategories.addAll(matches));
         });
       }
     }
+  }
+
+  void _showVerificationSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const AppText('Verification Submitted'),
+        content: const AppText(
+          'Your request has been submitted successfully.\n\nPlease login again with another account.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              ref.read(logoutProvider.notifier).logout();
+              context.go(AppRoutes.login);
+            },
+            child: const AppText('Logout'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildImageTile({

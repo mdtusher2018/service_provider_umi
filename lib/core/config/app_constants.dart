@@ -10,7 +10,7 @@ class AppConstants {
   static const String _iconsPath = 'assets/icons';
   static const String _animationsPath = 'assets/animations';
 
-  static const String logoImage = '$_imagesPath/logo.png';
+  static const String logoImage = 'assets/logo.png';
   static const String placeholderImage = '$_imagesPath/placeholder.png';
   static const String onboarding1 = '$_imagesPath/onboarding_1.png';
   static const String onboarding2 = '$_imagesPath/onboarding_2.png';
