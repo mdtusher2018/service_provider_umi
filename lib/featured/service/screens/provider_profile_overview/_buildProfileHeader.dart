@@ -34,24 +34,28 @@ Widget _buildProfileHeader({
             AppAvatar(
               imageUrl: Assets.icons.chatIcon.keyName,
               size: AvatarSize.md,
-              onTap: () async {
-                final myUserId = await getMyUserId(ref);
-
-                ref.context.push(
-                  AppRoutes.chatPath((chatId.isEmpty) ? data.id : chatId),
-                  extra: {
-                    'otherUserId': data.id,
-                    'name': data.name,
-                    'myId': myUserId,
-                    'imageUrl': data.profileImage ?? "",
-                  },
+              onTap: () {
+                ref.context.showSnackBar(
+                  showAtTop: true,
+                  "You can't chat with provider before booking a job",
                 );
+                // final myUserId = await getMyUserId(ref);
+                //
+                // ref.context.push(
+                //   AppRoutes.chatPath((chatId.isEmpty) ? data.id : chatId),
+                //   extra: {
+                //     'otherUserId': data.id,
+                //     'name': data.name,
+                //     'myId': myUserId,
+                //     'imageUrl': data.profileImage ?? "",
+                //   },
+                // );
               },
               backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
             _StatDivider(),
             _StatItem(
-              value: '${data.avgRating} ⭐',
+              value: '${data.avgRating?.toStringAsFixed(2)} ⭐',
               label: '${data.totalReview} reviews',
             ),
             _StatDivider(),

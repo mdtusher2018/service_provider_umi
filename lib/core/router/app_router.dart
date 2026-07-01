@@ -25,6 +25,7 @@ import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/featured/profile/screen/change_password_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/language_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/add_faq_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/address/my_addresses_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_balance_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/payments_screen.dart';
@@ -450,6 +451,13 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.language,
         builder: (_, __) => const LanguageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.addFaq,
+        builder: (context, state) {
+          final userId = state.extra as String? ?? '';
+          return AddFaqScreen(userId: userId);
+        },
       ),
       GoRoute(
         path: AppRoutes.staticPage,

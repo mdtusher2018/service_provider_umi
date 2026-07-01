@@ -99,6 +99,7 @@ extension BuildContextExtensions on BuildContext {
     String message, {
     bool isError = false,
     Duration duration = const Duration(seconds: 3),
+    bool showAtTop = false,
   }) {
     ScaffoldMessenger.of(this).hideCurrentSnackBar();
     ScaffoldMessenger.of(this).showSnackBar(
@@ -108,6 +109,14 @@ extension BuildContextExtensions on BuildContext {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: 10.circular),
         duration: duration,
+        margin: showAtTop
+            ? EdgeInsets.only(
+                bottom: MediaQuery.of(this).size.height -
+                    (MediaQuery.of(this).padding.top + 80),
+                left: 16,
+                right: 16,
+              )
+            : null,
       ),
     );
   }

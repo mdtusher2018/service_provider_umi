@@ -55,6 +55,7 @@ class AppRoutes {
   static const String providerReviews = '/profile/reviews';
   static const String changePassword = '/profile/change-password';
   static const String language = '/profile/language';
+  static const String addFaq = '/profile/add-faq';
   static const String staticPage = '/profile/:type';
   static const String paymentCardsPage = '/my-cards-page';
 

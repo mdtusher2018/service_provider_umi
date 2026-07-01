@@ -77,7 +77,7 @@
 //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                 children: [
 //                   // Logo
-//                   Image.asset(Assets.logo.keyName, height: 60),
+//                   Image.asset(Assets.logoPng.keyName, height: 60),
 //                   Row(
 //                     children: [
 //                       _buildCircleIcon(Icons.search, () {

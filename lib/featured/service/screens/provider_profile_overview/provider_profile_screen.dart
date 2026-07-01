@@ -14,6 +14,7 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/data/models/faq_model.dart';
 import 'package:service_provider_umi/featured/favourites/riverpod/favourites_notifire.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 
@@ -117,8 +118,9 @@ class _ProviderProfileOverviewScreenState
                       profileData.serviceProviderInfo?.images ?? [],
                     ),
 
-                    // AppDivider(),
-                    // _buildQaSection(mockProvider: providerProfile),
+                    AppDivider(),
+                    /// Add faq section here
+                    _buildQaSection(ref, profileData.id),
                     // AppDivider(),
                     // if (providerProfile.rating != null)
                     //   _buildRatingSection(providerProfile.rating!),

@@ -92,6 +92,18 @@ class ServiceRepository with SafeCall {
   Future<Result<List<FaqItem>, Failure>> getFaqs(String serviceId) =>
       asyncGuard(() => _remote.getFaqs(serviceId));
 
+  Future<Result<List<FaqItem>, Failure>> getFaqsByUserId(String userId) =>
+      asyncGuard(() => _remote.getFaqsByUserId(userId));
+
+  // ── POST /faq ────────────────────────────────────────────────────────────────
+  Future<Result<void, Failure>> createFaq({
+    required String question,
+    required String answer,
+    required String userId,
+  }) => asyncGuard(
+    () => _remote.createFaq(question: question, answer: answer, userId: userId),
+  );
+
   // ── GET /workSchedule ────────────────────────────────────────────────────────
   Future<Result<WorkScheduleListResponse, Failure>> getWorkSchedule({
     required String userId,

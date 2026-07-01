@@ -206,7 +206,8 @@ class Assets {
   );
   static const $AssetsGuestImagesGen guestImages = $AssetsGuestImagesGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
-  static const AssetGenImage logo = AssetGenImage('assets/logo.png');
+  static const AssetGenImage logoJpg = AssetGenImage('assets/logo.jpg');
+  static const AssetGenImage logoPng = AssetGenImage('assets/logo.png');
   static const $AssetsServiceProviderImagesGen serviceProviderImages =
       $AssetsServiceProviderImagesGen();
   static const AssetGenImage support = AssetGenImage('assets/support.png');
@@ -214,7 +215,12 @@ class Assets {
   static const $AssetsWelcomeGen welcome = $AssetsWelcomeGen();
 
   /// List of all assets
-  static List<AssetGenImage> get values => [elderlyCare, logo, support];
+  static List<AssetGenImage> get values => [
+    elderlyCare,
+    logoJpg,
+    logoPng,
+    support,
+  ];
 }
 
 class AssetGenImage {

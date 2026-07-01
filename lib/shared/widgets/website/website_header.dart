@@ -114,7 +114,7 @@ class _MobileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset(Assets.logo.keyName),
+        Image.asset(Assets.logoPng.keyName),
 
         const Spacer(),
 

@@ -419,7 +419,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                       borderRadius: BorderRadius.circular(14),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withValues(alpha: 0.05),
                                           blurRadius: 6,
                                           offset: const Offset(0, 2),
                                         ),
@@ -444,7 +444,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                       child: Container(
                                         padding: const EdgeInsets.all(4),
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.6),
+                                          color: Colors.black.withValues(alpha: 0.6),
                                           shape: BoxShape.circle,
                                         ),
                                         child: const Icon(

@@ -196,3 +196,33 @@ class StripeConnectNotifier extends _$StripeConnectNotifier {
 
   void reset() => state = const StripeConnectState.initial();
 }
+
+@riverpod
+class AddFaqNotifier extends _$AddFaqNotifier {
+  @override
+  ActionState build() => const ActionState.initial();
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  Future<void> addFaq({
+    required String question,
+    required String answer,
+    required String userId,
+  }) async {
+    if (!ref.mounted) return;
+    state = const ActionState.loading();
+
+    final result = await _repo.createFaq(
+      question: question,
+      answer: answer,
+      userId: userId,
+    );
+
+    state = result.when(
+      success: (_) => const ActionState.success(),
+      failure: ActionState.failure,
+    );
+  }
+
+  void reset() => state = const ActionState.initial();
+}

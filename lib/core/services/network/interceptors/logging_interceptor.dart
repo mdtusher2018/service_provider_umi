@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -17,20 +19,20 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (kDebugMode) {
-      debugPrint('\n$cyan$_divider$reset');
-      debugPrint('$blue$bold🚀 REQUEST$reset');
-      debugPrint('$yellow  Method  : ${options.method}$reset');
-      debugPrint('$yellow  URL     : ${options.uri}$reset');
-      debugPrint('$magenta  Headers : ${options.headers}$reset');
+      log('\n$cyan$_divider$reset');
+      log('$blue$bold🚀 REQUEST$reset');
+      log('$yellow  Method  : ${options.method}$reset');
+      log('$yellow  URL     : ${options.uri}$reset');
+      log('$magenta  Headers : ${options.headers}$reset');
 
       if (options.data != null) {
-        debugPrint('$cyan  Body    : ${options.data}$reset');
+        log('$cyan  Body    : ${options.data}$reset');
       }
       if (options.queryParameters.isNotEmpty) {
-        debugPrint('$cyan  Params  : ${options.queryParameters}$reset');
+        log('$cyan  Params  : ${options.queryParameters}$reset');
       }
 
-      debugPrint('$cyan$_divider$reset');
+      log('$cyan$_divider$reset');
     }
     handler.next(options);
   }
@@ -38,12 +40,12 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
-      debugPrint('\n$green$_divider$reset');
-      debugPrint('$green$bold✅ RESPONSE$reset');
-      debugPrint('$green  Status  : ${response.statusCode}$reset');
-      debugPrint('$yellow  URL     : ${response.requestOptions.uri}$reset');
-      debugPrint('$cyan  Data    : ${response.data}$reset');
-      debugPrint('$green$_divider$reset');
+      log('\n$green$_divider$reset');
+      log('$green$bold✅ RESPONSE$reset');
+      log('$green  Status  : ${response.statusCode}$reset');
+      log('$yellow  URL     : ${response.requestOptions.uri}$reset');
+      log('$cyan  Data    : ${response.data}$reset');
+      log('$green$_divider$reset');
     }
     handler.next(response);
   }
@@ -51,14 +53,14 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      debugPrint('\n$red$_divider$reset');
-      debugPrint('$red$bold❌ ERROR$reset');
-      debugPrint('$yellow  Type    : ${err.type}$reset');
-      debugPrint('$yellow  URL     : ${err.requestOptions.uri}$reset');
-      debugPrint('$red  Message : ${err.message}$reset');
-      debugPrint('$magenta  Status  : ${err.response?.statusCode}$reset');
-      debugPrint('$cyan  Data    : ${err.response?.data}$reset');
-      debugPrint('$red$_divider$reset');
+      log('\n$red$_divider$reset');
+      log('$red$bold❌ ERROR$reset');
+      log('$yellow  Type    : ${err.type}$reset');
+      log('$yellow  URL     : ${err.requestOptions.uri}$reset');
+      log('$red  Message : ${err.message}$reset');
+      log('$magenta  Status  : ${err.response?.statusCode}$reset');
+      log('$cyan  Data    : ${err.response?.data}$reset');
+      log('$red$_divider$reset');
     }
     handler.next(err);
   }

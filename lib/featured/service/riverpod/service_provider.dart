@@ -322,6 +322,26 @@ class FaqNotifier extends _$FaqNotifier {
 }
 
 @riverpod
+class ProviderFaqsNotifier extends _$ProviderFaqsNotifier {
+  @override
+  AsyncValue<List<FaqItem>> build(String userId) {
+    _fetch(userId);
+    return const AsyncLoading();
+  }
+
+  ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
+
+  Future<void> _fetch(String userId) async {
+    final result = await _repo.getFaqsByUserId(userId);
+
+    state = result.when(
+      success: (data) => AsyncData(data),
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
+}
+
+@riverpod
 class WorkScheduleNotifier extends _$WorkScheduleNotifier {
   @override
   AsyncValue<WorkScheduleListResponse> build() {

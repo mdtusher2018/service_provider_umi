@@ -47,6 +47,12 @@ abstract class ServiceRemoteDataSource {
 
   // ── FAQs ────────────────────────────────────────────────────────────────────
   Future<List<FaqItem>> getFaqs(String serviceId);
+  Future<List<FaqItem>> getFaqsByUserId(String userId);
+  Future<void> createFaq({
+    required String question,
+    required String answer,
+    required String userId,
+  });
 
   Future<WorkScheduleListResponse> getWorkSchedule({required String userId});
   Future<void> createWorkSchedule(List<WorkScheduleRequest> schedules);
@@ -326,6 +332,52 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
       throw Exception(apiResponse.error?.message ?? 'Failed to fetch FAQs');
     }
     return apiResponse.data ?? [];
+  }
+
+  @override
+  Future<List<FaqItem>> getFaqsByUserId(String userId) async {
+    final response = await _dio.get(
+      ApiEndpoints.faqs,
+      queryParameters: {'userId': userId},
+    );
+    final apiResponse = ApiResponse<List<FaqItem>>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => FaqItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+    if (!apiResponse.success) {
+      throw Exception(apiResponse.error?.message ?? 'Failed to fetch FAQs');
+    }
+    return apiResponse.data ?? [];
+  }
+
+  @override
+  Future<void> createFaq({
+    required String question,
+    required String answer,
+    required String userId,
+  }) async {
+    final response = await _dio.post(
+      ApiEndpoints.faqs,
+      data: {
+        "question": question,
+        "answer": answer,
+        "userId": userId,
+      },
+    );
+    final apiResponse = ApiResponse<void>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) => null,
+    );
+    if (!apiResponse.success) {
+      throw Exception(
+        apiResponse.error?.message ?? apiResponse.message ?? 'Failed to create FAQ',
+      );
+    }
   }
 
   // ── Helper ───────────────────────────────────────────────────────────────────

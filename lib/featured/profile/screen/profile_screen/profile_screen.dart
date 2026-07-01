@@ -44,7 +44,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
-      barrierColor: Colors.black.withOpacity(0.4),
+      barrierColor: Colors.black.withValues(alpha: 0.4),
       pageBuilder: (_, _, _) => _LogoutDialog(
         onCancel: () {
           context.pop();
@@ -195,6 +195,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         } else {
                           context.push(AppRoutes.providerReviews);
                         }
+                      }),
+                      _Item(Icons.question_answer_outlined, 'Add FAQ', () {
+                        userState.maybeWhen(
+                          success: (profile) {
+                            if (kIsWeb) {
+                              context.go(AppRoutes.addFaq, extra: profile.id);
+                            } else {
+                              context.push(AppRoutes.addFaq, extra: profile.id);
+                            }
+                          },
+                          orElse: () {
+                            context.showSnackBar("Profile is not loaded yet");
+                          },
+                        );
                       }),
                     ],
                     _Item(Icons.lock_outline_rounded, 'Change password', () {
