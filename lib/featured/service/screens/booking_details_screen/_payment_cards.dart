@@ -42,6 +42,15 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
             (failure is Failure) ? failure.message : failure.toString(),
           );
         },
+        data: (_) async {
+          if (previous is AsyncLoading && context.mounted) {
+            context.showSuccessSnackBar(
+                "Payment successful"
+            );
+            await Future.delayed(const Duration(milliseconds: 800));
+            if (context.mounted) context.go(AppRoutes.userHome);
+          }
+        },
       );
     });
     return Column(

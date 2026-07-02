@@ -122,9 +122,9 @@ extension BuildContextExtensions on BuildContext {
   }
 
   void showSuccessSnackBar(String message) =>
-      showSnackBar(message, isError: false);
+      showSnackBar(message, isError: false,);
   void showErrorSnackBar(String message) =>
-      showSnackBar(message, isError: true);
+      showSnackBar(message, isError: true,);
 
   void showLoader() {
     showDialog(

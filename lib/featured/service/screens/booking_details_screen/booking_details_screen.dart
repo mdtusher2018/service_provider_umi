@@ -27,6 +27,8 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../../core/theme/app_colors.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
+import '../../../../core/router/app_routes.dart';
+import '../../../../core/utils/helpers/decode_helper.dart';
 
 part '_congratulations_overlay.dart';
 part '_timeline_row.dart';
@@ -145,6 +147,20 @@ class _BookingDetailBody extends ConsumerWidget {
         error: (failure, _) {
           context.showErrorSnackBar(failure.toString());
         },
+        data: (_) async {
+          if (previous is AsyncLoading) {
+
+            // refresh the relevant bookings list(s) before navigating
+            // await ref
+            //     .read(bookingsNotifierProvider(BookingStatus.pending).notifier)
+            //     .fetch(initial: true);
+
+            if (context.mounted) {
+              context.showSuccessSnackBar("Booking accepted");
+              context.go(AppRoutes.providerHome);
+            }
+          }
+        },
       );
     });
     ref.listen(rejectBookingProvider, (previous, next) {
@@ -160,7 +176,7 @@ class _BookingDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProviderRow(ref, role),
+          _buildProviderRow(context, ref, role),
           20.verticalSpace,
           _buildTextContentSection(
             "Comment",
@@ -236,7 +252,7 @@ class _BookingDetailBody extends ConsumerWidget {
   }
 
   // ─── Provider row ─────────────────────────────────────────────────────────
-  Widget _buildProviderRow(WidgetRef ref, AppRole role) {
+  Widget _buildProviderRow(BuildContext context, WidgetRef ref, AppRole role) {
     // Show the other party: if viewing as provider → show user, else → show provider
     final name = (role == AppRole.provider)
         ? data.user?.name ?? '—'
@@ -267,10 +283,27 @@ class _BookingDetailBody extends ConsumerWidget {
             children: [AppText.h4(name), AppText.bodySm(phone)],
           ),
         ),
-        AppAvatar(
-          imageUrl: Assets.icons.chatIcon.keyName,
-          size: AvatarSize.md,
-          backgroundColor: AppColors.primaryFor(role),
+        GestureDetector(
+          onTap: () async {
+            // final myUserId = await getMyUserId(ref);
+            //
+            // if (!context.mounted) return;
+            //
+            // context.push(
+            //   AppRoutes.chatPath((chatId.isEmpty) ? data.id : chatId),
+            //   extra: {
+            //     'otherUserId': data.id,
+            //     'name': data.name,
+            //     'myId': myUserId,
+            //     'imageUrl': data.profileImage ?? "",
+            //   },
+            // );
+          },
+          child: AppAvatar(
+            imageUrl: Assets.icons.chatIcon.keyName,
+            size: AvatarSize.md,
+            backgroundColor: AppColors.primaryFor(role),
+          ),
         ),
       ],
     );
