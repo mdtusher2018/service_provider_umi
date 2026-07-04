@@ -57,6 +57,10 @@ class _ProviderCompletedServiceScreenState
               emptyMessage: 'No bookings',
               emptySubtitle: 'Your bookings will appear here',
               onCardTap: (item) => _onCardTap(item, context),
+              onLoadMore: () => ref
+                  .read(bookingsProvider(BookingStatus.complete).notifier)
+                  .fetch(),
+              isLoadingMore: state.isLoading && state.hasValue,
               onRatingTap: _showRatingDialog,
             ),
           );

@@ -310,6 +310,8 @@ class BookingList extends StatelessWidget {
   final String emptySubtitle;
   final void Function(BookingModel) onCardTap;
   final void Function(BookingModel)? onRatingTap;
+  final VoidCallback? onLoadMore;
+  final bool isLoadingMore;
 
   const BookingList({
     super.key,
@@ -318,6 +320,8 @@ class BookingList extends StatelessWidget {
     required this.emptySubtitle,
     required this.onCardTap,
     this.onRatingTap,
+    this.onLoadMore,
+    this.isLoadingMore = false,
   });
 
   @override
@@ -346,14 +350,31 @@ class BookingList extends StatelessWidget {
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-      itemCount: items.length,
-      separatorBuilder: (_, __) => 12.verticalSpace,
-      itemBuilder: (_, i) => BookingCard(
-        item: items[i],
-        onTap: () => onCardTap(items[i]),
-        onRatingTap: onRatingTap != null ? () => onRatingTap!(items[i]) : null,
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (onLoadMore != null &&
+            scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 50) {
+          onLoadMore!();
+        }
+        return false;
+      },
+      child: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        itemCount: items.length + (isLoadingMore ? 1 : 0),
+        separatorBuilder: (_, __) => 12.verticalSpace,
+        itemBuilder: (_, i) {
+          if (i == items.length) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return BookingCard(
+            item: items[i],
+            onTap: () => onCardTap(items[i]),
+            onRatingTap: onRatingTap != null ? () => onRatingTap!(items[i]) : null,
+          );
+        },
       ),
     );
   }

@@ -245,7 +245,7 @@ class _BookingDetailBody extends ConsumerWidget {
             ),
 
           if (bookingStatus == BookingStatus.complete)
-            AppText.bodyLg("This Bokking has been Completed"),
+            AppText.bodyLg("This Booking has been Completed"),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -18,6 +19,8 @@ import '../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 
+final providerHomeRefreshProvider = StateProvider<int>((ref) => 0);
+
 class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
   const ServiceProviderHomeScreen({super.key});
 
@@ -27,7 +30,7 @@ class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
-  DateTime _selectedDate = DateTime.now();
+  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -49,7 +52,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
     final primary = AppColors.primaryFor(ref.read(appRoleProvider));
     final picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
       builder: (context, child) => Theme(
@@ -72,6 +75,15 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
     final role = ref.watch(appRoleProvider);
     final primary = AppColors.primaryFor(role);
     final state = ref.watch(bookingsProvider(BookingStatus.upcoming));
+
+    ref.listen(providerHomeRefreshProvider, (_, __) {
+      if (mounted) {
+        setState(() {
+          _selectedDate = null;
+        });
+        ref.read(bookingsProvider(BookingStatus.upcoming).notifier).fetch(initial: true, clearDate: true);
+      }
+    });
 
     ref.listen(myProfileProvider, (_, next) {
       next.whenOrNull(
@@ -119,6 +131,10 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                       emptyMessage: 'No bookings',
                       emptySubtitle: 'Your bookings will appear here',
                       onCardTap: (item) => _onCardTap(item, context),
+                      onLoadMore: () => ref
+                          .read(bookingsProvider(BookingStatus.upcoming).notifier)
+                          .fetch(),
+                      isLoadingMore: state.isLoading && state.hasValue,
                     ),
                   );
                 },
@@ -152,7 +168,9 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
               child: Row(
                 children: [
                   AppText(
-                    DateFormat('d MMM, yyyy').format(_selectedDate),
+                    _selectedDate != null
+                        ? DateFormat('d MMM, yyyy').format(_selectedDate!)
+                        : 'Date Filter',
                     style: AppTextStyles.labelMd.copyWith(
                       color: AppColors.textSecondary,
                     ),

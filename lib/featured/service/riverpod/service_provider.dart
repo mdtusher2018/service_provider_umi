@@ -128,19 +128,27 @@ class BookingsNotifier extends _$BookingsNotifier {
     return const AsyncLoading();
   }
 
-  Future<void> fetch({bool initial = false, String? date}) async {
+  Future<void> fetch({bool initial = false, String? date, bool clearDate = false}) async {
     if (_isFetching) return;
 
     if (initial) {
       _page = 1;
       _hasMore = true;
-      if (date != null) _selectedDate = date;
+      if (clearDate) {
+        _selectedDate = null;
+      } else if (date != null) {
+        _selectedDate = date;
+      }
       state = const AsyncLoading();
     }
 
     if (!_hasMore) return;
 
     _isFetching = true;
+    
+    if (!initial) {
+      state = AsyncLoading<List<BookingModel>>().copyWithPrevious(state);
+    }
 
     final result = await _repo.getMyBookings(
       page: _page,
@@ -159,7 +167,12 @@ class BookingsNotifier extends _$BookingsNotifier {
 
         final updated = initial ? newItems : [...current, ...newItems];
 
-        _hasMore = newItems.isNotEmpty;
+        if (res.meta != null) {
+          _hasMore = updated.length < res.meta!.total;
+        } else {
+          _hasMore = newItems.isNotEmpty;
+        }
+        
         _page++;
 
         state = AsyncData(updated);
@@ -229,6 +242,7 @@ class AcceptBooking extends _$AcceptBooking {
 
     if (state is AsyncData) {
       ref.invalidate(bookingDetailProvider(bookingId));
+      ref.invalidate(bookingsProvider);
     }
   }
 }
@@ -252,6 +266,7 @@ class RejectBooking extends _$RejectBooking {
 
     if (state is AsyncData) {
       ref.invalidate(bookingDetailProvider(bookingId));
+      ref.invalidate(bookingsProvider);
     }
   }
 }
@@ -275,6 +290,7 @@ class CompleteBooking extends _$CompleteBooking {
 
     if (state is AsyncData) {
       ref.invalidate(bookingDetailProvider(bookingId));
+      ref.invalidate(bookingsProvider);
     }
   }
 }
@@ -298,6 +314,7 @@ class ConfirmPayment extends _$ConfirmPayment {
 
     if (state is AsyncData) {
       ref.invalidate(bookingDetailProvider(bookingId));
+      ref.invalidate(bookingsProvider);
     }
   }
 }

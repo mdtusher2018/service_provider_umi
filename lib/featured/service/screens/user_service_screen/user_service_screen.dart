@@ -152,6 +152,10 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                       emptyMessage: 'No bookings',
                       emptySubtitle: 'Your bookings will appear here',
                       onCardTap: (item) => _onCardTap(item, context),
+                      onLoadMore: () => ref
+                          .read(bookingsProvider(_currentStatus).notifier)
+                          .fetch(),
+                      isLoadingMore: state.isLoading && state.hasValue,
                     ),
                   );
                 },

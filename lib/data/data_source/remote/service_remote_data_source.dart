@@ -293,7 +293,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         'upcoming': true
       else
         'status': status.name,
-      'date': ?date,
+      if (date != null) 'date': date,
     };
 
     final response = await _dio.get(endpoint, queryParameters: queryParams);

@@ -7,7 +7,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-
+import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
 class RootScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   final AppRole role; // 👈 passed from shell builder, no provider watch needed
@@ -18,7 +18,10 @@ class RootScreen extends ConsumerWidget {
     required this.role,
   });
 
-  void _onTap(int index) {
+  void _onTap(int index, WidgetRef ref) {
+    if (role == AppRole.provider && index == 2) {
+      ref.read(providerHomeRefreshProvider.notifier).state++;
+    }
     navigationShell.goBranch(
       index,
       initialLocation: index == navigationShell.currentIndex,
@@ -83,7 +86,7 @@ class RootScreen extends ConsumerWidget {
                 // index 4
                 TabItem(icon: Icons.person_outline, title: "Profile"),
               ],
-              onTap: _onTap,
+              onTap: (index) => _onTap(index, ref),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

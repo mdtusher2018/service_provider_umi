@@ -1,5 +1,5 @@
-// models/booking/booking_models.dart
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
+import 'meta_model.dart';
 
 // ── Request ───────────────────────────────────────────────────────────────────
 
@@ -223,14 +223,16 @@ class LocationModel {
 
 class BookingsListResponse {
   final List<BookingModel> bookings;
+  final MetaModel? meta;
 
-  const BookingsListResponse({required this.bookings});
+  const BookingsListResponse({required this.bookings, this.meta});
 
   factory BookingsListResponse.fromJson(Map<String, dynamic> json) =>
       BookingsListResponse(
-        bookings: (json['data'] as List)
-            .map((e) => BookingModel.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        bookings: (json['data'] as List?)
+                ?.map((e) => BookingModel.fromJson(e as Map<String, dynamic>))
+                .toList() ?? [],
+        meta: json['meta'] != null ? MetaModel.fromJson(json['meta']) : null,
       );
 }
 

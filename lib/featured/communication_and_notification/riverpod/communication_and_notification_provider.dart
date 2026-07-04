@@ -45,6 +45,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
   Future<void> fetch() async {
     state = const NotificationListState.loading();
     final result = await _repo.getMyNotifications();
+    if (!ref.mounted) return;
     state = result.when(
       success: NotificationListState.success,
       failure: NotificationListState.failure,
@@ -70,6 +71,7 @@ class MarkNotificationsNotifier extends _$MarkNotificationsNotifier {
     final result = await _repo.markNotifications(
       MarkNotificationsRequest(ids: ids),
     );
+    if (!ref.mounted) return;
     state = result.when(
       success: (_) => const NotificationActionState.success(),
       failure: NotificationActionState.failure,
@@ -92,6 +94,7 @@ class DeleteNotificationsNotifier extends _$DeleteNotificationsNotifier {
   Future<void> deleteAll() async {
     state = const NotificationActionState.loading();
     final result = await _repo.deleteNotifications();
+    if (!ref.mounted) return;
     state = result.when(
       success: (_) => const NotificationActionState.success(),
       failure: NotificationActionState.failure,
@@ -122,6 +125,8 @@ class CallHistoryNotifier extends _$CallHistoryNotifier {
     state = const CallHistoryState.loading();
 
     final result = await _repo.getCallHistory();
+
+    if (!ref.mounted) return;
 
     state = result.when(
       success: CallHistoryState.success,
