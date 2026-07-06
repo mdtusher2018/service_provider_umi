@@ -74,12 +74,14 @@ class ProviderCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        AppText(
-                          name,
-                          style: AppTextStyles.h4,
-                          maxLines: 1,
-                          color: AppColors.textSecondary,
-                          overflow: TextOverflow.ellipsis,
+                        Flexible(
+                          child: AppText(
+                            name,
+                            style: AppTextStyles.h4,
+                            maxLines: 1,
+                            color: AppColors.textSecondary,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         if (isVerified) ...[
                           4.horizontalSpace,
@@ -96,8 +98,13 @@ class ProviderCard extends StatelessWidget {
                       children: [
                         Icon(Icons.star, color: AppColors.star, size: 20),
                         6.horizontalSpace,
-                        AppText.labelMd(
-                          '${rating.toStringAsFixed(1)}  (${reviewCount.toString()}) | $serviceCount Services',
+                        Flexible(
+                          child: AppText.labelMd(
+                            '${rating.toStringAsFixed(1)}  (${reviewCount.toString()}) | $serviceCount Services',
+                            color: AppColors.grey500,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),

@@ -91,19 +91,60 @@ class ServiceDetailsNotifier extends _$ServiceDetailsNotifier {
 
 @riverpod
 class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
+  int _page = 1;
+  bool _hasMore = true;
+  bool _isFetching = false;
+  SearchProvidersRequest? _currentRequest;
+
   @override
   AsyncValue<SearchProvidersResponse> build() => const AsyncLoading();
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> search(SearchProvidersRequest request) async {
-    state = const AsyncLoading();
+  Future<void> search([SearchProvidersRequest? request, bool initial = false]) async {
+    if (_isFetching) return;
 
-    final result = await _repo.searchProviders(request);
+    final req = request ?? _currentRequest;
+    if (req == null) return;
+
+    if (initial || _currentRequest != req) {
+      _page = 1;
+      _hasMore = true;
+      _currentRequest = req;
+      state = const AsyncLoading();
+    } else if (!_hasMore) {
+      return;
+    }
+
+    _isFetching = true;
+    if (!initial && _currentRequest == req) {
+      state = AsyncLoading<SearchProvidersResponse>().copyWithPrevious(state);
+    }
+
+    final pagedRequest = _currentRequest!.mergeWith(page: _page);
+    final result = await _repo.searchProviders(pagedRequest);
+
+    if (!ref.mounted) return;
 
     state = result.when(
-      success: (data) => AsyncData(data),
-      failure: (e) => AsyncError(e, StackTrace.current),
+      success: (data) {
+        final newItems = data.results;
+        final currentItems = state.value?.results ?? [];
+        final updatedItems = initial ? newItems : [...currentItems, ...newItems];
+
+        _hasMore = updatedItems.length < data.pagination.totalPage;
+        _page++;
+        _isFetching = false;
+
+        return AsyncData(SearchProvidersResponse(
+          results: updatedItems,
+          pagination: data.pagination,
+        ));
+      },
+      failure: (e) {
+        _isFetching = false;
+        return AsyncError(e, StackTrace.current);
+      },
     );
   }
 }
@@ -463,6 +504,7 @@ class ProviderProfileNotifier extends _$ProviderProfileNotifier {
     final chatId = results[2] as Result<String, Failure>;
 
     // handle both results safely
+    if (!ref.mounted) return;
     state = profileResult.when(
       success: (profile) {
         return reviewsResult.when(
