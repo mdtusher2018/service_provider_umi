@@ -34,7 +34,7 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-Widget _buildHeader(BuildContext context) {
+Widget _buildHeader(BuildContext context, TextEditingController controller, ValueChanged<String> onChanged) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
     child: Row(
@@ -42,6 +42,8 @@ Widget _buildHeader(BuildContext context) {
         10.horizontalSpace,
         Expanded(
           child: AppTextField(
+            controller: controller,
+            onChanged: onChanged,
             hint: "Find the service you need",
             prefixIcon: kIsWeb
                 ? null

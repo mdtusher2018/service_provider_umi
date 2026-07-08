@@ -56,6 +56,6 @@ class AppConstants {
       r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
 
   // Supported Locales
-  static const List<String> supportedLocales = ['en', 'ar', 'fr'];
+  static const List<String> supportedLocales = ['en', 'ro', 'fr', 'es', 'de', 'ar', 'pt', 'it'];
   static const String defaultLocale = 'en';
 }

@@ -262,7 +262,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
             'page': page,
             'include': 'user,provider,bookingDays',
             'status': BookingStatus.requested.name,
-            if (date != null) 'date': date,
+            if (date != null) 'date': DateTime.parse(date).toLocal(),
           },
         ),
         _dio.get(
@@ -271,7 +271,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
             'page': page,
             'include': 'user,provider,bookingDays',
             'status': BookingStatus.pending.name,
-            if (date != null) 'date': date,
+            if (date != null) 'date': DateTime.parse(date).toLocal(),
           },
         ),
       ]);
@@ -293,7 +293,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         'upcoming': true
       else
         'status': status.name,
-      if (date != null) 'date': date,
+      if (date != null) 'date': DateTime.parse(date).toIso8601String().split('.').first,
     };
 
     final response = await _dio.get(endpoint, queryParameters: queryParams);

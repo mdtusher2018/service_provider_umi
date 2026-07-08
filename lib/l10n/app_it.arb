@@ -1,0 +1,28 @@
+{
+  "@@locale": "it",
+  "home": "Home",
+  "profile": "Profilo",
+  "changeLanguage": "Cambia lingua",
+  "save": "Salva",
+  "languageChangedTo": "Lingua cambiata in {language}",
+  "noBookings": "Nessuna prenotazione",
+  "yourBookingsWillAppearHere": "Le tue prenotazioni appariranno qui",
+  "noProvidersFound": "Nessun fornitore trovato",
+  "notification": "Notifica",
+  "inbox": "Posta in arrivo",
+  "@languageChangedTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "upcomingBookings": "Upcoming Bookings",
+  "dateFilter": "Date Filter",
+  "noBookingsFound": "No bookings found",
+  "request": "Request",
+  "completed": "Completed",
+  "ongoing": "Ongoing",
+  "cancelled": "Cancelled",
+  "completedServices": "Completed Services"
+}

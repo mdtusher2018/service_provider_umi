@@ -5,7 +5,10 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/localization/locale_provider.dart';
 import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/theme/app_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/website/web_app_shell.dart';
+
+import 'l10n/app_localizations.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -22,7 +25,8 @@ class App extends ConsumerWidget {
       theme: AppTheme.of(currentRole),
       themeMode: ThemeMode.system,
       locale: locale.value,
-      supportedLocales: const [Locale('en'), Locale('ar'), Locale('fr')],
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
 
       builder: (context, child) {
         if (kIsWeb) {

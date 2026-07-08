@@ -36,14 +36,14 @@ class _ProviderCompletedServiceScreenState
     return Scaffold(
       backgroundColor: AppColors.background,
 
-      appBar: AppAppBar(title: "Completed Services"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.completedServices),
 
       body: state.when(
         loading: () => const AppLoader(),
         error: (e, _) => Center(child: AppText.h3(e.toString())),
         data: (data) {
           if (data.isEmpty) {
-            return const Center(child: AppText.bodyLg('No bookings found'));
+            return Center(child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound));
           }
 
           return RefreshIndicator(
@@ -54,8 +54,8 @@ class _ProviderCompletedServiceScreenState
             },
             child: BookingList(
               items: data,
-              emptyMessage: 'No bookings',
-              emptySubtitle: 'Your bookings will appear here',
+              emptyMessage: AppLocalizations.of(context)!.noBookings,
+              emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
               onCardTap: (item) => _onCardTap(item, context),
               onLoadMore: () => ref
                   .read(bookingsProvider(BookingStatus.complete).notifier)

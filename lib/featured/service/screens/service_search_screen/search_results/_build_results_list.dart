@@ -1,10 +1,54 @@
 part of 'service_search_results_screen.dart';
 
-Widget _buildResultsList({required WidgetRef ref}) {
+Widget _buildResultsList({required WidgetRef ref, required String serviceId}) {
   final state = ref.watch(searchServiceProvidersProvider);
 
   return state.when(
-    loading: () => const AppLoader(),
+    loading: () {
+      String? serviceName;
+      final catState = ref.read(categoriesProvider);
+      if (catState.hasValue) {
+        final category = catState.value!.firstWhere(
+          (c) => c.id == serviceId,
+          orElse: () => catState.value!.first,
+        );
+        if (category.id == serviceId) {
+          serviceName = category.name;
+        }
+      }
+
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RichText(
+              text: TextSpan(
+                style: AppTextStyles.bodyLg.copyWith(color: AppColors.textPrimary),
+                children: [
+                  const TextSpan(text: 'Finding '),
+                  if (serviceName != null)
+                    TextSpan(
+                      text: '$serviceName ',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  const TextSpan(text: 'professionals'),
+                ],
+              ),
+            ),
+            16.verticalSpace,
+            SizedBox(
+              width: 150,
+              child: LinearProgressIndicator(
+                backgroundColor: AppColors.grey200,
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(10),
+                minHeight: 6,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
 
     error: (e, _) => Center(child: AppText.bodyLg(e.toString())),
 

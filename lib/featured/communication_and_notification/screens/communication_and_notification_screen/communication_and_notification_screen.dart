@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
@@ -30,6 +31,8 @@ part '_alert_tile.dart';
 part '_contact_tile.dart';
 part '_tab_bar.dart';
 
+final inboxRefreshProvider = StateProvider<int>((ref) => 0);
+
 // ─── Screen ───────────────────────────────────────────────────
 class CommunicationAndNotificationScreen extends ConsumerStatefulWidget {
   const CommunicationAndNotificationScreen({
@@ -51,6 +54,7 @@ class _CommunicationAndNotificationScreenState
 
   final _chatService = ChatSocketService.instance;
   List<ChatRoom> _rooms = [];
+  String _searchQuery = '';
   bool _isLoading = true;
   StreamSubscription<String>? _errorSub;
 
@@ -60,8 +64,13 @@ class _CommunicationAndNotificationScreenState
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(notificationsProvider.notifier).fetch();
-      ref.read(callHistoryProvider.notifier).fetch();
+      final role = ref.read(appRoleProvider);
+      if (widget.isNotification || role == AppRole.user) {
+        ref.read(notificationsProvider.notifier).fetch();
+      }
+      if (!widget.isNotification) {
+        ref.read(callHistoryProvider.notifier).fetch();
+      }
     });
 
     initializedChatService();
@@ -116,6 +125,19 @@ class _CommunicationAndNotificationScreenState
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(inboxRefreshProvider, (_, __) {
+      final role = ref.read(appRoleProvider);
+      if (!widget.isNotification || role == AppRole.user) {
+        _chatService.fetchChatList(onAck: (response) {});
+      }
+      if (widget.isNotification || role == AppRole.user) {
+        ref.read(notificationsProvider.notifier).fetch();
+      }
+      if (!widget.isNotification) {
+        ref.read(callHistoryProvider.notifier).fetch();
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -159,12 +181,26 @@ class _CommunicationAndNotificationScreenState
   }
 
   Widget _buildChatTab() {
+    final filteredRooms = _rooms.where((r) {
+      if (_searchQuery.isEmpty) return true;
+      final q = _searchQuery.toLowerCase();
+      final name = r.otherUser.name.toLowerCase();
+      final email = r.otherUser.email.toLowerCase();
+      return name.contains(q) || email.contains(q);
+    }).toList();
+
     return Column(
       children: [
         // Search bar
         Padding(
           padding: 16.paddingH,
           child: AppSearchBar(
+            controller: _searchController,
+            onChanged: (val) {
+              setState(() {
+                _searchQuery = val;
+              });
+            },
             hint: "Search friends",
             suffix: Icon(Icons.search, size: 24),
           ),
@@ -176,7 +212,7 @@ class _CommunicationAndNotificationScreenState
         Expanded(
           child: _isLoading
               ? AppLoader()
-              : _rooms.isEmpty
+              : filteredRooms.isEmpty
               ? const AppEmptyState(
                   title: 'No conversations',
                   subtitle: 'Start messaging a provider',
@@ -189,29 +225,29 @@ class _CommunicationAndNotificationScreenState
                   child: ListView.separated(
                     padding: EdgeInsets.zero,
                     separatorBuilder: (context, index) => 20.verticalSpace,
-                    itemCount: _rooms.length,
+                    itemCount: filteredRooms.length,
                     itemBuilder: (_, i) => _ContactTile(
-                      contact: _rooms[i],
+                      contact: filteredRooms[i],
                       onTap: () async {
                         final myUserId = await getMyUserId(ref);
                         if (kIsWeb) {
                           context.go(
-                            AppRoutes.chatPath(_rooms[i].id),
+                            AppRoutes.chatPath(filteredRooms[i].id),
                             extra: {
-                              'otherUserId': _rooms[i].otherUser.id,
-                              'name': _rooms[i].otherUser.name,
+                              'otherUserId': filteredRooms[i].otherUser.id,
+                              'name': filteredRooms[i].otherUser.name,
                               'myId': myUserId,
-                              'imageUrl': _rooms[i].otherUser.profile ?? "",
+                              'imageUrl': filteredRooms[i].otherUser.profile ?? "",
                             },
                           );
                         } else {
                           context.push(
-                            AppRoutes.chatPath(_rooms[i].id),
+                            AppRoutes.chatPath(filteredRooms[i].id),
                             extra: {
-                              'otherUserId': _rooms[i].otherUser.id,
-                              'name': _rooms[i].otherUser.name,
+                              'otherUserId': filteredRooms[i].otherUser.id,
+                              'name': filteredRooms[i].otherUser.name,
                               'myId': myUserId,
-                              'imageUrl': _rooms[i].otherUser.profile ?? "",
+                              'imageUrl': filteredRooms[i].otherUser.profile ?? "",
                             },
                           );
                         }

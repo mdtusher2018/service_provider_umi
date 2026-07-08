@@ -7,7 +7,11 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen/communication_and_notification_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
+
+import '../l10n/app_localizations.dart';
+
 class RootScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   final AppRole role; // 👈 passed from shell builder, no provider watch needed
@@ -21,6 +25,9 @@ class RootScreen extends ConsumerWidget {
   void _onTap(int index, WidgetRef ref) {
     if (role == AppRole.provider && index == 2) {
       ref.read(providerHomeRefreshProvider.notifier).state++;
+    }
+    if ((role == AppRole.provider && index == 1) || (role == AppRole.user && index == 3)) {
+      ref.read(inboxRefreshProvider.notifier).state++;
     }
     navigationShell.goBranch(
       index,
@@ -74,17 +81,17 @@ class RootScreen extends ConsumerWidget {
                       width: 32,
                     ),
                   ),
-                  title: "Home",
+                  title: AppLocalizations.of(context)!.home,
                 ),
 
                 TabItem(
                   icon: isProvider
                       ? Icons.notifications_none
                       : Icons.chat_bubble_outline,
-                  title: isProvider ? "Notification" : "Inbox",
+                  title: isProvider ? AppLocalizations.of(context)!.notification : AppLocalizations.of(context)!.inbox,
                 ),
                 // index 4
-                TabItem(icon: Icons.person_outline, title: "Profile"),
+                TabItem(icon: Icons.person_outline, title: AppLocalizations.of(context)!.profile),
               ],
               onTap: (index) => _onTap(index, ref),
             ),

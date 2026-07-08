@@ -582,7 +582,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         left: 16,
         right: 12,
         top: 10,
-        bottom: context.keyboardHeight + context.bottomPadding + 10,
+        bottom: context.bottomPadding > 0 ? context.bottomPadding : 10,
       ),
       decoration: BoxDecoration(
         border: const Border(top: BorderSide(color: AppColors.border)),

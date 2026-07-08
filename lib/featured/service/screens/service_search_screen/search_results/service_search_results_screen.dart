@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +16,8 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+
+import '../../../../../core/theme/app_text_styles.dart';
 
 part '_build_results_list.dart';
 part '_faq_bottom_sheet.dart';
@@ -38,6 +42,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
   bool _showFaqSheet = false;
   late final TextEditingController _searchController;
   late SearchProvidersRequest _currentRequest;
+  Timer? _debounce;
 
   // Tracks the last params we actually fired a search for.
   // Key insight: didUpdateWidget fires on BOTH param changes AND on pop-back
@@ -108,8 +113,17 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _currentRequest = _currentRequest.mergeWith(searchTerm: value, page: 1);
+      ref.read(searchServiceProvidersProvider.notifier).search(_currentRequest);
+    });
   }
 
   @override
@@ -121,10 +135,10 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
           children: [
             Column(
               children: [
-                _buildHeader(context),
+                _buildHeader(context, _searchController, _onSearchChanged),
                 _buildFilterRow(ref, widget.serviceId),
                 _buildFaqBanner(),
-                Expanded(child: _buildResultsList(ref: ref)),
+                Expanded(child: _buildResultsList(ref: ref, serviceId: widget.serviceId)),
               ],
             ),
             if (_showFaqSheet)

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -8,8 +7,9 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/core/localization/locale_provider.dart';
 
-final _languageProvider = StateProvider.autoDispose<String>((ref) => 'English');
+import '../../../l10n/app_localizations.dart';
 
 class LanguageScreen extends ConsumerStatefulWidget {
   const LanguageScreen({super.key});
@@ -19,19 +19,21 @@ class LanguageScreen extends ConsumerStatefulWidget {
 }
 
 class _LanguageScreenState extends ConsumerState<LanguageScreen> {
-  final List<String> _languages = [
-    'English',
-    'Romanian',
-    'French',
-    'Spanish',
-    'German',
-    'Arabic',
-    'Portuguese',
-    'Italian',
-  ];
+  final Map<String, String> _languageMap = {
+    'en': 'English',
+    'ro': 'Romanian',
+    'fr': 'French',
+    'es': 'Spanish',
+    'de': 'German',
+    'ar': 'Arabic',
+    'pt': 'Portuguese',
+    'it': 'Italian',
+  };
 
   @override
   Widget build(BuildContext context) {
+    final currentLocale = ref.watch(localizationProvider).value?.languageCode ?? 'en';
+    final currentLanguageName = _languageMap[currentLocale] ?? 'English';
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -45,7 +47,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('Change Language'),
+        title: AppText.h3(AppLocalizations.of(context)!.changeLanguage),
         centerTitle: true,
       ),
       body: Padding(
@@ -53,8 +55,8 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppText.labelMd(
-              'Change language',
+            AppText.labelMd(
+              AppLocalizations.of(context)!.changeLanguage,
               color: AppColors.textSecondary,
             ),
             10.verticalSpace,
@@ -68,7 +70,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  value: ref.watch(_languageProvider),
+                  value: currentLanguageName,
                   isExpanded: true,
                   icon: const Icon(
                     Icons.keyboard_arrow_down_rounded,
@@ -77,7 +79,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
                   style: AppTextStyles.bodyMd.copyWith(
                     color: AppColors.textPrimary,
                   ),
-                  items: _languages
+                  items: _languageMap.values
                       .map(
                         (lang) =>
                             DropdownMenuItem(value: lang, child: AppText(lang)),
@@ -85,7 +87,8 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
                       .toList(),
                   onChanged: (v) {
                     if (v != null) {
-                      ref.read(_languageProvider.notifier).state = v;
+                      final code = _languageMap.entries.firstWhere((e) => e.value == v).key;
+                      ref.read(localizationProvider.notifier).setLocale(code);
                     }
                   },
                 ),
@@ -93,10 +96,10 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
             ),
             const Spacer(),
             AppButton.primary(
-              label: 'Save',
+              label: AppLocalizations.of(context)!.save,
               onPressed: () {
                 context.showSnackBar(
-                  'Language changed to ${ref.watch(_languageProvider)}',
+                  AppLocalizations.of(context)!.languageChangedTo(currentLanguageName),
                 );
                 context.pop();
               },

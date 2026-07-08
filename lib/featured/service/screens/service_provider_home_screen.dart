@@ -19,6 +19,8 @@ import '../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 final providerHomeRefreshProvider = StateProvider<int>((ref) => 0);
 
 class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
@@ -111,13 +113,13 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
             Expanded(
               child: state.when(
                 loading: () => const AppLoader(),
-                error: (e, _) => const Center(
-                  child: AppText.bodyLg('No bookings found'),
+                error: (e, _) => Center(
+                  child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
                 ),
                 data: (bookings) {
                   if (bookings.isEmpty) {
-                    return const Center(
-                      child: AppText.bodyLg('No bookings found'),
+                    return Center(
+                      child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
                     );
                   }
                   return RefreshIndicator(
@@ -128,8 +130,8 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                     },
                     child: BookingList(
                       items: bookings,
-                      emptyMessage: 'No bookings',
-                      emptySubtitle: 'Your bookings will appear here',
+                      emptyMessage: AppLocalizations.of(context)!.noBookings,
+                      emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
                       onCardTap: (item) => _onCardTap(item, context),
                       onLoadMore: () => ref
                           .read(bookingsProvider(BookingStatus.upcoming).notifier)
@@ -154,7 +156,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
         children: [
           Icon(Icons.timer, color: AppColors.primaryFor(AppRole.provider)),
           10.horizontalSpace,
-          AppText('Upcoming Bookings', style: AppTextStyles.h3),
+          AppText(AppLocalizations.of(context)!.upcomingBookings, style: AppTextStyles.h3),
           const Spacer(),
           GestureDetector(
             onTap: () => _selectDate(context),
@@ -170,7 +172,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
                   AppText(
                     _selectedDate != null
                         ? DateFormat('d MMM, yyyy').format(_selectedDate!)
-                        : 'Date Filter',
+                        : AppLocalizations.of(context)!.dateFilter,
                     style: AppTextStyles.labelMd.copyWith(
                       color: AppColors.textSecondary,
                     ),

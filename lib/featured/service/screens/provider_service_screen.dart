@@ -15,6 +15,8 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+
+import '../../../l10n/app_localizations.dart';
 part 'provider_completed_service_screen.dart';
 
 class ProviderServiceScreen extends ConsumerStatefulWidget {
@@ -100,14 +102,14 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
       backgroundColor: AppColors.background,
 
       appBar: AppAppBar(
-        title: "Request",
+        title: AppLocalizations.of(context)!.request,
         showBackButton: false,
         centerTitle: false,
         actions: [
           InkWell(
             onTap: _openCompleted,
             child: _StatusBadge(
-              label: 'Completed',
+              label: AppLocalizations.of(context)!.completed,
               color: AppColors.success,
               backgroundColor: AppColors.white,
             ),
@@ -135,8 +137,8 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                 error: (e, _) => Center(child: AppText.h3(e.toString())),
                 data: (data) {
                   if (data.isEmpty) {
-                    return const Center(
-                      child: AppText.bodyLg('No bookings found'),
+                    return Center(
+                      child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
                     );
                   }
 
@@ -146,8 +148,8 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                     },
                     child: BookingList(
                       items: data,
-                      emptyMessage: 'No bookings',
-                      emptySubtitle: 'Your bookings will appear here',
+                      emptyMessage: AppLocalizations.of(context)!.noBookings,
+                      emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
                       onCardTap: (item) => _onCardTap(item, context),
                       onLoadMore: () => ref
                           .read(bookingsProvider(_currentStatus).notifier)
@@ -186,7 +188,7 @@ class _StatusBadge extends StatelessWidget {
         color: backgroundColor,
         borderRadius: 8.circular,
         border: isInteractive
-            ? Border.all(color: color.withOpacity(0.3))
+            ? Border.all(color: color.withValues(alpha: 0.3))
             : null,
       ),
       child: AppText.bodySm(label, color: color, fontWeight: FontWeight.w700),
@@ -213,7 +215,11 @@ class _ProviderTabBar extends StatelessWidget {
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
-            children: ["Request", "Ongoing", "Cancelled"].asMap().entries.map((
+            children: [
+              AppLocalizations.of(context)!.request,
+              AppLocalizations.of(context)!.ongoing,
+              AppLocalizations.of(context)!.cancelled
+            ].asMap().entries.map((
               e,
             ) {
               final isSelected = controller.index == e.key;
@@ -234,7 +240,7 @@ class _ProviderTabBar extends StatelessWidget {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
+                                color: Colors.black.withValues(alpha: 0.08),
                                 blurRadius: 4,
                                 offset: const Offset(0, 1),
                               ),

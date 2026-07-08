@@ -133,6 +133,9 @@ class ChatSocketService {
   // ─── Private handlers ─────────────────────────────────────────────────────
 
   void _onChatList(dynamic raw) {
+    print('------- CHAT LIST RESPONSE -------');
+    print(raw);
+    print('----------------------------------');
     try {
       final list = _parseList(raw);
       final rooms = list.map((e) => ChatRoom.fromJson(e)).toList();

@@ -16,7 +16,9 @@ Widget _buildProfileHeader({
       AppText.h2(data.name),
       4.verticalSpace,
       AppText.labelLg(
-        data.serviceProviderInfo?.specialists.first.name ?? "N/A",
+        data.serviceProviderInfo?.specialists.isNotEmpty == true
+            ? data.serviceProviderInfo!.specialists.first.name
+            : "N/A",
         color: AppColors.primaryFor(ref.watch(appRoleProvider)),
       ),
       16.verticalSpace,

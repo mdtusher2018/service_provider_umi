@@ -1,0 +1,28 @@
+{
+  "@@locale": "ro",
+  "home": "Acasă",
+  "profile": "Profil",
+  "changeLanguage": "Schimbă limba",
+  "save": "Salvează",
+  "languageChangedTo": "Limba schimbată în {language}",
+  "noBookings": "Nu există rezervări",
+  "yourBookingsWillAppearHere": "Rezervările tale vor apărea aici",
+  "noProvidersFound": "Niciun furnizor găsit",
+  "notification": "Notificare",
+  "inbox": "Mesaje",
+  "@languageChangedTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "upcomingBookings": "Upcoming Bookings",
+  "dateFilter": "Date Filter",
+  "noBookingsFound": "No bookings found",
+  "request": "Request",
+  "completed": "Completed",
+  "ongoing": "Ongoing",
+  "cancelled": "Cancelled",
+  "completedServices": "Completed Services"
+}

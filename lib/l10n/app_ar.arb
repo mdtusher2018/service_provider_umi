@@ -1,0 +1,28 @@
+{
+  "@@locale": "ar",
+  "home": "الرئيسية",
+  "profile": "الملف الشخصي",
+  "changeLanguage": "تغيير اللغة",
+  "save": "حفظ",
+  "languageChangedTo": "تم تغيير اللغة إلى {language}",
+  "noBookings": "لا توجد حجوزات",
+  "yourBookingsWillAppearHere": "ستظهر حجوزاتك هنا",
+  "noProvidersFound": "لم يتم العثور على مزودين",
+  "notification": "إشعار",
+  "inbox": "صندوق الوارد",
+  "@languageChangedTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "upcomingBookings": "Upcoming Bookings",
+  "dateFilter": "Date Filter",
+  "noBookingsFound": "No bookings found",
+  "request": "Request",
+  "completed": "Completed",
+  "ongoing": "Ongoing",
+  "cancelled": "Cancelled",
+  "completedServices": "Completed Services"
+}
