@@ -41,26 +41,26 @@ class AppLocalizationsRo extends AppLocalizations {
   String get inbox => 'Mesaje';
 
   @override
-  String get upcomingBookings => 'Upcoming Bookings';
+  String get upcomingBookings => 'Rezervări viitoare';
 
   @override
-  String get dateFilter => 'Date Filter';
+  String get dateFilter => 'Filtru de date';
 
   @override
-  String get noBookingsFound => 'No bookings found';
+  String get noBookingsFound => 'Nu s-au găsit rezervări';
 
   @override
-  String get request => 'Request';
+  String get request => 'Cerere';
 
   @override
-  String get completed => 'Completed';
+  String get completed => 'Finalizat';
 
   @override
-  String get ongoing => 'Ongoing';
+  String get ongoing => 'În curs';
 
   @override
-  String get cancelled => 'Cancelled';
+  String get cancelled => 'Anulat';
 
   @override
-  String get completedServices => 'Completed Services';
+  String get completedServices => 'Servicii finalizate';
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -35,27 +37,47 @@ class MyPaymentCardsPage extends ConsumerWidget {
             final clientSecret = await ref
                 .read(paymentCardsProvider.notifier)
                 .getAddCardLink();
+            
+            log("clientSecret: ${clientSecret}");
 
             if (clientSecret == null) {
               context.showSnackBar('Failed to get add card link');
-
               return;
             }
 
-            /// 2. Init PaymentSheet
-            await Stripe.instance.initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                setupIntentClientSecret: clientSecret,
-                merchantDisplayName: 'Paycron',
-                style: ThemeMode.light,
-              ),
-            );
+            // Capture current cards to find the newly added one later
+            final currentCards = ref.read(paymentCardsProvider).value ?? [];
+            final currentCardIds = currentCards.map((c) => c.id).toSet();
 
-            /// 3. Open Stripe UI
-            await Stripe.instance.presentPaymentSheet();
+            try {
+              /// 2. Init PaymentSheet
+              await Stripe.instance.initPaymentSheet(
+                paymentSheetParameters: SetupPaymentSheetParameters(
+                  setupIntentClientSecret: clientSecret,
+                  merchantDisplayName: 'Paycron',
+                  style: ThemeMode.light,
+                ),
+              );
 
-            /// 4. IMPORTANT: Sync with backend (refresh cards)
-            ref.read(paymentCardsProvider.notifier).fetchCards();
+              /// 3. Open Stripe UI
+              await Stripe.instance.presentPaymentSheet();
+
+              /// 4. IMPORTANT: Sync with backend (refresh cards)
+              await ref.read(paymentCardsProvider.notifier).fetchCards();
+
+              /// 5. Set the newly added card as default
+              final newCards = ref.read(paymentCardsProvider).value ?? [];
+              final newCardIds = newCards.map((c) => c.id).toSet();
+              
+              final addedCardIds = newCardIds.difference(currentCardIds);
+              if (addedCardIds.isNotEmpty) {
+                await ref
+                    .read(paymentCardsProvider.notifier)
+                    .setDefaultCard(addedCardIds.first);
+              }
+            } catch (e) {
+              log("Stripe PaymentSheet Error: $e");
+            }
           },
         ),
       ),
@@ -185,16 +207,14 @@ class _CardTile extends ConsumerWidget {
           PopupMenuButton<String>(
             onSelected: (value) async {
               if (value == 'delete') {
-                final success = await ref
+                final errorMsg = await ref
                     .read(paymentCardsProvider.notifier)
                     .deleteCard(card.id);
 
                 if (context.mounted) {
                   context.showSnackBar(
-                    success
-                        ? 'Card deleted successfully'
-                        : 'Failed to delete card',
-                    isError: !success,
+                    errorMsg ?? 'Card deleted successfully',
+                    isError: errorMsg != null,
                   );
                 }
               }

@@ -27,21 +27,30 @@ class PaymentCardsNotifier extends _$PaymentCardsNotifier {
   }
 
   /// DELETE CARD
-  Future<bool> deleteCard(String paymentMethodId) async {
+  Future<String?> deleteCard(String paymentMethodId) async {
     final currentCards = state.value ?? [];
+    
+    if (currentCards.length <= 1) {
+      return "You cannot delete the last default card.";
+    }
+
+    final cardToDelete = currentCards.firstWhere((e) => e.id == paymentMethodId);
 
     final result = await _repo.deleteCard(paymentMethodId);
 
     return result.when(
-      success: (_) {
-        state = AsyncData(
-          currentCards.where((e) => e.id != paymentMethodId).toList(),
-        );
+      success: (_) async {
+        final remainingCards = currentCards.where((e) => e.id != paymentMethodId).toList();
+        state = AsyncData(remainingCards);
 
-        return true;
+        if (cardToDelete.isDefault && remainingCards.isNotEmpty) {
+          await setDefaultCard(remainingCards.first.id);
+        }
+
+        return null;
       },
       failure: (e) {
-        return false;
+        return "Failed to delete card.";
       },
     );
   }

@@ -17,12 +17,12 @@
       }
     }
   },
-  "upcomingBookings": "Upcoming Bookings",
-  "dateFilter": "Date Filter",
-  "noBookingsFound": "No bookings found",
-  "request": "Request",
-  "completed": "Completed",
-  "ongoing": "Ongoing",
-  "cancelled": "Cancelled",
-  "completedServices": "Completed Services"
+  "upcomingBookings": "Rezervări viitoare",
+  "dateFilter": "Filtru de date",
+  "noBookingsFound": "Nu s-au găsit rezervări",
+  "request": "Cerere",
+  "completed": "Finalizat",
+  "ongoing": "În curs",
+  "cancelled": "Anulat",
+  "completedServices": "Servicii finalizate"
 }
