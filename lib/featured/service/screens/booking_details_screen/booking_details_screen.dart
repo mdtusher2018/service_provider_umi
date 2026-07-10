@@ -29,6 +29,7 @@ import '../../../../../../../core/theme/app_colors.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/helpers/decode_helper.dart';
+import '../../../../core/di/repository_providers.dart';
 
 part '_congratulations_overlay.dart';
 part '_timeline_row.dart';
@@ -285,19 +286,39 @@ class _BookingDetailBody extends ConsumerWidget {
         ),
         GestureDetector(
           onTap: () async {
-            // final myUserId = await getMyUserId(ref);
-            //
-            // if (!context.mounted) return;
-            //
-            // context.push(
-            //   AppRoutes.chatPath((chatId.isEmpty) ? data.id : chatId),
-            //   extra: {
-            //     'otherUserId': data.id,
-            //     'name': data.name,
-            //     'myId': myUserId,
-            //     'imageUrl': data.profileImage ?? "",
-            //   },
-            // );
+            final myUserId = await getMyUserId(ref);
+
+            final otherUserId = (role == AppRole.provider)
+                ? data.user?.id
+                : data.provider?.id;
+
+            if (otherUserId == null) return;
+
+            if (!context.mounted) return;
+            context.showLoader();
+
+            final chatRepo = ref.read(chatRepositoryProvider);
+            final result = await chatRepo.getChatId(otherUserId);
+
+            if (!context.mounted) return;
+            context.hideLoader();
+
+            result.when(
+              success: (chatId) {
+                context.push(
+                  AppRoutes.chatPath(chatId.isEmpty ? otherUserId : chatId),
+                  extra: {
+                    'otherUserId': otherUserId,
+                    'name': name,
+                    'myId': myUserId,
+                    'imageUrl': profileUrl ?? "",
+                  },
+                );
+              },
+              failure: (e) {
+                context.showSnackBar('Failed to load chat: ${e.message}');
+              },
+            );
           },
           child: AppAvatar(
             imageUrl: Assets.icons.chatIcon.keyName,
