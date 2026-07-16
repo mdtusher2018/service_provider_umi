@@ -11,8 +11,12 @@ import 'package:service_provider_umi/featured/communication_and_notification/scr
 import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
 
 import '../l10n/app_localizations.dart';
+import 'package:service_provider_umi/core/services/socket/socket_service.dart';
+import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
+import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
+import 'dart:convert';
 
-class RootScreen extends ConsumerWidget {
+class RootScreen extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
   final AppRole role; // 👈 passed from shell builder, no provider watch needed
 
@@ -22,24 +26,79 @@ class RootScreen extends ConsumerWidget {
     required this.role,
   });
 
+  @override
+  ConsumerState<RootScreen> createState() => _RootScreenState();
+}
+
+class _RootScreenState extends ConsumerState<RootScreen> {
+  String? _userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSocketListener();
+  }
+
+  Future<void> _initSocketListener() async {
+    _userId = await getMyUserId(ref);
+    if (_userId != null && widget.role == AppRole.user) {
+      SocketService.instance.on('bookingComplete::$_userId', _onBookingComplete);
+    }
+  }
+
+  void _onBookingComplete(dynamic data) {
+    if (!mounted) return;
+    try {
+      final payload = data is Map ? data : (data is String ? jsonDecode(data) : null);
+      if (payload != null) {
+        final providerId = payload['provider']?['_id'] ?? 
+                           payload['provider']?['id'] ?? 
+                           payload['providerId'] ?? 
+                           payload['provider'];
+        
+        if (providerId != null && providerId is String) {
+          showDialog(
+            context: context,
+            builder: (_) => RatingDialog(
+              providerId: providerId,
+              onSubmit: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint("Error parsing bookingComplete payload: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_userId != null) {
+      SocketService.instance.off('bookingComplete::$_userId', _onBookingComplete);
+    }
+    super.dispose();
+  }
+
   void _onTap(int index, WidgetRef ref) {
-    if (role == AppRole.provider && index == 2) {
+    if (widget.role == AppRole.provider && index == 2) {
       ref.read(providerHomeRefreshProvider.notifier).state++;
     }
-    if ((role == AppRole.provider && index == 1) || (role == AppRole.user && index == 3)) {
+    if ((widget.role == AppRole.provider && index == 1) || (widget.role == AppRole.user && index == 3)) {
       ref.read(inboxRefreshProvider.notifier).state++;
     }
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isProvider = role == AppRole.provider;
+  Widget build(BuildContext context) {
+    final isProvider = widget.role == AppRole.provider;
     return Scaffold(
-      body: navigationShell,
+      body: widget.navigationShell,
       bottomNavigationBar: (kIsWeb)
           ? null
           : ConvexAppBar(
@@ -65,17 +124,17 @@ class RootScreen extends ConsumerWidget {
                 ),
                 TabItem(
                   icon: Container(
-                    padding: navigationShell.currentIndex == 2
+                    padding: widget.navigationShell.currentIndex == 2
                         ? 8.paddingAll
                         : 2.paddingAll,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryFor(role),
+                      decoration: BoxDecoration(
+                      color: AppColors.primaryFor(widget.role),
 
                       shape: BoxShape.circle,
                     ),
 
                     child: Image.asset(
-                      role == AppRole.provider
+                      widget.role == AppRole.provider
                           ? Assets.icons.upcoming.keyName
                           : Assets.icons.home.keyName,
                       width: 32,
