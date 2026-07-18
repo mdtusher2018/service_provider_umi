@@ -177,23 +177,17 @@ class _BookingDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProviderRow(context, ref, role),
-          20.verticalSpace,
+          _buildProviderRow(context, ref, role, bookingStatus),
+          16.verticalSpace,
           _buildTextContentSection(
             "Comment",
             "Service booked successfully for elder care. Please ensure assistance includes daily check-ins, medication reminders, and help with mobility as discussed.",
           ),
-          10.verticalSpace,
-          AppDivider(height: 1,),
-          10.verticalSpace,
+          16.verticalSpace,
           _buildSection('Date and time', _buildDateTime(data)),
-         10.verticalSpace,
-          AppDivider(height: 1,),
-          10.verticalSpace,
+          16.verticalSpace,
           _buildSection('Address', _buildAddress(data)),
-          10.verticalSpace,
-          AppDivider(height: 1,),
-          10.verticalSpace,
+          16.verticalSpace,
           _buildSection('Service price', _buildPrice()),
           40.verticalSpace,
 
@@ -253,7 +247,7 @@ class _BookingDetailBody extends ConsumerWidget {
   }
 
   // ─── Provider row ─────────────────────────────────────────────────────────
-  Widget _buildProviderRow(BuildContext context, WidgetRef ref, AppRole role) {
+  Widget _buildProviderRow(BuildContext context, WidgetRef ref, AppRole role, BookingStatus bookingStatus) {
     // Show the other party: if viewing as provider → show user, else → show provider
     final name = (role == AppRole.provider)
         ? data.user?.name ?? '—'
@@ -265,8 +259,20 @@ class _BookingDetailBody extends ConsumerWidget {
         ? data.user?.profile
         : data.provider?.profile;
 
-    return Row(
-      children: [
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppText.h4(role == AppRole.provider ? 'Customer:' : 'Provider:', color: AppColors.textPrimary),
+          16.verticalSpace,
+          Row(
+            children: [
         CircleAvatar(
           radius: 40,
           backgroundImage: profileUrl != null && profileUrl.isNotEmpty
@@ -286,6 +292,12 @@ class _BookingDetailBody extends ConsumerWidget {
         ),
         GestureDetector(
           onTap: () async {
+            if (bookingStatus == BookingStatus.pending) {
+              final action = role == AppRole.user ? 'accepting' : 'creating';
+              context.showSnackBar("You can't chat before $action the booking", showAtTop: true);
+              return;
+            }
+
             final myUserId = await getMyUserId(ref);
 
             final otherUserId = (role == AppRole.provider)
@@ -327,6 +339,9 @@ class _BookingDetailBody extends ConsumerWidget {
           ),
         ),
       ],
+    ),
+  ],
+),
     );
   }
 
@@ -372,13 +387,21 @@ class _BookingDetailBody extends ConsumerWidget {
 
   // ─── Section wrapper ──────────────────────────────────────────────────────
   Widget _buildSection(String title, Widget child) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText.h4(title, color: AppColors.textPrimary),
-        10.verticalSpace,
-        child,
-      ],
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppText.h4(title, color: AppColors.textPrimary),
+          16.verticalSpace,
+          child,
+        ],
+      ),
     );
   }
 }

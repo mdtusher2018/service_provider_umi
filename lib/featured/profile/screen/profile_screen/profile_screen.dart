@@ -182,11 +182,39 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       //     context.push(AppRoutes.myBalance);
                       //   }
                       // }),
-                      _Item(Icons.tune, 'Booking preferences', () {
+                      _Item(Icons.list_alt, 'My Listing', () {
                         if (kIsWeb) {
-                          context.go(AppRoutes.preferences);
+                          context.go(AppRoutes.providerListing);
                         } else {
-                          context.push(AppRoutes.preferences);
+                          context.push(AppRoutes.providerListing);
+                        }
+                      }),
+                      // _Item(Icons.tune, 'Booking preferences', () {
+                      //   if (kIsWeb) {
+                      //     context.go(AppRoutes.preferences);
+                      //   } else {
+                      //     context.push(AppRoutes.preferences);
+                      //   }
+                      // }),
+                      // _Item(Icons.location_on_outlined, 'My work areas', () {
+                      //   if (kIsWeb) {
+                      //     context.go(AppRoutes.workAreas);
+                      //   } else {
+                      //     context.push(AppRoutes.workAreas);
+                      //   }
+                      // }),
+                      _Item(Icons.access_time_rounded, 'My schedule', () {
+                        if (kIsWeb) {
+                          context.go('${AppRoutes.workSchedule}?from=profile');
+                        } else {
+                          context.push('${AppRoutes.workSchedule}?from=profile');
+                        }
+                      }),
+                      _Item(Icons.attach_money_rounded, 'Minimum booking amount', () {
+                        if (kIsWeb) {
+                          context.go(AppRoutes.minimumPrice);
+                        } else {
+                          context.push(AppRoutes.minimumPrice);
                         }
                       }),
                       _Item(Icons.star_border, 'My Review', () {

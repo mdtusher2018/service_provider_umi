@@ -146,7 +146,7 @@ class ServiceProviderInfo {
 
       otherTasks:
           (json['othersRequiredTasks'] as List?)
-              ?.map((e) => FilterOptionModel.fromJson(e))
+              ?.map((e) => FilterOptionModel.fromJson(e['othersTask'] ?? e['othersRequiredTask'] ?? e))
               .toList() ??
           [],
 
@@ -156,8 +156,8 @@ class ServiceProviderInfo {
               .toList() ??
           [],
 
-      experience: json['experience'] != null
-          ? FilterOptionModel.fromJson(json['experience'])
+      experience: (json['experience'] != null || json['experienceOption'] != null)
+          ? FilterOptionModel.fromJson(json['experienceOption'] ?? json['experience'])
           : null,
     );
   }

@@ -65,7 +65,12 @@ class _TimeRange {
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 class WorkScheduleScreen extends ConsumerStatefulWidget {
-  const WorkScheduleScreen({super.key});
+  final bool isFromProfile;
+
+  const WorkScheduleScreen({
+    super.key,
+    this.isFromProfile = false,
+  });
 
   @override
   ConsumerState<WorkScheduleScreen> createState() => _WorkScheduleScreenState();
@@ -122,7 +127,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
       context: context,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
-      barrierColor: Colors.black.withOpacity(0.4),
+      barrierColor: Colors.black.withValues(alpha: 0.4),
       pageBuilder: (_, _, _) => _ScheduleDialog(
         dayName: _kDayMeta.firstWhere((m) => m.code == d.day).label,
         initialFrom: TimeOfDay(
@@ -193,10 +198,22 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
     if (!mounted) return;
 
     if (ok) {
-      if (kIsWeb) {
-        context.go(AppRoutes.filter);
+      if (widget.isFromProfile) {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          if (kIsWeb) {
+            context.go(AppRoutes.providerProfile);
+          } else {
+            context.push(AppRoutes.providerProfile);
+          }
+        }
       } else {
-        context.push(AppRoutes.filter);
+        if (kIsWeb) {
+          context.go(AppRoutes.filter);
+        } else {
+          context.push(AppRoutes.filter);
+        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

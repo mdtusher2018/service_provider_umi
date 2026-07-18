@@ -5,11 +5,15 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/core/di/repository_providers.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 
 class BookingCard extends ConsumerStatefulWidget {
   final BookingModel item;
@@ -31,6 +35,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
+
+  bool _isAccepting = false;
+  bool _isRejecting = false;
 
   @override
   void initState() {
@@ -66,6 +73,42 @@ class _BookingCardState extends ConsumerState<BookingCard>
     super.dispose();
   }
 
+  Future<void> _accept() async {
+    if (_isAccepting || _isRejecting) return;
+    setState(() => _isAccepting = true);
+    try {
+      final result = await ref.read(serviceRepositoryProvider).acceptBooking(widget.item.id);
+      result.when(
+        success: (_) {
+          if (mounted) ref.invalidate(bookingsProvider);
+        },
+        failure: (e) {
+          if (mounted) context.showErrorSnackBar(e.toString());
+        },
+      );
+    } finally {
+      if (mounted) setState(() => _isAccepting = false);
+    }
+  }
+
+  Future<void> _cancel() async {
+    if (_isAccepting || _isRejecting) return;
+    setState(() => _isRejecting = true);
+    try {
+      final result = await ref.read(serviceRepositoryProvider).rejectBooking(widget.item.id);
+      result.when(
+        success: (_) {
+          if (mounted) ref.invalidate(bookingsProvider);
+        },
+        failure: (e) {
+          if (mounted) context.showErrorSnackBar(e.toString());
+        },
+      );
+    } finally {
+      if (mounted) setState(() => _isRejecting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
@@ -83,7 +126,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
             border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -97,8 +140,8 @@ class _BookingCardState extends ConsumerState<BookingCard>
                 ClipRRect(
                   borderRadius: 10.circular,
                   child: Container(
-                    width: 72,
-                    height: 72,
+                    width: 80,
+                    height: 80,
                     color: AppColors.primaryLight,
                     child: widget.item.provider != null
                         ? Image.network(
@@ -114,44 +157,59 @@ class _BookingCardState extends ConsumerState<BookingCard>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AppText.labelLg(
-                        "${widget.item.provider?.name ?? ""} (${widget.item.provider?.serviceName ?? ""})",
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      6.verticalSpace,
-
                       Row(
                         children: [
-                          const Icon(Icons.access_time_rounded, size: 13),
-                          4.horizontalSpace,
-                          Flexible(
-                            child: AppText.bodySm(
-                              "From ${widget.item.bookingDays.first.startTime!.toDisplayTime} to ${widget.item.bookingDays.first.endTime!.toDisplayTime}",
+                          Expanded(
+                            child: AppText.labelLg(
+                              "${widget.item.bookingType.titleCase} Booking",
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w700,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                          ),
+                          AppText.labelLg(
+                            "\$${widget.item.price ?? ""}",
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
                           ),
                         ],
                       ),
-                      4.verticalSpace,
+                      6.verticalSpace,
 
-                      if (widget.item.bookingDays.first.startTime != null)
-                        Row(
-                          children: [
-                            const Icon(Icons.calendar_month_outlined, size: 13),
-                            4.horizontalSpace,
-                            Flexible(
-                              child: AppText.bodySm(
-                                widget
-                                    .item
-                                    .bookingDays
-                                    .first
-                                    .startTime!
-                                    .toDisplayDate,
-                              ),
-                            ),
-                          ],
-                        ),
-                      10.verticalSpace,
+                      // Row(
+                      //   children: [
+                      //     const Icon(Icons.access_time_rounded, size: 10),
+                      //     4.horizontalSpace,
+                      //     Flexible(
+                      //       child: AppText.bodyXs(
+                      //         "${widget.item.bookingDays.first.startTime!.toDisplayTime} - ${widget.item.bookingDays.first.endTime!.toDisplayTime},",
+                      //       ),
+                      //     ),
+                      //     4.horizontalSpace,
+                      //     if (widget.item.bookingDays.first.startTime != null)
+                      //       Flexible(
+                      //         child: Row(
+                      //           children: [
+                      //             const Icon(Icons.calendar_month_outlined, size: 10),
+                      //             4.horizontalSpace,
+                      //             Flexible(
+                      //               child: AppText.bodyXs(
+                      //                 widget
+                      //                     .item
+                      //                     .bookingDays
+                      //                     .first
+                      //                     .startTime!
+                      //                     .toDisplayDate,
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //   ],
+                      // ),
+
+                      8.verticalSpace,
 
                       _buildStatusRow(role),
                     ],
@@ -171,17 +229,25 @@ class _BookingCardState extends ConsumerState<BookingCard>
         if (role == AppRole.provider) {
           return Row(
             children: [
-              _StatusBadge(
-                label: 'Accept',
-                color: AppColors.success,
-                backgroundColor: AppColors.successLight,
-                isInteractive: true,
+              GestureDetector(
+                onTap: _accept,
+                child: _StatusBadge(
+                  label: 'Accept',
+                  color: AppColors.primary,
+                  backgroundColor: AppColors.primaryLight,
+                  isInteractive: true,
+                  isLoading: _isAccepting,
+                ),
               ),
               8.horizontalSpace,
-              const _StatusBadge(
-                label: 'Cancel',
-                color: AppColors.error,
-                backgroundColor: AppColors.errorLight,
+              GestureDetector(
+                onTap: _cancel,
+                child: _StatusBadge(
+                  label: 'Cancel',
+                  color: AppColors.error,
+                  backgroundColor: AppColors.errorLight,
+                  isLoading: _isRejecting,
+                ),
               ),
             ],
           );
@@ -221,8 +287,8 @@ class _BookingCardState extends ConsumerState<BookingCard>
         if (role == AppRole.provider) {
           return const _StatusBadge(
             label: 'Ongoing',
-            color: AppColors.info,
-            backgroundColor: AppColors.infoLight,
+            color: AppColors.primary,
+            backgroundColor: AppColors.primaryLight,
           );
         }
 
@@ -257,8 +323,8 @@ class _BookingCardState extends ConsumerState<BookingCard>
 
         return const _StatusBadge(
           label: 'Completed',
-          color: AppColors.success,
-          backgroundColor: AppColors.successLight,
+          color: AppColors.primary,
+          backgroundColor: AppColors.primaryLight,
         );
 
       case BookingStatus.canceled:
@@ -279,26 +345,37 @@ class _StatusBadge extends StatelessWidget {
   final Color color;
   final Color backgroundColor;
   final bool isInteractive;
+  final bool isLoading;
 
   const _StatusBadge({
     required this.label,
     required this.color,
     required this.backgroundColor,
     this.isInteractive = false,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: 8.circular,
+        borderRadius: 24.circular,
         border: isInteractive
             ? Border.all(color: color.withOpacity(0.3))
             : null,
       ),
-      child: AppText.bodySm(label, color: color, fontWeight: FontWeight.w500),
+      child: isLoading
+          ? SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: color,
+              ),
+            )
+          : AppText.bodySm(label, color: color, fontWeight: FontWeight.w600),
     );
   }
 }

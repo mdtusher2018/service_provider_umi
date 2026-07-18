@@ -244,9 +244,15 @@ class LogoutNotifier extends _$LogoutNotifier {
 
   Future<void> logout() async {
     state = const AuthState.loading();
-    await ref.read(appRoleProvider.notifier).setRole(AppRole.guest);
-    await ref.read(authRepositoryProvider).logout();
+    
+    final authRepo = ref.read(authRepositoryProvider);
+    final roleNotifier = ref.read(appRoleProvider.notifier);
 
-    state = const AuthState.initial();
+    await authRepo.logout();
+    await roleNotifier.setRole(AppRole.guest);
+
+    if (ref.mounted) {
+      state = const AuthState.initial();
+    }
   }
 }

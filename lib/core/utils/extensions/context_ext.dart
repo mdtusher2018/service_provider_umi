@@ -101,6 +101,11 @@ extension BuildContextExtensions on BuildContext {
     Duration duration = const Duration(seconds: 3),
     bool showAtTop = false,
   }) {
+    if (showAtTop) {
+      _showTopSnackBar(message, isError: isError, duration: duration);
+      return;
+    }
+
     ScaffoldMessenger.of(this).hideCurrentSnackBar();
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
@@ -109,16 +114,50 @@ extension BuildContextExtensions on BuildContext {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: 10.circular),
         duration: duration,
-        margin: showAtTop
-            ? EdgeInsets.only(
-                bottom: MediaQuery.of(this).size.height -
-                    (MediaQuery.of(this).padding.top + 80),
-                left: 16,
-                right: 16,
-              )
-            : null,
       ),
     );
+  }
+
+  void _showTopSnackBar(
+    String message, {
+    bool isError = false,
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    final overlay = Overlay.of(this);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: isError ? colorScheme.error : colorScheme.primary,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: AppText(message, color: AppColors.white),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+    Future.delayed(duration, () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
   }
 
   void showSuccessSnackBar(String message) =>

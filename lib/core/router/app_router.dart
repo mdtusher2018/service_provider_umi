@@ -199,12 +199,12 @@ GoRouter appRouter(Ref ref) {
           );
         },
         branches: [
-          /// index 0 — Services/Calendar
+          /// index 0 — Home
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.providerServices,
-                builder: (_, __) => const ProviderServiceScreen(),
+                path: AppRoutes.providerHome,
+                builder: (_, __) => const ServiceProviderHomeScreen(),
               ),
             ],
           ),
@@ -219,12 +219,12 @@ GoRouter appRouter(Ref ref) {
             ],
           ),
 
-          /// index 2 — Home (FAB)
+          /// index 2 — Services/Calendar
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.providerHome,
-                builder: (_, __) => const ServiceProviderHomeScreen(),
+                path: AppRoutes.providerServices,
+                builder: (_, __) => const ProviderServiceScreen(),
               ),
             ],
           ),
@@ -434,7 +434,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: AppRoutes.workAreas, builder: (_, __) => WorkAreasScreen()),
       GoRoute(
         path: AppRoutes.workSchedule,
-        builder: (_, __) => WorkScheduleScreen(),
+        builder: (_, state) {
+          final isFromProfile = state.uri.queryParameters['from'] == 'profile';
+          return WorkScheduleScreen(isFromProfile: isFromProfile);
+        },
       ),
       GoRoute(
         path: AppRoutes.minimumPrice,

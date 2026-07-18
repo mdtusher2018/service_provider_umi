@@ -110,7 +110,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
             onTap: _openCompleted,
             child: _StatusBadge(
               label: AppLocalizations.of(context)!.completed,
-              color: AppColors.success,
+              color: AppColors.primary,
               backgroundColor: AppColors.white,
             ),
           ),

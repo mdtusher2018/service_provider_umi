@@ -238,6 +238,9 @@ class FilterOptionModel {
   const FilterOptionModel({required this.id, required this.value});
 
   factory FilterOptionModel.fromJson(Map<String, dynamic> json) {
-    return FilterOptionModel(id: json['id'] ?? "", value: json['value'] ?? "");
+    return FilterOptionModel(
+      id: json['_id'] as String? ?? json['id'] as String? ?? "",
+      value: json['value'] as String? ?? "",
+    );
   }
 }

@@ -1,129 +1,357 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:service_provider_umi/core/utils/animations.dart';
-import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/data/models/provider_models.dart';
+import 'package:service_provider_umi/data/models/category_models.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/data/models/service_provider_models.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
-import '../../../../core/di/app_role_provider.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
-part '_delete_dialog.dart';
-part '_listing_card.dart';
 
-// ─── Model ────────────────────────────────────────────────────
-class ServiceListing {
-  final String id;
-  final String title;
-  final String imageUrl;
-  final double pricePerHour;
-  final bool hasClientProtection;
-
-  const ServiceListing({
-    required this.id,
-    required this.title,
-    required this.imageUrl,
-    required this.pricePerHour,
-    this.hasClientProtection = true,
-  });
-}
-
-// ─── Screen ───────────────────────────────────────────────────
 class ProviderListingScreen extends ConsumerStatefulWidget {
   const ProviderListingScreen({super.key});
 
   @override
-  ConsumerState<ProviderListingScreen> createState() => _MyListingScreenState();
+  ConsumerState<ProviderListingScreen> createState() =>
+      _ProviderListingScreenState();
 }
 
-class _MyListingScreenState extends ConsumerState<ProviderListingScreen> {
-  final List<ServiceListing> _listings = [
-    const ServiceListing(
-      id: '1',
-      title: 'Elderly Care',
-      imageUrl:
-          'https://tse1.mm.bing.net/th/id/OIP.eAOT-GTYD5Lwsvpc-n7ZyAHaFW?rs=1&pid=ImgDetMain&o=7&rm=3',
-      pricePerHour: 10.00,
-    ),
-  ];
+class _ProviderListingScreenState
+    extends ConsumerState<ProviderListingScreen> {
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
-  void _confirmDelete(ServiceListing listing) {
-    showGeneralDialog(
-      context: context,
-      transitionDuration: dialogSlidingFadeTransitionDuration,
-      transitionBuilder: dialogSlideFadeTransition,
-      barrierColor: Colors.black.withOpacity(0.4),
-      pageBuilder: (_, _, _) => _DeleteDialog(
-        onYes: () {
-          setState(() => _listings.removeWhere((l) => l.id == listing.id));
-          context.pop();
-        },
-        onNo: () => context.pop(),
-      ),
+  String? _selectedExperienceId;
+  final Set<String> _selectedSpecialtyIds = {};
+  final Set<String> _selectedTaskIds = {};
+  File? _coverImage;
+  String? _existingCoverImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(filterProvider.notifier).fetch();
+      _initFromProfile();
+    });
+  }
+
+  void _initFromProfile() {
+    final userState = ref.read(myProfileProvider);
+    userState.whenOrNull(
+      success: (user) {
+        if (user.bio != null && user.bio!.isNotEmpty) {
+          _bioController.text = user.bio!;
+        }
+        final provider = user.serviceProviderInfo;
+        if (provider != null) {
+          if (provider.perHourPrice > 0) {
+            _priceController.text = provider.perHourPrice.toString();
+          }
+          if (provider.coverImage != null && provider.coverImage!.isNotEmpty) {
+            _existingCoverImageUrl = provider.coverImage;
+          }
+
+          _selectedExperienceId = provider.experienceOptionId;
+
+          // Pre-select specialties from profile
+          for (final s in provider.specialists) {
+            if (s.id.isNotEmpty) _selectedSpecialtyIds.add(s.id);
+          }
+
+          // Pre-select tasks from profile
+          for (final t in provider.otherTasks) {
+            if (t.id.isNotEmpty) _selectedTaskIds.add(t.id);
+          }
+
+          setState(() {});
+        }
+      },
     );
   }
 
-  void _addListing() {
-    // TODO: navigate to create listing screen
+
+  @override
+  void dispose() {
+    _bioController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _coverImage = File(picked.path);
+      });
+    }
+  }
+
+  void _save() async {
+    final double? hourlyRate = double.tryParse(_priceController.text);
+    if (hourlyRate == null) {
+      context.showErrorSnackBar('Please enter a valid price per hour');
+      return;
+    }
+
+    // Update bio via user profile API
+    final bioText = _bioController.text.trim();
+    if (bioText.isNotEmpty) {
+      await ref
+          .read(updateProfileProvider.notifier)
+          .update(UpdateProfileRequest(bio: bioText));
+    }
+
+    // Update provider listing via provider API
+    final request = UpdateProviderRequest(
+      hourlyRate: hourlyRate,
+      experience: _selectedExperienceId?.isNotEmpty == true ? _selectedExperienceId : null,
+      specializations: _selectedSpecialtyIds.where((id) => id.isNotEmpty).toList(),
+      tasks: _selectedTaskIds.where((id) => id.isNotEmpty).toList(),
+      coverImage: _coverImage,
+    );
+
+    await ref.read(updateProviderProvider.notifier).update(request);
   }
 
   @override
   Widget build(BuildContext context) {
-    final primary = AppColors.primaryFor(ref.watch(appRoleProvider));
+    final filterState = ref.watch(filterProvider);
+    final isUpdatingUser = ref.watch(updateProfileProvider).maybeWhen(
+          loading: () => true,
+          orElse: () => false,
+        );
+    final isUpdatingProvider = ref.watch(updateProviderProvider).isLoading;
+    final isSaving = isUpdatingUser || isUpdatingProvider;
+
+    ref.listen<AsyncValue<bool>>(updateProviderProvider, (prev, next) {
+      if (next is AsyncError) {
+        context.showErrorSnackBar(next.error.toString());
+      }
+      if (next is AsyncData && next.value == true) {
+        context.showSuccessSnackBar('Listing updated successfully');
+        ref.read(myProfileProvider.notifier).fetch();
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(AppRoutes.providerProfile);
+        }
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "My listing"),
-      body: Stack(
-        children: [
-          _listings.isEmpty
-              ? AppEmptyState(
-                  title: "No listings yet",
-                  subtitle: "Tap + to add a service",
-                  icon: Icon(Icons.list_alt_rounded, size: 56),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                  itemCount: _listings.length,
-                  separatorBuilder: (_, __) => 12.verticalSpace,
-                  itemBuilder: (_, i) => _ListingCard(
-                    listing: _listings[i],
-                    primary: primary,
-                    onDelete: () => _confirmDelete(_listings[i]),
-                    onEdit: () {},
+      appBar: const AppAppBar(title: "My Listing"),
+      body: filterState.when(
+        error: (e, st) => Center(child: AppText.bodyLg(e.toString())),
+        loading: () => const AppLoader(),
+        data: (filterData) {
+          return SingleChildScrollView(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ─── Cover Photo ───────────────────────────
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey200,
+                      borderRadius: BorderRadius.circular(12),
+                      image: _coverImage != null
+                          ? DecorationImage(
+                              image: FileImage(_coverImage!),
+                              fit: BoxFit.cover,
+                            )
+                          : _existingCoverImageUrl != null
+                              ? DecorationImage(
+                                  image: NetworkImage(
+                                      _existingCoverImageUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                    ),
+                    child: Stack(
+                      children: [
+                        if (_coverImage == null &&
+                            _existingCoverImageUrl == null)
+                          const Center(
+                            child: Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 48,
+                              color: AppColors.grey400,
+                            ),
+                          ),
+                        Positioned(
+                          bottom: 12,
+                          right: 12,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                24.verticalSpace,
 
-          // ─── FAB ─────────────────────────────────────
-          Positioned(
-            bottom: 24,
-            right: 20,
-            child: GestureDetector(
-              onTap: _addListing,
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: primary,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: primary.withOpacity(0.35),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                // ─── Bio ───────────────────────────────────
+                AppText.labelLg('Bio', color: AppColors.textSecondary),
+                8.verticalSpace,
+                AppTextField(
+                  controller: _bioController,
+                  hint: 'Write something about yourself...',
+                  maxLines: 4,
+                ),
+                24.verticalSpace,
+
+                // ─── Price per hour ────────────────────────
+                AppText.labelLg('Price per hour',
+                    color: AppColors.textSecondary),
+                8.verticalSpace,
+                AppTextField(
+                  controller: _priceController,
+                  hint: '50',
+                  keyboardType: TextInputType.number,
+                ),
+                24.verticalSpace,
+
+                // ─── Experience ────────────────────────────
+                AppText.labelLg('Experience',
+                    color: AppColors.textSecondary),
+                8.verticalSpace,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.grey300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      hint: AppText.labelLg(
+                        'Select experience',
+                        color: AppColors.grey400,
+                      ),
+                      value: _selectedExperienceId,
+                      items: filterData.experienceOptions
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              value: e.id,
+                              child: AppText.labelLg(e.value),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        setState(() => _selectedExperienceId = val);
+                      },
                     ),
-                  ],
+                  ),
                 ),
-                child: const Icon(
-                  Icons.add_rounded,
-                  color: AppColors.white,
-                  size: 28,
+                24.verticalSpace,
+
+                // ─── Specialties ───────────────────────────
+                AppText.labelLg('Specialties',
+                    color: AppColors.textSecondary),
+                12.verticalSpace,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 10,
+                  children: filterData.category.map((cat) {
+                    final selected =
+                        _selectedSpecialtyIds.contains(cat.id);
+                    return ChoiceChip(
+                      label: Text(cat.name),
+                      selected: selected,
+                      selectedColor: AppColors.primary,
+                      labelStyle: TextStyle(
+                        color:
+                            selected ? Colors.white : AppColors.textPrimary,
+                      ),
+                      onSelected: (val) {
+                        setState(() {
+                          if (val) {
+                            _selectedSpecialtyIds.add(cat.id);
+                          } else {
+                            _selectedSpecialtyIds.remove(cat.id);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
-              ),
+                24.verticalSpace,
+
+                // ─── Other tasks offered ───────────────────
+                AppText.labelLg('Other tasks offered',
+                    color: AppColors.textSecondary),
+                12.verticalSpace,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 10,
+                  children: filterData.othersTaskOptions.map((task) {
+                    final selected =
+                        _selectedTaskIds.contains(task.id);
+                    return ChoiceChip(
+                      label: Text(task.value),
+                      selected: selected,
+                      selectedColor: AppColors.primary,
+                      labelStyle: TextStyle(
+                        color:
+                            selected ? Colors.white : AppColors.textPrimary,
+                      ),
+                      onSelected: (val) {
+                        setState(() {
+                          if (val) {
+                            _selectedTaskIds.add(task.id);
+                          } else {
+                            _selectedTaskIds.remove(task.id);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+                40.verticalSpace,
+
+                // ─── Save Button ───────────────────────────
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton.primary(
+                    label: 'Save',
+                    isLoading: isSaving,
+                    onPressed: _save,
+                  ),
+                ),
+                24.verticalSpace,
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

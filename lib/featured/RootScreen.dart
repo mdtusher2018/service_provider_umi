@@ -82,7 +82,7 @@ class _RootScreenState extends ConsumerState<RootScreen> {
   }
 
   void _onTap(int index, WidgetRef ref) {
-    if (widget.role == AppRole.provider && index == 2) {
+    if (widget.role == AppRole.provider && index == 0) {
       ref.read(providerHomeRefreshProvider.notifier).state++;
     }
     if ((widget.role == AppRole.provider && index == 1) || (widget.role == AppRole.user && index == 3)) {
@@ -101,12 +101,14 @@ class _RootScreenState extends ConsumerState<RootScreen> {
       body: widget.navigationShell,
       bottomNavigationBar: (kIsWeb)
           ? null
-          : ConvexAppBar(
+          : StyleProvider(
+              style: _CustomStyle(),
+              child: ConvexAppBar(
               style: TabStyle.fixedCircle,
               backgroundColor: AppColors.white,
               activeColor: AppColors.black,
               color: AppColors.grey500,
-              height: 80,
+              height: 50,
               curveSize: 100,
               items: [
                 TabItem(
@@ -133,11 +135,13 @@ class _RootScreenState extends ConsumerState<RootScreen> {
                       shape: BoxShape.circle,
                     ),
 
-                    child: Image.asset(
-                      widget.role == AppRole.provider
-                          ? Assets.icons.upcoming.keyName
-                          : Assets.icons.home.keyName,
-                      width: 32,
+                    child: Center(
+                      child: Image.asset(
+                        widget.role == AppRole.provider
+                            ? Assets.icons.upcoming.keyName
+                            : Assets.icons.home.keyName,
+                        width: 32,
+                      ),
                     ),
                   ),
                   title: AppLocalizations.of(context)!.home,
@@ -154,7 +158,24 @@ class _RootScreenState extends ConsumerState<RootScreen> {
               ],
               onTap: (index) => _onTap(index, ref),
             ),
+          ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+}
+
+class _CustomStyle extends StyleHook {
+  @override
+  double get activeIconSize => 40;
+
+  @override
+  double get activeIconMargin => 10;
+
+  @override
+  double get iconSize => 24;
+
+  @override
+  TextStyle textStyle(Color color, String? fontFamily) {
+    return TextStyle(fontSize: 10, color: color, fontFamily: fontFamily); // Reduced font size to prevent wrapping
   }
 }
