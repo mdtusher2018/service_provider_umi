@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
@@ -184,6 +185,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       );
     }
 
+    formMap['data'] = jsonEncode({});
     formMap['images'] = images;
 
     final response = await _dio.post(

@@ -50,6 +50,7 @@ class GetUserByIdNotifier extends _$GetUserByIdNotifier {
   Future<void> fetch(String id) async {
     state = const UserState.loading();
     final result = await _repo.getUserById(id);
+    if (!ref.mounted) return;
     state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
@@ -68,6 +69,7 @@ class MyProfileNotifier extends _$MyProfileNotifier {
   Future<void> fetch() async {
     state = const UserState.loading();
     final result = await _repo.getMyProfile();
+    if (!ref.mounted) return;
     state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
@@ -84,9 +86,9 @@ class UpdateProfileNotifier extends _$UpdateProfileNotifier {
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
   Future<void> update(UpdateProfileRequest data) async {
-    if (!ref.mounted) return;
     state = const UserState.loading();
     final result = await _repo.updateMyProfile(data);
+    if (!ref.mounted) return;
     state = result.when(success: UserState.success, failure: UserState.failure);
   }
 
@@ -103,10 +105,10 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
   Future<void> deleteAccount() async {
-    if (!ref.mounted) return;
     state = const ActionState.loading();
 
     final result = await _repo.deleteMyAccount();
+    if (!ref.mounted) return;
     state = result.when(
       success: (_) => const ActionState.success(),
       failure: ActionState.failure,
@@ -141,6 +143,8 @@ class MyReviewNotifier extends _$MyReviewNotifier {
 
     final result = await _repo.getProviderReviews(providerId, page: _page);
 
+    if (!ref.mounted) return;
+
     state = result.when(
       success: (data) {
         _hasMore = data.length == 10;
@@ -160,6 +164,8 @@ class MyReviewNotifier extends _$MyReviewNotifier {
     final current = state.value ?? [];
 
     final result = await _repo.getProviderReviews(providerId, page: _page);
+
+    if (!ref.mounted) return;
 
     result.when(
       success: (data) {
@@ -187,6 +193,8 @@ class StripeConnectNotifier extends _$StripeConnectNotifier {
     state = const StripeConnectState.loading();
 
     final result = await _repo.getStripeConnetedUrl();
+
+    if (!ref.mounted) return;
 
     state = result.when(
       success: (url) => StripeConnectState.success(url),
@@ -217,6 +225,8 @@ class AddFaqNotifier extends _$AddFaqNotifier {
       answer: answer,
       userId: userId,
     );
+
+    if (!ref.mounted) return;
 
     state = result.when(
       success: (_) => const ActionState.success(),

@@ -20,6 +20,8 @@ import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 
 import '../../../l10n/app_localizations.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/data/models/user_models.dart';
 
 final providerHomeRefreshProvider = StateProvider<int>((ref) => 0);
 
@@ -33,6 +35,8 @@ class ServiceProviderHomeScreen extends ConsumerStatefulWidget {
 
 class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
   DateTime? _selectedDate;
+  bool isSubmitted = false;
+  bool _isPending = false;
 
   @override
   void initState() {
@@ -91,10 +95,20 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
       next.whenOrNull(
         success: (profile) {
           final isVerified = profile.isVerified ?? false;
+          final isPending = !isVerified && (
+            (profile.workSchedule != null && profile.workSchedule!.isNotEmpty) ||
+            (profile.deviceHistory != null && profile.deviceHistory!.isNotEmpty) ||
+            profile.serviceProviderInfo != null
+          );
           if (!context.mounted) return;
-          if (!isVerified) {
+
+          setState(() {
+            _isPending = isPending;
+          });
+
+          if (!isVerified && !isPending) {
             context.go(AppRoutes.providerOnboarding);
-          } else {
+          } else if (isVerified) {
             ref
                 .read(bookingsProvider(BookingStatus.upcoming).notifier)
                 .fetch(initial: true);
@@ -111,36 +125,110 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           children: [
             _buildHeader(primary),
             Expanded(
-              child: state.when(
-                loading: () => const AppLoader(),
-                error: (e, _) => Center(
-                  child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
-                ),
-                data: (bookings) {
-                  if (bookings.isEmpty) {
-                    return Center(
-                      child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
-                    );
-                  }
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      await ref
-                          .read(bookingsProvider(BookingStatus.upcoming).notifier)
-                          .fetch(initial: true);
-                    },
-                    child: BookingList(
-                      items: bookings,
-                      emptyMessage: AppLocalizations.of(context)!.noBookings,
-                      emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
-                      onCardTap: (item) => _onCardTap(item, context),
-                      onLoadMore: () => ref
-                          .read(bookingsProvider(BookingStatus.upcoming).notifier)
-                          .fetch(),
-                      isLoadingMore: state.isLoading && state.hasValue,
-                    ),
-                  );
-                },
+              child: _isPending
+                  ? _buildVerificationPendingWidget(context, ref)
+                  : _buildBookingsContent(state, context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookingsContent(AsyncValue<List<BookingModel>> state, BuildContext context) {
+    return state.when(
+      loading: () => const AppLoader(),
+      error: (e, _) => Center(
+        child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
+      ),
+      data: (bookings) {
+        if (bookings.isEmpty) {
+          return Center(
+            child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
+          );
+        }
+        return RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(bookingsProvider(BookingStatus.upcoming).notifier)
+                .fetch(initial: true);
+          },
+          child: BookingList(
+            items: bookings,
+            emptyMessage: AppLocalizations.of(context)!.noBookings,
+            emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
+            onCardTap: (item) => _onCardTap(item, context),
+            onLoadMore: () => ref
+                .read(bookingsProvider(BookingStatus.upcoming).notifier)
+                .fetch(),
+            isLoadingMore: state.isLoading && state.hasValue,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildVerificationPendingWidget(BuildContext context, WidgetRef ref) {
+    final isProfileLoading = ref.watch(myProfileProvider).maybeWhen(
+      loading: () => true,
+      orElse: () => false,
+    );
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
               ),
+              child: const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.primary,
+                size: 36,
+              ),
+            ),
+            16.verticalSpace,
+            const Text(
+              'Verification Pending',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            12.verticalSpace,
+            const Text(
+              'Your account is pending verification. Some features may be limited until your account is verified.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.grey500,
+                height: 1.5,
+              ),
+            ),
+            24.verticalSpace,
+            AppButton.primary(
+              label: 'Refresh',
+              isLoading: isProfileLoading,
+              onPressed: () {
+                ref.read(myProfileProvider.notifier).fetch();
+              },
             ),
           ],
         ),

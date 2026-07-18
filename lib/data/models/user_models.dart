@@ -26,6 +26,8 @@ class UserProfile {
   final String? referralCode;
   final String role;
   final bool? isVerified;
+  final List<dynamic>? deviceHistory;
+  final List<dynamic>? workSchedule;
 
   final ServiceProviderInfo? serviceProviderInfo;
 
@@ -49,6 +51,8 @@ class UserProfile {
     this.agreements,
     this.referralCode,
     this.isVerified,
+    this.deviceHistory,
+    this.workSchedule,
     required this.role,
     required this.serviceProviderInfo,
   });
@@ -75,6 +79,8 @@ class UserProfile {
     agreements: json['agreements'] as String?,
     referralCode: json['referralCode'] as String?,
     role: json['role'] as String? ?? 'user',
+    deviceHistory: json['deviceHistory'] as List?,
+    workSchedule: json['workSchedule'] as List?,
     serviceProviderInfo: (json['serviceProviderInfo'] == null)
         ? null
         : ServiceProviderInfo.fromJson(json['serviceProviderInfo']),
