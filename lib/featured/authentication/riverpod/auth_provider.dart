@@ -83,6 +83,7 @@ class SignupNotifier extends _$SignupNotifier {
     required String password,
     String? phoneNumber,
     Map<String, dynamic>? location,
+    Map<String, dynamic>? address,
     AppRole? role,
   }) async {
     state = const AuthState.loading();
@@ -93,7 +94,8 @@ class SignupNotifier extends _$SignupNotifier {
         password: password,
         phoneNumber: phoneNumber,
         location: location,
-        role: AppRole.provider == role ? "service_provider" : null,
+        address: address,
+        role: AppRole.provider == role ? "service_provider" : "user",
       ),
     );
     state = result.when(

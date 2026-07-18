@@ -7,6 +7,7 @@ class SignupRequest {
   final String? role;
   final String? phoneNumber;
   final Map<String, dynamic>? location;
+  final Map<String, dynamic>? address;
 
   const SignupRequest({
     required this.name,
@@ -15,6 +16,7 @@ class SignupRequest {
     this.role,
     this.phoneNumber,
     this.location,
+    this.address,
   });
 
   Map<String, dynamic> toJson() => {
@@ -24,6 +26,7 @@ class SignupRequest {
     if (role != null) 'role': role,
     if (phoneNumber != null) 'phoneNumber': phoneNumber,
     if (location != null) 'location': location,
+    if (address != null) 'address': address,
   };
 }
 

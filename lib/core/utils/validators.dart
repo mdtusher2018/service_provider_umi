@@ -12,11 +12,7 @@ class Validators {
 
   static String? password(String? value) {
     if (value == null || value.isEmpty) return 'Password is required';
-    // if (value.length < 8) return 'Password must be at least 8 characters';
-    // final regex = RegExp(AppConstants.passwordRegex);
-    // if (!regex.hasMatch(value)) {
-    //   return 'Password must contain uppercase, lowercase, number and special character';
-    // }
+    if (value.length < 6) return 'Password must be at least 6 characters';
     return null;
   }
 

@@ -57,3 +57,5 @@ app.*.map.json
 **/*.gr.dart
 **/*.mapper.dart
 
+config.bat
+node_modules

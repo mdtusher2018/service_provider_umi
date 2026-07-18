@@ -28,6 +28,9 @@ class _SignupDialog extends ConsumerWidget {
   final _emailController = TextEditingController();
 
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _locationController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -65,9 +68,10 @@ class _SignupDialog extends ConsumerWidget {
       padding: 24.paddingAll,
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             /// Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,6 +118,68 @@ class _SignupDialog extends ConsumerWidget {
               validator: (value) => Validators.password(value),
             ),
 
+            16.verticalSpace,
+
+            /// Confirm Password
+            AppTextField(
+              controller: _confirmPasswordController,
+              hint: "Confirm Password",
+              obscureText: true,
+              showPasswordToggle: true,
+              validator: (value) => Validators.confirmPassword(value, _passwordController.text),
+            ),
+
+            16.verticalSpace,
+
+            /// Phone Number
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AppText.bodyLg("Phone number", color: AppColors.textPrimary),
+                8.verticalSpace,
+                AppTextField(
+                  controller: _phoneController,
+                  hint: "+1234567890",
+                  keyboardType: TextInputType.phone,
+                ),
+              ],
+            ),
+
+            16.verticalSpace,
+
+            /// Location
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.grey200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.bodyLg(
+                    role == AppRole.provider ? "Service location" : "Your Location",
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                  8.verticalSpace,
+                  AppText.bodySm(
+                    role == AppRole.provider
+                        ? "Search and select your service area so clients can find you."
+                        : "We use your location to show you relevant services nearby.",
+                    color: AppColors.grey500,
+                  ),
+                  12.verticalSpace,
+                  AppTextField(
+                    controller: _locationController,
+                    hint: "Search city, suburb or address...",
+                    prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.grey500),
+                  ),
+                ],
+              ),
+            ),
+
             24.verticalSpace,
 
             /// Signup Button
@@ -124,12 +190,33 @@ class _SignupDialog extends ConsumerWidget {
                 if (!_formKey.currentState!.validate()) return;
                 final result = await _showPrivacyPolicyBottomSheet(ref);
                 if (result == true) {
-                  ref
-                      .read(signupProvider.notifier)
+                  ref.read(signupProvider.notifier)
                       .signup(
                         name: _nameController.text.trim(),
                         email: _emailController.text.trim(),
                         password: _passwordController.text,
+                        phoneNumber: _phoneController.text.trim().isNotEmpty ? _phoneController.text.trim() : null,
+                        location: _locationController.text.trim().isNotEmpty
+                            ? {
+                                'type': 'Point',
+                                'coordinates': [90.3890144, 23.7643863]
+                              }
+                            : null,
+                        address: _locationController.text.trim().isNotEmpty
+                            ? {
+                                'addressLine1': _locationController.text.trim(),
+                                'addressLine2': 'Dhanmondi',
+                                'city': 'Dhaka',
+                                'state': 'Dhaka',
+                                'postalCode': '1209',
+                                'country': 'Bangladesh',
+                                'location': {
+                                  'type': 'Point',
+                                  'coordinates': [90.3890144, 23.7643863]
+                                },
+                                'isDefault': true,
+                              }
+                            : null,
                         role: role,
                       );
                 }
@@ -165,6 +252,7 @@ class _SignupDialog extends ConsumerWidget {
               ],
             ),
           ],
+        ),
         ),
       ),
     );
