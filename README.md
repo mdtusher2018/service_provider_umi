@@ -69,3 +69,19 @@ All endpoints are defined in `lib/core/services/network/api_endpoints.dart`.
 | Static Content   | `/contents`, `/contents/web-about-us` |
 | Availability     | `/homepage/availability`              |
 | Work Schedule    | `/workSchedule`                       |
+
+---
+
+## 💎 Provider Premium Subscription & 30-Day Free Trial (RevenueCat)
+
+The application integrates **RevenueCat** (`purchases_flutter: ^10.0.0`) to handle cross-platform subscriptions across iOS App Store, Google Play Store, and Stripe (Web). 
+
+### Key Capabilities Installed:
+1. **30-Day Free Trial**: 1-time eligibility check per unique IUMI `providerId` across all platforms and reinstalls.
+2. **Restricted Mode**: Compact **"Subscription Required"** card with blurred request previews for unsigned providers.
+3. **Cross-Platform Sync**: Linked directly via `Purchases.logIn(providerId)`.
+4. **Subscription Management**: Full settings screen with status, renewal dates, provider value summary (*"Received 12 requests, accepted 5 bookings"*), restore purchase, and cancellation retention offers.
+5. **Priority Placement & Badging**: Supports priority search ranking and golden crown **PRO Badge**.
+
+### 📖 For Full Integration Steps, Architecture & Webhook Setup:
+👉 **See the comprehensive guide:** [SUBSCRIPTION_README.md](./SUBSCRIPTION_README.md)
