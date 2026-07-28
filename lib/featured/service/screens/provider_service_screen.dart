@@ -17,6 +17,9 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 import '../../../l10n/app_localizations.dart';
+import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
+import 'package:service_provider_umi/featured/subscription/screens/subscription_screen.dart';
+import 'package:service_provider_umi/featured/subscription/widgets/subscription_required_card.dart';
 part 'provider_completed_service_screen.dart';
 
 class ProviderServiceScreen extends ConsumerStatefulWidget {
@@ -98,6 +101,8 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(bookingsProvider(_currentStatus));
+    final subState = ref.watch(subscriptionProvider);
+    
     return Scaffold(
       backgroundColor: AppColors.background,
 
@@ -132,33 +137,50 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
             16.verticalSpace,
 
             Expanded(
-              child: state.when(
-                loading: () => const AppLoader(),
-                error: (e, _) => Center(child: AppText.h3(e.toString())),
-                data: (data) {
-                  if (data.isEmpty) {
-                    return Center(
-                      child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
-                    );
-                  }
+              child: (_currentStatus == BookingStatus.requested && !subState.hasActiveAccess)
+                  ? SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SubscriptionRequiredCard(
+                        isEligibleForTrial: subState.isEligibleForTrial,
+                        onStartTrialTapped: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+                          );
+                        },
+                        onUpgradeTapped: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+                          );
+                        },
+                      ),
+                    )
+                  : state.when(
+                      loading: () => const AppLoader(),
+                      error: (e, _) => Center(child: AppText.h3(e.toString())),
+                      data: (data) {
+                        if (data.isEmpty) {
+                          return Center(
+                            child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound),
+                          );
+                        }
 
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      ref.invalidate(bookingsProvider(_currentStatus));
-                    },
-                    child: BookingList(
-                      items: data,
-                      emptyMessage: AppLocalizations.of(context)!.noBookings,
-                      emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
-                      onCardTap: (item) => _onCardTap(item, context),
-                      onLoadMore: () => ref
-                          .read(bookingsProvider(_currentStatus).notifier)
-                          .fetch(),
-                      isLoadingMore: state.isLoading && state.hasValue,
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            ref.invalidate(bookingsProvider(_currentStatus));
+                          },
+                          child: BookingList(
+                            items: data,
+                            emptyMessage: AppLocalizations.of(context)!.noBookings,
+                            emptySubtitle: AppLocalizations.of(context)!.yourBookingsWillAppearHere,
+                            onCardTap: (item) => _onCardTap(item, context),
+                            onLoadMore: () => ref
+                                .read(bookingsProvider(_currentStatus).notifier)
+                                .fetch(),
+                            isLoadingMore: state.isLoading && state.hasValue,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),

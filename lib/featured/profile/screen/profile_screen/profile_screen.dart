@@ -9,6 +9,7 @@ import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
+import 'package:service_provider_umi/featured/subscription/screens/manage_subscription_screen.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/featured/profile/screen/payment_webview.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
@@ -175,13 +176,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ],
                     if (role == AppRole.provider) ...[
-                      // _Item(Icons.credit_card, 'My balance', () {
-                      //   if (kIsWeb) {
-                      //     context.go(AppRoutes.myBalance);
-                      //   } else {
-                      //     context.push(AppRoutes.myBalance);
                       //   }
                       // }),
+                      _Item(Icons.workspace_premium, 'My Subscription', () {
+                        if (kIsWeb) {
+                          // In web, you might want to use go_router, but for now we push
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const ManageSubscriptionScreen()),
+                          );
+                        } else {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const ManageSubscriptionScreen()),
+                          );
+                        }
+                      }),
                       _Item(Icons.list_alt, 'My Listing', () {
                         if (kIsWeb) {
                           context.go(AppRoutes.providerListing);

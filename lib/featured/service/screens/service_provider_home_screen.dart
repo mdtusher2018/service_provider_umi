@@ -22,6 +22,9 @@ import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
+import 'package:service_provider_umi/featured/subscription/screens/subscription_screen.dart';
+import 'package:service_provider_umi/featured/subscription/widgets/subscription_required_card.dart';
 
 final providerHomeRefreshProvider = StateProvider<int>((ref) => 0);
 
@@ -109,6 +112,8 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           if (!isVerified && !isPending) {
             context.go(AppRoutes.providerOnboarding);
           } else if (isVerified) {
+            // Initialize subscription check when provider is verified
+            ref.read(subscriptionProvider.notifier).init(profile.id ?? '');
             ref
                 .read(bookingsProvider(BookingStatus.upcoming).notifier)
                 .fetch(initial: true);
@@ -127,12 +132,38 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
             Expanded(
               child: _isPending
                   ? _buildVerificationPendingWidget(context, ref)
-                  : _buildBookingsContent(state, context),
+                  : _buildSubscriptionOrBookingsContent(state, context, ref),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildSubscriptionOrBookingsContent(AsyncValue<List<BookingModel>> state, BuildContext context, WidgetRef ref) {
+    final subState = ref.watch(subscriptionProvider);
+    
+    // If not active, show the restriction card
+    if (!subState.hasActiveAccess) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: SubscriptionRequiredCard(
+          isEligibleForTrial: subState.isEligibleForTrial,
+          onStartTrialTapped: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+            );
+          },
+          onUpgradeTapped: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+            );
+          },
+        ),
+      );
+    }
+
+    return _buildBookingsContent(state, context);
   }
 
   Widget _buildBookingsContent(AsyncValue<List<BookingModel>> state, BuildContext context) {
