@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -66,17 +67,26 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// 1. Initialize for current Provider ID
   Future<void> init(String providerId) async {
+    debugPrint('🚀 [SubscriptionProvider] Initializing for providerId: $providerId');
     state = state.copyWith(isLoading: true, clearError: true);
     await RevenueCatService.instance.init(providerId);
 
     // Listen to real-time subscription status changes from RevenueCat SDK
     _infoSub?.cancel();
     _infoSub = RevenueCatService.instance.customerInfoStream.listen((info) {
+      debugPrint('🔄 [SubscriptionProvider] Real-time CustomerInfo updated');
       _updateFromCustomerInfo(info);
     });
 
     final info = await RevenueCatService.instance.getCustomerInfo();
+    debugPrint('📦 [SubscriptionProvider] Initial CustomerInfo fetched: ${info != null}');
+    
     final offerings = await RevenueCatService.instance.getOfferings();
+    debugPrint('🏷️ [SubscriptionProvider] Offerings fetched: ${offerings?.current != null}');
+    if (offerings?.current != null) {
+      debugPrint('   - Current Offering ID: ${offerings!.current!.identifier}');
+      debugPrint('   - Available Packages: ${offerings.current!.availablePackages.length}');
+    }
 
     _updateFromCustomerInfo(info, offerings: offerings);
   }
@@ -87,6 +97,12 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     final inTrial = service.isInTrial(info);
     final eligible = service.isEligibleForTrial(info);
     final daysLeft = service.getRemainingTrialDays(info);
+
+    debugPrint('📊 [SubscriptionProvider] Status Updated:');
+    debugPrint('   - Has Active Access: $hasAccess');
+    debugPrint('   - In Trial: $inTrial');
+    debugPrint('   - Eligible for Trial: $eligible');
+    debugPrint('   - Days Left: $daysLeft');
 
     state = state.copyWith(
       isLoading: false,
@@ -102,27 +118,35 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   /// 2. Activate 30-Day Free Trial
   /// As per requirements: "No payment should be required to activate the trial."
   Future<bool> activateFreeTrial() async {
+    debugPrint('🚀 [SubscriptionProvider] activateFreeTrial() called!');
+    
     if (!state.isEligibleForTrial) {
+      debugPrint('❌ [SubscriptionProvider] User is NOT eligible for trial.');
       state = state.copyWith(errorMessage: 'You have already used your 30-day free trial on this account.');
       return false;
     }
 
     state = state.copyWith(isLoading: true, clearError: true);
     try {
+      if (state.offerings?.current == null || state.offerings!.current!.availablePackages.isEmpty) {
+        debugPrint('❌ [SubscriptionProvider] Offerings or availablePackages is empty!');
+        throw Exception('No packages available in RevenueCat Offerings. Please check RevenueCat Dashboard & App Store Connect.');
+      }
+
       // Check if there is an introductory free trial package configured in RevenueCat
-      final trialPackage = state.offerings?.current?.availablePackages.firstWhere(
+      final trialPackage = state.offerings!.current!.availablePackages.firstWhere(
         (p) => p.packageType == PackageType.custom || p.identifier == RevenueCatService.trialOfferingId,
         orElse: () => state.offerings!.current!.availablePackages.first,
       );
 
-      if (trialPackage != null) {
-        final info = await RevenueCatService.instance.purchasePackage(trialPackage);
-        _updateFromCustomerInfo(info);
-        return true;
-      } else {
-        throw Exception('No trial package configured in RevenueCat Offerings.');
-      }
-    } catch (e) {
+      debugPrint('📦 [SubscriptionProvider] Attempting to purchase package: ${trialPackage.identifier}');
+      final info = await RevenueCatService.instance.purchasePackage(trialPackage);
+      debugPrint('✅ [SubscriptionProvider] Purchase successful!');
+      _updateFromCustomerInfo(info);
+      return true;
+    } catch (e, stacktrace) {
+      debugPrint('❌ [SubscriptionProvider] Error in activateFreeTrial: $e');
+      debugPrint('$stacktrace');
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
       return false;
     }

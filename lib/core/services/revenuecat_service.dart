@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -17,12 +18,12 @@ class RevenueCatService {
   static final RevenueCatService instance = RevenueCatService._();
 
   // TODO: Replace with actual RevenueCat API keys from RevenueCat Dashboard
-  static const String _appleApiKey = 'appl_YOUR_REVENUECAT_APPLE_KEY';
+  static const String _appleApiKey = 'appl_LLrhwgcYUjlHUBRavWwclrPjwff';
   static const String _googleApiKey = 'goog_YOUR_REVENUECAT_GOOGLE_KEY';
   static const String _webApiKey = 'strip_YOUR_REVENUECAT_STRIPE_KEY';
 
   // Entitlement ID configured in RevenueCat dashboard
-  static const String entitlementId = 'premium';
+  static const String entitlementId = 'iumi Pro';
   static const String trialOfferingId = 'default';
 
   final _customerInfoController = StreamController<CustomerInfo>.broadcast();
@@ -53,6 +54,8 @@ class RevenueCatService {
       return;
     }
 
+    await Purchases.setLogLevel(LogLevel.debug);
+
     final configuration = PurchasesConfiguration(apiKey)
       ..appUserID = providerId;
 
@@ -70,11 +73,21 @@ class RevenueCatService {
 
   /// 2. Fetch Offerings (Monthly & Annual Plans)
   Future<Offerings?> getOfferings() async {
+    debugPrint("Get Offering called");
     try {
-      if (!_isInitialized) return null;
-      return await Purchases.getOfferings();
-    } catch (e) {
-      debugPrint('❌ [RevenueCat] Failed to fetch offerings: $e');
+      if (!_isInitialized) {
+        debugPrint('⚠️ [RevenueCat] getOfferings() called but SDK is NOT initialized!');
+        return null;
+      }
+      debugPrint('⏳ [RevenueCat] Fetching offerings from Apple/Google...');
+      final offerings = await Purchases.getOfferings();
+
+      debugPrint("✅ [RevenueCat] Current: ${offerings.current}");
+      debugPrint("✅ [RevenueCat] All: ${offerings.all}");
+      return offerings;
+    } catch (e, stacktrace) {
+      debugPrint("❌ [RevenueCat Error] Failed to fetch offerings: $e");
+      debugPrint("$stacktrace");
       return null;
     }
   }

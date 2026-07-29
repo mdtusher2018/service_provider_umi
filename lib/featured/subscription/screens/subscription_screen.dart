@@ -140,17 +140,35 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              onPressed: () async {
-                                final success = await ref.read(subscriptionProvider.notifier).activateFreeTrial();
-                                if (success && mounted) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: const AppText.bodyLg(
-                                'Start 30-Day Free Trial',
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              onPressed: subState.isLoading 
+                                ? null 
+                                : () async {
+                                  final notifier = ref.read(subscriptionProvider.notifier);
+                                  final success = await notifier.activateFreeTrial();
+                                  if (mounted) {
+                                    if (success) {
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      final error = ref.read(subscriptionProvider).errorMessage;
+                                      if (error != null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text(error), backgroundColor: Colors.red),
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
+                              child: subState.isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  )
+                                : const AppText.bodyLg(
+                                    'Start 30-Day Free Trial',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ),
 
