@@ -5,6 +5,8 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
+import '../../../core/services/revenuecat_service.dart';
+
 /// ─────────────────────────────────────────────────────────────────────────────
 /// Premium Subscription & 30-Day Free Trial Screen
 /// Exactly matching Client Mockup 1 ("Try IUMI Provider free")
@@ -20,6 +22,8 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   static const Color _cyanColor = Color(0xFF00B4D8);
   static const Color _lightCyanBg = Color(0xFFE0F7FA);
+  
+  bool _isDirectLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -140,25 +144,39 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              onPressed: subState.isLoading 
+                              onPressed: _isDirectLoading 
                                 ? null 
                                 : () async {
-                                  final notifier = ref.read(subscriptionProvider.notifier);
-                                  final success = await notifier.activateFreeTrial();
-                                  if (mounted) {
-                                    if (success) {
-                                      Navigator.of(context).pop();
-                                    } else {
-                                      final error = ref.read(subscriptionProvider).errorMessage;
-                                      if (error != null) {
+                                    setState(() => _isDirectLoading = true);
+                                    try {
+                                      final offerings = await RevenueCatService.instance.getOfferings();
+                                      if (offerings != null && offerings.current != null && offerings.current!.availablePackages.isNotEmpty) {
+                                        final package = offerings.current!.availablePackages.first;
+                                        await RevenueCatService.instance.purchasePackage(package);
+                                        
+                                        if (mounted) {
+                                          Navigator.of(context).pop();
+                                        }
+                                      } else {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Exception: No packages available in RevenueCat Offerings. Please check App Store Connect.'), backgroundColor: Colors.red),
+                                          );
+                                        }
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text(error), backgroundColor: Colors.red),
+                                          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
                                         );
                                       }
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() => _isDirectLoading = false);
+                                      }
                                     }
-                                  }
-                                },
-                              child: subState.isLoading
+                                  },
+                              child: _isDirectLoading
                                 ? const SizedBox(
                                     width: 24,
                                     height: 24,

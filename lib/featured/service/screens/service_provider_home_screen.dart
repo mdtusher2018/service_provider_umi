@@ -112,11 +112,21 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           if (!isVerified && !isPending) {
             context.go(AppRoutes.providerOnboarding);
           } else if (isVerified) {
-            // Initialize subscription check when provider is verified
-            ref.read(subscriptionProvider.notifier).init(profile.id ?? '');
-            ref
-                .read(bookingsProvider(BookingStatus.upcoming).notifier)
-                .fetch(initial: true);
+            ref.read(bookingsProvider(BookingStatus.upcoming).notifier).fetch(initial: true);
+          }
+        },
+      );
+    });
+
+    final profileState = ref.watch(myProfileProvider);
+    final subState = ref.watch(subscriptionProvider);
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      profileState.whenOrNull(
+        success: (profile) {
+          if (profile.isVerified == true && subState.customerInfo == null && !subState.isLoading) {
+             ref.read(subscriptionProvider.notifier).init(profile.id ?? '');
           }
         },
       );
