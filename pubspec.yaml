@@ -34,6 +34,7 @@ dependencies:
 
   # Communication
   agora_rtc_engine: 
+  flutter_ringtone_player: ^3.2.0
 
 
   # Payments      
@@ -70,6 +71,7 @@ dependencies:
   socket_io_client: ^3.1.4
   url_strategy: ^0.3.0
   webview_flutter: ^4.13.1
+  url_launcher: ^6.3.1
   flutter_stripe: ^12.6.0
   readmore: ^3.0.0
   convex_bottom_bar: ^3.2.0

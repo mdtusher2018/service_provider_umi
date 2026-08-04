@@ -516,9 +516,9 @@ GoRouter appRouter(Ref ref) {
               contactId: contactId,
               contactName: contactName,
               contactImageUrl: imageUrl,
-              channelId: channelId,
+              channelId: channelId ?? 'audio_$contactId',
               isIncoming: isIncoming,
-              callType: CallType.audio,
+              isVideoCall: false,
             ),
           );
         },
@@ -537,9 +537,9 @@ GoRouter appRouter(Ref ref) {
               contactId: contactId,
               contactName: contactName,
               contactImageUrl: imageUrl,
-              channelId: channelId,
+              channelId: channelId ?? 'video_$contactId',
               isIncoming: isIncoming,
-              callType: CallType.video,
+              isVideoCall: true,
             ),
           );
         },

@@ -6,6 +6,7 @@ import 'package:service_provider_umi/featured/subscription/riverpod/subscription
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 import '../../../core/services/revenuecat_service.dart';
+import 'premium_packages_screen.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// Premium Subscription & 30-Day Free Trial Screen
@@ -149,18 +150,15 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                 : () async {
                                     setState(() => _isDirectLoading = true);
                                     try {
-                                      final offerings = await RevenueCatService.instance.getOfferings();
-                                      if (offerings != null && offerings.current != null && offerings.current!.availablePackages.isNotEmpty) {
-                                        final package = offerings.current!.availablePackages.first;
-                                        await RevenueCatService.instance.purchasePackage(package);
-                                        
-                                        if (mounted) {
-                                          Navigator.of(context).pop();
-                                        }
-                                      } else {
-                                        if (mounted) {
+                                      final success = await ref.read(subscriptionProvider.notifier).activateFreeTrial();
+                                      
+                                      if (mounted && success) {
+                                        Navigator.of(context).pop();
+                                      } else if (mounted) {
+                                        final errorMsg = ref.read(subscriptionProvider).errorMessage;
+                                        if (errorMsg != null) {
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Exception: No packages available in RevenueCat Offerings. Please check App Store Connect.'), backgroundColor: Colors.red),
+                                            SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
                                           );
                                         }
                                       }
@@ -191,6 +189,25 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                           ),
 
                           14.verticalSpace,
+
+                          /// "Upgrade Premium" underline button
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => const PremiumPackagesScreen()),
+                              );
+                            },
+                            child: const Text(
+                              'Upgrade Premium',
+                              style: TextStyle(
+                                color: Color(0xFF00B4D8),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Color(0xFF00B4D8),
+                              ),
+                            ),
+                          ),
 
                           /// "Not now" Link
                           TextButton(

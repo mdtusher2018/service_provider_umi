@@ -25,6 +25,7 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import '../../riverpod/socket_signaling_provider.dart';
 part '_block_dialog.dart';
 part '_message_bubble.dart';
 part '_call_option_dialog.dart';
@@ -115,6 +116,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       otherUserId: widget.otherUserId,
       chatId: widget.chatId,
     );
+
+    ref.read(socketSignalingProvider).init(widget.myId);
   }
 
   Future<void> initializedChatService() async {
@@ -384,23 +387,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _startAudioCall() {
+    ref.read(socketSignalingProvider).initiateCall(
+      targetUserId: widget.otherUserId,
+      isVideoCall: false,
+      callerName: widget.myId, // Change to actual name if available
+      callerImage: null, // Change to actual image if available
+    );
+    final channelId = "${widget.myId}_${DateTime.now().millisecondsSinceEpoch}";
+    
     if (kIsWeb) {
       context.go(
-        AppRoutes.audioCallPath("1"),
+        AppRoutes.audioCallPath(widget.otherUserId),
         extra: {
           'name': widget.contactName,
           'imageUrl': widget.contactImageUrl ?? '',
-          'channelId': '',
+          'channelId': channelId,
           'isIncoming': false,
         },
       );
     } else {
       context.push(
-        AppRoutes.audioCallPath("1"),
+        AppRoutes.audioCallPath(widget.otherUserId),
         extra: {
           'name': widget.contactName,
           'imageUrl': widget.contactImageUrl ?? '',
-          'channelId': '',
+          'channelId': channelId,
           'isIncoming': false,
         },
       );
@@ -408,23 +419,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _startVideoCall() {
+    ref.read(socketSignalingProvider).initiateCall(
+      targetUserId: widget.otherUserId,
+      isVideoCall: true,
+      callerName: widget.myId, // Change to actual name if available
+      callerImage: null, // Change to actual image if available
+    );
+    final channelId = "${widget.myId}_${DateTime.now().millisecondsSinceEpoch}";
+    
     if (kIsWeb) {
       context.go(
-        AppRoutes.videoCallPath("1"),
+        AppRoutes.videoCallPath(widget.otherUserId),
         extra: {
           'name': widget.contactName,
           'imageUrl': widget.contactImageUrl ?? '',
-          'channelId': '',
+          'channelId': channelId,
           'isIncoming': false,
         },
       );
     } else {
       context.push(
-        AppRoutes.videoCallPath("1"),
+        AppRoutes.videoCallPath(widget.otherUserId),
         extra: {
           'name': widget.contactName,
           'imageUrl': widget.contactImageUrl ?? '',
-          'channelId': '',
+          'channelId': channelId,
           'isIncoming': false,
         },
       );

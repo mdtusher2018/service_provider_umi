@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/core/services/revenuecat_service.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -18,6 +20,9 @@ class SubscriptionState {
   final Offerings? offerings;
   final String? errorMessage;
   final bool isSuccess;
+  
+  // Backend parsed data
+  final Map<String, dynamic>? backendSubscription;
 
   const SubscriptionState({
     this.isLoading = false,
@@ -29,6 +34,7 @@ class SubscriptionState {
     this.offerings,
     this.errorMessage,
     this.isSuccess = false,
+    this.backendSubscription,
   });
 
   SubscriptionState copyWith({
@@ -42,6 +48,7 @@ class SubscriptionState {
     String? errorMessage,
     bool? isSuccess,
     bool clearError = false,
+    Map<String, dynamic>? backendSubscription,
   }) {
     return SubscriptionState(
       isLoading: isLoading ?? this.isLoading,
@@ -53,6 +60,7 @@ class SubscriptionState {
       offerings: offerings ?? this.offerings,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isSuccess: isSuccess ?? this.isSuccess,
+      backendSubscription: backendSubscription ?? this.backendSubscription,
     );
   }
 }
@@ -63,7 +71,8 @@ class SubscriptionState {
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   StreamSubscription<CustomerInfo>? _infoSub;
 
-  SubscriptionNotifier() : super(const SubscriptionState());
+  SubscriptionNotifier(this._dio) : super(const SubscriptionState());
+  final Dio _dio;
 
   /// 1. Initialize for current Provider ID
   Future<void> init(String providerId) async {
@@ -89,6 +98,46 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     }
 
     _updateFromCustomerInfo(info, offerings: offerings);
+    await fetchBackendSubscription();
+  }
+
+  /// Fetch current subscription from backend and update state accordingly
+  Future<void> fetchBackendSubscription() async {
+    try {
+      debugPrint('📡 [SubscriptionProvider] GET /subscriptions/current...');
+      final response = await _dio.get('/subscriptions/current');
+      
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data['data'];
+        if (data != null) {
+          final bool hasActiveSubscription = data['hasActiveSubscription'] ?? false;
+          final subscription = data['subscription'];
+          
+          bool isTrial = false;
+          int daysLeft = 0;
+          
+          if (subscription != null) {
+            isTrial = subscription['productId'] == 'free_trial';
+            daysLeft = subscription['daysRemaining'] ?? 0;
+            
+            // Determine eligibility based on if they ever had a free trial (or active sub)
+            // If they have any subscription record, they likely aren't eligible for a new trial.
+          }
+          
+          state = state.copyWith(
+            hasActiveAccess: state.hasActiveAccess || hasActiveSubscription,
+            isInTrial: state.isInTrial || isTrial,
+            remainingTrialDays: state.remainingTrialDays > 0 ? state.remainingTrialDays : daysLeft,
+            isEligibleForTrial: subscription == null && !hasActiveSubscription,
+            backendSubscription: subscription,
+          );
+          
+          debugPrint('✅ [SubscriptionProvider] Merged backend status. Active: \${state.hasActiveAccess}, Trial: \${state.isInTrial}, Days: \${state.remainingTrialDays}');
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ [SubscriptionProvider] Error fetching backend subscription: $e');
+    }
   }
 
   void _updateFromCustomerInfo(CustomerInfo? info, {Offerings? offerings}) {
@@ -116,9 +165,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   }
 
   /// 2. Activate 30-Day Free Trial
-  /// As per requirements: "No payment should be required to activate the trial."
   Future<bool> activateFreeTrial() async {
-    debugPrint('🚀 [SubscriptionProvider] activateFreeTrial() called!');
+    debugPrint('🚀 [SubscriptionProvider] activateFreeTrial() via Backend API called!');
     
     if (!state.isEligibleForTrial) {
       debugPrint('❌ [SubscriptionProvider] User is NOT eligible for trial.');
@@ -128,22 +176,30 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      if (state.offerings?.current == null || state.offerings!.current!.availablePackages.isEmpty) {
-        debugPrint('❌ [SubscriptionProvider] Offerings or availablePackages is empty!');
-        throw Exception('No packages available in RevenueCat Offerings. Please check RevenueCat Dashboard & App Store Connect.');
+      debugPrint('📡 [SubscriptionProvider] POST /subscriptions/free-trial...');
+      final response = await _dio.post('/subscriptions/free-trial');
+      debugPrint('📡 [SubscriptionProvider] Status: ${response.statusCode}');
+      debugPrint('📡 [SubscriptionProvider] Response: ${response.data}');
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('✅ [SubscriptionProvider] Backend free trial activated successfully!');
+        
+        // Optimistically update UI so it unlocks immediately
+        state = state.copyWith(
+          isLoading: false,
+          hasActiveAccess: true,
+          isInTrial: true,
+          remainingTrialDays: 30,
+          isEligibleForTrial: false,
+        );
+        
+        // Fetch updated backend subscription to reflect changes immediately
+        await fetchBackendSubscription();
+        
+        return true;
+      } else {
+        throw Exception('Failed to activate trial. Status: ${response.statusCode}');
       }
-
-      // Check if there is an introductory free trial package configured in RevenueCat
-      final trialPackage = state.offerings!.current!.availablePackages.firstWhere(
-        (p) => p.packageType == PackageType.custom || p.identifier == RevenueCatService.trialOfferingId,
-        orElse: () => state.offerings!.current!.availablePackages.first,
-      );
-
-      debugPrint('📦 [SubscriptionProvider] Attempting to purchase package: ${trialPackage.identifier}');
-      final info = await RevenueCatService.instance.purchasePackage(trialPackage);
-      debugPrint('✅ [SubscriptionProvider] Purchase successful!');
-      _updateFromCustomerInfo(info);
-      return true;
     } catch (e, stacktrace) {
       debugPrint('❌ [SubscriptionProvider] Error in activateFreeTrial: $e');
       debugPrint('$stacktrace');
@@ -158,6 +214,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     try {
       final info = await RevenueCatService.instance.purchasePackage(package);
       _updateFromCustomerInfo(info);
+      await fetchBackendSubscription(); // Sync backend immediately
       state = state.copyWith(isSuccess: true);
       return true;
     } catch (e) {
@@ -172,6 +229,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     try {
       final info = await RevenueCatService.instance.restorePurchases();
       _updateFromCustomerInfo(info);
+      await fetchBackendSubscription(); // Sync backend immediately
       if (RevenueCatService.instance.hasActiveAccess(info)) {
         state = state.copyWith(isSuccess: true);
         return true;
@@ -197,5 +255,6 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
 /// Global Provider for Subscription State
 final subscriptionProvider = StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
-  return SubscriptionNotifier();
+  final dio = ref.watch(dioClientProvider);
+  return SubscriptionNotifier(dio);
 });
