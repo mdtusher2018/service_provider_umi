@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
 import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/history_model.dart';
@@ -10,10 +11,14 @@ abstract class NotificationAndHistoryRemoteDataSource {
   Future<void> markNotifications(MarkNotificationsRequest request);
   Future<void> deleteNotifications();
   Future<List<CallHistoryItem>> getCallHistory();
-  Future<void> createCallHistory({
+  Future<String?> createCallHistory({
     required String receiverId,
     required CallType type,
   });
+  Future<void> acceptCall(String callId);
+  Future<void> rejectCall(String callId);
+  Future<void> cancelCall(String callId);
+  Future<void> endCall(String callId);
 }
 
 class NotificationAndHistoryRemoteDataSourceImpl
@@ -73,16 +78,58 @@ class NotificationAndHistoryRemoteDataSourceImpl
 
   // ── PATCH /notifications (bearer) ─────────────────────────────────────────
   @override
-  Future<void> createCallHistory({
+  Future<String?> createCallHistory({
     required String receiverId,
     required CallType type,
   }) async {
-    await _dio.patch(
+    final typeString = type == CallType.audio ? 'audio_call' : 'video_call';
+    debugPrint('📞 [Call API] POST ${ApiEndpoints.callHistory}');
+    debugPrint('📞 [Call API] Request Body: {"receiverId": "$receiverId", "type": "$typeString"}');
+    final response = await _dio.post(
       ApiEndpoints.callHistory,
       data: {
         "receiverId": receiverId,
-        //"type": type.name
+        "type": typeString, // video_call or audio_call
       },
     );
+    debugPrint('📞 [Call API] Response: ${response.data}');
+    
+    final data = response.data;
+    if (data is Map<String, dynamic> && data['data'] != null) {
+      return data['data']['_id']?.toString() ?? data['data']['id']?.toString();
+    }
+    return null;
+  }
+
+  @override
+  Future<void> acceptCall(String callId) async {
+    final endpoint = '${ApiEndpoints.callHistory}/$callId/accept';
+    debugPrint('📞 [Call API] PATCH $endpoint');
+    final response = await _dio.patch(endpoint);
+    debugPrint('📞 [Call API] Response: ${response.data}');
+  }
+
+  @override
+  Future<void> rejectCall(String callId) async {
+    final endpoint = '${ApiEndpoints.callHistory}/$callId/reject';
+    debugPrint('📞 [Call API] PATCH $endpoint');
+    final response = await _dio.patch(endpoint);
+    debugPrint('📞 [Call API] Response: ${response.data}');
+  }
+
+  @override
+  Future<void> cancelCall(String callId) async {
+    final endpoint = '${ApiEndpoints.callHistory}/$callId/cancel';
+    debugPrint('📞 [Call API] PATCH $endpoint');
+    final response = await _dio.patch(endpoint);
+    debugPrint('📞 [Call API] Response: ${response.data}');
+  }
+
+  @override
+  Future<void> endCall(String callId) async {
+    final endpoint = '${ApiEndpoints.callHistory}/$callId/end';
+    debugPrint('📞 [Call API] PATCH $endpoint');
+    final response = await _dio.patch(endpoint);
+    debugPrint('📞 [Call API] Response: ${response.data}');
   }
 }

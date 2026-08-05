@@ -8,23 +8,26 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../riverpod/call_provider.dart';
+import '../riverpod/communication_and_notification_provider.dart';
 
 class CallScreen extends ConsumerStatefulWidget {
   final String contactId;
   final String contactName;
   final String? contactImageUrl;
-  final bool isIncoming;
   final String channelId;
+  final bool isIncoming;
   final bool isVideoCall;
+  final String? callId;
 
   const CallScreen({
     super.key,
     required this.contactId,
     required this.contactName,
     this.contactImageUrl,
-    this.isIncoming = false,
     required this.channelId,
-    required this.isVideoCall,
+    required this.isIncoming,
+    this.isVideoCall = false,
+    this.callId,
   });
 
   @override
@@ -53,6 +56,12 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
   }
 
   void _endCall() {
+    if (widget.callId != null && !widget.isIncoming) {
+      ref.read(callHistoryProvider.notifier).cancel(widget.callId!);
+    } else if (widget.callId != null && widget.isIncoming) {
+      ref.read(callHistoryProvider.notifier).reject(widget.callId!);
+    }
+    
     ref.read(callProvider(widget.channelId)).endCall();
     if (mounted) context.pop();
   }

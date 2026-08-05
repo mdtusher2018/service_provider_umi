@@ -511,6 +511,7 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'];
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
+          final callId = extra?['callId'];
           return MaterialApp(
             builder: (context, child) => CallScreen(
               contactId: contactId,
@@ -519,6 +520,7 @@ GoRouter appRouter(Ref ref) {
               channelId: channelId ?? 'audio_$contactId',
               isIncoming: isIncoming,
               isVideoCall: false,
+              callId: callId,
             ),
           );
         },
@@ -532,6 +534,7 @@ GoRouter appRouter(Ref ref) {
           final imageUrl = extra?['imageUrl'] ?? '';
           final channelId = extra?['channelId'] ?? '';
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
+          final callId = extra?['callId'];
           return MaterialApp(
             builder: (context, child) => CallScreen(
               contactId: contactId,
@@ -540,6 +543,7 @@ GoRouter appRouter(Ref ref) {
               channelId: channelId ?? 'video_$contactId',
               isIncoming: isIncoming,
               isVideoCall: true,
+              callId: callId,
             ),
           );
         },

@@ -20,6 +20,7 @@ class SubscriptionState {
   final Offerings? offerings;
   final String? errorMessage;
   final bool isSuccess;
+  final bool isInitialized;
   
   // Backend parsed data
   final Map<String, dynamic>? backendSubscription;
@@ -34,6 +35,7 @@ class SubscriptionState {
     this.offerings,
     this.errorMessage,
     this.isSuccess = false,
+    this.isInitialized = false,
     this.backendSubscription,
   });
 
@@ -47,6 +49,7 @@ class SubscriptionState {
     Offerings? offerings,
     String? errorMessage,
     bool? isSuccess,
+    bool? isInitialized,
     bool clearError = false,
     Map<String, dynamic>? backendSubscription,
   }) {
@@ -60,6 +63,7 @@ class SubscriptionState {
       offerings: offerings ?? this.offerings,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isSuccess: isSuccess ?? this.isSuccess,
+      isInitialized: isInitialized ?? this.isInitialized,
       backendSubscription: backendSubscription ?? this.backendSubscription,
     );
   }
@@ -76,8 +80,9 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   /// 1. Initialize for current Provider ID
   Future<void> init(String providerId) async {
+    if (state.isInitialized) return; // Prevent multiple calls
     debugPrint('🚀 [SubscriptionProvider] Initializing for providerId: $providerId');
-    state = state.copyWith(isLoading: true, clearError: true);
+    state = state.copyWith(isLoading: true, clearError: true, isInitialized: true);
     await RevenueCatService.instance.init(providerId);
 
     // Listen to real-time subscription status changes from RevenueCat SDK
@@ -142,23 +147,28 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
   void _updateFromCustomerInfo(CustomerInfo? info, {Offerings? offerings}) {
     final service = RevenueCatService.instance;
-    final hasAccess = service.hasActiveAccess(info);
+    final rcHasAccess = service.hasActiveAccess(info);
     final inTrial = service.isInTrial(info);
     final eligible = service.isEligibleForTrial(info);
     final daysLeft = service.getRemainingTrialDays(info);
+    
+    // Check if backend previously confirmed we have access
+    final backendHasAccess = state.backendSubscription != null && 
+        (state.backendSubscription!['isActive'] == true || state.backendSubscription!['isPaid'] == true);
 
     debugPrint('📊 [SubscriptionProvider] Status Updated:');
-    debugPrint('   - Has Active Access: $hasAccess');
+    debugPrint('   - Has Active Access (RC): $rcHasAccess');
+    debugPrint('   - Has Active Access (Backend): $backendHasAccess');
     debugPrint('   - In Trial: $inTrial');
     debugPrint('   - Eligible for Trial: $eligible');
     debugPrint('   - Days Left: $daysLeft');
 
     state = state.copyWith(
       isLoading: false,
-      hasActiveAccess: hasAccess,
-      isInTrial: inTrial,
+      hasActiveAccess: rcHasAccess || backendHasAccess || state.hasActiveAccess,
+      isInTrial: inTrial || state.isInTrial,
       isEligibleForTrial: eligible,
-      remainingTrialDays: daysLeft,
+      remainingTrialDays: daysLeft > 0 ? daysLeft : state.remainingTrialDays,
       customerInfo: info,
       offerings: offerings ?? state.offerings,
     );

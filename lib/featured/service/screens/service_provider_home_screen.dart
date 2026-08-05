@@ -125,7 +125,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
       if (!mounted) return;
       profileState.whenOrNull(
         success: (profile) {
-          if (profile.isVerified == true && subState.customerInfo == null && !subState.isLoading) {
+          if (profile.isVerified == true && !subState.isInitialized) {
              ref.read(subscriptionProvider.notifier).init(profile.id ?? '');
           }
         },

@@ -6,6 +6,7 @@ import 'package:service_provider_umi/data/models/history_model.dart';
 import 'package:service_provider_umi/data/models/notification_models.dart';
 import 'package:service_provider_umi/data/repository/notification_and_history_repositiry.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
+import 'package:flutter/foundation.dart';
 
 part 'communication_and_notification_provider.freezed.dart';
 part 'communication_and_notification_provider.g.dart';
@@ -135,11 +136,60 @@ class CallHistoryNotifier extends _$CallHistoryNotifier {
   }
 
   /// Silent call history creation (no UI state change)
-  Future<void> create({
+  Future<String?> create({
     required String receiverId,
     required CallType type,
   }) async {
-    await _repo.createCallHistory(receiverId: receiverId, type: type);
-    fetch();
+    try {
+      final res = await _repo.createCallHistory(receiverId: receiverId, type: type);
+      if (ref.mounted) fetch();
+      return res.when(
+        success: (id) => id,
+        failure: (_) => null,
+      );
+    } catch (e) {
+      debugPrint('📞 [Call API Error] create: $e');
+      return null;
+    }
+  }
+
+  /// Accept an incoming call
+  Future<void> accept(String callId) async {
+    try {
+      await _repo.acceptCall(callId);
+      if (ref.mounted) fetch();
+    } catch (e) {
+      debugPrint('📞 [Call API Error] accept: $e');
+    }
+  }
+
+  /// Reject an incoming call (receiver cuts before accepting)
+  Future<void> reject(String callId) async {
+    try {
+      await _repo.rejectCall(callId);
+      if (ref.mounted) fetch();
+    } catch (e) {
+      debugPrint('📞 [Call API Error] reject: $e');
+    }
+  }
+
+  /// Cancel an outgoing call (caller cuts before receiver accepts)
+  Future<void> cancel(String callId) async {
+    try {
+      await _repo.cancelCall(callId);
+      if (ref.mounted) fetch();
+    } catch (e) {
+      debugPrint('📞 [Call API Error] cancel: $e');
+    }
+  }
+
+  /// End an active call (either party cuts after accepting)
+  Future<void> end(String callId) async {
+    try {
+      await _repo.endCall(callId);
+      if (ref.mounted) fetch();
+    } catch (e) {
+      debugPrint('📞 [Call API Error] end: $e');
+    }
   }
 }

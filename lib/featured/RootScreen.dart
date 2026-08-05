@@ -14,6 +14,7 @@ import '../l10n/app_localizations.dart';
 import 'package:service_provider_umi/core/services/socket/socket_service.dart';
 import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/riverpod/socket_signaling_provider.dart';
 import 'dart:convert';
 
 class RootScreen extends ConsumerStatefulWidget {
@@ -41,8 +42,13 @@ class _RootScreenState extends ConsumerState<RootScreen> {
 
   Future<void> _initSocketListener() async {
     _userId = await getMyUserId(ref);
-    if (_userId != null && widget.role == AppRole.user) {
-      SocketService.instance.on('bookingComplete::$_userId', _onBookingComplete);
+    if (_userId != null) {
+      if (widget.role == AppRole.user) {
+        SocketService.instance.on('bookingComplete::$_userId', _onBookingComplete);
+      }
+      
+      // Initialize global call listeners
+      ref.read(socketSignalingProvider).init(_userId!);
     }
   }
 

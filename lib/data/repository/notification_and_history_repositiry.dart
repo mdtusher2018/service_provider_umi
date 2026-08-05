@@ -31,10 +31,26 @@ class NotificationAndHistoryRepositiry with SafeCall {
       asyncGuard(() => _remote.getCallHistory());
 
   // ── PATCH /notifications ─────────────────────────────────────────────────────
-  Future<Result<void, Failure>> createCallHistory({
+  Future<Result<String?, Failure>> createCallHistory({
     required String receiverId,
     required CallType type,
   }) => asyncGuard(
     () => _remote.createCallHistory(receiverId: receiverId, type: type),
   );
+
+  // ── PATCH /call-history/:callId/accept ───────────────────────────────────────
+  Future<Result<void, Failure>> acceptCall(String callId) =>
+      asyncGuard(() => _remote.acceptCall(callId));
+
+  // ── PATCH /call-history/:callId/reject ───────────────────────────────────────
+  Future<Result<void, Failure>> rejectCall(String callId) =>
+      asyncGuard(() => _remote.rejectCall(callId));
+
+  // ── PATCH /call-history/:callId/cancel ───────────────────────────────────────
+  Future<Result<void, Failure>> cancelCall(String callId) =>
+      asyncGuard(() => _remote.cancelCall(callId));
+
+  // ── PATCH /call-history/:callId/end ──────────────────────────────────────────
+  Future<Result<void, Failure>> endCall(String callId) =>
+      asyncGuard(() => _remote.endCall(callId));
 }

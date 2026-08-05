@@ -19,6 +19,8 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/core/services/revenuecat_service.dart';
+import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 part '_logout_dialog.dart';
 part '_menu_card.dart';
 part '_user_cards.dart';
@@ -52,9 +54,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         },
         onLogout: () async {
           await ref.read(localStorageProvider).clearAll();
+          await RevenueCatService.instance.logout();
 
           ref.invalidate(myProfileProvider);
           ref.invalidate(appRoleProvider);
+          ref.invalidate(subscriptionProvider);
 
           if (mounted) {
             context.go(AppRoutes.login);
