@@ -25,6 +25,7 @@ class ApiEndpoints {
   // ─── Notifications ──────────────────────────────────────────────────────────
   static const String notifications = '/notifications';
   static const String callHistory = '/call-history';
+  static String getAgoraToken(String callId) => '/agora/token/$callId';
 
   // ─── Contents ───────────────────────────────────────────────────────────────
   static const String contents = '/contents';

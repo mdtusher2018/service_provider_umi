@@ -17,7 +17,7 @@ class _TabBar extends ConsumerWidget {
 
       indicatorSize: TabBarIndicatorSize.label,
       tabs: [
-        if (!isNotification || ref.watch(appRoleProvider) == AppRole.user)
+        if (!isNotification)
           Tab(child: AppText.labelLg("Chat", fontWeight: FontWeight.w600)),
         if (isNotification || ref.watch(appRoleProvider) == AppRole.user)
           Tab(child: AppText.labelLg("Alerts", fontWeight: FontWeight.w600)),

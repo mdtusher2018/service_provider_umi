@@ -441,6 +441,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
           // ── Pagination defaults ──────────────────────
           page: '1',
           limit: '10',
+          categoryId: widget.serviceId,
         ),
       );
     }

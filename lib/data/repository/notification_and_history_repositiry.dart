@@ -31,7 +31,7 @@ class NotificationAndHistoryRepositiry with SafeCall {
       asyncGuard(() => _remote.getCallHistory());
 
   // ── PATCH /notifications ─────────────────────────────────────────────────────
-  Future<Result<String?, Failure>> createCallHistory({
+  Future<Result<Map<String, dynamic>?, Failure>> createCallHistory({
     required String receiverId,
     required CallType type,
   }) => asyncGuard(
@@ -53,4 +53,8 @@ class NotificationAndHistoryRepositiry with SafeCall {
   // ── PATCH /call-history/:callId/end ──────────────────────────────────────────
   Future<Result<void, Failure>> endCall(String callId) =>
       asyncGuard(() => _remote.endCall(callId));
+
+  // ── GET /agora/token/:callId ───────────────────────────────────────────────
+  Future<Result<Map<String, dynamic>, Failure>> getAgoraToken(String callId) =>
+      asyncGuard(() => _remote.getAgoraToken(callId));
 }

@@ -12,6 +12,7 @@ class AppRoutes {
   static const String favourites = '/user/favourites';
   static const String userHome = '/user/home';
   static const String inbox = '/user/inbox';
+  static const String userNotifications = '/user/notifications';
   static const String profile = '/user/profile';
 
   // ─── Provider Shell Tabs ──────────────────────────────────

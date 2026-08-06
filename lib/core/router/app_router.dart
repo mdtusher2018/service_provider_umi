@@ -253,6 +253,14 @@ GoRouter appRouter(Ref ref) {
         ],
       ),
 
+      // ── User Notifications ──────────────────────────────────
+      GoRoute(
+        path: AppRoutes.userNotifications,
+        builder: (_, __) => const CommunicationAndNotificationScreen(
+          isNotification: true,
+        ),
+      ),
+
       // ── Splash ──────────────────────────────────────────
       GoRoute(
         path: AppRoutes.splash,
@@ -512,16 +520,14 @@ GoRouter appRouter(Ref ref) {
           final channelId = extra?['channelId'];
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
           final callId = extra?['callId'];
-          return MaterialApp(
-            builder: (context, child) => CallScreen(
-              contactId: contactId,
-              contactName: contactName,
-              contactImageUrl: imageUrl,
-              channelId: channelId ?? 'audio_$contactId',
-              isIncoming: isIncoming,
-              isVideoCall: false,
-              callId: callId,
-            ),
+          return CallScreen(
+            contactId: contactId,
+            contactName: contactName,
+            contactImageUrl: imageUrl,
+            channelId: channelId ?? 'audio_$contactId',
+            isIncoming: isIncoming,
+            isVideoCall: false,
+            callId: callId,
           );
         },
       ),
@@ -535,16 +541,14 @@ GoRouter appRouter(Ref ref) {
           final channelId = extra?['channelId'] ?? '';
           final isIncoming = (extra?['isIncoming'] ?? false) as bool;
           final callId = extra?['callId'];
-          return MaterialApp(
-            builder: (context, child) => CallScreen(
-              contactId: contactId,
-              contactName: contactName,
-              contactImageUrl: imageUrl,
-              channelId: channelId ?? 'video_$contactId',
-              isIncoming: isIncoming,
-              isVideoCall: true,
-              callId: callId,
-            ),
+          return CallScreen(
+            contactId: contactId,
+            contactName: contactName,
+            contactImageUrl: imageUrl,
+            channelId: channelId ?? 'video_$contactId',
+            isIncoming: isIncoming,
+            isVideoCall: true,
+            callId: callId,
           );
         },
       ),

@@ -388,22 +388,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _startAudioCall() async {
-    final callId = await ref.read(callHistoryProvider.notifier).create(
+    debugPrint('📞 [Call Action] Pressed START AUDIO CALL with user: ${widget.otherUserId}');
+    final callData = await ref.read(callHistoryProvider.notifier).create(
       receiverId: widget.otherUserId,
       type: CallType.audio,
     );
-    ref.read(socketSignalingProvider).initiateCall(
-      targetUserId: widget.otherUserId,
-      isVideoCall: false,
-      callerName: widget.myId, // Change to actual name if available
-      callerImage: null, // Change to actual image if available
-    );
-    final channelId = "${widget.myId}_${DateTime.now().millisecondsSinceEpoch}";
+    
+    if (callData == null) {
+      if (mounted) context.showSnackBar("User is busy or unavailable", isError: true);
+      return;
+    }
+
+    // Use the channelName and id from backend response
+    final channelName = callData['channelName']?.toString() ?? '';
+    final callId = callData['id']?.toString() ?? callData['_id']?.toString();
+    debugPrint('📞 [Call Action] Audio call created on backend (id: $callId, channel: $channelName)');
+
+    // Backend already sends socket event to receiver — no need to emit manually
     
     final extraData = {
       'name': widget.contactName,
       'imageUrl': widget.contactImageUrl ?? '',
-      'channelId': channelId,
+      'channelId': channelName,
       'isIncoming': false,
       'callId': callId,
     };
@@ -416,22 +422,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   void _startVideoCall() async {
-    final callId = await ref.read(callHistoryProvider.notifier).create(
+    debugPrint('📞 [Call Action] Pressed START VIDEO CALL with user: ${widget.otherUserId}');
+    final callData = await ref.read(callHistoryProvider.notifier).create(
       receiverId: widget.otherUserId,
       type: CallType.video,
     );
-    ref.read(socketSignalingProvider).initiateCall(
-      targetUserId: widget.otherUserId,
-      isVideoCall: true,
-      callerName: widget.myId, // Change to actual name if available
-      callerImage: null, // Change to actual image if available
-    );
-    final channelId = "${widget.myId}_${DateTime.now().millisecondsSinceEpoch}";
+    
+    if (callData == null) {
+      if (mounted) context.showSnackBar("User is busy or unavailable", isError: true);
+      return;
+    }
+
+    // Use the channelName and id from backend response
+    final channelName = callData['channelName']?.toString() ?? '';
+    final callId = callData['id']?.toString() ?? callData['_id']?.toString();
+    debugPrint('📞 [Call Action] Video call created on backend (id: $callId, channel: $channelName)');
+
+    // Backend already sends socket event to receiver — no need to emit manually
     
     final extraData = {
       'name': widget.contactName,
       'imageUrl': widget.contactImageUrl ?? '',
-      'channelId': channelId,
+      'channelId': channelName,
       'isIncoming': false,
       'callId': callId,
     };

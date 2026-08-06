@@ -11,7 +11,7 @@ abstract class NotificationAndHistoryRemoteDataSource {
   Future<void> markNotifications(MarkNotificationsRequest request);
   Future<void> deleteNotifications();
   Future<List<CallHistoryItem>> getCallHistory();
-  Future<String?> createCallHistory({
+  Future<Map<String, dynamic>?> createCallHistory({
     required String receiverId,
     required CallType type,
   });
@@ -19,6 +19,7 @@ abstract class NotificationAndHistoryRemoteDataSource {
   Future<void> rejectCall(String callId);
   Future<void> cancelCall(String callId);
   Future<void> endCall(String callId);
+  Future<Map<String, dynamic>> getAgoraToken(String callId);
 }
 
 class NotificationAndHistoryRemoteDataSourceImpl
@@ -78,7 +79,7 @@ class NotificationAndHistoryRemoteDataSourceImpl
 
   // ── PATCH /notifications (bearer) ─────────────────────────────────────────
   @override
-  Future<String?> createCallHistory({
+  Future<Map<String, dynamic>?> createCallHistory({
     required String receiverId,
     required CallType type,
   }) async {
@@ -96,7 +97,7 @@ class NotificationAndHistoryRemoteDataSourceImpl
     
     final data = response.data;
     if (data is Map<String, dynamic> && data['data'] != null) {
-      return data['data']['_id']?.toString() ?? data['data']['id']?.toString();
+      return Map<String, dynamic>.from(data['data'] as Map);
     }
     return null;
   }
@@ -131,5 +132,18 @@ class NotificationAndHistoryRemoteDataSourceImpl
     debugPrint('📞 [Call API] PATCH $endpoint');
     final response = await _dio.patch(endpoint);
     debugPrint('📞 [Call API] Response: ${response.data}');
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAgoraToken(String callId) async {
+    final endpoint = ApiEndpoints.getAgoraToken(callId);
+    debugPrint('📞 [Call API] GET $endpoint');
+    final response = await _dio.get(endpoint);
+    debugPrint('📞 [Call API] Response: ${response.data}');
+    
+    if (response.data != null && response.data['success'] == true) {
+      return response.data['data'] as Map<String, dynamic>;
+    }
+    throw Exception('Failed to get Agora token');
   }
 }

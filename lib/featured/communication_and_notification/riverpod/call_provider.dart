@@ -6,8 +6,12 @@ import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
+import 'package:service_provider_umi/data/repository/notification_and_history_repositiry.dart';
+import 'package:service_provider_umi/core/di/repository_providers.dart';
+
 final callProvider = ChangeNotifierProvider.autoDispose.family<CallNotifier, String>((ref, channelId) {
-  return CallNotifier(channelId: channelId);
+  final repository = ref.watch(notificationAndHistoryRepositiryProvider);
+  return CallNotifier(channelId: channelId, repository: repository);
 });
 
 class CallNotifier extends ChangeNotifier {
@@ -17,6 +21,7 @@ class CallNotifier extends ChangeNotifier {
   bool localUserJoined = false;
   bool isMuted = false;
   bool isCameraOff = false;
+  bool isSpeakerOn = false;
   
   bool _isVideoCall = true;
   bool get isVideoCall => _isVideoCall;
@@ -24,10 +29,12 @@ class CallNotifier extends ChangeNotifier {
   // Timer properties
   Timer? _callTimer;
   int callDurationInSeconds = 0;
+  
+  final NotificationAndHistoryRepositiry repository;
 
-  CallNotifier({required this.channelId});
+  CallNotifier({required this.channelId, required this.repository});
 
-  Future<void> initAgora({required bool isVideoCall}) async {
+  Future<void> initAgora({required bool isVideoCall, String? callId}) async {
     _isVideoCall = isVideoCall;
     
     // Play ringing sound until someone joins
@@ -46,6 +53,7 @@ class CallNotifier extends ChangeNotifier {
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           AppLogger.success("Local user joined channel: ${connection.channelId}");
           localUserJoined = true;
+          engine?.setEnableSpeakerphone(isSpeakerOn); // Set speaker after joining
           notifyListeners();
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
@@ -62,6 +70,12 @@ class CallNotifier extends ChangeNotifier {
           _stopTimer();
           notifyListeners();
         },
+        onError: (ErrorCodeType err, String msg) {
+          AppLogger.error("Agora Error: $err, msg: $msg");
+        },
+        onConnectionStateChanged: (RtcConnection connection, ConnectionStateType state, ConnectionChangedReasonType reason) {
+          AppLogger.info("Agora Connection State: $state, reason: $reason");
+        },
       ),
     );
 
@@ -69,17 +83,53 @@ class CallNotifier extends ChangeNotifier {
     if (_isVideoCall) {
       await engine!.enableVideo();
       await engine!.startPreview();
+      isSpeakerOn = true;
     } else {
       await engine!.disableVideo();
+      isSpeakerOn = false;
     }
 
-    // Since they don't have a token server, we pass null or empty string for testing if allowed by their Agora project
-    await engine!.joinChannel(
-      token: '', // Leave empty if your project is testing mode, else need a token
-      channelId: channelId,
-      uid: 0,
-      options: const ChannelMediaOptions(),
-    );
+    try {
+      if (callId != null) {
+        // Fetch token from backend using history callId
+        AppLogger.info("Fetching Agora token for callId: $callId");
+        final tokenResult = await repository.getAgoraToken(callId);
+        
+        String token = '';
+        int uid = 0;
+
+        tokenResult.when(
+          success: (data) {
+            token = data['token']?.toString() ?? '';
+            uid = int.tryParse(data['uid']?.toString() ?? '0') ?? 0;
+            AppLogger.success("Successfully fetched Agora token: uid $uid");
+            return data;
+          },
+          failure: (error) {
+            AppLogger.error("Failed to fetch Agora token: ${error.message}");
+            return <String, dynamic>{};
+          },
+        );
+
+        await engine!.joinChannel(
+          token: token,
+          channelId: channelId,
+          uid: uid,
+          options: const ChannelMediaOptions(),
+        );
+      } else {
+        AppLogger.error("Cannot fetch Agora token: callId is null");
+        // Still try to join with empty token
+        await engine!.joinChannel(
+          token: '',
+          channelId: channelId,
+          uid: 0,
+          options: const ChannelMediaOptions(),
+        );
+      }
+    } catch (e) {
+      AppLogger.error("Exception while fetching token or joining channel: $e");
+    }
   }
 
   void _startTimer() {
@@ -111,6 +161,12 @@ class CallNotifier extends ChangeNotifier {
   void toggleCamera() {
     isCameraOff = !isCameraOff;
     engine?.muteLocalVideoStream(isCameraOff);
+    notifyListeners();
+  }
+
+  void toggleSpeaker() {
+    isSpeakerOn = !isSpeakerOn;
+    engine?.setEnableSpeakerphone(isSpeakerOn);
     notifyListeners();
   }
 

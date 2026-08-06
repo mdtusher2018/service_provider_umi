@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -22,13 +23,30 @@ class NotificationService {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     if (message.data['type'] == 'incoming_call') {
+      String callerName = message.data['callerName'] ?? 'Unknown Caller';
+      String? callerImage = message.data['callerImage'];
+      String callerId = message.data['callerId'] ?? '';
+
+      if (message.data.containsKey('sender')) {
+        try {
+          final senderStr = message.data['sender'];
+          if (senderStr is String) {
+            final senderMap = jsonDecode(senderStr);
+            callerName = senderMap['name'] ?? callerName;
+            callerImage = senderMap['profile'] ?? callerImage;
+            callerId = senderMap['id'] ?? callerId;
+          }
+        } catch (_) {}
+      }
+
       await CallKitService.showIncomingCall(
-        callId: message.data['callId'],
-        callerId: message.data['callerId'],
-        callerName: message.data['callerName'],
-        callerImage: message.data['callerImage'],
-        channelId: message.data['channelId'],
-        isVideo: message.data['callType'] == 'video',
+        callId: message.data['callId'] ?? message.data['channelName'] ?? '',
+        callerId: callerId,
+        callerName: callerName,
+        callerImage: callerImage,
+        channelId: message.data['channelId'] ?? message.data['channelName'] ?? '',
+        historyId: message.data['historyId'] ?? message.data['id'] ?? '',
+        isVideo: message.data['callType'] == 'video' || message.data['type'] == 'video_call',
       );
     } else if (message.data['type'] == 'end_call') {
       final callId = message.data['callId'] ?? '';
@@ -97,13 +115,30 @@ class NotificationService {
     AppLogger.info(message.data.toString());
 
     if (message.data['type'] == 'incoming_call') {
+      String callerName = message.data['callerName'] ?? 'Unknown Caller';
+      String? callerImage = message.data['callerImage'];
+      String callerId = message.data['callerId'] ?? '';
+
+      if (message.data.containsKey('sender')) {
+        try {
+          final senderStr = message.data['sender'];
+          if (senderStr is String) {
+            final senderMap = jsonDecode(senderStr);
+            callerName = senderMap['name'] ?? callerName;
+            callerImage = senderMap['profile'] ?? callerImage;
+            callerId = senderMap['id'] ?? callerId;
+          }
+        } catch (_) {}
+      }
+
       await CallKitService.showIncomingCall(
-        callId: message.data['callId'],
-        callerId: message.data['callerId'],
-        callerName: message.data['callerName'],
-        callerImage: message.data['callerImage'],
-        channelId: message.data['channelId'],
-        isVideo: message.data['callType'] == 'video',
+        callId: message.data['callId'] ?? message.data['channelName'] ?? '',
+        callerId: callerId,
+        callerName: callerName,
+        callerImage: callerImage,
+        channelId: message.data['channelId'] ?? message.data['channelName'] ?? '',
+        historyId: message.data['historyId'] ?? message.data['id'] ?? '',
+        isVideo: message.data['callType'] == 'video' || message.data['type'] == 'video_call',
       );
     } else if (message.data['type'] == 'end_call') {
       // Remote side ended the call while this app is in foreground

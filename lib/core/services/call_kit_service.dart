@@ -1,6 +1,12 @@
 // lib/core/services/call_kit_service.dart
 
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
+import 'package:service_provider_umi/core/config/flavor_config.dart';
+import 'package:service_provider_umi/core/services/network/api_endpoints.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:flutter_callkit_incoming/entities/android_params.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
@@ -19,6 +25,7 @@ class CallKitService {
     required String callerName,
     required String? callerImage,
     required String channelId,
+    required String historyId,
     required bool isVideo,
   }) async {
     final params = CallKitParams(
@@ -64,6 +71,7 @@ class CallKitService {
         'channelId': channelId,
         'callType': isVideo ? 'video' : 'audio',
         'callerImage': callerImage ?? '',
+        'historyId': historyId,
       },
     );
 
@@ -82,8 +90,14 @@ class CallKitService {
 // lib/core/services/call_kit_listener_service.dart
 
 class CallKitListenerService {
+  static bool _isInitialized = false;
+  static String? _lastProcessedHistoryId;
+
   /// Call once in main() after Firebase.initializeApp()
   static void init() {
+    if (_isInitialized) return;
+    _isInitialized = true;
+
     FlutterCallkitIncoming.onEvent.listen((CallEvent? event) {
       if (event == null) return;
       log('CallKit event: ${event.event}  body: ${event.body}');
@@ -94,8 +108,8 @@ class CallKitListenerService {
           break;
 
         case Event.actionCallDecline:
-          // User tapped Decline on lock screen — nothing to do in-app
           log('Call declined from lock screen');
+          _handleDecline(event.body);
           break;
 
         case Event.actionCallEnded:
@@ -119,27 +133,76 @@ class CallKitListenerService {
     });
   }
 
+  static Future<void> _callApiStatus(String historyId, String status) async {
+    try {
+      final token = await LocalStorageServiceImpl().read<String>(StorageKey.accessToken);
+      if (token == null) return;
+      final dio = Dio(BaseOptions(
+        baseUrl: FlavorConfig.instance.baseUrl,
+      ));
+      dio.options.headers['Authorization'] = 'Bearer $token';
+      
+      final url = '${FlavorConfig.instance.baseUrl}${ApiEndpoints.callHistory}/$historyId/$status';
+      debugPrint('📞 [Call Action] API URL: PATCH $url');
+      
+      await dio.patch('${ApiEndpoints.callHistory}/$historyId/$status');
+      log('CallKitListenerService: $status call $historyId on backend');
+    } catch (e) {
+      log('CallKitListenerService: Failed to $status call on backend $e');
+    }
+  }
+
+  static void _handleDecline(Map<dynamic, dynamic> body) {
+    log('📞 [Call Action] Native CallKit DECLINE button pressed');
+    final extra = (body['extra'] as Map<dynamic, dynamic>?) ?? {};
+    final historyId = extra['historyId']?.toString();
+    
+    if (historyId != null && historyId == _lastProcessedHistoryId) {
+      log('CallKitListenerService: Already processed decline for this call ($historyId)');
+      return;
+    }
+    _lastProcessedHistoryId = historyId;
+
+    if (historyId != null && historyId.isNotEmpty) {
+      _callApiStatus(historyId, 'reject');
+    }
+  }
+
   // ─── Accept ───────────────────────────────────────────────────
   static void _handleAccept(Map<dynamic, dynamic> body) {
+    log('📞 [Call Action] Native CallKit ACCEPT button pressed');
+    
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) {
+      log('CallKitListenerService: no context, ignoring event (likely background isolate)');
+      return;
+    }
+
     final extra = (body['extra'] as Map<dynamic, dynamic>?) ?? {};
 
     final callerId = extra['callerId']?.toString() ?? '';
     final callerName = body['nameCaller']?.toString() ?? 'Unknown';
     final callerImage = extra['callerImage']?.toString();
-    final channelId = extra['channelId']?.toString() ?? '';
-    final isVideo = extra['callType']?.toString() == 'video';
-
-    final context = rootNavigatorKey.currentContext;
-    if (context == null) {
-      log('CallKitListenerService: no context, cannot navigate');
+    final historyId = extra['historyId']?.toString();
+    
+    if (historyId != null && historyId == _lastProcessedHistoryId) {
+      log('CallKitListenerService: Already processed accept for this call ($historyId)');
       return;
     }
+    _lastProcessedHistoryId = historyId;
+    
+    if (historyId != null && historyId.isNotEmpty) {
+      _callApiStatus(historyId, 'accept');
+    }
+    final channelId = extra['channelId']?.toString() ?? '';
+    final isVideo = extra['callType']?.toString() == 'video';
 
     final extraMap = {
       'name': callerName,
       'imageUrl': callerImage ?? '',
       'channelId': channelId,
       'isIncoming': true,
+      'callId': historyId,
     };
 
     if (isVideo) {

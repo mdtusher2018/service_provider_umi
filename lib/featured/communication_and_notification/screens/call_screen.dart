@@ -7,6 +7,8 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+import 'package:service_provider_umi/core/services/permission_service.dart';
 import '../riverpod/call_provider.dart';
 import '../riverpod/communication_and_notification_provider.dart';
 
@@ -48,21 +50,42 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.isIncoming) {
-        ref.read(callProvider(widget.channelId)).initAgora(isVideoCall: widget.isVideoCall);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final hasPermission = await PermissionService().requestCameraAndMicrophone();
+      if (!hasPermission) {
+        if (mounted) context.showSnackBar("Microphone and Camera permissions are required", isError: true);
+        return;
       }
+      
+      // Init Agora for both incoming and outgoing calls
+      ref.read(callProvider(widget.channelId)).initAgora(
+        isVideoCall: widget.isVideoCall,
+        callId: widget.callId,
+      );
     });
   }
 
   void _endCall() {
-    if (widget.callId != null && !widget.isIncoming) {
-      ref.read(callHistoryProvider.notifier).cancel(widget.callId!);
-    } else if (widget.callId != null && widget.isIncoming) {
-      ref.read(callHistoryProvider.notifier).reject(widget.callId!);
+    final callNotifier = ref.read(callProvider(widget.channelId));
+    final isConnected = callNotifier.remoteUid != null;
+
+    if (widget.callId != null) {
+      if (isConnected) {
+        // Call was connected — use 'end' API
+        debugPrint('📞 [Call Action] Pressed END CALL for connected call (id: ${widget.callId})');
+        ref.read(callHistoryProvider.notifier).end(widget.callId!);
+      } else if (!widget.isIncoming) {
+        // Caller ending before receiver answered — use 'cancel' API
+        debugPrint('📞 [Call Action] Pressed CANCEL CALL before receiver answered (id: ${widget.callId})');
+        ref.read(callHistoryProvider.notifier).cancel(widget.callId!);
+      } else {
+        // Receiver declining — use 'reject' API
+        debugPrint('📞 [Call Action] Pressed REJECT CALL (id: ${widget.callId})');
+        ref.read(callHistoryProvider.notifier).reject(widget.callId!);
+      }
     }
     
-    ref.read(callProvider(widget.channelId)).endCall();
+    callNotifier.endCall();
     if (mounted) context.pop();
   }
 
@@ -104,15 +127,21 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
               isConnected: callState.remoteUid != null,
             ),
             20.verticalSpace,
-            AppText.h2(widget.contactName),
-            6.verticalSpace,
-            AppText.bodyMd(widget.contactId, color: AppColors.textSecondary),
-            12.verticalSpace,
-            AppText.bodyLg(
-              callState.remoteUid != null ? callState.formattedDuration : (widget.isIncoming && !callState.localUserJoined ? 'Incoming call...' : 'Calling...'),
-              color: callState.remoteUid != null ? AppColors.primary : AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
+            if (callState.remoteUid != null) ...[
+              AppText.bodyLg('Connected', color: AppColors.textSecondary),
+              12.verticalSpace,
+              AppText.h2(callState.formattedDuration, color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+            ] else ...[
+              AppText.h2(widget.contactName),
+              6.verticalSpace,
+              AppText.bodyMd(widget.contactId, color: AppColors.textSecondary),
+              12.verticalSpace,
+              AppText.bodyLg(
+                widget.isIncoming && !callState.localUserJoined ? 'Incoming call...' : 'Calling...',
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ],
             const Spacer(),
             if (callState.remoteUid != null)
               _buildAudioConnectedControls(callState)
@@ -268,13 +297,27 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _CallControlBtn(
+          _RoundCallBtn(
             icon: callState.isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-            label: callState.isMuted ? 'Unmute' : 'Mute',
+            color: callState.isMuted ? AppColors.primary : AppColors.white,
+            iconColor: callState.isMuted ? AppColors.white : AppColors.primary,
+            border: Border.all(color: AppColors.grey200),
             onTap: callState.toggleMute,
-            isActive: callState.isMuted,
           ),
-          _EndCallBtn(onTap: _endCall),
+          _RoundCallBtn(
+            icon: Icons.call_end_rounded,
+            color: AppColors.error,
+            iconColor: AppColors.white,
+            size: 64,
+            onTap: _endCall,
+          ),
+          _RoundCallBtn(
+            icon: callState.isSpeakerOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+            color: callState.isSpeakerOn ? AppColors.primary : AppColors.white,
+            iconColor: callState.isSpeakerOn ? AppColors.white : AppColors.primary,
+            border: Border.all(color: AppColors.grey200),
+            onTap: callState.toggleSpeaker,
+          ),
         ],
       ),
     );
@@ -284,19 +327,36 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _RoundCallBtn(icon: Icons.call_end_rounded, color: AppColors.error, onTap: _endCall),
+        _RoundCallBtn(icon: Icons.call_end_rounded, color: AppColors.error, iconColor: AppColors.white, size: 56, onTap: _endCall),
         60.horizontalSpace,
         _RoundCallBtn(
           icon: widget.isVideoCall ? Icons.videocam_rounded : Icons.call_rounded,
           color: AppColors.success,
-          onTap: () => callState.initAgora(isVideoCall: widget.isVideoCall),
+          iconColor: AppColors.white,
+          size: 56,
+          onTap: () async {
+            final hasPermission = await PermissionService().requestCameraAndMicrophone();
+            if (hasPermission) {
+              if (widget.callId != null) {
+                ref.read(callHistoryProvider.notifier).accept(widget.callId!);
+              }
+              // We don't call initAgora again here because initState already called it.
+            } else {
+              if (mounted) context.showSnackBar("Microphone and Camera permissions are required", isError: true);
+            }
+          },
         ),
       ],
     );
   }
 
   Widget _buildOutgoingControl() {
-    return _RoundCallBtn(icon: Icons.call_end_rounded, color: AppColors.error, onTap: _endCall);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _RoundCallBtn(icon: Icons.call_end_rounded, color: AppColors.error, iconColor: AppColors.white, size: 64, onTap: _endCall),
+      ],
+    );
   }
 }
 
@@ -390,14 +450,41 @@ class _EndCallBtn extends StatelessWidget {
 class _RoundCallBtn extends StatelessWidget {
   final IconData icon;
   final Color color;
+  final Color iconColor;
   final VoidCallback onTap;
-  const _RoundCallBtn({required this.icon, required this.color, required this.onTap});
+  final double size;
+  final BoxBorder? border;
+  
+  const _RoundCallBtn({
+    required this.icon,
+    required this.color,
+    this.iconColor = AppColors.white,
+    required this.onTap,
+    this.size = 56,
+    this.border,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(width: 64, height: 64, decoration: BoxDecoration(color: color, shape: BoxShape.circle), child: Icon(icon, color: Colors.white, size: 28)),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: border,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ]
+        ),
+        child: Icon(icon, color: iconColor, size: size * 0.45),
+      ),
     );
   }
 }

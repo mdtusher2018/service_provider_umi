@@ -145,9 +145,21 @@ class _CommunicationAndNotificationScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ─── Title ──────────────────────────────
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 12),
-              child: AppText.h1('Inbox'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+              child: Row(
+                children: [
+                  if (context.canPop())
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: InkWell(
+                        onTap: () => context.pop(),
+                        child: const Icon(Icons.arrow_back_ios_rounded),
+                      ),
+                    ),
+                  const AppText.h1('Inbox'),
+                ],
+              ),
             ),
 
             // ─── Tab Bar ────────────────────────────
@@ -161,8 +173,7 @@ class _CommunicationAndNotificationScreenState
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  if (!widget.isNotification ||
-                      ref.watch(appRoleProvider) == AppRole.user)
+                  if (!widget.isNotification)
                     _buildChatTab(),
                   if (widget.isNotification ||
                       ref.watch(appRoleProvider) == AppRole.user)

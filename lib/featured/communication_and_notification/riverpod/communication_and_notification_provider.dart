@@ -136,7 +136,8 @@ class CallHistoryNotifier extends _$CallHistoryNotifier {
   }
 
   /// Silent call history creation (no UI state change)
-  Future<String?> create({
+  /// Returns the full call data map from backend (contains id, channelName, etc.)
+  Future<Map<String, dynamic>?> create({
     required String receiverId,
     required CallType type,
   }) async {
@@ -144,7 +145,7 @@ class CallHistoryNotifier extends _$CallHistoryNotifier {
       final res = await _repo.createCallHistory(receiverId: receiverId, type: type);
       if (ref.mounted) fetch();
       return res.when(
-        success: (id) => id,
+        success: (data) => data,
         failure: (_) => null,
       );
     } catch (e) {

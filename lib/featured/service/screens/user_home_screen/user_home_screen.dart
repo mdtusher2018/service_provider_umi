@@ -119,7 +119,13 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                                       Icons.notifications_none_sharp,
                                       color: AppColors.black,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (kIsWeb) {
+                                        context.go(AppRoutes.userNotifications);
+                                      } else {
+                                        context.push(AppRoutes.userNotifications);
+                                      }
+                                    },
                                   ),
                                 ),
                               ],
