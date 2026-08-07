@@ -65,6 +65,14 @@ class NotificationService {
       sound: true,
     );
 
+    if (Platform.isIOS) {
+      await messaging.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+
     if (settings.authorizationStatus != AuthorizationStatus.authorized) {
       log('User declined notification permissions');
       return;
@@ -83,8 +91,27 @@ class NotificationService {
     );
 
     await _localNotifications.initialize(settings: initSettings);
-    final token =(Platform.isIOS)?"cusP6eRhQcOu_qjZfcYoiU:APA91bFFhk6FQPYuuV_BQ_enOMIyZ-DQHvg_6mc2BHL6NJJnnst8vKjBw7qe4UrHApTM5SS9e5FBQqm6_68eLL36SQKkNRRSff4860V_x7Xx7JAupj1jFVY": await messaging.getToken();
-    log('📱 FCM Token: $token');
+
+    if (Platform.isIOS) {
+      String? apnsToken = await messaging.getAPNSToken();
+      int retries = 0;
+      while (apnsToken == null && retries < 3) {
+        await Future.delayed(const Duration(seconds: 1));
+        apnsToken = await messaging.getAPNSToken();
+        retries++;
+      }
+      log('🍏 APNs Token: $apnsToken');
+      if (apnsToken == null) {
+        log('⚠️ APNs Token is null. FCM token retrieval might fail (e.g. on Simulators).');
+      }
+    }
+
+    try {
+      final token = await messaging.getToken();
+      log('📱 FCM Token: $token');
+    } catch (e) {
+      log('❌ Failed to get FCM token: $e');
+    }
 
     // 3️⃣ Listen for FCM token safely (iOS-safe)
     messaging.onTokenRefresh.listen((token) {
@@ -161,8 +188,15 @@ class NotificationService {
           priority: Priority.high,
         );
 
+    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
     const NotificationDetails details = NotificationDetails(
       android: androidDetails,
+      iOS: iosDetails,
     );
 
     _localNotifications.show(

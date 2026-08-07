@@ -65,10 +65,10 @@ class DefaultFirebaseOptions {
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAMhkfME8ZowWx85LK_7AyW1Gr5X6VglRU',
-    appId: '1:102179953373:ios:1bc8b14a5a5c4f2d211934',
+    appId: '1:102179953373:ios:ef9b76de69a0be84211934',
     messagingSenderId: '102179953373',
     projectId: 'service-provider-umi',
     storageBucket: 'service-provider-umi.firebasestorage.app',
-    iosBundleId: 'com.serviceprovider.iumi',
+    iosBundleId: 'com.serviceprovider.serviceProviderUmi',
   );
 }
