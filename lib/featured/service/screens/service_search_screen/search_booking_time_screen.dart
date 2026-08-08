@@ -14,6 +14,7 @@ import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class SearchBookingTimeScreen extends ConsumerStatefulWidget {
   final String serviceId;
@@ -85,7 +86,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
                   Row(
                     children: [
                       AppText.h2(
-                        'When do you need it?',
+                        AppLocalizations.of(context)!.whenDoYouNeedIt,
                         color: AppColors.white,
                       ),
                     ],
@@ -139,7 +140,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.h3('Frequency'),
+        AppText.h3(AppLocalizations.of(context)!.frequency),
         12.verticalSpace,
         Container(
           decoration: BoxDecoration(
@@ -151,8 +152,8 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
             children: [
               Expanded(
                 child: _FrequencyCard(
-                  title: 'Just once',
-                  subtitle: 'One-Time',
+                  title: AppLocalizations.of(context)!.justOnce,
+                  subtitle: AppLocalizations.of(context)!.oneTime,
                   isSelected: _frequency == BookingFrequency.once,
                   onTap: () =>
                       setState(() => _frequency = BookingFrequency.once),
@@ -161,8 +162,8 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
 
               Expanded(
                 child: _FrequencyCard(
-                  title: 'Weekly',
-                  subtitle: 'Recurring',
+                  title: AppLocalizations.of(context)!.weekly,
+                  subtitle: AppLocalizations.of(context)!.recurring,
                   isSelected: _frequency == BookingFrequency.weekly,
                   onTap: () =>
                       setState(() => _frequency = BookingFrequency.weekly),
@@ -191,7 +192,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.h3("Day(s) of the week"),
+        AppText.h3(AppLocalizations.of(context)!.daysOfTheWeek),
         12.verticalSpace,
         Wrap(
           spacing: 8,
@@ -226,7 +227,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.h3('Start time'),
+        AppText.h3(AppLocalizations.of(context)!.startTime),
         12.verticalSpace,
         Container(
           decoration: BoxDecoration(
@@ -240,7 +241,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
                   onTap: () =>
                       setState(() => _startTimeType = StartTimeType.flexible),
                   child: _StartTypeCard(
-                    label: 'Flexible start',
+                    label: AppLocalizations.of(context)!.flexibleStart,
                     isSelected: _startTimeType == StartTimeType.flexible,
                   ),
                 ),
@@ -251,7 +252,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
                   onTap: () =>
                       setState(() => _startTimeType = StartTimeType.exact),
                   child: _StartTypeCard(
-                    label: 'Exact start',
+                    label: AppLocalizations.of(context)!.exactStart,
                     isSelected: _startTimeType == StartTimeType.exact,
                   ),
                 ),
@@ -280,7 +281,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.labelLg('Morning', color: AppColors.textSecondary),
+        AppText.labelLg(AppLocalizations.of(context)!.morning, color: AppColors.textSecondary),
         10.verticalSpace,
         Row(
           children: _morningSlots
@@ -300,7 +301,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
               .toList(),
         ),
         16.verticalSpace,
-        AppText.labelLg('Evening', color: AppColors.textSecondary),
+        AppText.labelLg(AppLocalizations.of(context)!.evening, color: AppColors.textSecondary),
         10.verticalSpace,
         Row(
           children: _eveningSlots
@@ -327,7 +328,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.labelLg('Select exact time'),
+        AppText.labelLg(AppLocalizations.of(context)!.selectExactTime),
         12.verticalSpace,
         Container(
           padding: 16.paddingAll,
@@ -450,14 +451,14 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
       children: [
         Expanded(
           child: AppButton.outline(
-            label: 'Skip',
+            label: AppLocalizations.of(context)!.skip,
             onPressed: () => _navigate(skip: true),
           ),
         ),
         14.horizontalSpace,
         Expanded(
           child: AppButton.primary(
-            label: 'Search',
+            label: AppLocalizations.of(context)!.search,
             onPressed: () => _navigate(skip: false),
           ),
         ),

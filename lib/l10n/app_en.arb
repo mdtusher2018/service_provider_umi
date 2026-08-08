@@ -15,8 +15,16 @@
   "noBookings": "No bookings",
   "yourBookingsWillAppearHere": "Your bookings will appear here",
   "noProvidersFound": "No providers found",
+  "calendar": "Calendar",
+  "service": "Service",
+  "favourites": "Favourites",
   "notification": "Notification",
   "inbox": "Inbox",
+  "minimumPriceSavedSuccessfully": "Minimum price saved successfully",
+  "minimumPriceTitle": "Minimum price",
+  "minimumPriceQuestion": "What is the minimum price a client must pay to book your service?  +info",
+  "minimumPriceLabel": "Minimum price:",
+  "minimumPriceTip": "This will avoid being booked for a price so low that it's not worth your time to commute to the service",
   "upcomingBookings": "Upcoming Bookings",
   "dateFilter": "Date Filter",
   "noBookingsFound": "No bookings found",
@@ -24,5 +32,522 @@
   "completed": "Completed",
   "ongoing": "Ongoing",
   "cancelled": "Cancelled",
-  "completedServices": "Completed Services"
+  "completedServices": "Completed Services",
+  "accountSettings": "Account Settings",
+  "personalDetails": "Personal details",
+  "myAddresses": "My addresses",
+  "paymentsAndRefunds": "Payments and refunds",
+  "mySubscription": "My Subscription",
+  "myListing": "My Listing",
+  "mySchedule": "My schedule",
+  "minimumBookingAmount": "Minimum booking amount",
+  "myReview": "My Review",
+  "addFaq": "Add FAQ",
+  "changePassword": "Change password",
+  "language": "Language",
+  "aboutUs": "About Us",
+  "termsAndConditions": "Terms and conditions",
+  "privacyPolicy": "Privacy policy",
+  "logout": "Log Out",
+  "failedToLoadProfile": "Failed to load profile",
+  "pullToRefresh": "Pull to refresh",
+  "areYouSureToLogout": "Are you sure you want to log out?",
+  "cancel": "Cancel",
+  "notConnected": "Not Connected",
+  "connected": "Connected",
+  "stripe": "Stripe : {status}",
+  "@stripe": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "areYouSureToDeleteAccount": "Are you sure you want to delete ?",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "failedToUpdateProfile": "Failed to update profile: {message}",
+  "@failedToUpdateProfile": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteAccount": "Failed to delete account: {message}",
+  "@failedToDeleteAccount": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "fullName": "Full name",
+  "aboutMe": "About me",
+  "searchYourAddress": "Search your address…",
+  "phoneNumber": "Phone number",
+  "deleteAccountPermanently": "Delete account permanently",
+  "yesDelete": "YES, DELETE",
+  "noDontDelete": "NO, DON'T DELETE",
+  "myAddress": "My Address",
+  "yourAddresses": "Your Addresses",
+  "retry": "Retry",
+  "noAddresses": "No addresses",
+  "addYourFirstAddressBelow": "Add your first address below",
+  "addNewAddress": "Add New Address",
+  "defaultAddressUpdated": "Default address updated",
+  "defaultString": "Default",
+  "addressLabel": "Address: {address}",
+  "@addressLabel": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "setAsDefault": "Set as Default",
+  "edit": "Edit",
+  "delete": "Delete",
+  "areYouSureToDelete": "Are you sure you want to delete?",
+  "thisAddressWillBeRemoved": "This address will be permanently removed.",
+  "pleaseSearchAndSelectAddress": "Please search and select an address first.",
+  "editAddress": "Edit Address",
+  "addAddress": "Add Address",
+  "searchAddress": "Search Address",
+  "latLng": "Lat: {lat},  Lng: {lng}",
+  "@latLng": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lng": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewAndAdjust": "Review & adjust if needed",
+  "addressLine1": "Address Line 1 *",
+  "streetNumberAndName": "Street number & name",
+  "required": "Required",
+  "addressLine2": "Address Line 2",
+  "areaNeighbourhood": "Area / neighbourhood (optional)",
+  "city": "City",
+  "state": "State",
+  "postalCode": "Postal Code",
+  "postal": "Postal",
+  "country": "Country",
+  "updateAddress": "Update Address",
+  "saveAddress": "Save Address",
+  "myCards": "My Cards",
+  "addNew": "Add New",
+  "failedToGetAddCardLink": "Failed to get add card link",
+  "noCardsFound": "No cards found",
+  "cardDeletedSuccessfully": "Card deleted successfully",
+  "setAsDefaultCardSuccessfully": "Set as default card successfully",
+  "failedToSetDefaultCard": "Failed to set default card",
+  "setAsDefaultCard": "Set as Default Card",
+  "myBalance": "My Balance",
+  "availableBalance": "Available balance",
+  "paymentAndRefunds": "Payment and refunds",
+  "paymentMethods": "Payments methods",
+  "myBooking": "My booking",
+  "paidOn": "Paid on {date}",
+  "@paidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceDate": "Service date: {date}",
+  "@serviceDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "changePassword": "Change Password",
+  "currentPassword": "Current password",
+  "oldPassword": "Old password",
+  "enterOldPassword": "Enter old password",
+  "newPassword": "New password",
+  "confirmNewPassword": "Confirm new password",
+  "confirmPassword": "Confirm password",
+  "faqAddedSuccessfully": "FAQ added successfully",
+  "addFaq": "Add FAQ",
+  "question": "Question",
+  "enterYourQuestion": "Enter your question",
+  "pleaseEnterQuestion": "Please enter a question",
+  "answer": "Answer",
+  "enterYourAnswer": "Enter your answer",
+  "pleaseEnterAnswer": "Please enter an answer",
+  "submitFaq": "Submit FAQ",
+  "reviews": "Reviews",
+  "noReviewsFound": "No reviews found",
+  "noContentAvailable": "No content available.",
+  "tryAgain": "Try again",
+  "createAccountBtn": "Create Account",
+  "logIn": "Log in",
+  "continueAsGuest": "Continue as a guest",
+  "whatWillYouDoOnIumi": "What will you do on iumi?",
+  "roleDecisionNotFinal": "This decision is not final. You can later be both a client\nand a professional from the account if you wish.",
+  "bookAService": "Book a service",
+  "iAmAClient": "I am a Client",
+  "offerServices": "Offer services",
+  "iAmAProfessional": "I am a Professional",
+  "createAccountTitle": "Create account",
+  "enterYourName": "Enter your name",
+  "enterEmail": "Enter email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "phoneNumber": "Phone number",
+  "serviceLocation": "Service location",
+  "yourLocation": "Your Location",
+  "searchAndSelectServiceArea": "Search and select your service area so clients can find you.",
+  "weUseLocationForServices": "We use your location to show you relevant services nearby.",
+  "searchCitySuburbAddress": "Search city, suburb or address...",
+  "acceptTermsPrivacy": "By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy",
+  "termsAndCondition": "Terms and Condition",
+  "privacyPolicy": "Privacy Policy",
+  "pleaseAcceptTerms": "Please accept the Terms and Conditions to proceed",
+  "haveAccountLogin": "Do you have an account?  Log in",
+  "login": "Login",
+  "forgotPassword": "Forgot password?",
+  "enterEmailSendOtp": "Enter your email and we'll send you a reset OTP.",
+  "enterYourEmail": "Enter your email",
+  "sendOtp": "Send OTP",
+  "otpVerifiedSuccessfully": "OTP Verified Successfully",
+  "otpResentSuccessfully": "OTP resent successfully",
+  "verifyOtp": "Verify OTP",
+  "enterOtpSentTo": "Enter the OTP sent to {email}",
+  "@enterOtpSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "enterTheOtp": "Enter the OTP",
+  "verify": "Verify",
+  "didNotReceiveOtpResend": "Didn't receive OTP?  Resend",
+  "resend": "Resend",
+  "resendOtpInSeconds": "Resend OTP in {seconds}s",
+  "@resendOtpInSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordResetSuccessfully": "Password reset successfully. Please log in.",
+  "resetPassword": "Reset Password",
+  "continueWithGoogle": "Continue with Google",
+  "or": "or",
+  "loginWithEmail": "Login with email",
+  "createWithEmail": "Create with email",
+  "weValueYourPrivacy": "We value your privacy",
+  "cookiePolicyMsg": "Webel uses cookies to analyse advertising campaign performance, improve app ads, and personalize the experience based on user preference.",
+  "accept": "Accept",
+  "addAddress": "Add address",
+  "serviceAddress": "Service address",
+  "selectWhereYouWantToReceiveService": "Select where you want to receive the service",
+  "searchYourAddress": "Search your address…",
+  "save": "Save",
+  "support": "Support",
+  "call": "Call",
+  "phoneNumberCopied": "Phone number copied to clipboard",
+  "message": "Message",
+  "emailCopied": "Email copied to clipboard",
+  "verificationPending": "Verification Pending",
+  "verificationPendingDesc": "Your account is pending verification. Some features may be limited until your account is verified.",
+  "refresh": "Refresh",
+  "whenDoYouNeedIt": "When do you need it?",
+  "frequency": "Frequency",
+  "justOnce": "Just once",
+  "oneTime": "One-Time",
+  "weekly": "Weekly",
+  "recurring": "Recurring",
+  "daysOfTheWeek": "Day(s) of the week",
+  "startTime": "Start time",
+  "flexibleStart": "Flexible start",
+  "exactStart": "Exact start",
+  "morning": "Morning",
+  "evening": "Evening",
+  "selectExactTime": "Select exact time",
+  "skip": "Skip",
+  "search": "Search",
+  "back": "Back",
+  "clearFilters": "Clear filters",
+  "palliativeCare": "Palliative care",
+  "palliativeCareDesc": "Only show professionals specialising in palliative care.",
+  "drivingLicence": "Driving licence",
+  "drivingLicenceDesc": "Has a car.",
+  "businessProfiles": "Business Profiles",
+  "businessProfilesDesc": "Show companies/agencies only.",
+  "qualifiedCarer": "Qualified carer",
+  "qualifiedCarerDesc": "Relevant diploma or degree.",
+  "priceRange": "Price range",
+  "hourlyRate": "Hourly rate",
+  "maxPriceWillingToPay": "Maximum price you are willing to pay.",
+  "experienceLevel": "Experience level",
+  "specificTasksRequirements": "Specific tasks / Requirements",
+  "updatedSuccessfully": "Updated successfully",
+  "images": "Images",
+  "coverImage": "Cover Image",
+  "galleryImages": "Gallery Images",
+  "add": "Add",
+  "palliativeCareImage": "Palliative Care Image",
+  "drivingLicenceImage": "Driving Licence Image",
+  "businessProfileImage": "Business Profile Image",
+  "qualificationCertificate": "Qualification Certificate",
+  "submit": "Submit",
+  "update": "Update",
+  "applyFilters": "Apply filters",
+  "verificationSubmitted": "Verification Submitted",
+  "verificationSubmittedDesc": "Your request has been submitted successfully.\n\nPlease login again with another account.",
+  "logout": "Logout",
+  "findTheServiceYouNeed": "Find the service you need",
+  "mostPopularInYourArea": "Most popular in your area",
+  "searchResults": "Search results",
+  "noServicesFound": "No services found",
+  "tryADifferentSearchTerm": "Try a different search term",
+  "howDoesTheServiceWork": "How does the service work?",
+  "finding": "Finding ",
+  "professionals": "professionals",
+  "noProvidersFound": "No providers found",
+  "whenQuestion": "When?",
+  "filters": "Filters",
+  "howDoesTheServiceWorkTitle": "How does the Elderly care\nservice work?",
+  "noFaqsAvailable": "No FAQs available",
+  "bookingAccepted": "Booking accepted",
+  "comment": "Comment",
+  "serviceBookedSuccess": "Service booked successfully for elder care. Please ensure assistance includes daily check-ins, medication reminders, and help with mobility as discussed.",
+  "dateAndTime": "Date and time",
+  "address": "Address",
+  "servicePrice": "Service price",
+  "accept": "Accept",
+  "cancel": "Cancel",
+  "complete": "Complete",
+  "bookingHasBeenCompleted": "This Booking has been Completed",
+  "customer": "Customer:",
+  "provider": "Provider:",
+  "cantChatBeforeAction": "You can't chat before {action} the booking",
+  "@cantChatBeforeAction": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "accepting": "accepting",
+  "creating": "creating",
+  "failedToLoadChat": "Failed to load chat: {message}",
+  "@failedToLoadChat": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceText": "Service",
+  "bookingHours": "Booking hours",
+  "subtotal": "Subtotal",
+  "clientProtection": "Client protection",
+  "total": "Total",
+  "free": "Free",
+  "details": "Details",
+  "noDataFound": "No data found",
+  "addressNotAvailable": "Address not available",
+  "addressCoordsLabel": "Address: Lat: {lat}, Lng: {lng}",
+  "@addressCoordsLabel": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lng": {
+        "type": "String"
+      }
+    }
+  },
+  "congratulations": "Congratulations",
+  "congratulationsDesc": "Congratulations on achieving this milestone in your professional journey! Your dedication, expertise, and hard work are truly commendable.",
+  "done": "Done",
+  "weekly": "Weekly",
+  "justOnce": "Just once",
+  "setUpAtLeastOneDay": "Set up at least one day",
+  "selectATimeSlot": "Select a time slot",
+  "bookingDotDot": "Booking…",
+  "continueForAmountPerWeek": "Continue for ${price}/week",
+  "@continueForAmountPerWeek": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "bookForAmount": "Book for ${price}",
+  "@bookForAmount": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "startTime": "Start time",
+  "retry": "Retry",
+  "couldNotLoadAvailableSlots": "Could not load available slots. Tap retry above.",
+  "noAvailableSlotsForDuration": "No available slots for this duration.",
+  "selectATime": "Select a time",
+  "saveTimeDuration": "Save {start} - {end} · {duration}h",
+  "@saveTimeDuration": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "chat": "Chat",
+  "history": "History",
+  "alerts": "Alerts",
+  "newAlerts": "New Alerts",
+  "searchFriends": "Search friends",
+  "noUnreadAlerts": "No Unread Alerts",
+  "paymentPending": "Payment Pending",
+  "pendingAcceptance": "Pending acceptance",
+  "payNow": "Pay now",
+  "pending": "Pending",
+  "serviceInProgress": "Service in progress",
+  "rating": "Rating",
+  "needSupportImmediately": "Need Support Immediately",
+  "manageSubscription": "Manage Subscription",
+  "subscriptionStatus": "Subscription Status",
+  "freeTrialDaysLeft": "30-Day Free Trial ({daysLeft} days left)",
+  "@freeTrialDaysLeft": {
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledActiveTillPeriodEnd": "Cancelled (Active till period end)",
+  "activePremium": "Active Premium",
+  "expired": "Expired",
+  "currentPlan": "Current Plan",
+  "subscriptionPrice": "Subscription Price",
+  "activationDate": "Activation Date",
+  "nextBillingRenewal": "Next Billing / Renewal",
+  "purchasePlatform": "Purchase Platform",
+  "annualPremium": "Annual Premium",
+  "monthlyPremium": "Monthly Premium",
+  "noSubscriptionPurchased": "No Subscription Purchased",
+  "yourValueThisMonth": "Your Value This Month",
+  "thisMonthRequestsBookings": "This month you received {requests} requests and accepted {bookings} bookings.",
+  "@thisMonthRequestsBookings": {
+    "placeholders": {
+      "requests": {
+        "type": "String"
+      },
+      "bookings": {
+        "type": "String"
+      }
+    }
+  },
+  "requestsReceived": "Requests Received",
+  "bookingsAccepted": "Bookings Accepted",
+  "acceptanceRate": "Acceptance Rate",
+  "upgradeToPremiumNow": "Upgrade to Premium Now",
+  "restorePurchase": "Restore Purchase",
+  "subscriptionRestoredSuccessfully": "Subscription restored successfully!",
+  "noActiveSubscriptionFoundToRestore": "No active subscription found to restore.",
+  "cancelSubscription": "Cancel Subscription",
+  "cancelSubscriptionQuestion": "Cancel Subscription?",
+  "ifYouCancelTodayPremiumAccess": "If you cancel today, your premium access will remain active until {date}.\n\nPlease let us know why you are leaving:",
+  "@ifYouCancelTodayPremiumAccess": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tooExpensive": "Too expensive",
+  "notGettingEnoughClientRequests": "Not getting enough client requests",
+  "usingADifferentPlatform": "Using a different platform",
+  "other": "Other",
+  "stayWithUsGet20Off": "Stay with us! Get 20% OFF your next billing cycle instead of cancelling.",
+  "keepMySubscription": "Keep My Subscription",
+  "confirmCancellation": "Confirm Cancellation",
+  "pleaseCancelViaStore": "Please cancel via your Google Play or App Store subscriptions page.",
+  "bio": "Bio",
+  "writeSomethingAboutYourself": "Write something about yourself...",
+  "pricePerHour": "Price per hour",
+  "experience": "Experience",
+  "selectExperience": "Select experience",
+  "specialties": "Specialties",
+  "otherTasksOffered": "Other tasks offered",
+  "workSchedule": "Work schedule",
+  "whenAreYouAvailable": "When are you available to offer your services?",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "available": "Available",
+  "notAvailable": "Not available",
+  "confirm": "Confirm",
+  "pleaseUploadAnImage": "Please upload an image for each selected option.",
+  "ifYouAlreadySubmitARequest": "If you already submit a request please login with another account",
+  "palliativeCare": "Palliative care",
+  "palliativeCareDesc": "Only show professionals specialising in palliative care.",
+  "drivingLicence": "Driving licence",
+  "drivingLicenceDesc": "Only show professionals with a driving licence",
+  "businessProfiles": "Business profiles",
+  "businessProfilesDesc": "Only profiles that correspond to a validated business or self employed professional.",
+  "qualifiedCarer": "Qualified carer",
+  "qualifiedCarerDesc": "Only show caregivers with a qualification, diploma or degree as health personal",
+  "palliativeCareImage": "Palliative Care Image",
+  "drivingLicenceImage": "Driving Licence Image",
+  "businessProfileImage": "Business Profile Image",
+  "qualificationCertificate": "Qualification Certificate",
+  "minimumPriceSavedSuccessfully": "Minimum price saved successfully",
+  "minimumPriceTitle": "Minimum price",
+  "minimumPriceQuestion": "What is the minimum price a client must pay to book your service?  +info",
+  "minimumPriceLabel": "Minimum price:",
+  "minimumPriceTip": "This will avoid being booked for a price so low that it's not worth your time to commute to the service",
+  "preferences": "Preferences",
+  "myWorkAreas": "My work areas",
+  "currentLocationMap": "Current Location Map",
+  "next": "Next",
+  "pleaseSelectYourRole": "Please select your role",
+  "micAndCameraPermissionsRequired": "Microphone and Camera permissions are required",
+  "userIsBusyOrUnavailable": "User is busy or unavailable",
+  "paymentSuccessful": "Payment successful",
+  "accessLocked": "ACCESS LOCKED",
+  "subscriptionRequired": "Subscription required",
+  "startFreeTrialToReceiveRequests": "Start your 30-day free trial to receive\nand manage customer requests.",
+  "startFreeTrial": "Start Free Trial",
+  "youCanStillManageProfile": "You can still manage your profile,\nservices and schedule.",
+  "tryIumiProviderFree": "Try IUMI Provider free",
+  "unlockEveryFeature": "Unlock every provider feature for 30 days.",
+  "thirtyDaysFree": "30 DAYS FREE",
+  "receiveCustomerRequests": "Receive customer requests",
+  "acceptOrDeclineBookings": "Accept or decline bookings",
+  "contactCustomersAfterAcceptance": "Contact customers after acceptance",
+  "manageYourSchedule": "Manage your schedule",
+  "freeFor30Days": "Free for 30 days",
+  "then4999RonMonthCancelAnytime": "Then 49.99 RON/month. Cancel anytime.",
+  "start30DayFreeTrial": "Start 30-Day Free Trial",
+  "upgradePremium": "Upgrade Premium",
+  "notNow": "Not now",
+  "noPaymentToday": "No payment today. Works across\niOS, Android and web.",
+  "somethingWentWrong": "Something went wrong",
+  "tryAgain": "Try Again"
 }

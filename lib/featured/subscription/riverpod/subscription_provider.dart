@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,6 +224,45 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final info = await RevenueCatService.instance.purchasePackage(package);
+      
+      debugPrint('==================================================');
+      debugPrint('💰 [Subscription] CustomerInfo: $info');
+      debugPrint('🎟️ [Subscription] Entitlements: ${info?.entitlements.all}');
+      debugPrint('==================================================');
+
+      final entitlement = info?.entitlements.all[RevenueCatService.entitlementId] ?? info?.entitlements.active.values.firstOrNull; 
+      if (entitlement != null) {
+        final subscriptionInfo = info?.subscriptionsByProductIdentifier[entitlement.productIdentifier];
+        
+        String? gracePeriod = subscriptionInfo?.gracePeriodExpiresDate;
+        if (gracePeriod == null && entitlement.expirationDate != null) {
+          final expDate = DateTime.tryParse(entitlement.expirationDate!);
+          if (expDate != null) {
+            gracePeriod = expDate.add(const Duration(days: 3)).toUtc().toIso8601String();
+          }
+        }
+
+        final rawTransactionId = subscriptionInfo?.storeTransactionId ?? "unknown";
+        final randomString = (Random().nextInt(90000) + 10000).toString();
+        final uniqueTransactionId = "${rawTransactionId}_$randomString";
+
+        final payload = {
+          "productId": entitlement.productIdentifier,
+          "store_transaction_id": uniqueTransactionId,
+          "purchase_date": entitlement.latestPurchaseDate,
+          "expires_date": entitlement.expirationDate,
+          "grace_period_expires_date": gracePeriod ?? entitlement.expirationDate,
+        };
+
+        debugPrint('🚀 Sending manual subscription payload to backend: $payload');
+        try {
+          await _dio.post('/subscriptions/manual', data: payload);
+          debugPrint('✅ Backend manual subscription updated successfully.');
+        } catch (apiError) {
+          debugPrint('❌ Failed to update backend manual subscription: $apiError');
+        }
+      }
+
       _updateFromCustomerInfo(info);
       await fetchBackendSubscription(); // Sync backend immediately
       state = state.copyWith(isSuccess: true);

@@ -73,7 +73,7 @@ class _LoginDialog extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText.h2('Login'),
+                AppText.h2(AppLocalizations.of(context)!.login),
                 InkWell(
                   onTap: isLoading
                       ? null
@@ -87,7 +87,7 @@ class _LoginDialog extends ConsumerWidget {
 
             AppTextField(
               controller: _emailController,
-              hint: 'Enter email',
+              hint: AppLocalizations.of(context)!.enterEmail,
               keyboardType: TextInputType.emailAddress,
               validator: (value) => Validators.email(value),
             ),
@@ -96,7 +96,7 @@ class _LoginDialog extends ConsumerWidget {
 
             AppTextField(
               controller: _passwordController,
-              hint: 'Password',
+              hint: AppLocalizations.of(context)!.password,
               obscureText: true,
               showPasswordToggle: true,
               validator: (value) => Validators.password(value),
@@ -108,10 +108,10 @@ class _LoginDialog extends ConsumerWidget {
             Align(
               alignment: Alignment.centerRight,
               child: AppLinkText(
-                'Forgot password?',
+                AppLocalizations.of(context)!.forgotPassword,
                 links: [
                   AppTextLink(
-                    label: 'Forgot password?',
+                    label: AppLocalizations.of(context)!.forgotPassword,
                     onTap: () {
                       Navigator.of(context).pop();
                       _showForgotPasswordDialog(parentRef);
@@ -124,7 +124,7 @@ class _LoginDialog extends ConsumerWidget {
             16.verticalSpace,
 
             AppButton.primary(
-              label: 'Log in',
+              label: AppLocalizations.of(context)!.logIn,
               isLoading: isLoading,
               onPressed: isLoading
                   ? null

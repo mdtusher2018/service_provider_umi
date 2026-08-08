@@ -21,7 +21,6 @@ import '../../../../../../core/theme/app_text_styles.dart';
 
 import '../../../l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
-import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 import 'package:service_provider_umi/featured/subscription/screens/subscription_screen.dart';
 import 'package:service_provider_umi/featured/subscription/widgets/subscription_required_card.dart';
@@ -245,19 +244,19 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
               ),
             ),
             16.verticalSpace,
-            const Text(
-              'Verification Pending',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.verificationPending,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
             12.verticalSpace,
-            const Text(
-              'Your account is pending verification. Some features may be limited until your account is verified.',
+            Text(
+              AppLocalizations.of(context)!.verificationPendingDesc,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.grey500,
                 height: 1.5,
@@ -265,7 +264,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
             ),
             24.verticalSpace,
             AppButton.primary(
-              label: 'Refresh',
+              label: AppLocalizations.of(context)!.refresh,
               isLoading: isProfileLoading,
               onPressed: () {
                 ref.read(myProfileProvider.notifier).fetch();

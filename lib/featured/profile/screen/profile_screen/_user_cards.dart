@@ -1,6 +1,7 @@
 part of "profile_screen.dart";
 
 Widget _buildUserCard(
+  BuildContext context,
   WidgetRef ref, {
   required String name,
   required String phone,
@@ -21,13 +22,15 @@ Widget _buildUserCard(
             AppLinkText(
               links: [
                 AppTextLink(
-                  label: "Not Connected",
+                  label: AppLocalizations.of(context)!.notConnected,
                   onTap: () {
                     ref.read(stripeConnectProvider.notifier).getStripeUrl();
                   },
                 ),
               ],
-              "Stripe : ${isStripeConnected ? "Connected" : "Not Connected"}",
+              AppLocalizations.of(context)!.stripe(
+                isStripeConnected ? AppLocalizations.of(context)!.connected : AppLocalizations.of(context)!.notConnected,
+              ),
             ),
         ],
       ),

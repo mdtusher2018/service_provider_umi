@@ -110,7 +110,7 @@ class _RadialMenuState extends State<RadialMenu>
                       Assets.icons.support.keyName,
                       width: radiusSize,
                     ),
-                    AppText.h4('Support', color: AppColors.secondary),
+                    AppText.h4(AppLocalizations.of(context)!.support, color: AppColors.secondary),
                   ],
                 ),
               ),
@@ -148,28 +148,28 @@ class _RadialMenuState extends State<RadialMenu>
 
                 16.verticalSpace,
                 AppButton.primary(
-                  label: 'Call',
+                  label: AppLocalizations.of(context)!.call,
                   prefixIcon: Icon(Icons.call, color: AppColors.white),
                   onPressed: () async {
                     const phoneNumber = "017XXXXXXXX"; // your number
 
                     await Clipboard.setData(ClipboardData(text: phoneNumber));
                     context.pop();
-                    context.showSnackBar("Phone number copied to clipboard");
+                    context.showSnackBar(AppLocalizations.of(context)!.phoneNumberCopied);
 
                     print("Call pressed");
                   },
                 ),
                 8.verticalSpace,
                 AppButton.primary(
-                  label: 'Message',
+                  label: AppLocalizations.of(context)!.message,
                   prefixIcon: Icon(Icons.message, color: AppColors.white),
                   onPressed: () async {
                     const phoneNumber = "iumi@support.com"; // your number
 
                     await Clipboard.setData(ClipboardData(text: phoneNumber));
                     context.pop();
-                    context.showSnackBar("Email copied to clipboard");
+                    context.showSnackBar(AppLocalizations.of(context)!.emailCopied);
 
                     print("Message pressed");
                   },

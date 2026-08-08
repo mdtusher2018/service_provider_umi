@@ -39,14 +39,14 @@ class _DayRow extends StatelessWidget {
               value: isAvailable,
               onChanged: onToggle,
               activeThumbColor: primary,
-              activeTrackColor: primary.withOpacity(0.25),
+              activeTrackColor: primary.withValues(alpha: 0.25),
               inactiveThumbColor: AppColors.grey300,
               inactiveTrackColor: AppColors.grey200,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
 
             AppText(
-              isAvailable ? 'Available' : 'Not available',
+              isAvailable ? AppLocalizations.of(context)!.available : AppLocalizations.of(context)!.notAvailable,
               style: AppTextStyles.bodySm.copyWith(
                 color: isAvailable
                     ? AppColors.textSecondary

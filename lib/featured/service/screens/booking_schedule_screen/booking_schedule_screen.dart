@@ -19,6 +19,7 @@ import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 part '_day_schedule.dart';
 part '_time_picker_panel.dart';
@@ -249,14 +250,14 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
                 value: _mode,
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: BookingFrequency.weekly,
-                    child: AppText.labelMd("Weekly"),
+                    child: AppText.labelMd(AppLocalizations.of(context)!.weekly),
                   ),
                   DropdownMenuItem(
                     value: BookingFrequency.once,
-                    child: AppText.labelMd("Just once"),
+                    child: AppText.labelMd(AppLocalizations.of(context)!.justOnce),
                   ),
                 ],
                 onChanged: (value) {
@@ -311,14 +312,14 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
     String label;
     if (!canProceed) {
       label = _mode == BookingFrequency.weekly
-          ? 'Set up at least one day'
-          : 'Select a time slot';
+          ? AppLocalizations.of(context)!.setUpAtLeastOneDay
+          : AppLocalizations.of(context)!.selectATimeSlot;
     } else if (_isSubmitting) {
-      label = 'Booking…';
+      label = AppLocalizations.of(context)!.bookingDotDot;
     } else {
       label = _mode == BookingFrequency.weekly
-          ? 'Continue for \$${totalCost.toStringAsFixed(2)}/week'
-          : 'Book for \$${totalCost.toStringAsFixed(2)}';
+          ? AppLocalizations.of(context)!.continueForAmountPerWeek(totalCost.toStringAsFixed(2))
+          : AppLocalizations.of(context)!.bookForAmount(totalCost.toStringAsFixed(2));
     }
 
     return Container(

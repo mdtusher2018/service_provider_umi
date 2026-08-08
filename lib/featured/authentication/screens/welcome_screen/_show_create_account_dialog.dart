@@ -18,15 +18,18 @@ void _showCreateAccountDialog(WidgetRef ref, {required AppRole role}) {
   }
 }
 
-class _SignupDialog extends ConsumerWidget {
+class _SignupDialog extends ConsumerStatefulWidget {
   final AppRole role;
   final WidgetRef parentRef;
-  _SignupDialog({required this.role, required this.parentRef});
+  const _SignupDialog({required this.role, required this.parentRef});
 
+  @override
+  ConsumerState<_SignupDialog> createState() => _SignupDialogState();
+}
+
+class _SignupDialogState extends ConsumerState<_SignupDialog> {
   final _nameController = TextEditingController();
-
   final _emailController = TextEditingController();
-
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -34,26 +37,29 @@ class _SignupDialog extends ConsumerWidget {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _termsAccepted = false;
+  bool _showTermsError = false;
+  double? _lat;
+  double? _lng;
+  bool _isGeocoding = false;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // ✅ Listen to auth state (same as login)
     ref.listen<AuthState>(signupProvider, (_, state) {
       state.when(
         initial: () {},
         loading: () {},
         success: () async {
-          // ref.read(appRoleProvider.notifier).loginAsUser();
-          // context.go(AppRoutes.userHome);
-
           if (!kIsWeb) {
             Navigator.of(context).pop();
           }
 
           _showOTPVerifyDialog(
-            parentRef,
+            widget.parentRef,
             email: _emailController.text.trim(),
             isSignup: true,
-            role: role,
+            role: widget.role,
           );
         },
         failure: (error) {
@@ -76,7 +82,7 @@ class _SignupDialog extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText.h2("Create account"),
+                AppText.h2(AppLocalizations.of(context)!.createAccountTitle),
                 InkWell(
                   onTap: isLoading
                       ? null
@@ -93,7 +99,7 @@ class _SignupDialog extends ConsumerWidget {
             /// Name
             AppTextField(
               controller: _nameController,
-              hint: "Enter your name",
+              hint: AppLocalizations.of(context)!.enterYourName,
               validator: (value) => Validators.required(value),
             ),
 
@@ -102,7 +108,7 @@ class _SignupDialog extends ConsumerWidget {
             /// Email
             AppTextField(
               controller: _emailController,
-              hint: "Enter email",
+              hint: AppLocalizations.of(context)!.enterEmail,
               keyboardType: TextInputType.emailAddress,
               validator: (value) => Validators.email(value),
             ),
@@ -112,7 +118,7 @@ class _SignupDialog extends ConsumerWidget {
             /// Password
             AppTextField(
               controller: _passwordController,
-              hint: "Password",
+              hint: AppLocalizations.of(context)!.password,
               obscureText: true,
               showPasswordToggle: true,
               validator: (value) => Validators.password(value),
@@ -123,7 +129,7 @@ class _SignupDialog extends ConsumerWidget {
             /// Confirm Password
             AppTextField(
               controller: _confirmPasswordController,
-              hint: "Confirm Password",
+              hint: AppLocalizations.of(context)!.confirmPassword,
               obscureText: true,
               showPasswordToggle: true,
               validator: (value) => Validators.confirmPassword(value, _passwordController.text),
@@ -135,7 +141,7 @@ class _SignupDialog extends ConsumerWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppText.bodyLg("Phone number", color: AppColors.textPrimary),
+                AppText.bodyLg(AppLocalizations.of(context)!.phoneNumber, color: AppColors.textPrimary),
                 8.verticalSpace,
                 AppTextField(
                   controller: _phoneController,
@@ -159,21 +165,21 @@ class _SignupDialog extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppText.bodyLg(
-                    role == AppRole.provider ? "Service location" : "Your Location",
+                    widget.role == AppRole.provider ? AppLocalizations.of(context)!.serviceLocation : AppLocalizations.of(context)!.yourLocation,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                   8.verticalSpace,
                   AppText.bodySm(
-                    role == AppRole.provider
-                        ? "Search and select your service area so clients can find you."
-                        : "We use your location to show you relevant services nearby.",
+                    widget.role == AppRole.provider
+                        ? AppLocalizations.of(context)!.searchAndSelectServiceArea
+                        : AppLocalizations.of(context)!.weUseLocationForServices,
                     color: AppColors.grey500,
                   ),
                   12.verticalSpace,
                   AppTextField(
                     controller: _locationController,
-                    hint: "Search city, suburb or address...",
+                    hint: AppLocalizations.of(context)!.searchCitySuburbAddress,
                     prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.grey500),
                   ),
                 ],
@@ -182,44 +188,145 @@ class _SignupDialog extends ConsumerWidget {
 
             24.verticalSpace,
 
+            /// Terms Checkbox
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: Checkbox(
+                        value: _termsAccepted,
+                        activeColor: AppColors.primary,
+                        side: _showTermsError ? const BorderSide(color: Colors.red, width: 2) : null,
+                        onChanged: (val) {
+                          setState(() {
+                            _termsAccepted = val ?? false;
+                            if (_termsAccepted) {
+                              _showTermsError = false;
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: AppLinkText(
+                        AppLocalizations.of(context)!.acceptTermsPrivacy,
+                        textSize: 12,
+                        links: [
+                          AppTextLink(
+                            label: AppLocalizations.of(context)!.termsAndCondition,
+                            onTap: () {
+                              context.push('/profile/terms');
+                            },
+                          ),
+                          AppTextLink(
+                            label: AppLocalizations.of(context)!.privacyPolicy,
+                            onTap: () {
+                              context.push('/profile/privacy');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (_showTermsError) ...[
+                  8.verticalSpace,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32),
+                    child: AppText.bodySm(
+                      AppLocalizations.of(context)!.pleaseAcceptTerms,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+
+            24.verticalSpace,
+
             /// Signup Button
             AppButton.primary(
-              label: "Create Account",
-              isLoading: isLoading,
+              label: AppLocalizations.of(context)!.createAccountBtn,
+              isLoading: isLoading || _isGeocoding,
               onPressed: () async {
                 if (!_formKey.currentState!.validate()) return;
-                final result = await _showPrivacyPolicyBottomSheet(ref);
-                if (result == true) {
-                  ref.read(signupProvider.notifier)
-                      .signup(
-                        name: _nameController.text.trim(),
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text,
-                        phoneNumber: _phoneController.text.trim().isNotEmpty ? _phoneController.text.trim() : null,
-                        location: _locationController.text.trim().isNotEmpty
-                            ? {
-                                'type': 'Point',
-                                'coordinates': [90.3890144, 23.7643863]
-                              }
-                            : null,
-                        address: _locationController.text.trim().isNotEmpty
-                            ? {
-                                'addressLine1': _locationController.text.trim(),
-                                'addressLine2': 'Dhanmondi',
-                                'city': 'Dhaka',
-                                'state': 'Dhaka',
-                                'postalCode': '1209',
-                                'country': 'Bangladesh',
-                                'location': {
-                                  'type': 'Point',
-                                  'coordinates': [90.3890144, 23.7643863]
-                                },
-                                'isDefault': true,
-                              }
-                            : null,
-                        role: role,
-                      );
+                
+                if (!_termsAccepted) {
+                  setState(() {
+                    _showTermsError = true;
+                  });
+                  return;
                 }
+
+                String city = '';
+                String state = '';
+                String postalCode = '';
+                String country = '';
+
+                if (_locationController.text.trim().isNotEmpty) {
+                  try {
+                    setState(() {
+                      _isGeocoding = true;
+                    });
+                    final locations = await locationFromAddress(_locationController.text.trim());
+                    if (locations.isNotEmpty) {
+                      _lat = locations.first.latitude;
+                      _lng = locations.first.longitude;
+                      
+                      final placemarks = await placemarkFromCoordinates(_lat!, _lng!);
+                      if (placemarks.isNotEmpty) {
+                        final place = placemarks.first;
+                        city = place.locality ?? place.subLocality ?? '';
+                        state = place.administrativeArea ?? '';
+                        postalCode = place.postalCode ?? '';
+                        country = place.country ?? '';
+                      }
+                    }
+                  } catch (e) {
+                    AppLogger.error("Geocoding error: ${e.toString()}");
+                  } finally {
+                    if (mounted) {
+                      setState(() {
+                        _isGeocoding = false;
+                      });
+                    }
+                  }
+                }
+
+                ref.read(signupProvider.notifier)
+                    .signup(
+                      name: _nameController.text.trim(),
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text,
+                      phoneNumber: _phoneController.text.trim().isNotEmpty ? _phoneController.text.trim() : null,
+                      location: _locationController.text.trim().isNotEmpty && _lat != null && _lng != null
+                          ? {
+                              'type': 'Point',
+                              'coordinates': [_lng, _lat]
+                            }
+                          : null,
+                      address: _locationController.text.trim().isNotEmpty
+                          ? {
+                              'addressLine1': _locationController.text.trim(),
+                              'city': city,
+                              'state': state,
+                              'postalCode': postalCode,
+                              'country': country,
+                              'location': (_lat != null && _lng != null) ? {
+                                'type': 'Point',
+                                'coordinates': [_lng, _lat]
+                              } : null,
+                              'isDefault': true,
+                            }
+                          : null,
+                      role: widget.role,
+                    );
               },
             ),
 
@@ -227,30 +334,20 @@ class _SignupDialog extends ConsumerWidget {
 
             /// Login redirect
             AppLinkText(
-              "Do you have an account?  Log in",
+              AppLocalizations.of(context)!.haveAccountLogin,
               textColor: AppColors.textPrimary,
               links: [
                 AppTextLink(
-                  label: "Log in",
+                  label: AppLocalizations.of(context)!.logIn,
                   onTap: () async {
                     await _close(ref);
-                    _showLoginAccountDialog(parentRef);
+                    _showLoginAccountDialog(widget.parentRef);
                   },
                 ),
               ],
             ),
 
             16.verticalSpace,
-
-            /// Terms
-            AppLinkText(
-              "By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy",
-              textSize: 12,
-              links: [
-                AppTextLink(label: "Terms and Condition", onTap: () {}),
-                AppTextLink(label: "Privacy Policy", onTap: () {}),
-              ],
-            ),
           ],
         ),
         ),
@@ -258,3 +355,4 @@ class _SignupDialog extends ConsumerWidget {
     );
   }
 }
+

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
@@ -395,7 +396,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
     
     if (callData == null) {
-      if (mounted) context.showSnackBar("User is busy or unavailable", isError: true);
+      if (mounted) context.showSnackBar(AppLocalizations.of(context)!.userIsBusyOrUnavailable, isError: true);
       return;
     }
 
@@ -429,7 +430,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
     
     if (callData == null) {
-      if (mounted) context.showSnackBar("User is busy or unavailable", isError: true);
+      if (mounted) context.showSnackBar(AppLocalizations.of(context)!.userIsBusyOrUnavailable, isError: true);
       return;
     }
 

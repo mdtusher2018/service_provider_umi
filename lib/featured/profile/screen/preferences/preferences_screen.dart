@@ -9,6 +9,7 @@ import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 // ════════════════════════════════════════════════════════════
 //  1. Preferences Screen
@@ -23,7 +24,7 @@ class PreferencesScreen extends ConsumerWidget {
     final items = [
       _PrefItem(
         icon: Icons.location_on_outlined,
-        label: 'My work areas',
+        label: AppLocalizations.of(context)!.myWorkAreas,
         onTap: () {
           if (kIsWeb) {
             context.go(AppRoutes.workAreas);
@@ -35,7 +36,7 @@ class PreferencesScreen extends ConsumerWidget {
 
       _PrefItem(
         icon: Icons.access_time_rounded,
-        label: 'My schedule',
+        label: AppLocalizations.of(context)!.mySchedule,
         onTap: () {
           if (kIsWeb) {
             context.go(AppRoutes.workSchedule);
@@ -47,7 +48,7 @@ class PreferencesScreen extends ConsumerWidget {
 
       _PrefItem(
         icon: Icons.attach_money_rounded,
-        label: 'Minimum booking amount',
+        label: AppLocalizations.of(context)!.minimumBookingAmount,
         onTap: () {
           if (kIsWeb) {
             context.go(AppRoutes.minimumPrice);
@@ -60,7 +61,7 @@ class PreferencesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "Preferences"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.preferences),
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         itemCount: items.length,

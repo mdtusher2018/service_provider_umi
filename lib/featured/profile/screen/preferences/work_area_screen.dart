@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 // ════════════════════════════════════════════════════════════
 //  2. Work Areas Screen (Google Maps + radius)
 // ════════════════════════════════════════════════════════════
@@ -52,7 +54,7 @@ class _WorkAreasScreenState extends State<WorkAreasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Current Location Map")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.currentLocationMap)),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: _currentPosition,

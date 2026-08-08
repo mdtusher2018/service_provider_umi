@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -53,7 +54,7 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final hasPermission = await PermissionService().requestCameraAndMicrophone();
       if (!hasPermission) {
-        if (mounted) context.showSnackBar("Microphone and Camera permissions are required", isError: true);
+        if (mounted) context.showSnackBar(AppLocalizations.of(context)!.micAndCameraPermissionsRequired, isError: true);
         return;
       }
       
@@ -342,7 +343,7 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
               }
               // We don't call initAgora again here because initState already called it.
             } else {
-              if (mounted) context.showSnackBar("Microphone and Camera permissions are required", isError: true);
+              if (mounted) context.showSnackBar(AppLocalizations.of(context)!.micAndCameraPermissionsRequired, isError: true);
             }
           },
         ),

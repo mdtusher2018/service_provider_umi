@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/config/app_constants.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
@@ -25,6 +28,8 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+
 part '_show_privacy_policy_bottom_sheet.dart';
 part '_show_role_selection_dialog.dart';
 part '_showAuthBottomSheet.dart';
@@ -205,7 +210,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   30.verticalSpace,
 
                   AppButton.primary(
-                    label: "Create Account",
+                    label: AppLocalizations.of(context)!.createAccountBtn,
                     onPressed: () {
                       _showRoleSelectionDialog(ref);
                     },
@@ -214,7 +219,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                   12.verticalSpace,
 
                   AppButton.secondary(
-                    label: "Log in",
+                    label: AppLocalizations.of(context)!.logIn,
                     onPressed: () {
                       showAuthUI(ref, isLogin: true);
                     },
@@ -226,8 +231,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                     onTap: () {
                       context.go(AppRoutes.guestOnboarding);
                     },
-                    child: const AppText.bodyMd(
-                      "Continue as a guest",
+                    child: AppText.bodyMd(
+                      AppLocalizations.of(context)!.continueAsGuest,
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w500,
                     ),

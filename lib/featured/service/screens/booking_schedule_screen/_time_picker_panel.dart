@@ -105,7 +105,7 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
           16.verticalSpace,
           Row(
             children: [
-              AppText.h4('Start time'),
+              AppText.h4(AppLocalizations.of(context)!.startTime),
               const Spacer(),
               if (isLoading)
                 const SizedBox(
@@ -124,7 +124,7 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
                         color: AppColors.error,
                       ),
                       4.horizontalSpace,
-                      AppText.labelSm('Retry', color: AppColors.error),
+                      AppText.labelSm(AppLocalizations.of(context)!.retry, color: AppColors.error),
                     ],
                   ),
                 ),
@@ -136,7 +136,7 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
             error: (e, _) => Padding(
               padding: 8.paddingV,
               child: AppText.labelSm(
-                'Could not load available slots. Tap retry above.',
+                AppLocalizations.of(context)!.couldNotLoadAvailableSlots,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -145,7 +145,7 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
                 return Padding(
                   padding: 8.paddingV,
                   child: AppText.labelMd(
-                    'No available slots for this duration.',
+                    AppLocalizations.of(context)!.noAvailableSlotsForDuration,
                     color: AppColors.textSecondary,
                   ),
                 );
@@ -156,8 +156,8 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
           16.verticalSpace,
           AppButton.primary(
             label: _selectedTime == null
-                ? 'Select a time'
-                : 'Save $_selectedTime – ${_addDuration(_selectedTime!, _duration)} · ${_duration.toInt()}h',
+                ? AppLocalizations.of(context)!.selectATime
+                : AppLocalizations.of(context)!.saveTimeDuration(_selectedTime!, _addDuration(_selectedTime!, _duration), _duration.toInt().toString()),
             onPressed: _selectedTime == null
                 ? null
                 : () => widget.onSaved(

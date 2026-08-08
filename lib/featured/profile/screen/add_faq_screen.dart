@@ -9,6 +9,7 @@ import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dar
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class AddFaqScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -48,7 +49,7 @@ class _AddFaqScreenState extends ConsumerState<AddFaqScreen> {
     ref.listen(addFaqProvider, (previous, next) {
       next.whenOrNull(
         success: () {
-          context.showSnackBar('FAQ added successfully');
+          context.showSnackBar(AppLocalizations.of(context)!.faqAddedSuccessfully);
           context.pop();
         },
         failure: (failure) {
@@ -73,7 +74,7 @@ class _AddFaqScreenState extends ConsumerState<AddFaqScreen> {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('Add FAQ'),
+        title: AppText.h3(AppLocalizations.of(context)!.addFaq),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -85,32 +86,32 @@ class _AddFaqScreenState extends ConsumerState<AddFaqScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppTextField(
-                  label: 'Question',
-                  hint: 'Enter your question',
+                  label: AppLocalizations.of(context)!.question,
+                  hint: AppLocalizations.of(context)!.enterYourQuestion,
                   controller: _questionCtrl,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a question';
+                      return AppLocalizations.of(context)!.pleaseEnterQuestion;
                     }
                     return null;
                   },
                 ),
                 20.verticalSpace,
                 AppTextField(
-                  label: 'Answer',
-                  hint: 'Enter your answer',
+                  label: AppLocalizations.of(context)!.answer,
+                  hint: AppLocalizations.of(context)!.enterYourAnswer,
                   controller: _answerCtrl,
                   maxLines: 4,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter an answer';
+                      return AppLocalizations.of(context)!.pleaseEnterAnswer;
                     }
                     return null;
                   },
                 ),
                 32.verticalSpace,
                 AppButton.primary(
-                  label: 'Submit FAQ',
+                  label: AppLocalizations.of(context)!.submitFaq,
                   isLoading: isLoading,
                   onPressed: isLoading ? null : _submit,
                 ),

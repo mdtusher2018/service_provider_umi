@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
@@ -32,7 +33,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
     await Future.delayed(const Duration(milliseconds: 700));
     if (!mounted) return;
     ref.read(_isloadingProvider.notifier).state = false;
-    context.showSnackBar('Minimum price saved successfully');
+    context.showSnackBar(AppLocalizations.of(context)!.minimumPriceSavedSuccessfully);
     context.pop();
   }
 
@@ -55,10 +56,10 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText.h1('Minimum price'),
+            AppText.h1(AppLocalizations.of(context)!.minimumPriceTitle),
             8.verticalSpace,
             AppLinkText(
-              "What is the minimum price a client must pay to book your service?  +info",
+              AppLocalizations.of(context)!.minimumPriceQuestion,
               links: [AppTextLink(label: "+info", onTap: () {})],
               linkColor: AppColors.primaryFor(AppRole.provider),
             ),
@@ -80,7 +81,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                 ),
                 child: Column(
                   children: [
-                    AppText.bodyMd('Minimum price:'),
+                    AppText.bodyMd(AppLocalizations.of(context)!.minimumPriceLabel),
                     8.verticalSpace,
                     Row(
                       spacing: 4,
@@ -150,8 +151,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                   10.horizontalSpace,
                   Expanded(
                     child: AppText.bodySm(
-                      "This will avoid being booked for a price so low that it's "
-                      'not worth your time to commute to the service',
+                      AppLocalizations.of(context)!.minimumPriceTip,
                     ),
                   ),
                 ],
@@ -162,7 +162,7 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
 
             // ─── Save button ─────────────────────────
             AppButton.primary(
-              label: "Save",
+              label: AppLocalizations.of(context)!.save,
               onPressed: _save,
               isLoading: ref.watch(_isloadingProvider),
             ),

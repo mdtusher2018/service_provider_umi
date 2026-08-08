@@ -104,7 +104,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
         initial: () {},
         loading: () {},
         success: () async {
-          context.showSnackBar('OTP Verified Successfully');
+          context.showSnackBar(AppLocalizations.of(context)!.otpVerifiedSuccessfully);
           if (!kIsWeb && mounted) {
             Navigator.of(context).pop();
           }
@@ -124,7 +124,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
               }
             } else {
               if (widget.parentRef.context.mounted) {
-                widget.parentRef.context.showSnackBar("Please select your role");
+                widget.parentRef.context.showSnackBar(AppLocalizations.of(widget.parentRef.context)!.pleaseSelectYourRole);
               }
             }
           } else {
@@ -145,7 +145,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
         initial: () {},
         loading: () {},
         success: () {
-          context.showSnackBar('OTP resent successfully');
+          context.showSnackBar(AppLocalizations.of(context)!.otpResentSuccessfully);
           _startCountdown();
         },
         failure: (e) => context.showErrorSnackBar(e.message),
@@ -167,7 +167,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText.h2('Verify OTP'),
+                AppText.h2(AppLocalizations.of(context)!.verifyOtp),
                 InkWell(
                   onTap: isLoading ? null : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
@@ -177,21 +177,21 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
             12.verticalSpace,
             if (widget.email.isNotEmpty)
               AppText.bodyMd(
-                'Enter the OTP sent to ${widget.email}',
+                AppLocalizations.of(context)!.enterOtpSentTo(widget.email),
                 color: AppColors.textSecondary,
               ),
             24.verticalSpace,
 
             AppTextField(
               controller: _otpController,
-              hint: 'Enter the OTP',
+              hint: AppLocalizations.of(context)!.enterTheOtp,
               keyboardType: TextInputType.number,
               validator: (v) => Validators.otp(v),
             ),
             24.verticalSpace,
 
             AppButton.primary(
-              label: 'Verify',
+              label: AppLocalizations.of(context)!.verify,
               isLoading: isLoading,
               onPressed: isLoading ? null : _onOTPVerify,
             ),
@@ -200,10 +200,10 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
             // Resend countdown / button
             canResend
                 ? AppLinkText(
-                    'Didn\'t receive OTP?  Resend',
+                    AppLocalizations.of(context)!.didNotReceiveOtpResend,
                     links: [
                       AppTextLink(
-                        label: 'Resend',
+                        label: AppLocalizations.of(context)!.resend,
                         onTap: () {
                           if (isLoading) return;
                           if (widget.email.isNotEmpty) {
@@ -216,7 +216,7 @@ class _OTPVerifyDialogState extends ConsumerState<_OTPVerifyDialog> {
                     ],
                   )
                 : AppText.bodyMd(
-                    'Resend OTP in ${seconds}s',
+                    AppLocalizations.of(context)!.resendOtpInSeconds(seconds),
                     color: AppColors.textSecondary,
                   ),
             10.verticalSpace,

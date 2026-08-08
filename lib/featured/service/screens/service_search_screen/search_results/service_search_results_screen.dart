@@ -18,6 +18,8 @@ import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 import '../../../../../core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 
 part '_build_results_list.dart';
 part '_faq_bottom_sheet.dart';
@@ -163,7 +165,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             const Icon(Icons.info, color: AppColors.primary, size: 18),
             8.horizontalSpace,
             AppText.bodyMd(
-              'How does the service work?',
+              AppLocalizations.of(context)!.howDoesTheServiceWork,
               fontWeight: FontWeight.w500,
             ),
             const Spacer(),

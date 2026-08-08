@@ -67,14 +67,12 @@ class _CongratsDialog extends StatelessWidget {
 
             20.verticalSpace,
 
-            AppText.h2('Congratulations'),
+            AppText.h2(AppLocalizations.of(context)!.congratulations),
 
             10.verticalSpace,
 
             AppText(
-              'Congratulations on achieving this milestone in your '
-              'professional journey! Your dedication, expertise, and '
-              'hard work are truly commendable.',
+              AppLocalizations.of(context)!.congratulationsDesc,
               style: AppTextStyles.bodySm.copyWith(height: 1.6),
               textAlign: TextAlign.center,
             ),
@@ -92,7 +90,7 @@ class _CongratsDialog extends StatelessWidget {
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
-                child: AppText('Done', style: AppTextStyles.buttonMd),
+                child: AppText(AppLocalizations.of(context)!.done, style: AppTextStyles.buttonMd),
               ),
             ),
           ],

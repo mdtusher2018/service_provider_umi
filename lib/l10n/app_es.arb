@@ -9,7 +9,7 @@
   "yourBookingsWillAppearHere": "Tus reservas aparecerán aquí",
   "noProvidersFound": "No se encontraron proveedores",
   "notification": "Notificación",
-  "inbox": "Bandeja de entrada",
+  "inbox": "Mensajes",
   "@languageChangedTo": {
     "placeholders": {
       "language": {
@@ -17,12 +17,183 @@
       }
     }
   },
-  "upcomingBookings": "Upcoming Bookings",
-  "dateFilter": "Date Filter",
-  "noBookingsFound": "No bookings found",
-  "request": "Request",
-  "completed": "Completed",
-  "ongoing": "Ongoing",
-  "cancelled": "Cancelled",
-  "completedServices": "Completed Services"
+  "upcomingBookings": "Próximas Reservas",
+  "dateFilter": "Filtro de Fecha",
+  "noBookingsFound": "No se encontraron reservas",
+  "request": "Solicitud",
+  "completed": "Completado",
+  "ongoing": "En curso",
+  "cancelled": "Cancelado",
+  "completedServices": "Servicios Completados",
+  "stripe": "Stripe: {status}",
+  "@stripe": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "connected": "Conectado",
+  "notConnected": "No Conectado",
+  "accountSettings": "Configuración de la Cuenta",
+  "personalDetails": "Detalles Personales",
+  "mySubscription": "Mi Suscripción",
+  "myListing": "Mi Anuncio",
+  "mySchedule": "Mi Horario",
+  "minimumBookingAmount": "Monto Mínimo de Reserva",
+  "myReview": "Mis Reseñas",
+  "addFaq": "Añadir Preguntas Frecuentes",
+  "changePassword": "Cambiar Contraseña",
+  "language": "Idioma",
+  "aboutUs": "Sobre Nosotros",
+  "termsAndConditions": "Términos y Condiciones",
+  "privacyPolicy": "Política de Privacidad",
+  "logout": "Cerrar Sesión",
+  "calendar": "Calendario",
+  "service": "Servicio",
+  "favourites": "Favoritos",
+  "paymentPending": "Pago Pendiente",
+  "searchFriends": "Buscar amigos",
+  "noUnreadAlerts": "No hay alertas nuevas",
+  "chat": "Chat",
+  "history": "Historial",
+  "alerts": "Alertas",
+  "newAlerts": "Nuevas Alertas",
+  "accept": "Aceptar",
+  "cancel": "Cancelar",
+  "manageSubscription": "Administrar Suscripción",
+  "subscriptionStatus": "Estado de la Suscripción",
+  "freeTrialDaysLeft": "Prueba Gratuita de 30 Días ({daysLeft} días restantes)",
+  "@freeTrialDaysLeft": {
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledActiveTillPeriodEnd": "Cancelado (Activo hasta fin de período)",
+  "activePremium": "Premium Activo",
+  "expired": "Expirado",
+  "currentPlan": "Plan Actual",
+  "subscriptionPrice": "Precio de la Suscripción",
+  "activationDate": "Fecha de Activación",
+  "nextBillingRenewal": "Próxima Facturación / Renovación",
+  "purchasePlatform": "Plataforma de Compra",
+  "annualPremium": "Premium Anual",
+  "monthlyPremium": "Premium Mensual",
+  "noSubscriptionPurchased": "No hay suscripción comprada",
+  "yourValueThisMonth": "Tu Valor Este Mes",
+  "thisMonthRequestsBookings": "Este mes recibiste {requests} solicitudes y aceptaste {bookings} reservas.",
+  "@thisMonthRequestsBookings": {
+    "placeholders": {
+      "requests": {
+        "type": "String"
+      },
+      "bookings": {
+        "type": "String"
+      }
+    }
+  },
+  "requestsReceived": "Solicitudes Recibidas",
+  "bookingsAccepted": "Reservas Aceptadas",
+  "acceptanceRate": "Tasa de Aceptación",
+  "upgradeToPremiumNow": "Mejorar a Premium Ahora",
+  "restorePurchase": "Restaurar Compra",
+  "subscriptionRestoredSuccessfully": "¡Suscripción restaurada con éxito!",
+  "noActiveSubscriptionFoundToRestore": "No se encontró suscripción activa para restaurar.",
+  "cancelSubscription": "Cancelar Suscripción",
+  "cancelSubscriptionQuestion": "¿Cancelar Suscripción?",
+  "ifYouCancelTodayPremiumAccess": "Si cancelas hoy, tu acceso premium seguirá activo hasta el {date}.\n\nPor favor, dinos por qué te vas:",
+  "@ifYouCancelTodayPremiumAccess": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tooExpensive": "Demasiado caro",
+  "notGettingEnoughClientRequests": "No recibo suficientes solicitudes de clientes",
+  "usingADifferentPlatform": "Uso una plataforma diferente",
+  "other": "Otro",
+  "stayWithUsGet20Off": "¡Quédate con nosotros! Obtén un 20% de DESCUENTO en tu próximo ciclo de facturación en lugar de cancelar.",
+  "keepMySubscription": "Mantener Mi Suscripción",
+  "confirmCancellation": "Confirmar Cancelación",
+  "pleaseCancelViaStore": "Por favor, cancela a través de la página de suscripciones de Google Play o App Store.",
+  "fullName": "Nombre completo",
+  "aboutMe": "Sobre mí",
+  "searchYourAddress": "Busca tu dirección…",
+  "phoneNumber": "Número de teléfono",
+  "deleteAccountPermanently": "Eliminar cuenta permanentemente",
+  "areYouSureToDeleteAccount": "¿Estás seguro de eliminar la cuenta?",
+  "yesDelete": "Sí, eliminar",
+  "noDontDelete": "No, no eliminar",
+  "profileUpdatedSuccessfully": "Perfil actualizado exitosamente",
+  "failedToUpdateProfile": "Error al actualizar el perfil: {message}",
+  "@failedToUpdateProfile": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteAccount": "Error al eliminar la cuenta: {message}",
+  "@failedToDeleteAccount": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "bio": "Biografía",
+  "writeSomethingAboutYourself": "Escribe algo sobre ti...",
+  "pricePerHour": "Precio por hora",
+  "experience": "Experiencia",
+  "selectExperience": "Seleccionar experiencia",
+  "specialties": "Especialidades",
+  "otherTasksOffered": "Otras tareas ofrecidas",
+  "workSchedule": "Horario de trabajo",
+  "whenAreYouAvailable": "¿Cuándo estás disponible para ofrecer tus servicios?",
+  "monday": "Lunes",
+  "tuesday": "Martes",
+  "wednesday": "Miércoles",
+  "thursday": "Jueves",
+  "friday": "Viernes",
+  "saturday": "Sábado",
+  "sunday": "Domingo",
+  "available": "Disponible",
+  "notAvailable": "No disponible",
+  "minimumPriceSavedSuccessfully": "Precio mínimo guardado con éxito",
+  "minimumPriceTitle": "Precio mínimo",
+  "minimumPriceQuestion": "¿Cuál es el precio mínimo que debe pagar un cliente para reservar su servicio?  +info",
+  "minimumPriceLabel": "Precio mínimo:",
+  "minimumPriceTip": "Esto evitará que se reserve por un precio tan bajo que no valga la pena el tiempo de desplazamiento para el servicio",
+  "preferences": "Preferencias",
+  "myWorkAreas": "Mis áreas de trabajo",
+  "currentLocationMap": "Mapa de ubicación actual",
+  "confirm": "Confirmar",
+  "areYouSureToLogout": "¿Estás seguro de que quieres cerrar sesión?",
+  "pleaseSelectYourRole": "Por favor, selecciona tu rol",
+  "micAndCameraPermissionsRequired": "Se requieren permisos de micrófono y cámara",
+  "userIsBusyOrUnavailable": "El usuario está ocupado o no disponible",
+  "paymentSuccessful": "Pago exitoso",
+  "accessLocked": "ACCESO BLOQUEADO",
+  "subscriptionRequired": "Suscripción requerida",
+  "startFreeTrialToReceiveRequests": "Comienza tu prueba gratuita de 30 días para recibir\ny gestionar solicitudes de clientes.",
+  "startFreeTrial": "Iniciar prueba gratuita",
+  "youCanStillManageProfile": "Aún puedes gestionar tu perfil,\nservicios y horario.",
+  "tryIumiProviderFree": "Prueba IUMI Provider gratis",
+  "unlockEveryFeature": "Desbloquea todas las funciones de proveedor por 30 días.",
+  "thirtyDaysFree": "30 DÍAS GRATIS",
+  "receiveCustomerRequests": "Recibir solicitudes de clientes",
+  "acceptOrDeclineBookings": "Aceptar o rechazar reservas",
+  "contactCustomersAfterAcceptance": "Contactar clientes después de aceptar",
+  "manageYourSchedule": "Gestionar tu horario",
+  "freeFor30Days": "Gratis por 30 días",
+  "then4999RonMonthCancelAnytime": "Luego 49.99 RON/mes. Cancela cuando quieras.",
+  "start30DayFreeTrial": "Comenzar prueba gratuita de 30 días",
+  "upgradePremium": "Actualizar a Premium",
+  "notNow": "Ahora no",
+  "noPaymentToday": "Sin pago hoy. Funciona en\niOS, Android y la web.",
+  "somethingWentWrong": "Algo salió mal",
+  "tryAgain": "Intentar de nuevo"
 }

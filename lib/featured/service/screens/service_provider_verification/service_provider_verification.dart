@@ -16,6 +16,7 @@ import 'package:service_provider_umi/shared/widgets/app_checkbox.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class ServiceProviderVerification extends ConsumerStatefulWidget {
   const ServiceProviderVerification({super.key});
@@ -59,7 +60,7 @@ class _ServiceProviderVerificationState
   void _onNext() {
     if (!_isValid) {
       context.showErrorSnackBar(
-        'Please upload an image for each selected option.',
+        AppLocalizations.of(context)!.pleaseUploadAnImage,
       );
       return;
     }
@@ -131,13 +132,13 @@ class _ServiceProviderVerificationState
                   children: [
                     // ─── Toggles ──────────────────────────────────────────
                     AppText.h4(
-                      "If you already submit a request please login with another account",
+                      AppLocalizations.of(context)!.ifYouAlreadySubmitARequest,
                     ),
                     const AppDivider(height: 40, color: AppColors.grey400),
                     AppToggleTile(
-                      label: 'Palliative care',
+                      label: AppLocalizations.of(context)!.palliativeCare,
                       subtitle:
-                          'Only show professionals specialising in palliative care.',
+                          AppLocalizations.of(context)!.palliativeCareDesc,
                       value: _palliativeCare,
                       onChanged: (v) => setState(() {
                         _palliativeCare = v;
@@ -146,9 +147,9 @@ class _ServiceProviderVerificationState
                     ),
                     const AppDivider(height: 40, color: AppColors.grey400),
                     AppToggleTile(
-                      label: 'Driving licence',
+                      label: AppLocalizations.of(context)!.drivingLicence,
                       subtitle:
-                          'Only show professionals with a driving licence',
+                          AppLocalizations.of(context)!.drivingLicenceDesc,
                       value: _drivingLicence,
                       onChanged: (v) => setState(() {
                         _drivingLicence = v;
@@ -157,9 +158,9 @@ class _ServiceProviderVerificationState
                     ),
                     const AppDivider(height: 40, color: AppColors.grey400),
                     AppToggleTile(
-                      label: 'Business profiles',
+                      label: AppLocalizations.of(context)!.businessProfiles,
                       subtitle:
-                          'Only profiles that correspond to a validated business or self employed professional.',
+                          AppLocalizations.of(context)!.businessProfilesDesc,
                       value: _businessProfile,
                       onChanged: (v) => setState(() {
                         _businessProfile = v;
@@ -168,9 +169,9 @@ class _ServiceProviderVerificationState
                     ),
                     const AppDivider(height: 40, color: AppColors.grey400),
                     AppToggleTile(
-                      label: 'Qualified carer',
+                      label: AppLocalizations.of(context)!.qualifiedCarer,
                       subtitle:
-                          'Only show caregivers with a qualification, diploma or degree as health personal',
+                          AppLocalizations.of(context)!.qualifiedCarerDesc,
                       value: _qualifiedCarer,
                       onChanged: (v) => setState(() {
                         _qualifiedCarer = v;
@@ -182,31 +183,31 @@ class _ServiceProviderVerificationState
                     // ─── Image pickers (shown only when toggled on) ────────
                     if (_palliativeCare)
                       _buildImageTile(
-                        title: 'Palliative Care Image',
+                        title: AppLocalizations.of(context)!.palliativeCareImage,
                         imageFile: _palliativeImage,
                         onTap: () => _pickImage((f) => _palliativeImage = f),
                       ),
                     if (_drivingLicence)
                       _buildImageTile(
-                        title: 'Driving Licence Image',
+                        title: AppLocalizations.of(context)!.drivingLicenceImage,
                         imageFile: _drivingImage,
                         onTap: () => _pickImage((f) => _drivingImage = f),
                       ),
                     if (_businessProfile)
                       _buildImageTile(
-                        title: 'Business Profile Image',
+                        title: AppLocalizations.of(context)!.businessProfileImage,
                         imageFile: _businessImage,
                         onTap: () => _pickImage((f) => _businessImage = f),
                       ),
                     if (_qualifiedCarer)
                       _buildImageTile(
-                        title: 'Qualification Certificate',
+                        title: AppLocalizations.of(context)!.qualificationCertificate,
                         imageFile: _qualifiedImage,
                         onTap: () => _pickImage((f) => _qualifiedImage = f),
                       ),
 
                     AppButton.primary(
-                      label: 'Next',
+                      label: AppLocalizations.of(context)!.next,
                       onPressed: role == AppRole.provider ? _onNext : null,
                     ),
                     32.verticalSpace,

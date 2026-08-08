@@ -7,6 +7,7 @@ import 'package:service_provider_umi/featured/favourites/riverpod/favourites_not
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
@@ -45,7 +46,10 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
       ),
       body: state.when(
         loading: () => const AppLoader(),
-        error: (e, _) => Center(child: AppText.h3(e.toString())),
+        error: (e, _) => AppErrorWidget(
+          error: e,
+          onRetry: () => ref.read(favouritesNotifireProvider.notifier).fetch(),
+        ),
         data: (favourites) {
           if (favourites.isEmpty) {
             return AppEmptyState(

@@ -5,6 +5,7 @@ import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 // ─── Payments and refunds ─────────────────────────────────────
 class PaymentsScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class PaymentsScreen extends StatelessWidget {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('Payment and refunds'),
+        title: AppText.h3(AppLocalizations.of(context)!.paymentAndRefunds),
         centerTitle: true,
       ),
       body: Padding(
@@ -53,7 +54,7 @@ class PaymentsScreen extends StatelessWidget {
               // const Divider(height: 1, indent: 52, color: AppColors.divider),
               _PaymentTile(
                 icon: Icons.credit_card_outlined,
-                label: 'Payments methods',
+                label: AppLocalizations.of(context)!.paymentMethods,
                 onTap: () {
                   if (kIsWeb) {
                     context.go(AppRoutes.paymentCardsPage);
@@ -123,7 +124,7 @@ class MyBookingScreen extends StatelessWidget {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('My booking'),
+        title: AppText.h3(AppLocalizations.of(context)!.myBooking),
         centerTitle: true,
       ),
       body: ListView(
@@ -208,11 +209,11 @@ class _BookingCard extends StatelessWidget {
                 ),
                 4.verticalSpace,
                 AppText.bodySm(
-                  'Paid on $paidOn',
+                  AppLocalizations.of(context)!.paidOn(paidOn),
                   color: AppColors.textSecondary,
                 ),
                 AppText.bodySm(
-                  'Service date: $serviceDate',
+                  AppLocalizations.of(context)!.serviceDate(serviceDate),
                   color: AppColors.textSecondary,
                 ),
                 if (cancelledBy != null) ...[

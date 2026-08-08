@@ -6,8 +6,11 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/static_content_provider.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
+import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class StaticPageScreen extends ConsumerStatefulWidget {
   final String title;
@@ -93,9 +96,9 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
 
             // ✅ Friendly fallback if field is empty
             if (htmlContent.trim().isEmpty) {
-              return const Center(
+              return Center(
                 child: AppText.bodyMd(
-                  'No content available.',
+                  AppLocalizations.of(context)!.noContentAvailable,
                   color: AppColors.textSecondary,
                 ),
               );
@@ -108,35 +111,9 @@ class _StaticPageScreenState extends ConsumerState<StaticPageScreen> {
             );
           },
 
-          failure: (failure) => Center(
-            child: Padding(
-              padding: 24.paddingAll,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.error_outline_rounded,
-                    color: AppColors.textSecondary,
-                    size: 48,
-                  ),
-                  16.verticalSpace,
-                  AppText.bodyMd(
-                    failure.message,
-                    color: AppColors.textSecondary,
-                    textAlign: TextAlign.center,
-                  ),
-                  24.verticalSpace,
-                  TextButton(
-                    onPressed: () =>
-                        ref.read(staticContentProvider.notifier).fetch(),
-                    child: const AppText.bodyMd(
-                      'Try again',
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          failure: (failure) => AppErrorWidget(
+            error: failure.message,
+            onRetry: () => ref.read(staticContentProvider.notifier).fetch(),
           ),
         ),
       ),

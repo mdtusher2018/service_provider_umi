@@ -8,6 +8,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../core/di/app_role_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class BalanceTransaction {
   final String id;
@@ -64,7 +65,7 @@ class MyBalanceScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "My Balance"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.myBalance),
 
       body: Padding(
         padding: 20.paddingH,
@@ -90,7 +91,7 @@ class MyBalanceScreen extends ConsumerWidget {
                   children: [
                     AppText.h1('\$${_availableBalance.toStringAsFixed(2)}'),
                     4.verticalSpace,
-                    AppText.bodyMd('Available balance'),
+                    AppText.bodyMd(AppLocalizations.of(context)!.availableBalance),
                   ],
                 ),
               ),

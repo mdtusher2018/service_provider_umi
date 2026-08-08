@@ -51,7 +51,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
           if (!context.mounted) return;
           Navigator.of(context).pop();
           rootNavigatorKey.currentContext?.showSnackBar(
-            'Password reset successfully. Please log in.',
+            AppLocalizations.of(context)!.passwordResetSuccessfully,
           );
           _showLoginAccountDialog(widget.parentRef);
         },
@@ -78,7 +78,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText.h2('Reset Password'),
+                AppText.h2(AppLocalizations.of(context)!.resetPassword),
                 InkWell(
                   onTap: isLoading ? null : () => Navigator.of(context).pop(),
                   child: const Icon(Icons.close),
@@ -91,7 +91,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
             // New Password
             AppTextField(
               controller: _newPassCtrl,
-              hint: 'New password',
+              hint: AppLocalizations.of(context)!.newPassword,
               obscureText: true,
               showPasswordToggle: true,
               validator: (v) => Validators.password(v),
@@ -101,7 +101,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
             // Confirm Password
             AppTextField(
               controller: _confirmPassCtrl,
-              hint: 'Confirm new password',
+              hint: AppLocalizations.of(context)!.confirmNewPassword,
               obscureText: true,
               showPasswordToggle: true,
               validator: (v) =>
@@ -110,7 +110,7 @@ class _ResetPasswordDialogState extends ConsumerState<_ResetPasswordDialog> {
             24.verticalSpace,
 
             AppButton.primary(
-              label: 'Reset Password',
+              label: AppLocalizations.of(context)!.resetPassword,
               isLoading: isLoading,
               onPressed: isLoading ? null : _submit,
             ),

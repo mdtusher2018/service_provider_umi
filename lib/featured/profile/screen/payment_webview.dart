@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -37,7 +38,7 @@ class PaymentWebViewScreen extends StatelessWidget {
                   onNavigationRequest: (NavigationRequest request) {
                     if (request.url.contains('transaction/complete')) {
                       Navigator.of(context).pop();
-                      context.showSnackBar("Payment sucessfull");
+                      context.showSnackBar(AppLocalizations.of(context)!.paymentSuccessful);
                     }
                     return NavigationDecision.navigate;
                   },

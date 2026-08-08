@@ -61,9 +61,9 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: AppText.h3(
-                      'How does the Elderly care\nservice work?',
-                    ),
+                      child: AppText.h3(
+                        AppLocalizations.of(context)!.howDoesTheServiceWorkTitle,
+                      ),
                   ),
                   GestureDetector(
                     onTap: widget.onClose,
@@ -90,7 +90,7 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
                   children: [
                     Expanded(
                       child: AppText.h3(
-                        'How does the Elderly care\nservice work?',
+                        AppLocalizations.of(context)!.howDoesTheServiceWorkTitle,
                       ),
                     ),
                     GestureDetector(
@@ -122,7 +122,7 @@ class _FaqSheetState extends ConsumerState<_FaqSheet> {
 
                 // ─── FAQ LIST FROM API ───
                 if (faqs.isEmpty)
-                  const AppText.bodyMd("No FAQs available")
+                  AppText.bodyMd(AppLocalizations.of(context)!.noFaqsAvailable)
                 else
                   ...faqs.map(
                     (faq) =>

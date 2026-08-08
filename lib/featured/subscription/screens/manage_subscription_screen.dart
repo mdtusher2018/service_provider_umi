@@ -12,6 +12,7 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 import '../../../core/services/revenuecat_service.dart';
+import '../../../l10n/app_localizations.dart';
 import '../riverpod/provider_monthly_analytics_provider.dart';
 import 'premium_packages_screen.dart';
 
@@ -37,7 +38,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
     Color statusColor = Colors.transparent;
     
     if (isTrial) {
-      statusLabel = '30-Day Free Trial ($daysLeft days left)';
+      statusLabel = AppLocalizations.of(context)!.freeTrialDaysLeft(daysLeft.toString());
       statusColor = const Color(0xFFD97706);
     } else if (isActive) {
       bool willRenew = true;
@@ -46,10 +47,10 @@ class ManageSubscriptionScreen extends ConsumerWidget {
       } else if (entitlement != null) {
         willRenew = entitlement.willRenew;
       }
-      statusLabel = !willRenew ? 'Cancelled (Active till period end)' : 'Active Premium';
+      statusLabel = !willRenew ? AppLocalizations.of(context)!.cancelledActiveTillPeriodEnd : AppLocalizations.of(context)!.activePremium;
       statusColor = !willRenew ? Colors.orange : const Color(0xFF059669);
     } else if (entitlement != null || backendSub != null) {
-      statusLabel = 'Expired';
+      statusLabel = AppLocalizations.of(context)!.expired;
       statusColor = Colors.red;
     }
 
@@ -78,16 +79,16 @@ class ManageSubscriptionScreen extends ConsumerWidget {
       planName = backendSub['package']['name'] ?? planName;
     } else if (activePackage != null) {
       if (activePackage.packageType == PackageType.monthly) {
-        planName = 'Monthly Premium';
+        planName = AppLocalizations.of(context)!.monthlyPremium;
       } else if (activePackage.packageType == PackageType.annual) {
-        planName = 'Annual Premium';
+        planName = AppLocalizations.of(context)!.annualPremium;
       } else {
         planName = activePackage.storeProduct.title; 
       }
     } else if (entitlement?.productIdentifier != null) {
       final pid = entitlement!.productIdentifier.toLowerCase();
-      if (pid.contains('monthly')) planName = 'Monthly Premium';
-      else if (pid.contains('annual') || pid.contains('yearly')) planName = 'Annual Premium';
+      if (pid.contains('monthly')) planName = AppLocalizations.of(context)!.monthlyPremium;
+      else if (pid.contains('annual') || pid.contains('yearly')) planName = AppLocalizations.of(context)!.annualPremium;
       else planName = entitlement.productIdentifier;
     }
 
@@ -132,7 +133,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const AppText.h3('Manage Subscription'),
+        title: AppText.h3(AppLocalizations.of(context)!.manageSubscription),
         backgroundColor: Colors.white,
         elevation: 0.5,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
@@ -152,7 +153,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -165,7 +166,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AppText.bodyLg('Subscription Status', fontWeight: FontWeight.w800),
+                            AppText.bodyLg(AppLocalizations.of(context)!.subscriptionStatus, fontWeight: FontWeight.w800),
                             if (statusLabel != null) ...[
                               8.verticalSpace,
                               Align(
@@ -173,7 +174,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: statusColor.withOpacity(0.1),
+                                    color: statusColor.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: AppText.bodyXs(
@@ -191,26 +192,26 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                         const Divider(height: 1),
                         16.verticalSpace,
                         if (!isActive && !isTrial) ...[
-                          const Center(
+                          Center(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               child: AppText.bodyMd(
-                                'No Subscription Purchased',
+                                AppLocalizations.of(context)!.noSubscriptionPurchased,
                                 color: AppColors.grey500,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                         ] else ...[
-                          _buildInfoRow('Current Plan', isTrial ? 'Free Trial' : planName),
+                          _buildInfoRow(AppLocalizations.of(context)!.currentPlan, isTrial ? 'Free Trial' : planName),
                           12.verticalSpace,
-                          _buildInfoRow('Subscription Price', isTrial ? '\$0.00 (Trial)' : priceStr),
+                          _buildInfoRow(AppLocalizations.of(context)!.subscriptionPrice, isTrial ? '\$0.00 (Trial)' : priceStr),
                           12.verticalSpace,
-                          _buildInfoRow('Activation Date', activationDateStr),
+                          _buildInfoRow(AppLocalizations.of(context)!.activationDate, activationDateStr),
                           12.verticalSpace,
-                          _buildInfoRow('Next Billing / Renewal', nextBillingDateStr),
+                          _buildInfoRow(AppLocalizations.of(context)!.nextBillingRenewal, nextBillingDateStr),
                           12.verticalSpace,
-                          _buildInfoRow('Purchase Platform', platformStr),
+                          _buildInfoRow(AppLocalizations.of(context)!.purchasePlatform, platformStr),
                         ],
                       ],
                     ),
@@ -219,13 +220,13 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                   24.verticalSpace,
 
                   /// 2. Requirement #9: Provider Value Summary
-                  _buildValueSummary(ref),
+                  _buildValueSummary(context, ref),
 
                   24.verticalSpace,
 
                   /// 3. Action Buttons (Upgrade, Restore)
                   AppButton(
-                    label: 'Upgrade to Premium Now',
+                    label: AppLocalizations.of(context)!.upgradeToPremiumNow,
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const PremiumPackagesScreen()),
@@ -246,15 +247,15 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                           SnackBar(
                             content: Text(
                               restored
-                                  ? 'Subscription restored successfully!'
-                                  : 'No active subscription found to restore.',
+                                  ? AppLocalizations.of(context)!.subscriptionRestoredSuccessfully
+                                  : AppLocalizations.of(context)!.noActiveSubscriptionFoundToRestore,
                             ),
                           ),
                         );
                       }
                     },
-                    child: const AppText.bodyLg(
-                      'Restore Purchase',
+                    child: AppText.bodyLg(
+                      AppLocalizations.of(context)!.restorePurchase,
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -263,8 +264,8 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                   Center(
                     child: TextButton(
                       onPressed: () => _showCancelDialog(context, nextBillingDateStr, info),
-                      child: const AppText.bodySm(
-                        'Cancel Subscription',
+                      child: AppText.bodySm(
+                        AppLocalizations.of(context)!.cancelSubscription,
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
@@ -276,7 +277,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildValueSummary(WidgetRef ref) {
+  Widget _buildValueSummary(BuildContext context, WidgetRef ref) {
     final analyticsAsync = ref.watch(providerMonthlyAnalyticsProvider);
 
     return Container(
@@ -301,8 +302,8 @@ class ManageSubscriptionScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.analytics_outlined, color: Color(0xFF38BDF8), size: 24),
                 10.horizontalSpace,
-                const AppText.bodyLg(
-                  'Your Value This Month',
+                AppText.bodyLg(
+                  AppLocalizations.of(context)!.yourValueThisMonth,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -335,8 +336,8 @@ class ManageSubscriptionScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.analytics_outlined, color: Color(0xFF38BDF8), size: 24),
                 10.horizontalSpace,
-                const AppText.bodyLg(
-                  'Your Value This Month',
+                AppText.bodyLg(
+                  AppLocalizations.of(context)!.yourValueThisMonth,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -344,7 +345,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
             ),
             12.verticalSpace,
             Text(
-              '"This month you received ${analytics.requestsReceived} requests and accepted ${analytics.bookingsAccepted} bookings."',
+              AppLocalizations.of(context)!.thisMonthRequestsBookings('${analytics.requestsReceived}', '${analytics.bookingsAccepted}'),
               style: const TextStyle(
                 color: Color(0xFFE2E8F0),
                 fontSize: 13,
@@ -355,11 +356,11 @@ class ManageSubscriptionScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem('${analytics.requestsReceived}', 'Requests Received'),
+                _buildStatItem('${analytics.requestsReceived}', AppLocalizations.of(context)!.requestsReceived),
                 Container(width: 1, height: 30, color: Colors.white24),
-                _buildStatItem('${analytics.bookingsAccepted}', 'Bookings Accepted'),
+                _buildStatItem('${analytics.bookingsAccepted}', AppLocalizations.of(context)!.bookingsAccepted),
                 Container(width: 1, height: 30, color: Colors.white24),
-                _buildStatItem(analytics.acceptanceRate, 'Acceptance Rate'),
+                _buildStatItem(analytics.acceptanceRate, AppLocalizations.of(context)!.acceptanceRate),
               ],
             ),
           ],
@@ -379,12 +380,14 @@ class ManageSubscriptionScreen extends ConsumerWidget {
   }
 
   Widget _buildStatItem(String stat, String label) {
-    return Column(
-      children: [
-        AppText.h2(stat, color: const Color(0xFF38BDF8)),
-        2.verticalSpace,
-        AppText.bodySm(label, color: const Color(0xFF94A3B8), fontSize: 11),
-      ],
+    return Expanded(
+      child: Column(
+        children: [
+          AppText.h2(stat, color: const Color(0xFF38BDF8)),
+          2.verticalSpace,
+          AppText.bodySm(label, color: const Color(0xFF94A3B8), fontSize: 11, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 
@@ -396,17 +399,17 @@ class ManageSubscriptionScreen extends ConsumerWidget {
         String? selectedReason;
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const AppText.h3('Cancel Subscription?'),
+          title: AppText.h3(AppLocalizations.of(context)!.cancelSubscriptionQuestion),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppText.bodySm(
-                'If you cancel today, your premium access will remain active until $activeTillDate.\n\nPlease let us know why you are leaving:',
+                AppLocalizations.of(context)!.ifYouCancelTodayPremiumAccess(activeTillDate),
                 color: AppColors.grey500,
               ),
               12.verticalSpace,
-              ...['Too expensive', 'Not getting enough client requests', 'Using a different platform', 'Other'].map(
+              ...[AppLocalizations.of(context)!.tooExpensive, AppLocalizations.of(context)!.notGettingEnoughClientRequests, AppLocalizations.of(context)!.usingADifferentPlatform, AppLocalizations.of(context)!.other].map(
                 (reason) => StatefulBuilder(
                   builder: (context, setState) => RadioListTile<String>(
                     title: AppText.bodySm(reason),
@@ -434,7 +437,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                     8.horizontalSpace,
                     Expanded(
                       child: AppText.bodySm(
-                        'Stay with us! Get 20% OFF your next billing cycle instead of cancelling.',
+                        AppLocalizations.of(context)!.stayWithUsGet20Off,
                         color: const Color(0xFF92400E),
                         fontWeight: FontWeight.bold,
                       ),
@@ -447,7 +450,7 @@ class ManageSubscriptionScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const AppText.bodyMd('Keep My Subscription', color: AppColors.primary, fontWeight: FontWeight.bold),
+              child: AppText.bodyMd(AppLocalizations.of(context)!.keepMySubscription, color: AppColors.primary, fontWeight: FontWeight.bold),
             ),
             TextButton(
               onPressed: () async {
@@ -470,12 +473,12 @@ class ManageSubscriptionScreen extends ConsumerWidget {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please cancel via your Google Play or App Store subscriptions page.')),
+                      SnackBar(content: Text(AppLocalizations.of(context)!.pleaseCancelViaStore)),
                     );
                   }
                 }
               },
-              child: const AppText.bodyMd('Confirm Cancellation', color: Colors.red),
+              child: AppText.bodyMd(AppLocalizations.of(context)!.confirmCancellation, color: Colors.red),
             ),
           ],
         );

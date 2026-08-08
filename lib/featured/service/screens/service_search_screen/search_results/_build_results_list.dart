@@ -25,13 +25,13 @@ Widget _buildResultsList({required WidgetRef ref, required String serviceId}) {
               text: TextSpan(
                 style: AppTextStyles.bodyLg.copyWith(color: AppColors.textPrimary),
                 children: [
-                  const TextSpan(text: 'Finding '),
+                  TextSpan(text: AppLocalizations.of(ref.context)!.finding),
                   if (serviceName != null)
                     TextSpan(
                       text: '$serviceName ',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  const TextSpan(text: 'professionals'),
+                  TextSpan(text: AppLocalizations.of(ref.context)!.professionals),
                 ],
               ),
             ),
@@ -50,13 +50,16 @@ Widget _buildResultsList({required WidgetRef ref, required String serviceId}) {
       );
     },
 
-    error: (e, _) => Center(child: AppText.bodyLg(e.toString())),
+    error: (e, _) => AppErrorWidget(
+      error: e,
+      onRetry: () => ref.read(searchServiceProvidersProvider.notifier).search(),
+    ),
 
     data: (response) {
       final providers = response.results;
 
       if (providers.isEmpty) {
-        return const Center(child: Text("No providers found"));
+        return Center(child: Text(AppLocalizations.of(ref.context)!.noProvidersFound));
       }
 
       final isLoadingMore = state.isLoading && state.hasValue;

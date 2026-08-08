@@ -52,6 +52,7 @@ import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/not_found_page_widget.dart';
+import '../../l10n/app_localizations.dart';
 import 'app_routes.dart';
 
 part 'app_router.g.dart';
@@ -480,9 +481,9 @@ GoRouter appRouter(Ref ref) {
             'about-us': StaticPageType.aboutUs,
           };
           final titles = {
-            'privacy': 'Privacy Policy',
-            'terms': 'Terms & Conditions',
-            'about-us': 'About Us',
+            'privacy': AppLocalizations.of(context)!.privacyPolicy,
+            'terms': AppLocalizations.of(context)!.termsAndConditions,
+            'about-us': AppLocalizations.of(context)!.aboutUs,
           };
           return StaticPageScreen(
             title: titles[type] ?? type,

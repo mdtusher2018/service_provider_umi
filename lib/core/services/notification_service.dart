@@ -173,6 +173,12 @@ class NotificationService {
       if (callId.isNotEmpty) await CallKitService.endCall(callId);
       CallKitListenerService.popCallScreen();
     } else {
+      // Prevent duplicate notifications on iOS
+      if (Platform.isIOS && message.notification != null) {
+        // iOS automatically shows the notification in foreground due to
+        // setForegroundNotificationPresentationOptions(alert: true)
+        return;
+      }
       _showLocalNotification(message);
     }
   }

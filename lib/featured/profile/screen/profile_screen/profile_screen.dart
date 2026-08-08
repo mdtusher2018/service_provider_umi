@@ -12,7 +12,8 @@ import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dar
 import 'package:service_provider_umi/featured/subscription/screens/manage_subscription_screen.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/featured/profile/screen/payment_webview.dart';
-import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:service_provider_umi/shared/enums/all_enums.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/shared/widgets/app_link_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -21,6 +22,9 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/core/services/revenuecat_service.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+
+import '../../../../shared/enums/app_enums.dart';
 part '_logout_dialog.dart';
 part '_menu_card.dart';
 part '_user_cards.dart';
@@ -109,6 +113,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   initial: () => const SizedBox.shrink(),
                   loading: () => const AppLoader(),
                   success: (profile) => _buildUserCard(
+                    context,
                     ref,
                     name: profile.name,
                     phone: profile.phoneNumber ?? profile.email,
@@ -116,8 +121,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     isStripeConnected:
                         profile.serviceProviderInfo?.stripeAccountId != null,
                   ),
-                  failure: (_) => const Center(
-                    child: AppText.bodyMd('Failed to load profile'),
+                  failure: (_) => AppErrorWidget(
+                    error: AppLocalizations.of(context)!.failedToLoadProfile,
+                    onRetry: () => ref.read(myProfileProvider.notifier).fetch(),
                   ),
                 ),
                 // 16.verticalSpace,
@@ -126,7 +132,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 20.verticalSpace,
                 // Section label
                 AppText.labelLg(
-                  'Account Settings',
+                  AppLocalizations.of(context)!.accountSettings,
                   color: AppColors.textSecondary,
                 ),
                 16.verticalSpace,
@@ -134,7 +140,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 // Settings menu
                 _MenuCard(
                   items: [
-                    _Item(Icons.person_outline_rounded, 'Personal details', () {
+                    _Item(Icons.person_outline_rounded, AppLocalizations.of(context)!.personalDetails, () {
                       userState.maybeWhen(
                         success: (profile) {
                           if (kIsWeb) {
@@ -150,12 +156,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           }
                         },
                         orElse: () {
-                          context.showSnackBar("Pull to refresh");
+                          context.showSnackBar(AppLocalizations.of(context)!.pullToRefresh);
                         },
                       );
                     }),
                     if (role == AppRole.user) ...[
-                      _Item(Icons.location_on_outlined, 'My addresses', () {
+                      _Item(Icons.location_on_outlined, AppLocalizations.of(context)!.myAddresses, () {
                         if (kIsWeb) {
                           context.go(AppRoutes.myAddresses);
                         } else {
@@ -164,7 +170,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       }),
                       _Item(
                         Icons.credit_card_outlined,
-                        'Payments and refunds',
+                        AppLocalizations.of(context)!.paymentsAndRefunds,
                         () {
                           // if (kIsWeb) {
                           //   context.go(AppRoutes.payments);
@@ -182,7 +188,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     if (role == AppRole.provider) ...[
                       //   }
                       // }),
-                      _Item(Icons.workspace_premium, 'My Subscription', () {
+                      _Item(Icons.workspace_premium, AppLocalizations.of(context)!.mySubscription, () {
                         if (kIsWeb) {
                           // In web, you might want to use go_router, but for now we push
                           Navigator.of(context).push(
@@ -194,7 +200,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           );
                         }
                       }),
-                      _Item(Icons.list_alt, 'My Listing', () {
+                      _Item(Icons.list_alt, AppLocalizations.of(context)!.myListing, () {
                         if (kIsWeb) {
                           context.go(AppRoutes.providerListing);
                         } else {
@@ -215,28 +221,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       //     context.push(AppRoutes.workAreas);
                       //   }
                       // }),
-                      _Item(Icons.access_time_rounded, 'My schedule', () {
+                      _Item(Icons.access_time_rounded, AppLocalizations.of(context)!.mySchedule, () {
                         if (kIsWeb) {
                           context.go('${AppRoutes.workSchedule}?from=profile');
                         } else {
                           context.push('${AppRoutes.workSchedule}?from=profile');
                         }
                       }),
-                      _Item(Icons.attach_money_rounded, 'Minimum booking amount', () {
+                      _Item(Icons.attach_money_rounded, AppLocalizations.of(context)!.minimumBookingAmount, () {
                         if (kIsWeb) {
                           context.go(AppRoutes.minimumPrice);
                         } else {
                           context.push(AppRoutes.minimumPrice);
                         }
                       }),
-                      _Item(Icons.star_border, 'My Review', () {
+                      _Item(Icons.star_border, AppLocalizations.of(context)!.myReview, () {
                         if (kIsWeb) {
                           context.go(AppRoutes.providerReviews);
                         } else {
                           context.push(AppRoutes.providerReviews);
                         }
                       }),
-                      _Item(Icons.question_answer_outlined, 'Add FAQ', () {
+                      _Item(Icons.question_answer_outlined, AppLocalizations.of(context)!.addFaq, () {
                         userState.maybeWhen(
                           success: (profile) {
                             if (kIsWeb) {
@@ -246,26 +252,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             }
                           },
                           orElse: () {
-                            context.showSnackBar("Profile is not loaded yet");
+                            context.showSnackBar(AppLocalizations.of(context)!.failedToLoadProfile);
                           },
                         );
                       }),
                     ],
-                    _Item(Icons.lock_outline_rounded, 'Change password', () {
+                    _Item(Icons.lock_outline_rounded, AppLocalizations.of(context)!.changePassword, () {
                       if (kIsWeb) {
                         context.go(AppRoutes.changePassword);
                       } else {
                         context.push(AppRoutes.changePassword);
                       }
                     }),
-                    _Item(Icons.g_translate_outlined, 'Language', () {
+                    _Item(Icons.g_translate_outlined, AppLocalizations.of(context)!.language, () {
                       if (kIsWeb) {
                         context.go(AppRoutes.language);
                       } else {
                         context.push(AppRoutes.language);
                       }
                     }),
-                    _Item(Icons.info_sharp, 'About Us', () {
+                    _Item(Icons.info_sharp, AppLocalizations.of(context)!.aboutUs, () {
                       if (kIsWeb) {
                         context.push(AppRoutes.staticPagePath('about-us'));
                       } else {
@@ -274,7 +280,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     }),
                     _Item(
                       Icons.description_outlined,
-                      'Terms and conditions',
+                      AppLocalizations.of(context)!.termsAndConditions,
                       () {
                         if (kIsWeb) {
                           context.go(AppRoutes.staticPagePath('terms'));
@@ -283,7 +289,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         }
                       },
                     ),
-                    _Item(Icons.privacy_tip_outlined, 'Privacy policy', () {
+                    _Item(Icons.privacy_tip_outlined, AppLocalizations.of(context)!.privacyPolicy, () {
                       if (kIsWeb) {
                         context.go(AppRoutes.staticPagePath('privacy'));
                       } else {
@@ -293,7 +299,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                     _Item(
                       Icons.logout_rounded,
-                      'Log Out',
+                      AppLocalizations.of(context)!.logout,
                       _confirmLogout,
                       showArrow: false,
                     ),

@@ -9,6 +9,8 @@ import 'package:service_provider_umi/shared/widgets/app_rating_bar.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../core/theme/app_colors.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 
 class ReviewsScreen extends ConsumerStatefulWidget {
   const ReviewsScreen({super.key});
@@ -53,15 +55,20 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "Reviews"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.reviews),
       body: reviewsState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
 
-        error: (e, _) => Center(child: Text(e.toString())),
+        error: (e, _) => AppErrorWidget(
+          error: e,
+          onRetry: () {
+            if (id != null) ref.read(myReviewProvider.notifier).fetch(id!);
+          },
+        ),
 
         data: (reviews) {
           if (reviews.isEmpty) {
-            return const Center(child: Text("No reviews found"));
+            return Center(child: Text(AppLocalizations.of(context)!.noReviewsFound));
           }
 
           return ListView.separated(

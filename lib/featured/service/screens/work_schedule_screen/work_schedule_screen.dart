@@ -17,6 +17,7 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../../core/theme/app_colors.dart';
 import '../../../../../../../core/theme/app_text_styles.dart';
+import '../../../../l10n/app_localizations.dart';
 part '_schedule_dialog.dart';
 part '_widgets.dart';
 
@@ -266,9 +267,9 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText.h1('Work schedule', color: AppColors.textPrimary),
+            AppText.h1(AppLocalizations.of(context)!.workSchedule, color: AppColors.textPrimary),
             4.verticalSpace,
-            AppText.bodySm('When are you available to offer your services?'),
+            AppText.bodySm(AppLocalizations.of(context)!.whenAreYouAvailable),
             24.verticalSpace,
 
             // ── Loading spinner until API responds ───────────────────────
@@ -281,15 +282,38 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
                   separatorBuilder: (_, __) => 16.verticalSpace,
                   itemBuilder: (_, i) {
                     final d = _days![i];
-                    final label = _kDayMeta
-                        .firstWhere((m) => m.code == d.day)
-                        .label;
+                    final String code = d.day;
+                    String localizedLabel = code;
+                    switch (code) {
+                      case 'Mon':
+                        localizedLabel = AppLocalizations.of(context)!.monday;
+                        break;
+                      case 'Tue':
+                        localizedLabel = AppLocalizations.of(context)!.tuesday;
+                        break;
+                      case 'Wed':
+                        localizedLabel = AppLocalizations.of(context)!.wednesday;
+                        break;
+                      case 'Thu':
+                        localizedLabel = AppLocalizations.of(context)!.thursday;
+                        break;
+                      case 'Fri':
+                        localizedLabel = AppLocalizations.of(context)!.friday;
+                        break;
+                      case 'Sat':
+                        localizedLabel = AppLocalizations.of(context)!.saturday;
+                        break;
+                      case 'Sun':
+                        localizedLabel = AppLocalizations.of(context)!.sunday;
+                        break;
+                    }
+
                     final localStart = d.startTime.toLocal();
                     final localEnd = d.endTime.toLocal();
 
                     return _DayRow(
                       // Adapt these named params to match your _DayRow widget.
-                      dayLabel: label,
+                      dayLabel: localizedLabel,
                       isAvailable: d.status,
                       from: TimeOfDay(
                         hour: localStart.hour,

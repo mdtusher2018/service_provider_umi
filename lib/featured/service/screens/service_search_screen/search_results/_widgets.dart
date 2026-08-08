@@ -44,7 +44,7 @@ Widget _buildHeader(BuildContext context, TextEditingController controller, Valu
           child: AppTextField(
             controller: controller,
             onChanged: onChanged,
-            hint: "Find the service you need",
+            hint: AppLocalizations.of(context)!.findTheServiceYouNeed,
             prefixIcon: kIsWeb
                 ? null
                 : InkWell(
@@ -90,7 +90,7 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
       children: [
         _FilterChip(
           icon: Icons.calendar_today_outlined,
-          label: 'When?',
+          label: AppLocalizations.of(ref.context)!.whenQuestion,
           onTap: () {
             if (kIsWeb) {
               ref.context.go(AppRoutes.searchTimePath("2"));
@@ -103,7 +103,7 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
         8.horizontalSpace,
         _FilterChip(
           icon: Icons.tune_rounded,
-          label: 'Filters',
+          label: AppLocalizations.of(ref.context)!.filters,
           onTap: () {
             if (kIsWeb) {
               ref.context.go(AppRoutes.filterPath(id));

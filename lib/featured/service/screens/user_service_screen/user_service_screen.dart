@@ -13,6 +13,7 @@ import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -133,7 +134,10 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
             Expanded(
               child: state.when(
                 loading: () => const AppLoader(),
-                error: (e, _) => Center(child: AppText.h3(e.toString())),
+                error: (e, _) => AppErrorWidget(
+                  error: e,
+                  onRetry: () => ref.invalidate(bookingsProvider(_currentStatus)),
+                ),
                 data: (data) {
                   final bookings = data;
 

@@ -22,6 +22,9 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 
 class PersonalDetailsScreen extends ConsumerStatefulWidget {
@@ -100,7 +103,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
       transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
       pageBuilder: (_, _, _) => _DeleteDialog(
-        title: 'Are you sure you want to delete ?',
+        title: AppLocalizations.of(context)!.areYouSureToDeleteAccount,
         onYes: () async {
           await ref.read(deleteAccountProvider.notifier).deleteAccount();
         },
@@ -122,10 +125,10 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
         initial: () {},
         loading: () {},
         success: (_) {
-          context.showSnackBar('Profile updated successfully');
+          context.showSnackBar(AppLocalizations.of(context)!.profileUpdatedSuccessfully);
         },
         failure: (failure) {
-          context.showSnackBar('Failed to update profile: ${failure.message}');
+          context.showSnackBar(AppLocalizations.of(context)!.failedToUpdateProfile(failure.message ?? 'Unknown error'));
         },
       );
     });
@@ -137,14 +140,14 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
           context.go(AppRoutes.login);
         },
         failure: (failure) {
-          context.showSnackBar('Failed to delete account: ${failure.message}');
+          context.showSnackBar(AppLocalizations.of(context)!.failedToDeleteAccount(failure.message ?? 'Unknown error'));
         },
       );
     });
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "Personal details"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.personalDetails),
       body: SingleChildScrollView(
         padding: 20.paddingAll,
         child: Column(
@@ -183,12 +186,12 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
             ),
             28.verticalSpace,
 
-            AppTextField(hint: "Full name", controller: _nameController),
+            AppTextField(hint: AppLocalizations.of(context)!.fullName, controller: _nameController),
             12.verticalSpace,
 
             if (ref.watch(appRoleProvider) == AppRole.provider) ...[
               AppTextField(
-                hint: "About me",
+                hint: AppLocalizations.of(context)!.aboutMe,
                 maxLines: 3,
                 controller: _bioController,
               ),
@@ -198,7 +201,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
                 textEditingController: _addressController,
                 googleAPIKey: AppConfig.googleMapsApiKey,
                 inputDecoration: InputDecoration(
-                  hintText: 'Search your address…',
+                  hintText: AppLocalizations.of(context)!.searchYourAddress,
                   hintStyle: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14,
@@ -266,12 +269,12 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
               12.verticalSpace,
             ],
 
-            AppTextField(hint: "Phone number", controller: _phoneController),
+            AppTextField(hint: AppLocalizations.of(context)!.phoneNumber, controller: _phoneController),
             80.verticalSpace,
 
             // ✅ isLoading drives the button — no _isSaving bool anywhere
             AppButton.primary(
-              label: 'Save',
+              label: AppLocalizations.of(context)!.save,
               isLoading: isLoading,
               onPressed: isLoading ? null : _save,
             ),
@@ -279,8 +282,8 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
 
             GestureDetector(
               onTap: _confirmDeleteAccount,
-              child: const AppText.bodyMd(
-                'Delete account permanently',
+              child: AppText.bodyMd(
+                AppLocalizations.of(context)!.deleteAccountPermanently,
                 color: AppColors.textSecondary,
                 decoration: TextDecoration.underline,
               ),
@@ -320,12 +323,12 @@ class _DeleteDialog extends ConsumerWidget {
             AppText.h3(title, textAlign: TextAlign.center),
             24.verticalSpace,
             AppButton.primary(
-              label: 'YES, DELETE',
+              label: AppLocalizations.of(context)!.yesDelete,
               onPressed: onYes,
               isLoading: isDeleting,
             ),
             10.verticalSpace,
-            AppButton.outline(label: "NO, DON'T DELETE", onPressed: onNo),
+            AppButton.outline(label: AppLocalizations.of(context)!.noDontDelete, onPressed: onNo),
           ],
         ),
       ),

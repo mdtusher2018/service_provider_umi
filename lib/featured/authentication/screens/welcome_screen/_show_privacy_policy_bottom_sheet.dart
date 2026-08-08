@@ -34,18 +34,18 @@ Widget _buildPrivacyPolicyContent(WidgetRef ref, {VoidCallback? onAccept}) {
 
         16.verticalSpace,
 
-        const AppText.h3("We value your privacy"),
+        AppText.h3(AppLocalizations.of(ref.context)!.weValueYourPrivacy),
 
         8.verticalSpace,
 
-        const AppText.bodySm(
-          "Webel uses cookies to analyse advertising campaign performance, improve app ads, and personalize the experience based on user preference.",
+        AppText.bodySm(
+          AppLocalizations.of(ref.context)!.cookiePolicyMsg,
         ),
 
         20.verticalSpace,
 
         AppButton.primary(
-          label: "Accept",
+          label: AppLocalizations.of(ref.context)!.accept,
           onPressed: onAccept ?? () => Navigator.pop(ref.context, true),
         ),
 

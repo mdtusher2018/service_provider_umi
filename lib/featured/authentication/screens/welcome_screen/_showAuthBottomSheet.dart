@@ -77,10 +77,10 @@ Widget _signinSignupSelectionWidget(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppText.h2(isLogin ? "Login" : "Create Account"),
+        AppText.h2(isLogin ? AppLocalizations.of(ref.context)!.login : AppLocalizations.of(ref.context)!.createAccountTitle),
         12.verticalSpace,
         AppButton.outline(
-          label: "Continue with Google",
+          label: AppLocalizations.of(ref.context)!.continueWithGoogle,
           isLoading: isLoading,
           borderColor: AppColors.black,
           prefixIcon: Icon(Icons.g_mobiledata),
@@ -93,13 +93,13 @@ Widget _signinSignupSelectionWidget(
           spacing: 16,
           children: [
             Expanded(child: AppDivider()),
-            AppText.bodyLg("or"),
+            AppText.bodyLg(AppLocalizations.of(ref.context)!.or),
             Expanded(child: AppDivider()),
           ],
         ),
 
         AppButton.outline(
-          label: isLogin ? "Login with email" : "Create with email",
+          label: isLogin ? AppLocalizations.of(ref.context)!.loginWithEmail : AppLocalizations.of(ref.context)!.createWithEmail,
           borderColor: AppColors.black,
           onPressed: () async {
             await _close(ref);
@@ -113,16 +113,16 @@ Widget _signinSignupSelectionWidget(
         16.verticalSpace,
         if (!isLogin)
           AppLinkText(
-            "By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy",
+            AppLocalizations.of(ref.context)!.acceptTermsPrivacy,
             links: [
               AppTextLink(
-                label: "Terms and Condition",
+                label: AppLocalizations.of(ref.context)!.termsAndCondition,
                 onTap: () {
                   print("Open Terms");
                 },
               ),
               AppTextLink(
-                label: "Privacy Policy",
+                label: AppLocalizations.of(ref.context)!.privacyPolicy,
                 onTap: () {
                   print("Open Privacy Policy");
                 },

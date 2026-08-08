@@ -10,11 +10,15 @@ import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/address_provider.dart';
-import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+
+import '../../../../shared/widgets/app_button.dart';
 
 part 'add_address_screen.dart';
 
@@ -38,44 +42,30 @@ class MyAddressesScreen extends ConsumerWidget {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('My Address'),
+        title: AppText.h3(AppLocalizations.of(context)!.myAddress),
         centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: AppText.labelLg(
-              'Your Addresses',
+              AppLocalizations.of(context)!.yourAddresses,
               color: AppColors.textSecondary,
             ),
           ),
           Expanded(
             child: addressState.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppText.bodySm(
-                      e.toString(),
-                      color: AppColors.textSecondary,
-                      textAlign: TextAlign.center,
-                    ),
-                    16.verticalSpace,
-                    AppButton.outline(
-                      label: 'Retry',
-                      onPressed: () =>
-                          ref.read(addressProvider.notifier).fetch(),
-                    ),
-                  ],
-                ),
+              error: (e, _) => AppErrorWidget(
+                error: e,
+                onRetry: () => ref.read(addressProvider.notifier).fetch(),
               ),
               data: (addresses) => addresses.isEmpty
-                  ? const AppEmptyState(
-                      title: 'No addresses',
-                      subtitle: 'Add your first address below',
+                  ? AppEmptyState(
+                      title: AppLocalizations.of(context)!.noAddresses,
+                      subtitle: AppLocalizations.of(context)!.addYourFirstAddressBelow,
                     )
                   : ListView.separated(
                       padding: EdgeInsets.fromLTRB(
@@ -109,7 +99,7 @@ class MyAddressesScreen extends ConsumerWidget {
               context.bottomPadding + 20,
             ),
             child: AppButton.primary(
-              label: 'Add New Address',
+              label: AppLocalizations.of(context)!.addNewAddress,
               onPressed: () => _openAddressPage(context, ref),
             ),
           ),
@@ -169,8 +159,8 @@ class MyAddressesScreen extends ConsumerWidget {
       );
     } else if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Default address updated'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.defaultAddressUpdated),
           backgroundColor: Colors.green,
         ),
       );
@@ -229,12 +219,12 @@ class _AddressTile extends StatelessWidget {
                       color: AppColors.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: AppText.bodySm('Default', color: AppColors.primary),
+                    child: AppText.bodySm(AppLocalizations.of(context)!.defaultString, color: AppColors.primary),
                   ),
                   4.verticalSpace,
                 ],
                 AppText.labelLg(
-                  address.addressLine1,
+                  AppLocalizations.of(context)!.addressLabel(address.addressLine1),
                   fontWeight: FontWeight.w700,
                 ),
                 if (address.addressLine2 != null &&
@@ -271,33 +261,33 @@ class _AddressTile extends StatelessWidget {
             },
             itemBuilder: (_) => [
               if (!address.isDefault)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'default',
                   child: Row(
                     children: [
-                      Icon(Icons.star_outline, size: 18),
-                      SizedBox(width: 8),
-                      AppText('Set as Default'),
+                      const Icon(Icons.star_outline, size: 18),
+                      const SizedBox(width: 8),
+                      AppText(AppLocalizations.of(context)!.setAsDefault),
                     ],
                   ),
                 ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit_outlined, size: 18),
-                    SizedBox(width: 8),
-                    AppText('Edit'),
+                    const Icon(Icons.edit_outlined, size: 18),
+                    const SizedBox(width: 8),
+                    AppText(AppLocalizations.of(context)!.edit),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                    SizedBox(width: 8),
-                    AppText('Delete', color: Colors.red),
+                    const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                    const SizedBox(width: 8),
+                    AppText(AppLocalizations.of(context)!.delete, color: Colors.red),
                   ],
                 ),
               ),
@@ -332,20 +322,20 @@ class _DeleteDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AppText.h3(
-              'Are you sure you want to delete?',
+            AppText.h3(
+              AppLocalizations.of(context)!.areYouSureToDelete,
               textAlign: TextAlign.center,
             ),
             8.verticalSpace,
-            const AppText.bodySm(
-              'This address will be permanently removed.',
+            AppText.bodySm(
+              AppLocalizations.of(context)!.thisAddressWillBeRemoved,
               color: AppColors.textSecondary,
               textAlign: TextAlign.center,
             ),
             24.verticalSpace,
-            AppButton.primary(label: 'YES, DELETE', onPressed: onYes),
+            AppButton.primary(label: AppLocalizations.of(context)!.yesDelete, onPressed: onYes),
             10.verticalSpace,
-            AppButton.outline(label: "NO, DON'T DELETE", onPressed: onNo),
+            AppButton.outline(label: AppLocalizations.of(context)!.noDontDelete, onPressed: onNo),
           ],
         ),
       ),

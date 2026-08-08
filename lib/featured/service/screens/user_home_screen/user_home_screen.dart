@@ -19,9 +19,12 @@ import 'package:service_provider_umi/featured/service/riverpod/service_provider.
 import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 part '_radial_menu.dart';
 
 class UserHomeScreen extends ConsumerStatefulWidget {
@@ -137,10 +140,9 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       state.when(
                         loading: () => const AppLoader(),
                         data: (categories) => RadialMenu(menuItems: categories),
-                        error: (e, _) => Center(
-                          child: AppText.h4(
-                            (e is AppException) ? e.message : e.toString(),
-                          ),
+                        error: (e, _) => AppErrorWidget(
+                          error: e,
+                          onRetry: () => ref.read(categoriesProvider.notifier).fetch(),
                         ),
                       ),
                     ],
@@ -161,7 +163,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AppText(
-                        "Add address",
+                        AppLocalizations.of(context)!.addAddress,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -178,7 +180,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
               Padding(
                 padding: 20.paddingH,
                 child: AppButton.primary(
-                  label: "LOGIN",
+                  label: AppLocalizations.of(context)!.login.toUpperCase(),
                   textColor: AppColors.white,
                   onPressed: () {
                     context.go(AppRoutes.login);
@@ -191,7 +193,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
               Padding(
                 padding: 20.paddingH,
                 child: AppButton.outline(
-                  label: "Create Account",
+                  label: AppLocalizations.of(context)!.createAccountBtn,
                   onPressed: () {
                     context.go(AppRoutes.login);
                   },
@@ -227,9 +229,9 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AppText.h2("Service address"),
-                        const AppText.bodyMd(
-                          "Select where you want to receive the service",
+                        AppText.h2(AppLocalizations.of(context)!.serviceAddress),
+                        AppText.bodyMd(
+                          AppLocalizations.of(context)!.selectWhereYouWantToReceiveService,
                         ),
                       ],
                     ),
@@ -252,7 +254,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       textEditingController: _addressController,
                       googleAPIKey: AppConfig.googleMapsApiKey,
                       inputDecoration: InputDecoration(
-                        hintText: 'Search your address…',
+                        hintText: AppLocalizations.of(context)!.searchYourAddress,
                         hintStyle: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
@@ -325,7 +327,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
               16.verticalSpace,
 
               AppButton.primary(
-                label: 'Save',
+                label: AppLocalizations.of(context)!.save,
                 isLoading: isLoading,
                 onPressed: isLoading ? null : _save,
               ),

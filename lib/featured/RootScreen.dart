@@ -114,21 +114,21 @@ class _RootScreenState extends ConsumerState<RootScreen> {
               backgroundColor: AppColors.white,
               activeColor: AppColors.black,
               color: AppColors.grey500,
-              height: 50,
+              height: 55,
               curveSize: 100,
               items: [
                 TabItem(
                   icon: isProvider
                       ? Icons.calendar_month_outlined
                       : Icons.calendar_today_outlined,
-                  title: isProvider ? "Calendar" : "Service",
+                  title: isProvider ? AppLocalizations.of(context)!.calendar : AppLocalizations.of(context)!.service,
                 ),
                 // index 1
                 TabItem(
                   icon: isProvider
                       ? Icons.chat_bubble_outline
                       : Icons.favorite_border,
-                  title: isProvider ? "Inbox" : "Favourites",
+                  title: isProvider ? AppLocalizations.of(context)!.inbox : AppLocalizations.of(context)!.favourites,
                 ),
                 TabItem(
                   icon: Container(

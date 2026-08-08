@@ -23,6 +23,7 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_slider.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
   /// The service / search context we're filtering within.
@@ -171,7 +172,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       // Only auto-navigate on update flow; submit flow handles its own navigation
       if (next is AsyncData && next.value == true && pendingVerification == null) {
         context.go(AppRoutes.providerHome);
-        context.showSuccessSnackBar('Updated successfully');
+        context.showSuccessSnackBar(AppLocalizations.of(context)!.updatedSuccessfully);
       }
     });
 
@@ -199,7 +200,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                           ),
                           8.horizontalSpace,
                           AppText.h1(
-                            'Back',
+                            AppLocalizations.of(context)!.back,
                             color: AppColors.primaryFor(
                               ref.watch(appRoleProvider),
                             ),
@@ -213,7 +214,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                     GestureDetector(
                       onTap: _clearAll,
                       child: AppText.labelLg(
-                        'Clear filters',
+                        AppLocalizations.of(context)!.clearFilters,
                         decoration: TextDecoration.underline,
                       ),
                     ),
@@ -243,9 +244,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                       children: [
                         if (ref.read(appRoleProvider) == AppRole.user) ...[
                           AppToggleTile(
-                            label: 'Palliative care',
+                            label: AppLocalizations.of(context)!.palliativeCare,
                             subtitle:
-                                'Only show professionals specialising in palliative care.',
+                                AppLocalizations.of(context)!.palliativeCareDesc,
                             value: _palliativeCare,
                             onChanged: (v) =>
                                 setState(() => _palliativeCare = v),
@@ -274,7 +275,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         const AppDivider(height: 40, color: AppColors.grey400),
 
                         // ─── Experience ────────────────────────────────
-                        AppText.h3("Professional's experience"),
+                        AppText.h3(AppLocalizations.of(context)!.experienceLevel),
                         12.verticalSpace,
                         ...experiences.map(
                           (e) => AppCheckboxTile(
@@ -287,7 +288,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         const AppDivider(height: 40, color: AppColors.grey400),
 
                         // ─── Other tasks ───────────────────────────────
-                        AppText.h3('Other required tasks'),
+                        AppText.h3(AppLocalizations.of(context)!.specificTasksRequirements),
                         12.verticalSpace,
                         ...tasks.map(
                           (t) => AppCheckboxTile(
@@ -321,9 +322,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         // ─── Toggles ───────────────────────────────────
                         if (ref.read(appRoleProvider) == AppRole.user) ...[
                           AppToggleTile(
-                            label: 'Driving licence',
+                            label: AppLocalizations.of(context)!.drivingLicence,
                             subtitle:
-                                'Only show professionals with a driving licence',
+                                AppLocalizations.of(context)!.drivingLicenceDesc,
                             value: _drivingLicence,
                             onChanged: (v) =>
                                 setState(() => _drivingLicence = v),
@@ -333,9 +334,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                             color: AppColors.grey400,
                           ),
                           AppToggleTile(
-                            label: 'Business profiles',
+                            label: AppLocalizations.of(context)!.businessProfiles,
                             subtitle:
-                                'Only profiles that correspond to a validated business or self employed professional.',
+                                AppLocalizations.of(context)!.businessProfilesDesc,
                             value: _businessProfile,
                             onChanged: (v) =>
                                 setState(() => _businessProfile = v),
@@ -345,9 +346,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                             color: AppColors.grey400,
                           ),
                           AppToggleTile(
-                            label: 'Qualified carer',
+                            label: AppLocalizations.of(context)!.qualifiedCarer,
                             subtitle:
-                                'Only show caregivers with a qualification, diploma or degree as health personal',
+                                AppLocalizations.of(context)!.qualifiedCarerDesc,
                             value: _qualifiedCarer,
                             onChanged: (v) =>
                                 setState(() => _qualifiedCarer = v),
@@ -356,14 +357,14 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         ],
                         // ─── Provider-only image uploads ───────────────
                         if (ref.watch(appRoleProvider) == AppRole.provider) ...[
-                          AppText.h4('Images'),
+                          AppText.h4(AppLocalizations.of(context)!.images),
                           12.verticalSpace,
                           _buildImageTile(
-                            title: 'Cover Image',
+                            title: AppLocalizations.of(context)!.coverImage,
                             imageFile: _coverImage,
                             onTap: () => _pickImage((f) => _coverImage = f),
                           ),
-                          AppText.labelLg('Gallery Images'),
+                          AppText.labelLg(AppLocalizations.of(context)!.galleryImages),
                           12.verticalSpace,
 
                           GridView.builder(
@@ -401,7 +402,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                         ),
                                         6.verticalSpace,
                                         AppText.bodySm(
-                                          'Add',
+                                          AppLocalizations.of(context)!.add,
                                           color: AppColors.grey600,
                                         ),
                                       ],
@@ -462,27 +463,27 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                           12.verticalSpace,
                           if (_palliativeCare)
                             _buildImageTile(
-                              title: 'Palliative Care Image',
+                              title: AppLocalizations.of(context)!.palliativeCareImage,
                               imageFile: _palliativeImage,
                               onTap: () =>
                                   _pickImage((f) => _palliativeImage = f),
                             ),
                           if (_drivingLicence)
                             _buildImageTile(
-                              title: 'Driving Licence Image',
+                              title: AppLocalizations.of(context)!.drivingLicenceImage,
                               imageFile: _drivingImage,
                               onTap: () => _pickImage((f) => _drivingImage = f),
                             ),
                           if (_businessProfile)
                             _buildImageTile(
-                              title: 'Business Profile Image',
+                              title: AppLocalizations.of(context)!.businessProfileImage,
                               imageFile: _businessImage,
                               onTap: () =>
                                   _pickImage((f) => _businessImage = f),
                             ),
                           if (_qualifiedCarer)
                             _buildImageTile(
-                              title: 'Qualification Certificate',
+                              title: AppLocalizations.of(context)!.qualificationCertificate,
                               imageFile: _qualifiedImage,
                               onTap: () =>
                                   _pickImage((f) => _qualifiedImage = f),
@@ -492,8 +493,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         // ─── Apply / Update button ─────────────────────
                         AppButton.primary(
                           label: ref.read(appRoleProvider) == AppRole.provider
-                              ? (pendingVerification != null ? 'Submit' : 'Update')
-                              : 'Apply filters',
+                              ? (pendingVerification != null ? AppLocalizations.of(context)!.submit : AppLocalizations.of(context)!.update)
+                              : AppLocalizations.of(context)!.applyFilters,
                           isLoading: ref.watch(updateProviderProvider).isLoading,
                           onPressed: () async {
                             if (ref.watch(appRoleProvider) == AppRole.provider) {
@@ -609,9 +610,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const AppText('Verification Submitted'),
-        content: const AppText(
-          'Your request has been submitted successfully.\n\nPlease login again with another account.',
+        title: AppText(AppLocalizations.of(context)!.verificationSubmitted),
+        content: AppText(
+          AppLocalizations.of(context)!.verificationSubmittedDesc,
         ),
         actions: [
           TextButton(
@@ -619,7 +620,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               ref.read(logoutProvider.notifier).logout();
               context.go(AppRoutes.login);
             },
-            child: const AppText('Logout'),
+            child: AppText(AppLocalizations.of(context)!.logout),
           ),
         ],
       ),

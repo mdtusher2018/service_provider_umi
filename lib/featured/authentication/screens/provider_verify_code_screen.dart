@@ -12,6 +12,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../core/di/app_role_provider.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/enums/app_enums.dart';
 import '../riverpod/auth_provider.dart';
 
@@ -77,7 +78,7 @@ class _VerifyCodeScreenState extends ConsumerState<VerifyOTPScreen> {
         initial: () {},
         loading: () {},
         success: () {
-          context.showSnackBar("OTP Verified Successfully");
+          context.showSnackBar(AppLocalizations.of(context)!.otpVerifiedSuccessfully);
           if (role == AppRole.provider) {
             ref.read(appRoleProvider.notifier).loginAsProvider();
             context.go(AppRoutes.providerHome);

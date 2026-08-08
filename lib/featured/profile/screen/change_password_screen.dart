@@ -9,6 +9,7 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -41,7 +42,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         initial: () {},
         loading: () {},
         success: () {
-          context.showSnackBar('Password changed successfully');
+          context.showSnackBar(AppLocalizations.of(context)!.passwordChangedSuccessfully);
           context.pop();
         },
         failure: (e) => context.showErrorSnackBar(e.message),
@@ -63,7 +64,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           ),
           onPressed: () => context.pop(),
         ),
-        title: const AppText.h3('Change Password'),
+        title: AppText.h3(AppLocalizations.of(context)!.changePassword),
         centerTitle: true,
       ),
       body: Padding(
@@ -73,33 +74,33 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           child: Column(
             children: [
               AppTextField(
-                hint: 'Current password',
+                hint: AppLocalizations.of(context)!.currentPassword,
                 controller: _oldCtrl,
-                label: 'Old password',
+                label: AppLocalizations.of(context)!.oldPassword,
                 showPasswordToggle: true,
                 validator: (v) =>
-                    v == null || v.isEmpty ? 'Enter old password' : null,
+                    v == null || v.isEmpty ? AppLocalizations.of(context)!.enterOldPassword : null,
               ),
               16.verticalSpace,
               AppTextField(
-                hint: 'New password',
+                hint: AppLocalizations.of(context)!.newPassword,
                 controller: _newCtrl,
-                label: 'New password',
+                label: AppLocalizations.of(context)!.newPassword,
                 showPasswordToggle: true,
                 validator: (v) => Validators.password(v),
               ),
               16.verticalSpace,
               AppTextField(
-                hint: 'Confirm new password',
+                hint: AppLocalizations.of(context)!.confirmNewPassword,
                 controller: _confirmCtrl,
-                label: 'Confirm password',
+                label: AppLocalizations.of(context)!.confirmPassword,
                 showPasswordToggle: true,
 
                 validator: (v) => Validators.confirmPassword(v, _newCtrl.text),
               ),
               32.verticalSpace,
               AppButton.primary(
-                label: 'Change password',
+                label: AppLocalizations.of(context)!.changePassword,
                 isLoading: isLoading,
                 onPressed: isLoading ? null : _submit,
               ),

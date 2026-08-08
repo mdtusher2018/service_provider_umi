@@ -8,9 +8,12 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class SearchCategoryScreen extends ConsumerStatefulWidget {
   const SearchCategoryScreen({super.key});
@@ -70,7 +73,7 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
               padding: 16.paddingH,
               child: AppSearchBar(
                 controller: _searchController,
-                hint: "Find the service you need",
+                hint: AppLocalizations.of(context)!.findTheServiceYouNeed,
                 leading: kIsWeb
                     ? null
                     : InkWell(
@@ -86,7 +89,7 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
             Padding(
               padding: 20.paddingH,
               child: AppText.labelLg(
-                _query.isEmpty ? 'Most popular in your area' : 'Search results',
+                _query.isEmpty ? AppLocalizations.of(context)!.mostPopularInYourArea : AppLocalizations.of(context)!.searchResults,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -102,19 +105,18 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
                 child: state.when(
                   loading: () => const AppLoader(),
 
-                  error: (e, _) => Center(
-                    child: AppText.h4(
-                      (e is AppException) ? e.message : e.toString(),
-                    ),
+                  error: (e, _) => AppErrorWidget(
+                    error: e,
+                    onRetry: () => ref.read(categoriesProvider.notifier).fetch(),
                   ),
 
                   data: (services) {
                     final filtered = _filtered(services);
 
                     if (filtered.isEmpty) {
-                      return const AppEmptyState(
-                        title: 'No services found',
-                        subtitle: 'Try a different search term',
+                      return AppEmptyState(
+                        title: AppLocalizations.of(context)!.noServicesFound,
+                        subtitle: AppLocalizations.of(context)!.tryADifferentSearchTerm,
                       );
                     }
 

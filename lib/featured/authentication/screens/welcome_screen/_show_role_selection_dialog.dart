@@ -37,15 +37,15 @@ Widget _showRoleSelectionWidget(WidgetRef ref) {
             child: Icon(Icons.arrow_back),
           ),
         ),
-        const AppText.h2(
-          "What will you do on iumi?",
+        AppText.h2(
+          AppLocalizations.of(ref.context)!.whatWillYouDoOnIumi,
           color: AppColors.textSecondary,
         ),
 
         10.verticalSpace,
 
-        const AppText.bodySm(
-          "This decision is not final. You can later be both a client\nand a professional from the account if you wish.",
+        AppText.bodySm(
+          AppLocalizations.of(ref.context)!.roleDecisionNotFinal,
           textAlign: TextAlign.center,
         ),
 
@@ -57,8 +57,8 @@ Widget _showRoleSelectionWidget(WidgetRef ref) {
             showAuthUI(ref, isLogin: false, role: AppRole.user);
           },
           child: _categoryCard(
-            "Book a service",
-            "I am a Client",
+            AppLocalizations.of(ref.context)!.bookAService,
+            AppLocalizations.of(ref.context)!.iAmAClient,
             Assets.welcome.bookService.keyName,
           ),
         ),
@@ -71,8 +71,8 @@ Widget _showRoleSelectionWidget(WidgetRef ref) {
             showAuthUI(ref, isLogin: false, role: AppRole.provider);
           },
           child: _categoryCard(
-            "Offer services",
-            "I am a Professional",
+            AppLocalizations.of(ref.context)!.offerServices,
+            AppLocalizations.of(ref.context)!.iAmAProfessional,
             Assets.welcome.offerService.keyName,
           ),
         ),

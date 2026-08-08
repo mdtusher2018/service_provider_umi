@@ -59,8 +59,8 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
 
     if (_lat == null || _lng == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please search and select an address first.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseSearchAndSelectAddress),
           backgroundColor: Colors.orange,
         ),
       );
@@ -213,7 +213,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: AppText.h3(_isEditing ? 'Edit Address' : 'Add Address'),
+        title: AppText.h3(_isEditing ? AppLocalizations.of(context)!.editAddress : AppLocalizations.of(context)!.addAddress),
         centerTitle: true,
       ),
       body: Form(
@@ -222,13 +222,13 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
           padding: EdgeInsets.fromLTRB(20, 20, 20, context.bottomPadding + 20),
           children: [
             // ── Google Places autocomplete ─────────────────────────────────────
-            AppText.labelMd('Search Address'),
+            AppText.labelMd(AppLocalizations.of(context)!.searchAddress),
             6.verticalSpace,
             GooglePlaceAutoCompleteTextField(
               textEditingController: _searchCtrl,
               googleAPIKey: AppConfig.googleMapsApiKey,
               inputDecoration: InputDecoration(
-                hintText: 'Search your address…',
+                hintText: AppLocalizations.of(context)!.searchYourAddress,
                 hintStyle: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 14,
@@ -307,10 +307,10 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.25),
+                    color: AppColors.primary.withValues(alpha: 0.25),
                   ),
                 ),
                 child: Row(
@@ -322,8 +322,10 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                     ),
                     8.horizontalSpace,
                     AppText.bodySm(
-                      'Lat: ${_lat!.toStringAsFixed(5)},  '
-                      'Lng: ${_lng!.toStringAsFixed(5)}',
+                      AppLocalizations.of(context)!.latLng(
+                        _lat!.toStringAsFixed(5),
+                        _lng!.toStringAsFixed(5)
+                      ),
                       color: AppColors.primary,
                     ),
                   ],
@@ -336,25 +338,25 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
             12.verticalSpace,
 
             AppText.labelSm(
-              'Review & adjust if needed',
+              AppLocalizations.of(context)!.reviewAndAdjust,
               color: AppColors.textSecondary,
             ),
             14.verticalSpace,
 
             // ── Address Line 1 ────────────────────────────────────────────────
             _field(
-              label: 'Address Line 1 *',
-              hint: 'Street number & name',
+              label: AppLocalizations.of(context)!.addressLine1,
+              hint: AppLocalizations.of(context)!.streetNumberAndName,
               ctrl: _line1Ctrl,
               validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Required' : null,
+                  (v == null || v.trim().isEmpty) ? AppLocalizations.of(context)!.required : null,
             ),
             12.verticalSpace,
 
             // ── Address Line 2 ────────────────────────────────────────────────
             _field(
-              label: 'Address Line 2',
-              hint: 'Area / neighbourhood (optional)',
+              label: AppLocalizations.of(context)!.addressLine2,
+              hint: AppLocalizations.of(context)!.areaNeighbourhood,
               ctrl: _line2Ctrl,
             ),
             12.verticalSpace,
@@ -363,13 +365,13 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
             Row(
               children: [
                 Expanded(
-                  child: _field(label: 'City', hint: 'City', ctrl: _cityCtrl),
+                  child: _field(label: AppLocalizations.of(context)!.city, hint: AppLocalizations.of(context)!.city, ctrl: _cityCtrl),
                 ),
                 12.horizontalSpace,
                 Expanded(
                   child: _field(
-                    label: 'State',
-                    hint: 'State',
+                    label: AppLocalizations.of(context)!.state,
+                    hint: AppLocalizations.of(context)!.state,
                     ctrl: _stateCtrl,
                   ),
                 ),
@@ -382,8 +384,8 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
               children: [
                 Expanded(
                   child: _field(
-                    label: 'Postal Code',
-                    hint: 'Postal',
+                    label: AppLocalizations.of(context)!.postalCode,
+                    hint: AppLocalizations.of(context)!.postal,
                     ctrl: _postalCtrl,
                     keyboardType: TextInputType.number,
                   ),
@@ -391,8 +393,8 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                 12.horizontalSpace,
                 Expanded(
                   child: _field(
-                    label: 'Country',
-                    hint: 'Country',
+                    label: AppLocalizations.of(context)!.country,
+                    hint: AppLocalizations.of(context)!.country,
                     ctrl: _countryCtrl,
                   ),
                 ),
@@ -402,7 +404,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
             32.verticalSpace,
 
             AppButton.primary(
-              label: _isEditing ? 'Update Address' : 'Save Address',
+              label: _isEditing ? AppLocalizations.of(context)!.updateAddress : AppLocalizations.of(context)!.saveAddress,
               isLoading: _isSaving,
               onPressed: _isSaving ? null : _save,
             ),

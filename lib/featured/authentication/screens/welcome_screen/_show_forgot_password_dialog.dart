@@ -74,7 +74,7 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const AppText.h2('Forgot Password'),
+                AppText.h2(AppLocalizations.of(context)!.forgotPassword),
                 InkWell(
                   onTap: isLoading
                       ? null
@@ -84,20 +84,20 @@ class _ForgotPasswordDialogState extends ConsumerState<_ForgotPasswordDialog> {
               ],
             ),
             12.verticalSpace,
-            const AppText.bodyMd(
-              'Enter your email and we\'ll send you a reset OTP.',
+            AppText.bodyMd(
+              AppLocalizations.of(context)!.enterEmailSendOtp,
               color: AppColors.textSecondary,
             ),
             24.verticalSpace,
             AppTextField(
               controller: _emailCtrl,
-              hint: 'Enter your email',
+              hint: AppLocalizations.of(context)!.enterYourEmail,
               keyboardType: TextInputType.emailAddress,
               validator: (v) => Validators.email(v),
             ),
             24.verticalSpace,
             AppButton.primary(
-              label: 'Send OTP',
+              label: AppLocalizations.of(context)!.sendOtp,
               isLoading: isLoading,
               onPressed: isLoading ? null : _submit,
             ),

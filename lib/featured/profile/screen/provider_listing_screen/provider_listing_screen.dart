@@ -12,7 +12,9 @@ import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
@@ -153,9 +155,12 @@ class _ProviderListingScreenState
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppAppBar(title: "My Listing"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.myListing),
       body: filterState.when(
-        error: (e, st) => Center(child: AppText.bodyLg(e.toString())),
+        error: (e, st) => AppErrorWidget(
+          error: e,
+          onRetry: () => ref.read(filterProvider.notifier).fetch(),
+        ),
         loading: () => const AppLoader(),
         data: (filterData) {
           return SingleChildScrollView(
@@ -220,17 +225,17 @@ class _ProviderListingScreenState
                 24.verticalSpace,
 
                 // ─── Bio ───────────────────────────────────
-                AppText.labelLg('Bio', color: AppColors.textSecondary),
+                AppText.labelLg(AppLocalizations.of(context)!.bio, color: AppColors.textSecondary),
                 8.verticalSpace,
                 AppTextField(
                   controller: _bioController,
-                  hint: 'Write something about yourself...',
+                  hint: AppLocalizations.of(context)!.writeSomethingAboutYourself,
                   maxLines: 4,
                 ),
                 24.verticalSpace,
 
                 // ─── Price per hour ────────────────────────
-                AppText.labelLg('Price per hour',
+                AppText.labelLg(AppLocalizations.of(context)!.pricePerHour,
                     color: AppColors.textSecondary),
                 8.verticalSpace,
                 AppTextField(
@@ -241,7 +246,7 @@ class _ProviderListingScreenState
                 24.verticalSpace,
 
                 // ─── Experience ────────────────────────────
-                AppText.labelLg('Experience',
+                AppText.labelLg(AppLocalizations.of(context)!.experience,
                     color: AppColors.textSecondary),
                 8.verticalSpace,
                 Container(
@@ -254,7 +259,7 @@ class _ProviderListingScreenState
                     child: DropdownButton<String>(
                       isExpanded: true,
                       hint: AppText.labelLg(
-                        'Select experience',
+                        AppLocalizations.of(context)!.selectExperience,
                         color: AppColors.grey400,
                       ),
                       value: _selectedExperienceId,
@@ -275,7 +280,7 @@ class _ProviderListingScreenState
                 24.verticalSpace,
 
                 // ─── Specialties ───────────────────────────
-                AppText.labelLg('Specialties',
+                AppText.labelLg(AppLocalizations.of(context)!.specialties,
                     color: AppColors.textSecondary),
                 12.verticalSpace,
                 Wrap(
@@ -307,7 +312,7 @@ class _ProviderListingScreenState
                 24.verticalSpace,
 
                 // ─── Other tasks offered ───────────────────
-                AppText.labelLg('Other tasks offered',
+                AppText.labelLg(AppLocalizations.of(context)!.otherTasksOffered,
                     color: AppColors.textSecondary),
                 12.verticalSpace,
                 Wrap(
@@ -342,7 +347,7 @@ class _ProviderListingScreenState
                 SizedBox(
                   width: double.infinity,
                   child: AppButton.primary(
-                    label: 'Save',
+                    label: AppLocalizations.of(context)!.save,
                     isLoading: isSaving,
                     onPressed: _save,
                   ),

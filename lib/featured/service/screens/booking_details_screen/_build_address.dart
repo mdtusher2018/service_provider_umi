@@ -1,11 +1,11 @@
 part of 'booking_details_screen.dart';
 
 // ─── Address ──────────────────────────────────────────────────────────────
-Widget _buildAddress(BookingDetailModel data) {
+Widget _buildAddress(BookingDetailModel data, BuildContext context) {
   final coords = data.provider?.location?.coordinates;
   final addressText = (coords != null && coords.length >= 2)
-      ? 'Lat: ${coords[1].toStringAsFixed(4)}, Lng: ${coords[0].toStringAsFixed(4)}'
-      : 'Address not available';
+      ? AppLocalizations.of(context)!.addressCoordsLabel(coords[1].toStringAsFixed(4), coords[0].toStringAsFixed(4))
+      : AppLocalizations.of(context)!.addressNotAvailable;
 
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,

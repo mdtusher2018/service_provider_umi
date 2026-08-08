@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
@@ -60,15 +61,15 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                     20.verticalSpace,
 
                     /// 2. Main Titles
-                    const AppText.h1(
-                      'Try IUMI Provider free',
+                    AppText.h1(
+                      AppLocalizations.of(context)!.tryIumiProviderFree,
                       textAlign: TextAlign.center,
                       fontWeight: FontWeight.w800,
                       color: Color(0xFF1E293B),
                     ),
                     8.verticalSpace,
-                    const AppText.bodyMd(
-                      'Unlock every provider feature for 30 days.',
+                    AppText.bodyMd(
+                      AppLocalizations.of(context)!.unlockEveryFeature,
                       textAlign: TextAlign.center,
                       color: Color(0xFF64748B),
                     ),
@@ -82,8 +83,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         color: _lightCyanBg,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const AppText.bodySm(
-                        '30 DAYS FREE',
+                      child: AppText.bodySm(
+                        AppLocalizations.of(context)!.thirtyDaysFree,
                         color: _cyanColor,
                         fontWeight: FontWeight.bold,
                       ),
@@ -108,25 +109,25 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                       ),
                       child: Column(
                         children: [
-                          _buildFeatureRow('Receive customer requests'),
+                          _buildFeatureRow(AppLocalizations.of(context)!.receiveCustomerRequests),
                           const Divider(color: Color(0xFFF1F5F9), height: 24),
-                          _buildFeatureRow('Accept or decline bookings'),
+                          _buildFeatureRow(AppLocalizations.of(context)!.acceptOrDeclineBookings),
                           const Divider(color: Color(0xFFF1F5F9), height: 24),
-                          _buildFeatureRow('Contact customers after acceptance'),
+                          _buildFeatureRow(AppLocalizations.of(context)!.contactCustomersAfterAcceptance),
                           const Divider(color: Color(0xFFF1F5F9), height: 24),
-                          _buildFeatureRow('Manage your schedule'),
+                          _buildFeatureRow(AppLocalizations.of(context)!.manageYourSchedule),
 
                           28.verticalSpace,
 
                           /// Pricing Title
-                          const AppText.h2(
-                            'Free for 30 days',
+                          AppText.h2(
+                            AppLocalizations.of(context)!.freeFor30Days,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF1E293B),
                           ),
                           4.verticalSpace,
                           AppText.bodySm(
-                            'Then $priceString. Cancel anytime.',
+                            AppLocalizations.of(context)!.then4999RonMonthCancelAnytime,
                             color: const Color(0xFF94A3B8),
                           ),
 
@@ -180,8 +181,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                     height: 24,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : const AppText.bodyLg(
-                                    'Start 30-Day Free Trial',
+                                : AppText.bodyLg(
+                                    AppLocalizations.of(context)!.start30DayFreeTrial,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -197,8 +198,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                 MaterialPageRoute(builder: (_) => const PremiumPackagesScreen()),
                               );
                             },
-                            child: const Text(
-                              'Upgrade Premium',
+                            child: Text(
+                              AppLocalizations.of(context)!.upgradePremium,
                               style: TextStyle(
                                 color: Color(0xFF00B4D8),
                                 fontWeight: FontWeight.w600,
@@ -212,8 +213,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                           /// "Not now" Link
                           TextButton(
                             onPressed: widget.onNotNowTapped ?? () => Navigator.of(context).pop(),
-                            child: const AppText.bodyMd(
-                              'Not now',
+                            child: AppText.bodyMd(
+                              AppLocalizations.of(context)!.notNow,
                               color: Color(0xFF64748B),
                               fontWeight: FontWeight.w600,
                             ),
@@ -245,9 +246,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                           ),
                         ),
                         12.horizontalSpace,
-                        const Flexible(
+                        Flexible(
                           child: AppText.bodySm(
-                            'No payment today. Works across\niOS, Android and web.',
+                            AppLocalizations.of(context)!.noPaymentToday,
                             color: Color(0xFF64748B),
                           ),
                         ),

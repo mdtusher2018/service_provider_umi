@@ -40,7 +40,10 @@ class _ProviderCompletedServiceScreenState
 
       body: state.when(
         loading: () => const AppLoader(),
-        error: (e, _) => Center(child: AppText.h3(e.toString())),
+        error: (e, _) => AppErrorWidget(
+          error: e,
+          onRetry: () => ref.read(bookingsProvider(BookingStatus.complete).notifier).fetch(),
+        ),
         data: (data) {
           if (data.isEmpty) {
             return Center(child: AppText.bodyLg(AppLocalizations.of(context)!.noBookingsFound));

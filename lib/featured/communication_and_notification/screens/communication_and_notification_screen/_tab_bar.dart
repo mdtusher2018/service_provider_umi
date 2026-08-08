@@ -18,14 +18,14 @@ class _TabBar extends ConsumerWidget {
       indicatorSize: TabBarIndicatorSize.label,
       tabs: [
         if (!isNotification)
-          Tab(child: AppText.labelLg("Chat", fontWeight: FontWeight.w600)),
+          Tab(child: AppText.labelLg(AppLocalizations.of(context)!.chat, fontWeight: FontWeight.w600)),
         if (isNotification || ref.watch(appRoleProvider) == AppRole.user)
-          Tab(child: AppText.labelLg("Alerts", fontWeight: FontWeight.w600)),
+          Tab(child: AppText.labelLg(AppLocalizations.of(context)!.alerts, fontWeight: FontWeight.w600)),
         if (!isNotification && ref.watch(appRoleProvider) != AppRole.user)
-          Tab(child: AppText.labelLg("History", fontWeight: FontWeight.w600)),
+          Tab(child: AppText.labelLg(AppLocalizations.of(context)!.history, fontWeight: FontWeight.w600)),
         if (isNotification)
           Tab(
-            child: AppText.labelLg("New Alerts", fontWeight: FontWeight.w600),
+            child: AppText.labelLg(AppLocalizations.of(context)!.newAlerts, fontWeight: FontWeight.w600),
           ),
       ],
     );

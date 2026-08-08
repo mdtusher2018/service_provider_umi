@@ -13,6 +13,7 @@ import 'package:service_provider_umi/featured/service/screens/user_service_scree
 import 'package:service_provider_umi/featured/service/widgets/booking_card_widget.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
@@ -156,7 +157,10 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                     )
                   : state.when(
                       loading: () => const AppLoader(),
-                      error: (e, _) => Center(child: AppText.h3(e.toString())),
+                      error: (e, _) => AppErrorWidget(
+                        error: e,
+                        onRetry: () => ref.invalidate(bookingsProvider(_currentStatus)),
+                      ),
                       data: (data) {
                         if (data.isEmpty) {
                           return Center(

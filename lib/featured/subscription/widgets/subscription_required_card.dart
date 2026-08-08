@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -60,8 +61,8 @@ class SubscriptionRequiredCard extends StatelessWidget {
                   color: _lightCyanBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const AppText.bodySm(
-                  'ACCESS LOCKED',
+                child: AppText.bodySm(
+                  AppLocalizations.of(context)!.accessLocked,
                   color: _cyanColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -70,18 +71,18 @@ class SubscriptionRequiredCard extends StatelessWidget {
               18.verticalSpace,
 
               // Title
-              const AppText.h2(
-                'Subscription required',
+              AppText.h2(
+                AppLocalizations.of(context)!.subscriptionRequired,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
+                color: const Color(0xFF1E293B),
               ),
               8.verticalSpace,
 
               // Subtitle
-              const AppText.bodyMd(
-                'Start your 30-day free trial to receive\nand manage customer requests.',
+              AppText.bodyMd(
+                AppLocalizations.of(context)!.startFreeTrialToReceiveRequests,
                 textAlign: TextAlign.center,
-                color: Color(0xFF64748B),
+                color: const Color(0xFF64748B),
               ),
 
               24.verticalSpace,
@@ -101,7 +102,7 @@ class SubscriptionRequiredCard extends StatelessWidget {
                   ),
                   onPressed: onStartTrialTapped,
                   child: AppText.bodyLg(
-                    isEligibleForTrial ? 'Start Free Trial' : 'Upgrade to Premium',
+                    isEligibleForTrial ? AppLocalizations.of(context)!.startFreeTrial : AppLocalizations.of(context)!.upgradePremium,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -111,10 +112,10 @@ class SubscriptionRequiredCard extends StatelessWidget {
               16.verticalSpace,
 
               // Bottom subtext
-              const AppText.bodySm(
-                'You can still manage your profile,\nservices and schedule.',
+              AppText.bodySm(
+                AppLocalizations.of(context)!.youCanStillManageProfile,
                 textAlign: TextAlign.center,
-                color: Color(0xFF94A3B8),
+                color: const Color(0xFF94A3B8),
               ),
 
               10.verticalSpace,

@@ -13,6 +13,8 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+
 class MyPaymentCardsPage extends ConsumerWidget {
   const MyPaymentCardsPage({super.key});
 
@@ -26,13 +28,13 @@ class MyPaymentCardsPage extends ConsumerWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
-        title: const AppText.h3('My Cards', fontWeight: FontWeight.w700),
+        title: AppText.h3(AppLocalizations.of(context)!.myCards, fontWeight: FontWeight.w700),
       ),
 
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20, bottom: 40),
         child: AppButton.primary(
-          label: "Add New",
+          label: AppLocalizations.of(context)!.addNew,
           onPressed: () async {
             final clientSecret = await ref
                 .read(paymentCardsProvider.notifier)
@@ -41,7 +43,7 @@ class MyPaymentCardsPage extends ConsumerWidget {
             log("clientSecret: ${clientSecret}");
 
             if (clientSecret == null) {
-              context.showSnackBar('Failed to get add card link');
+              context.showSnackBar(AppLocalizations.of(context)!.failedToGetAddCardLink);
               return;
             }
 
@@ -118,7 +120,7 @@ class MyPaymentCardsPage extends ConsumerWidget {
                 child: ListView(
                   children: [
                     AppEmptyState(
-                      title: 'No cards found',
+                      title: AppLocalizations.of(context)!.noCardsFound,
                       icon: Icon(Icons.error),
                     ),
                   ],
@@ -213,7 +215,7 @@ class _CardTile extends ConsumerWidget {
 
                 if (context.mounted) {
                   context.showSnackBar(
-                    errorMsg ?? 'Card deleted successfully',
+                    errorMsg ?? AppLocalizations.of(context)!.cardDeletedSuccessfully,
                     isError: errorMsg != null,
                   );
                 }
@@ -226,18 +228,18 @@ class _CardTile extends ConsumerWidget {
                 if (context.mounted) {
                   context.showSnackBar(
                     success
-                        ? 'Set as default card successfully'
-                        : 'Failed to set default card',
+                        ? AppLocalizations.of(context)!.setAsDefaultCardSuccessfully
+                        : AppLocalizations.of(context)!.failedToSetDefaultCard,
                     isError: !success,
                   );
                 }
               }
             },
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'delete', child: AppText('Delete')),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'delete', child: AppText(AppLocalizations.of(context)!.delete)),
               PopupMenuItem(
                 value: 'default',
-                child: AppText('Set as Default Card'),
+                child: AppText(AppLocalizations.of(context)!.setAsDefaultCard),
               ),
             ],
           ),

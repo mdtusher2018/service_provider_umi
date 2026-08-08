@@ -26,6 +26,9 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
+
+import '../../../../l10n/app_localizations.dart';
 part '_history_tile.dart';
 part '_alert_tile.dart';
 part '_contact_tile.dart';
@@ -212,7 +215,7 @@ class _CommunicationAndNotificationScreenState
                 _searchQuery = val;
               });
             },
-            hint: "Search friends",
+            hint: AppLocalizations.of(context)!.searchFriends,
             suffix: Icon(Icons.search, size: 24),
           ),
         ),
@@ -277,7 +280,10 @@ class _CommunicationAndNotificationScreenState
     return state.when(
       initial: () => const AppLoader(),
       loading: () => const AppLoader(),
-      failure: (e) => Center(child: AppText(e.toString())),
+      failure: (e) => AppErrorWidget(
+        error: e,
+        onRetry: () => ref.read(callHistoryProvider.notifier).fetch(),
+      ),
       success: (history) {
         if (history.isEmpty) {
           return const AppEmptyState(
@@ -322,7 +328,10 @@ class _CommunicationAndNotificationScreenState
     return alertsAsync.when(
       initial: () => const AppLoader(),
       loading: () => const AppLoader(),
-      failure: (e) => Center(child: Text(e.toString())),
+      failure: (e) => AppErrorWidget(
+        error: e,
+        onRetry: () => ref.read(notificationsProvider.notifier).fetch(),
+      ),
       success: (alerts) {
         /// ✅ FIX: return empty state
         if (alerts.isEmpty) {
@@ -349,13 +358,16 @@ class _CommunicationAndNotificationScreenState
     return alertsAsync.when(
       initial: () => const AppLoader(),
       loading: () => const AppLoader(),
-      failure: (e) => Center(child: Text(e.toString())),
+      failure: (e) => AppErrorWidget(
+        error: e,
+        onRetry: () => ref.read(notificationsProvider.notifier).fetch(),
+      ),
       success: (List<NotificationItem> alerts) {
         final unreadAlerts = alerts.where((e) => e.isRead != true).toList();
 
         /// ✅ FIX: return empty state
         if (unreadAlerts.isEmpty) {
-          return const AppEmptyState(title: "No Unread Alerts");
+          return AppEmptyState(title: AppLocalizations.of(context)!.noUnreadAlerts);
         }
 
         return RefreshIndicator(

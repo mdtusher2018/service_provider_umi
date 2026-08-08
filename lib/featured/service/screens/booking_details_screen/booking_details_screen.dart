@@ -30,6 +30,7 @@ import '../../../../../../../core/theme/app_text_styles.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/helpers/decode_helper.dart';
 import '../../../../core/di/repository_providers.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 part '_congratulations_overlay.dart';
 part '_timeline_row.dart';
@@ -84,7 +85,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppAppBar(title: "Details"),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.details),
       body: state.when(
         error: (error, stackTrace) => AppEmptyState(
           title: error.toString(),
@@ -93,7 +94,7 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
         loading: () => AppLoader(),
         data: (data) {
           if (data == null) {
-            return AppEmptyState(title: "No data found");
+            return AppEmptyState(title: AppLocalizations.of(context)!.noDataFound);
           }
           return _BookingDetailBody(
             data: data,
@@ -157,7 +158,7 @@ class _BookingDetailBody extends ConsumerWidget {
             //     .fetch(initial: true);
 
             if (context.mounted) {
-              context.showSuccessSnackBar("Booking accepted");
+              context.showSuccessSnackBar(AppLocalizations.of(context)!.bookingAccepted);
               context.go(AppRoutes.providerHome);
             }
           }
@@ -180,15 +181,15 @@ class _BookingDetailBody extends ConsumerWidget {
           _buildProviderRow(context, ref, role, bookingStatus),
           16.verticalSpace,
           _buildTextContentSection(
-            "Comment",
-            "Service booked successfully for elder care. Please ensure assistance includes daily check-ins, medication reminders, and help with mobility as discussed.",
+            AppLocalizations.of(context)!.comment,
+            AppLocalizations.of(context)!.serviceBookedSuccess,
           ),
           16.verticalSpace,
-          _buildSection('Date and time', _buildDateTime(data)),
+          _buildSection(AppLocalizations.of(context)!.dateAndTime, _buildDateTime(data)),
           16.verticalSpace,
-          _buildSection('Address', _buildAddress(data)),
+          _buildSection(AppLocalizations.of(context)!.address, _buildAddress(data, context)),
           16.verticalSpace,
-          _buildSection('Service price', _buildPrice()),
+          _buildSection(AppLocalizations.of(context)!.servicePrice, _buildPrice(context)),
           40.verticalSpace,
 
           // ── Action buttons driven by real status ──────────────────
@@ -203,14 +204,14 @@ class _BookingDetailBody extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AppButton.primary(
-                    label: "Accept",
+                    label: AppLocalizations.of(context)!.accept,
                     onPressed: onAccept,
                     isLoading: acceptState.isLoading,
                   ),
                 ),
                 Expanded(
                   child: AppButton.outline(
-                    label: "Cancel",
+                    label: AppLocalizations.of(context)!.cancel,
                     onPressed: onCancel,
                     isLoading: rejectState.isLoading,
                   ),
@@ -224,14 +225,14 @@ class _BookingDetailBody extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AppButton.primary(
-                    label: "Complete",
+                    label: AppLocalizations.of(context)!.complete,
                     onPressed: onComplete,
                     isLoading: ref.watch(completeBookingProvider).isLoading,
                   ),
                 ),
                 Expanded(
                   child: AppButton.outline(
-                    label: "Cancel",
+                    label: AppLocalizations.of(context)!.cancel,
                     onPressed: onCancel,
                     isLoading: rejectState.isLoading,
                   ),
@@ -240,7 +241,7 @@ class _BookingDetailBody extends ConsumerWidget {
             ),
 
           if (bookingStatus == BookingStatus.complete)
-            AppText.bodyLg("This Booking has been Completed"),
+            AppText.bodyLg(AppLocalizations.of(context)!.bookingHasBeenCompleted),
         ],
       ),
     );
@@ -269,7 +270,7 @@ class _BookingDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.h4(role == AppRole.provider ? 'Customer:' : 'Provider:', color: AppColors.textPrimary),
+          AppText.h4(role == AppRole.provider ? AppLocalizations.of(context)!.customer : AppLocalizations.of(context)!.provider, color: AppColors.textPrimary),
           16.verticalSpace,
           Row(
             children: [
@@ -293,8 +294,8 @@ class _BookingDetailBody extends ConsumerWidget {
         GestureDetector(
           onTap: () async {
             if (bookingStatus == BookingStatus.pending) {
-              final action = role == AppRole.user ? 'accepting' : 'creating';
-              context.showSnackBar("You can't chat before $action the booking", showAtTop: true);
+              final action = role == AppRole.user ? AppLocalizations.of(context)!.accepting : AppLocalizations.of(context)!.creating;
+              context.showSnackBar(AppLocalizations.of(context)!.cantChatBeforeAction(action), showAtTop: true);
               return;
             }
 
@@ -328,7 +329,7 @@ class _BookingDetailBody extends ConsumerWidget {
                 );
               },
               failure: (e) {
-                context.showSnackBar('Failed to load chat: ${e.message}');
+                context.showSnackBar(AppLocalizations.of(context)!.failedToLoadChat(e.message));
               },
             );
           },
@@ -346,12 +347,12 @@ class _BookingDetailBody extends ConsumerWidget {
   }
 
   // ─── Price breakdown ──────────────────────────────────────────────────────
-  Widget _buildPrice() {
+  Widget _buildPrice(BuildContext context) {
     final rows = [
-      ('Service', '\$${data.price.toStringAsFixed(2)}', false),
-      ('Booking hours', '${data.totalHours}h', false),
-      ('Subtotal', '\$${data.price.toStringAsFixed(2)}', false),
-      ('Client protection', 'Free', false),
+      (AppLocalizations.of(context)!.serviceText, '\$${data.price.toStringAsFixed(2)}', false),
+      (AppLocalizations.of(context)!.bookingHours, '${data.totalHours}h', false),
+      (AppLocalizations.of(context)!.subtotal, '\$${data.price.toStringAsFixed(2)}', false),
+      (AppLocalizations.of(context)!.clientProtection, AppLocalizations.of(context)!.free, false),
     ];
 
     return Column(
@@ -372,7 +373,7 @@ class _BookingDetailBody extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText.bodyMd('Total'),
+            AppText.bodyMd(AppLocalizations.of(context)!.total),
             AppText(
               '\$${data.price.toStringAsFixed(2)}',
               style: AppTextStyles.labelLg.copyWith(

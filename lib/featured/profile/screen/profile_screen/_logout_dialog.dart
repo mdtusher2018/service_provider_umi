@@ -30,7 +30,7 @@ class _LogoutDialog extends StatelessWidget {
               ),
             ),
             8.verticalSpace,
-            const AppText.h3('Are you sure you want to log out?'),
+            AppText.h3(AppLocalizations.of(context)!.areYouSureToLogout),
             20.verticalSpace,
             Row(
               children: [
@@ -42,7 +42,7 @@ class _LogoutDialog extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: 10.circular),
                       padding: 12.paddingV,
                     ),
-                    child: const AppText.labelLg('Cancel'),
+                    child: AppText.labelLg(AppLocalizations.of(context)!.cancel),
                   ),
                 ),
                 12.horizontalSpace,
@@ -55,8 +55,8 @@ class _LogoutDialog extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: 10.circular),
                       padding: 12.paddingV,
                     ),
-                    child: const AppText.labelLg(
-                      'Log out',
+                    child: AppText.labelLg(
+                      AppLocalizations.of(context)!.logout,
                       color: AppColors.white,
                     ),
                   ),

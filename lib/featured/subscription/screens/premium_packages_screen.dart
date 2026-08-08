@@ -6,6 +6,8 @@ import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/core/services/revenuecat_service.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -154,32 +156,9 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
           loading: () => const Center(
             child: CircularProgressIndicator(color: _cyanColor),
           ),
-          error: (error, _) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-                  16.verticalSpace,
-                  const AppText.bodyLg(
-                    'Failed to load plans.',
-                    color: Color(0xFF64748B),
-                    fontWeight: FontWeight.w500,
-                  ),
-                  8.verticalSpace,
-                  AppText.bodySm(
-                    error.toString(),
-                    color: const Color(0xFF94A3B8),
-                  ),
-                  16.verticalSpace,
-                  TextButton(
-                    onPressed: () => ref.invalidate(backendPackagesProvider),
-                    child: const Text('Tap to retry', style: TextStyle(color: _cyanColor)),
-                  ),
-                ],
-              ),
-            ),
+          error: (error, _) => AppErrorWidget(
+            error: error,
+            onRetry: () => ref.invalidate(backendPackagesProvider),
           ),
           data: (allPackages) {
             final packages = allPackages.where((p) => p.price > 0 && p.productId != 'free_trial').toList();
