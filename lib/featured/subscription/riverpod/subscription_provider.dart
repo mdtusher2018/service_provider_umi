@@ -256,7 +256,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
         debugPrint('🚀 Sending manual subscription payload to backend: $payload');
         try {
-          await _dio.post('/subscriptions/manual', data: payload);
+          await _dio.post('/subscriptions/manual-update', data: payload);
           debugPrint('✅ Backend manual subscription updated successfully.');
         } catch (apiError) {
           debugPrint('❌ Failed to update backend manual subscription: $apiError');

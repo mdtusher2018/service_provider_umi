@@ -40,8 +40,15 @@ class PermissionService {
   Future<bool> requestCameraAndMicrophone() async {
     final statuses = await [Permission.camera, Permission.microphone].request();
 
-    return statuses[Permission.camera]!.isGranted &&
-        statuses[Permission.microphone]!.isGranted;
+    final cameraStatus = statuses[Permission.camera]!;
+    final micStatus = statuses[Permission.microphone]!;
+
+    if (cameraStatus.isPermanentlyDenied || micStatus.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
+    }
+
+    return cameraStatus.isGranted && micStatus.isGranted;
   }
 
   Future<bool> _request(Permission permission) async {
