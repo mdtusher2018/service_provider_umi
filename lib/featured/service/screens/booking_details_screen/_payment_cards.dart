@@ -35,23 +35,17 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
     final confrimPayment = ref.watch(confirmPaymentProvider);
 
     ref.listen(confirmPaymentProvider, (previous, next) {
-      next.whenOrNull(
-        error: (failure, _) {
-          AppLogger.error(failure.toString());
-          context.showErrorSnackBar(
-            (failure is Failure) ? failure.message : failure.toString(),
-          );
-        },
-        data: (_) async {
-          if (previous is AsyncLoading && context.mounted) {
-            context.showSuccessSnackBar(
-                "Payment successful"
-            );
-            await Future.delayed(const Duration(milliseconds: 800));
-            if (context.mounted) context.go(AppRoutes.userHome);
-          }
-        },
-      );
+      if (next.hasError && !next.isLoading) {
+        AppLogger.error(next.error.toString());
+        context.showErrorSnackBar(
+          (next.error is Failure) ? (next.error as Failure).message : next.error.toString(),
+        );
+      } else if (previous?.isLoading == true && next.hasValue && !next.isLoading) {
+        context.showSuccessSnackBar("Payment successful");
+        Future.delayed(const Duration(milliseconds: 800), () {
+          if (context.mounted) context.go(AppRoutes.userHome);
+        });
+      }
     });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

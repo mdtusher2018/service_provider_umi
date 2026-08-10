@@ -134,8 +134,6 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
               AppText.h2(callState.formattedDuration, color: AppColors.textPrimary, fontWeight: FontWeight.bold),
             ] else ...[
               AppText.h2(widget.contactName),
-              6.verticalSpace,
-              AppText.bodyMd(widget.contactId, color: AppColors.textSecondary),
               12.verticalSpace,
               AppText.bodyLg(
                 widget.isIncoming && !callState.localUserJoined ? 'Incoming call...' : 'Calling...',

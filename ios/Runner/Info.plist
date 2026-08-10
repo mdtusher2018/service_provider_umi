@@ -46,6 +46,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera to capture photos for profile and service-related image uploads.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app needs access to your contacts to allow you to easily find and invite friends to the platform.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs your location to track services even in background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

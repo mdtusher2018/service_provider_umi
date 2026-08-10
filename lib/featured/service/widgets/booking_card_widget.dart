@@ -143,12 +143,28 @@ class _BookingCardState extends ConsumerState<BookingCard>
                     width: 80,
                     height: 80,
                     color: AppColors.primaryLight,
-                    child: widget.item.provider != null
-                        ? Image.network(
-                            widget.item.provider!.profile,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(Icons.elderly_outlined, size: 36),
+                    child: Builder(
+                      builder: (context) {
+                        final String? imageUrl = role == AppRole.provider
+                            ? widget.item.user?.profile
+                            : widget.item.provider?.profile;
+                        final String name = role == AppRole.provider
+                            ? (widget.item.user?.name ?? 'U')
+                            : (widget.item.provider?.name ?? 'P');
+                            
+                        return (imageUrl != null && imageUrl.isNotEmpty)
+                            ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                              )
+                            : Center(
+                                child: AppText.h2(
+                                  name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                                  color: AppColors.primary,
+                                ),
+                              );
+                      },
+                    ),
                   ),
                 ),
                 12.horizontalSpace,
@@ -300,7 +316,9 @@ class _BookingCardState extends ConsumerState<BookingCard>
 
       case BookingStatus.complete:
         if (role == AppRole.user) {
-          return Row(
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
               GestureDetector(
                 onTap: widget.onRatingTap,
@@ -311,7 +329,6 @@ class _BookingCardState extends ConsumerState<BookingCard>
                   isInteractive: true,
                 ),
               ),
-              8.horizontalSpace,
               _StatusBadge(
                 label: 'Need Support Immediately',
                 color: AppColors.textSecondary,

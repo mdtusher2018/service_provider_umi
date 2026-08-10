@@ -128,7 +128,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
                 context.go(
                   AppRoutes.bookingSchedulePath(
                     widget.providerId,
-                    frequency: BookingFrequency.weekly.name,
+                    frequency: BookingFrequency.once.name,
                     price: widget.price,
                   ),
                   extra: BookingFrequency.once,
@@ -137,7 +137,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
                 context.push(
                   AppRoutes.bookingSchedulePath(
                     widget.providerId,
-                    frequency: BookingFrequency.weekly.name,
+                    frequency: BookingFrequency.once.name,
                     price: widget.price,
                   ),
                   extra: BookingFrequency.once,
