@@ -88,9 +88,9 @@ class AppRoutes {
     return '$userHome/$serviceId/subcategory';
   }
 
-  static String searchTimePath(String serviceId, {String? subCategoryIds}) {
-    if (subCategoryIds != null && subCategoryIds.isNotEmpty) {
-      return '$userHome/$serviceId/search-time?subCategoryIds=$subCategoryIds';
+  static String searchTimePath(String serviceId, {String? subcategoryIds}) {
+    if (subcategoryIds != null && subcategoryIds.isNotEmpty) {
+      return '$userHome/$serviceId/search-time?subcategoryIds=$subcategoryIds';
     }
     return '$userHome/$serviceId/search-time';
   }
@@ -109,7 +109,7 @@ class AppRoutes {
     // Text / Category
     String? searchTerm,
     String? categoryId,
-    String? subCategoryIds,
+    String? subcategoryIds,
 
     // Filters
     String? experienceOptionId,
@@ -140,7 +140,7 @@ class AppRoutes {
     add('duration', duration);
     add('searchTerm', searchTerm);
     add('categoryId', categoryId);
-    add('subCategoryIds', subCategoryIds);
+    add('subcategoryIds', subcategoryIds);
     add('experienceOptionId', experienceOptionId);
     add('otherTaskIds', otherTaskIds);
     add('minPrice', minPrice);
@@ -167,7 +167,6 @@ class AppRoutes {
     // any of these non-null values WIN over the existing params:
     String? searchTerm,
     String? categoryId,
-
     String? experienceOptionId,
     String? otherTaskIds,
     String? minPrice,
@@ -176,7 +175,7 @@ class AppRoutes {
     String? palliativeCare,
     String? drivingLicense,
     String? businessProfiles,
-    String? subCategoryIds,
+    String? subcategoryIds,
   }) {
     // Start from existing params, then selectively override.
     final merged = Map<String, String>.from(existingParams);
@@ -205,7 +204,7 @@ class AppRoutes {
     override('palliativeCare', palliativeCare);
     override('drivingLicense', drivingLicense);
     override('businessProfiles', businessProfiles);
-    override('subCategoryIds', subCategoryIds);
+    override('subcategoryIds', subcategoryIds);
 
     return Uri(
       path: '/search-results/$serviceId',

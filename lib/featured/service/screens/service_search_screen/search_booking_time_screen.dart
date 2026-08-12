@@ -16,9 +16,12 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
 
+import '../../../../core/utils/extensions/context_ext.dart';
+
 class SearchBookingTimeScreen extends ConsumerStatefulWidget {
   final String serviceId;
-  const SearchBookingTimeScreen({super.key, required this.serviceId});
+  final String? subcategoryIds;
+  const SearchBookingTimeScreen({super.key, required this.serviceId, this.subcategoryIds});
 
   @override
   ConsumerState<SearchBookingTimeScreen> createState() =>
@@ -414,6 +417,28 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
     }
 
     void _navigate({required bool skip}) {
+      if (skip) {
+        context.go(
+          AppRoutes.searchResultPath(
+            widget.serviceId,
+            page: '1',
+            limit: '10',
+            categoryId: widget.serviceId,
+            subcategoryIds: widget.subcategoryIds,
+          ),
+        );
+        return;
+      }
+
+      // If user hasn't selected a time slot for flexible search, show a snackbar
+      // if (_startTimeType == StartTimeType.flexible && resolvedFlexibleSlot == null) {
+      //   context.showErrorSnackBar("Please select a flexible start time slot or use 'Skip'.");
+      //   return;
+      // }
+
+      final daysNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      final String oneTimeDay = daysNames[_selectedDate.weekday - 1];
+
       context.go(
         AppRoutes.searchResultPath(
           widget.serviceId,
@@ -421,14 +446,9 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
           bookingType: _frequency == BookingFrequency.once
               ? 'one_time'
               : 'weekly',
-          date: _frequency == BookingFrequency.once
-              ? _selectedDate.toIso8601String().split('T').first
-              : null,
-          days:
-              _frequency == BookingFrequency.weekly &&
-                  _selectedWeekDays.isNotEmpty
-              ? _selectedWeekDays.join(',')
-              : null,
+          days: _frequency == BookingFrequency.once
+              ? oneTimeDay
+              : (_selectedWeekDays.isNotEmpty ? _selectedWeekDays.join(',') : null),
           startTimeType: _startTimeType == StartTimeType.flexible
               ? 'flexible'
               : 'exact',
@@ -443,6 +463,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
           page: '1',
           limit: '10',
           categoryId: widget.serviceId,
+          subcategoryIds: widget.subcategoryIds,
         ),
       );
     }

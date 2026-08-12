@@ -9,6 +9,7 @@ import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_payment_cards_page.dart';
 import 'package:service_provider_umi/featured/service/screens/service_provider_verification/service_provider_verification.dart';
 import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_booking_time_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/service_search_screen/search_subcategory_screen.dart';
 import 'package:service_provider_umi/shared/widgets/exit_confirmation_wrapper.dart';
 import 'package:service_provider_umi/featured/RootScreen.dart';
 import 'package:service_provider_umi/featured/splash/splash_screen.dart';
@@ -314,17 +315,33 @@ GoRouter appRouter(Ref ref) {
 
       // ── Service discovery ────────────────────────────────
       GoRoute(
+        path: "${AppRoutes.userHome}/${AppRoutes.searchSubcategory}",
+        builder: (_, state) {
+          final id = state.pathParameters['serviceId']!;
+          return SearchSubcategoryScreen(categoryId: id);
+        },
+      ),
+      GoRoute(
         path: "${AppRoutes.userHome}/${AppRoutes.searchTime}",
         builder: (_, state) {
           final id = state.pathParameters['serviceId']!;
-          return SearchBookingTimeScreen(serviceId: id);
+          final subcategoryIds = state.uri.queryParameters['subcategoryIds'];
+          return SearchBookingTimeScreen(serviceId: id, subcategoryIds: subcategoryIds);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.search + AppRoutes.searchSubcategory,
+        builder: (_, state) {
+          final id = state.pathParameters['serviceId']!;
+          return SearchSubcategoryScreen(categoryId: id);
         },
       ),
       GoRoute(
         path: AppRoutes.search + AppRoutes.searchTime,
         builder: (_, state) {
           final id = state.pathParameters['serviceId']!;
-          return SearchBookingTimeScreen(serviceId: id);
+          final subcategoryIds = state.uri.queryParameters['subcategoryIds'];
+          return SearchBookingTimeScreen(serviceId: id, subcategoryIds: subcategoryIds);
         },
       ),
 

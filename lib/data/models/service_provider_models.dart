@@ -94,7 +94,7 @@ class SearchProvidersRequest {
       searchTerm: params['searchTerm'],
       categoryId: params['categoryId'],
       categoryIds: params['categoryIds'],
-      subCategoryIds: params['subCategoryIds'],
+      subCategoryIds: params['subcategoryIds'] ?? params['subCategoryIds'],
       experienceOptionId: params['experienceOptionId'],
       otherTaskIds: params['otherTaskIds'],
       minPrice: _d('minPrice'),
@@ -181,7 +181,7 @@ class SearchProvidersRequest {
     s('searchTerm', searchTerm);
     s('categoryId', categoryId);
     s('categoryIds', categoryIds);
-    s('subCategoryIds', subCategoryIds);
+    s('subcategoryIds', subCategoryIds);
     s('experienceOptionId', experienceOptionId);
     s('otherTaskIds', otherTaskIds);
     d('minPrice', minPrice);

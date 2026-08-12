@@ -130,9 +130,9 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
                           item: item,
                           onTap: () {
                             if (kIsWeb) {
-                              context.go(AppRoutes.searchTimePath(item.id));
+                              context.go(AppRoutes.searchSubcategoryPath(item.id));
                             } else {
-                              context.push(AppRoutes.searchTimePath(item.id));
+                              context.push(AppRoutes.searchSubcategoryPath(item.id));
                             }
                           },
                         );

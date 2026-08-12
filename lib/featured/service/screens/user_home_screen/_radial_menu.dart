@@ -204,9 +204,9 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
       onTapCancel: () => setState(() => scale = 1.0),
       onTap: () {
         if (kIsWeb) {
-          context.go(AppRoutes.searchTimePath(widget.item.id));
+          context.go(AppRoutes.searchSubcategoryPath(widget.item.id));
         } else {
-          context.push(AppRoutes.searchTimePath(widget.item.id));
+          context.push(AppRoutes.searchSubcategoryPath(widget.item.id));
         }
       },
       child: AnimatedScale(

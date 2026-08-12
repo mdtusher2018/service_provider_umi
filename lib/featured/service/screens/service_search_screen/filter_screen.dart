@@ -160,7 +160,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       drivingLicense: _drivingLicence ? 'true' : '',
       businessProfiles: _businessProfile ? 'true' : '',
       qualifiedCarer: _qualifiedCarer ? 'true' : '',
-      subCategoryIds: newSubCategoryIds ?? '',
+      subcategoryIds: newSubCategoryIds ?? '',
     );
 
     context.go(newPath);
