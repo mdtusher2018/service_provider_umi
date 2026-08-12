@@ -476,6 +476,14 @@ class FilterNotifier extends _$FilterNotifier {
   }
 }
 
+final subcategoriesProvider = FutureProvider.family<List<SubCategoryModel>, String>((ref, categoryId) async {
+  final result = await ref.read(serviceRepositoryProvider).getSubCategoriesByQuery(categoryId);
+  return result.when(
+    success: (data) => data,
+    failure: (failure) => throw Exception(failure.message),
+  );
+});
+
 //========================================
 //==========Service Profile API===========
 //========================================

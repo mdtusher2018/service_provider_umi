@@ -107,6 +107,7 @@ class ServiceProviderInfo {
   final List<dynamic> images;
   final List<FilterOptionModel> otherTasks;
   final List<CategoryModel> specialists;
+  final List<SubCategoryModel> subcategories;
   final FilterOptionModel? experience;
 
   const ServiceProviderInfo({
@@ -125,6 +126,7 @@ class ServiceProviderInfo {
     required this.images,
     required this.otherTasks,
     required this.specialists,
+    this.subcategories = const [],
     this.experience,
   });
 
@@ -159,6 +161,12 @@ class ServiceProviderInfo {
       specialists:
           (json['specialistsIn'] as List?)
               ?.map((e) => CategoryModel.fromJson(e['category'] ?? {}))
+              .toList() ??
+          [],
+
+      subcategories:
+          (json['providerSubcategories'] as List?)
+              ?.map((e) => SubCategoryModel.fromJson(e['subCategory'] ?? e))
               .toList() ??
           [],
 

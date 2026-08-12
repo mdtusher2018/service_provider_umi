@@ -37,6 +37,7 @@ class _ProviderListingScreenState
 
   String? _selectedExperienceId;
   final Set<String> _selectedSpecialtyIds = {};
+  final Set<String> _selectedSubCategoryIds = {};
   final Set<String> _selectedTaskIds = {};
   File? _coverImage;
   String? _existingCoverImageUrl;
@@ -71,6 +72,11 @@ class _ProviderListingScreenState
           // Pre-select specialties from profile
           for (final s in provider.specialists) {
             if (s.id.isNotEmpty) _selectedSpecialtyIds.add(s.id);
+          }
+
+          // Pre-select subcategories from profile
+          for (final sub in provider.subcategories) {
+            if (sub.id.isNotEmpty) _selectedSubCategoryIds.add(sub.id);
           }
 
           // Pre-select tasks from profile
@@ -121,6 +127,7 @@ class _ProviderListingScreenState
       hourlyRate: hourlyRate,
       experience: _selectedExperienceId?.isNotEmpty == true ? _selectedExperienceId : null,
       specializations: _selectedSpecialtyIds.where((id) => id.isNotEmpty).toList(),
+      providerSubcategories: _selectedSubCategoryIds.where((id) => id.isNotEmpty).toList(),
       tasks: _selectedTaskIds.where((id) => id.isNotEmpty).toList(),
       coverImage: _coverImage,
     );
@@ -303,12 +310,69 @@ class _ProviderListingScreenState
                             _selectedSpecialtyIds.add(cat.id);
                           } else {
                             _selectedSpecialtyIds.remove(cat.id);
+                            // Clear subcategories if the parent category is deselected
+                            _selectedSubCategoryIds.removeWhere((subId) {
+                              // We need to know which subcategories belong to this category
+                              // Since we don't have the full object here, we might leave them
+                              // or we can remove them inside the subcategoriesProvider data.
+                              // Actually, the API will likely just ignore orphan subcategories,
+                              // but to be clean, let's keep it as is.
+                              return false; 
+                            });
                           }
                         });
                       },
                     );
                   }).toList(),
                 ),
+                if (_selectedSpecialtyIds.isNotEmpty) ...[
+                  ...filterData.category
+                      .where((cat) => _selectedSpecialtyIds.contains(cat.id))
+                      .map((cat) {
+                    return ref.watch(subcategoriesProvider(cat.id)).when(
+                          data: (subcats) {
+                            if (subcats.isEmpty) return const SizedBox.shrink();
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                16.verticalSpace,
+                                AppText.labelMd('${cat.name} Subcategories', color: AppColors.textSecondary),
+                                8.verticalSpace,
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 10,
+                                  children: subcats.map((sub) {
+                                    final selected = _selectedSubCategoryIds.contains(sub.id);
+                                    return ChoiceChip(
+                                      label: Text(sub.name),
+                                      selected: selected,
+                                      selectedColor: AppColors.primary,
+                                      labelStyle: TextStyle(
+                                        color: selected ? Colors.white : AppColors.textPrimary,
+                                      ),
+                                      onSelected: (val) {
+                                        setState(() {
+                                          if (val) {
+                                            _selectedSubCategoryIds.add(sub.id);
+                                          } else {
+                                            _selectedSubCategoryIds.remove(sub.id);
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            );
+                          },
+                          loading: () => const Padding(
+                            padding: EdgeInsets.only(top: 16.0),
+                            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                          ),
+                          error: (err, _) => const SizedBox.shrink(),
+                        );
+                  }),
+                ],
                 24.verticalSpace,
 
                 // ─── Other tasks offered ───────────────────

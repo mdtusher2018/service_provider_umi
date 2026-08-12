@@ -82,6 +82,7 @@ class UpdateProviderRequest {
   final double? minimumPrice;
   final List<String>? tasks;
   final List<String>? specializations;
+  final List<String>? providerSubcategories;
   final String? experience;
   final File? drivingLicense;
   final File? businessProfilesOnly;
@@ -95,6 +96,7 @@ class UpdateProviderRequest {
     this.minimumPrice,
     this.tasks,
     this.specializations,
+    this.providerSubcategories,
     this.experience,
     this.drivingLicense,
     this.businessProfilesOnly,
@@ -110,6 +112,7 @@ class UpdateProviderRequest {
     if (hourlyRate != null) dataMap['perHourPrice'] = hourlyRate;
     if (experience != null) dataMap['experienceOptionId'] = experience;
     if (specializations != null) dataMap['specialistsIn'] = specializations;
+    if (providerSubcategories != null) dataMap['providerSubcategories'] = providerSubcategories;
     if (tasks != null) dataMap['othersRequiredTasks'] = tasks;
 
     final Map<String, dynamic> formMap = {'data': jsonEncode(dataMap)};

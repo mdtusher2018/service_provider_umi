@@ -18,6 +18,7 @@ abstract class ServiceRemoteDataSource {
   Future<List<CategoryModel>> getAllCategories();
   Future<CategoryModel> getServiceById(String id);
   Future<List<CategoryModel>> getSubCategories(String serviceId);
+  Future<List<SubCategoryModel>> getSubCategoriesByQuery(String categoryId);
 
   // ── Providers ───────────────────────────────────────────────────────────────
   Future<SearchProvidersResponse> searchProviders(
@@ -107,6 +108,35 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         final list = data is List ? data : (data['data'] as List);
         return list
             .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+    );
+    if (!apiResponse.success) {
+      throw Exception(
+        apiResponse.error?.message ?? 'Failed to fetch subcategories',
+      );
+    }
+    return apiResponse.data ?? [];
+  }
+
+  // ── GET /subcategories ───────────────────────────────────────
+  @override
+  Future<List<SubCategoryModel>> getSubCategoriesByQuery(String categoryId) async {
+    final response = await _dio.get(
+      ApiEndpoints.subCategoriesPaginated,
+      queryParameters: {
+        'page': 1,
+        'limit': 100,
+        'categoryId': categoryId,
+        'sort': '-createdAt',
+      },
+    );
+    final apiResponse = ApiResponse<List<SubCategoryModel>>.fromJson(
+      response.data as Map<String, dynamic>,
+      (data) {
+        final list = data is List ? data : (data['data'] as List);
+        return list
+            .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))
             .toList();
       },
     );

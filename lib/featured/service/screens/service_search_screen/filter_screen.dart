@@ -55,6 +55,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
   final Set<FilterOptionModel> _selectedTasks = {};
   final Set<CategoryModel> _selectedCategories = {};
+  final Set<SubCategoryModel> _selectedSubCategories = {};
   FilterOptionModel? _selectedExperiences;
 
   // ─── Image states (provider only) ────────────────────────────────────────
@@ -101,6 +102,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       _hourlyPrice = 50;
       _selectedTasks.clear();
       _selectedCategories.clear();
+      _selectedSubCategories.clear();
       _selectedExperiences = null;
       _coverImage = null;
       _palliativeImage = null;
@@ -139,6 +141,10 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
         ? _selectedTasks.map((t) => t.id).join(',')
         : null;
 
+    final newSubCategoryIds = _selectedSubCategories.isNotEmpty
+        ? _selectedSubCategories.map((s) => s.id).join(',')
+        : null;
+
     final newPath = AppRoutes.searchResultPathMerged(
       serviceId: widget.serviceId,
       existingParams: widget.existingParams,
@@ -154,6 +160,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       drivingLicense: _drivingLicence ? 'true' : '',
       businessProfiles: _businessProfile ? 'true' : '',
       qualifiedCarer: _qualifiedCarer ? 'true' : '',
+      subCategoryIds: newSubCategoryIds ?? '',
     );
 
     context.go(newPath);
@@ -307,14 +314,55 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         AppText.h3('Show specialists in:'),
                         12.verticalSpace,
                         ...categories.map(
-                          (c) => AppCheckboxTile(
-                            label: c.name,
-                            value: _selectedCategories.contains(c),
-                            onChanged: (_) => setState(() {
-                              _selectedCategories.contains(c)
-                                  ? _selectedCategories.remove(c)
-                                  : _selectedCategories.add(c);
-                            }),
+                          (c) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppCheckboxTile(
+                                label: c.name,
+                                value: _selectedCategories.contains(c),
+                                onChanged: (_) => setState(() {
+                                  if (_selectedCategories.contains(c)) {
+                                    _selectedCategories.remove(c);
+                                    // Optionally clear selected subcategories for this category:
+                                    _selectedSubCategories.removeWhere((sub) => sub.categoryId == c.id);
+                                  } else {
+                                    _selectedCategories.add(c);
+                                  }
+                                }),
+                              ),
+                              if (_selectedCategories.contains(c))
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: ref.watch(subcategoriesProvider(c.id)).when(
+                                    data: (subcategories) {
+                                      if (subcategories.isEmpty) return const SizedBox.shrink();
+                                      return Column(
+                                        children: subcategories.map(
+                                          (sub) => AppCheckboxTile(
+                                            label: sub.name,
+                                            value: _selectedSubCategories.contains(sub),
+                                            onChanged: (_) => setState(() {
+                                              if (_selectedSubCategories.contains(sub)) {
+                                                _selectedSubCategories.remove(sub);
+                                              } else {
+                                                _selectedSubCategories.add(sub);
+                                              }
+                                            }),
+                                          ),
+                                        ).toList(),
+                                      );
+                                    },
+                                    loading: () => const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    ),
+                                    error: (error, _) => Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      child: AppText.bodySm('Error loading subcategories: $error', color: AppColors.error),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                         const AppDivider(height: 40, color: AppColors.grey400),
@@ -512,6 +560,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                       minimumPrice: _hourlyPrice,
                                       images: _images,
                                       specializations: _selectedCategories
+                                          .map((c) => c.id)
+                                          .toList(),
+                                      providerSubcategories: _selectedSubCategories
                                           .map((c) => c.id)
                                           .toList(),
                                       tasks: _selectedTasks

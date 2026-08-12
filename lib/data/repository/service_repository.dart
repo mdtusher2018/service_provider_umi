@@ -32,6 +32,11 @@ class ServiceRepository with SafeCall {
     String serviceId,
   ) => asyncGuard(() => _remote.getSubCategories(serviceId));
 
+  // ── GET /subcategories ────────────────────────────────────────
+  Future<Result<List<SubCategoryModel>, Failure>> getSubCategoriesByQuery(
+    String categoryId,
+  ) => asyncGuard(() => _remote.getSubCategoriesByQuery(categoryId));
+
   // ── POST /service-providers/search ───────────────────────────────────────────
   Future<Result<SearchProvidersResponse, Failure>> searchProviders(
     SearchProvidersRequest request,

@@ -46,6 +46,7 @@ class ApiEndpoints {
 
   // ─── Sub Categories ─────────────────────────────────────────────────────────
   static const String subCategories = '/sub-categories/{id}';
+  static const String subCategoriesPaginated = '/subcategories';
 
   // ─── Chat ─────────────────────────────────────────────────────────
   static String getChatId(String receiverId) =>

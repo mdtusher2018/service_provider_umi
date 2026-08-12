@@ -35,6 +35,7 @@ class AppRoutes {
   static const String searchResults = '/search-results/:serviceId';
   static const String filter = '/search-results/:serviceId/filter';
   static const String providerProfileView = '/service-provider/:providerId';
+  static const searchSubcategory = ':serviceId/subcategory';
   static const searchTime = ':serviceId/search-time';
 
   // ─── Booking flow ────────────────────────────────────────
@@ -83,7 +84,14 @@ class AppRoutes {
   static String audioCallPath(String contactId) => '/audio/$contactId';
   static String videoCallPath(String contactId) => '/video/$contactId';
   static String staticPagePath(String type) => '/profile/$type';
-  static String searchTimePath(String serviceId) {
+  static String searchSubcategoryPath(String serviceId) {
+    return '$userHome/$serviceId/subcategory';
+  }
+
+  static String searchTimePath(String serviceId, {String? subCategoryIds}) {
+    if (subCategoryIds != null && subCategoryIds.isNotEmpty) {
+      return '$userHome/$serviceId/search-time?subCategoryIds=$subCategoryIds';
+    }
     return '$userHome/$serviceId/search-time';
   }
 
@@ -101,6 +109,7 @@ class AppRoutes {
     // Text / Category
     String? searchTerm,
     String? categoryId,
+    String? subCategoryIds,
 
     // Filters
     String? experienceOptionId,
@@ -131,6 +140,7 @@ class AppRoutes {
     add('duration', duration);
     add('searchTerm', searchTerm);
     add('categoryId', categoryId);
+    add('subCategoryIds', subCategoryIds);
     add('experienceOptionId', experienceOptionId);
     add('otherTaskIds', otherTaskIds);
     add('minPrice', minPrice);
@@ -166,6 +176,7 @@ class AppRoutes {
     String? palliativeCare,
     String? drivingLicense,
     String? businessProfiles,
+    String? subCategoryIds,
   }) {
     // Start from existing params, then selectively override.
     final merged = Map<String, String>.from(existingParams);
@@ -194,6 +205,7 @@ class AppRoutes {
     override('palliativeCare', palliativeCare);
     override('drivingLicense', drivingLicense);
     override('businessProfiles', businessProfiles);
+    override('subCategoryIds', subCategoryIds);
 
     return Uri(
       path: '/search-results/$serviceId',

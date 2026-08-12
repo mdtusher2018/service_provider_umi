@@ -21,6 +21,7 @@ class SearchProvidersRequest {
   final String? searchTerm;
   final String? categoryId;
   final String? categoryIds; // comma-separated
+  final String? subCategoryIds; // comma-separated
 
   // ── Filter options ───────────────────────────────────────
   final String? experienceOptionId;
@@ -51,6 +52,7 @@ class SearchProvidersRequest {
     this.searchTerm,
     this.categoryId,
     this.categoryIds,
+    this.subCategoryIds,
     this.experienceOptionId,
     this.otherTaskIds,
     this.minPrice,
@@ -92,6 +94,7 @@ class SearchProvidersRequest {
       searchTerm: params['searchTerm'],
       categoryId: params['categoryId'],
       categoryIds: params['categoryIds'],
+      subCategoryIds: params['subCategoryIds'],
       experienceOptionId: params['experienceOptionId'],
       otherTaskIds: params['otherTaskIds'],
       minPrice: _d('minPrice'),
@@ -138,6 +141,7 @@ class SearchProvidersRequest {
       searchTerm: searchTerm ?? this.searchTerm,
       categoryId: categoryId ?? this.categoryId,
       categoryIds: categoryIds ?? this.categoryIds,
+      subCategoryIds: subCategoryIds ?? this.subCategoryIds,
       experienceOptionId: experienceOptionId ?? this.experienceOptionId,
       otherTaskIds: otherTaskIds ?? this.otherTaskIds,
       minPrice: minPrice ?? this.minPrice,
@@ -177,6 +181,7 @@ class SearchProvidersRequest {
     s('searchTerm', searchTerm);
     s('categoryId', categoryId);
     s('categoryIds', categoryIds);
+    s('subCategoryIds', subCategoryIds);
     s('experienceOptionId', experienceOptionId);
     s('otherTaskIds', otherTaskIds);
     d('minPrice', minPrice);
