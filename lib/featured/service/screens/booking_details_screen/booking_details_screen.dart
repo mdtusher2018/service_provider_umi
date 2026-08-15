@@ -293,7 +293,7 @@ class _BookingDetailBody extends ConsumerWidget {
         ),
         GestureDetector(
           onTap: () async {
-            if (bookingStatus == BookingStatus.pending) {
+            if (bookingStatus == BookingStatus.pending || bookingStatus == BookingStatus.requested) {
               final action = role == AppRole.user ? AppLocalizations.of(context)!.accepting : AppLocalizations.of(context)!.creating;
               context.showSnackBar(AppLocalizations.of(context)!.cantChatBeforeAction(action), showAtTop: true);
               return;

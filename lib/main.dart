@@ -21,10 +21,10 @@ Future<void> main() async {
 
   FlavorConfig.initialize(
     flavor: Flavor.dev,
-    // baseUrl: 'https://api.iumi.ro/api/v1',
-    // socketUrl: 'https://socket.iumi.ro',
-    baseUrl: 'http://103.186.20.117:5000/api/v1',
-    socketUrl: 'http://103.186.20.117:5005',
+    baseUrl: 'https://api.iumi.ro/api/v1',
+    socketUrl: 'https://socket.iumi.ro',
+    // baseUrl: 'http://103.186.20.117:5000/api/v1',
+    // socketUrl: 'http://103.186.20.117:5005',
     googleMapsApiKey: 'AIzaSyCSZNISQRt33W-FMIM8E-IL8vxo2H',
     agoraAppId: '179414c55d6b478e85009d175097a22e',
     stripePublishableKey:

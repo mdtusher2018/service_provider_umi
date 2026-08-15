@@ -30,10 +30,11 @@ class _RadialMenuState extends State<RadialMenu>
 
   @override
   Widget build(BuildContext context) {
-    double radiusSize = 50.0;
-    double radius = context.screenWidth * 0.32;
+    int itemCount = widget.menuItems.length;
+    double radiusSize = itemCount > 6 ? 44.0 : 50.0;
+    // Use 0.35 instead of 0.38 so it leaves margin and doesn't cross the screen edge
+    double radius = context.screenWidth * (itemCount > 6 ? 0.35 : 0.32);
     double center = context.screenWidth / 2;
-    int itemCount = min(widget.menuItems.length, 6);
 
     return SizedBox(
       width: context.screenWidth,
@@ -64,9 +65,8 @@ class _RadialMenuState extends State<RadialMenu>
               animation: _controller,
               builder: (context, child) {
                 return Positioned(
-                  left:
-                      center + (x * scaleAnimation.value) - (radiusSize * 0.8),
-                  top: center + (y * scaleAnimation.value) - (radiusSize * 0.8),
+                  left: center + (x * scaleAnimation.value) - radiusSize,
+                  top: center + (y * scaleAnimation.value) - radiusSize,
                   child: Opacity(
                     opacity: fadeAnimation.value, // SAFE now
                     child: Transform.translate(
@@ -86,10 +86,8 @@ class _RadialMenuState extends State<RadialMenu>
             );
           }),
 
-          /// CENTER BUTTON (PULSE)
-          Positioned(
-            left: center - radiusSize,
-            top: center - radiusSize,
+          Align(
+            alignment: Alignment.center,
             child: AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
@@ -223,14 +221,14 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: widget.size,
                 height: widget.size,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(widget.item.image ?? ""),
-                    fit: BoxFit.cover,
-                  ),
+                child: Image.network(
+                  widget.item.image ?? "",
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
                 ),
               ),
               AppText.bodySm(widget.item.name, fontWeight: FontWeight.w500),
