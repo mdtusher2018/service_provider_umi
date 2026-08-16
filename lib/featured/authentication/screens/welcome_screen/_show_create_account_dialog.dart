@@ -42,6 +42,7 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
   double? _lat;
   double? _lng;
   bool _isGeocoding = false;
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,9 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
           );
         },
         failure: (error) {
-          context.showErrorSnackBar(error.message);
+          setState(() {
+            _errorMessage = error.message;
+          });
         },
       );
     });
@@ -93,6 +96,30 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
                 ),
               ],
             ),
+
+            if (_errorMessage != null) ...[
+              16.verticalSpace,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: AppText.bodySm(
+                        _errorMessage!,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
 
             24.verticalSpace,
 
@@ -255,6 +282,10 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
               label: AppLocalizations.of(context)!.createAccountBtn,
               isLoading: isLoading || _isGeocoding,
               onPressed: () async {
+                setState(() {
+                  _errorMessage = null;
+                });
+                
                 if (!_formKey.currentState!.validate()) return;
                 
                 if (!_termsAccepted) {

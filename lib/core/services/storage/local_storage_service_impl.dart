@@ -127,26 +127,27 @@ final class LocalStorageServiceImpl implements LocalStorageService {
     }
   }
 
-  // ================= CLEAR =================
   @override
   Future<void> clearPrefs() async {
-    _cache.clear();
-    _sessionCache.clear();
+    // Only clear auth-related prefs so we don't lose language settings etc.
+    _cache.remove(StorageKey.userRole.key);
+    _sessionCache.remove(StorageKey.userRole.key);
 
-    await _prefs.clear();
+    await _prefs.remove(StorageKey.userRole.key);
   }
 
   @override
   Future<void> clearSecure() async {
     _sessionCache.clear();
+    _cache.remove(StorageKey.accessToken.key);
+    _cache.remove(StorageKey.refreshToken.key);
 
-    await _secureStorage.deleteAll();
+    await _secureStorage.delete(key: StorageKey.accessToken.key);
+    await _secureStorage.delete(key: StorageKey.refreshToken.key);
   }
 
   @override
   Future<void> clearAll() async {
-    _cache.clear();
-    _sessionCache.clear();
     _isSessionMode = false;
 
     await clearPrefs();

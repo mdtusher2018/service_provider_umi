@@ -286,6 +286,17 @@ class ChatSocketService {
 
   // ─── Dispose ──────────────────────────────────────────────────────────────
 
+  void clearCache() {
+    _cachedChatList.clear();
+    _cachedMessages.clear();
+    _activeConversationUserId = null;
+    _activeChatId = null;
+    _lastMessageId = null;
+    _lastMessageTime = null;
+    currentPage = 1;
+    hasMorePages = true;
+  }
+
   void dispose() {
     _socket.off(ChatEvents.chatList, _onChatList);
     _socket.off(ChatEvents.newMessage, _onNewMessage);

@@ -31,9 +31,11 @@ class _DayRow extends StatelessWidget {
       children: [
         // ── Day name + toggle + status label ──────────────────────────────
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText(dayLabel, style: AppTextStyles.h3),
+            Expanded(
+              flex: 2,
+              child: AppText(dayLabel, style: AppTextStyles.h3),
+            ),
 
             Switch(
               value: isAvailable,
@@ -45,12 +47,19 @@ class _DayRow extends StatelessWidget {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
 
-            AppText(
-              isAvailable ? AppLocalizations.of(context)!.available : AppLocalizations.of(context)!.notAvailable,
-              style: AppTextStyles.bodySm.copyWith(
-                color: isAvailable
-                    ? AppColors.textSecondary
-                    : AppColors.grey400,
+            Expanded(
+              flex: 2,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: AppText(
+                  isAvailable ? AppLocalizations.of(context)!.available : AppLocalizations.of(context)!.notAvailable,
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: isAvailable
+                        ? AppColors.textSecondary
+                        : AppColors.grey400,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
               ),
             ),
           ],

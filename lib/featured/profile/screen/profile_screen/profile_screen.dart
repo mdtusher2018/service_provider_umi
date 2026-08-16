@@ -23,6 +23,7 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/core/services/revenuecat_service.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 
 import '../../../../shared/enums/app_enums.dart';
 part '_logout_dialog.dart';
@@ -59,6 +60,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         onLogout: () async {
           await ref.read(localStorageProvider).clearAll();
           await RevenueCatService.instance.logout();
+          
+          ChatSocketService.instance.clearCache();
 
           ref.invalidate(myProfileProvider);
           ref.invalidate(appRoleProvider);

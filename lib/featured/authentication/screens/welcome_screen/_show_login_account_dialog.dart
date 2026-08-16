@@ -18,10 +18,15 @@ void _showLoginAccountDialog(WidgetRef ref) {
   }
 }
 
-class _LoginDialog extends ConsumerWidget {
-  _LoginDialog({required this.parentRef});
+class _LoginDialog extends ConsumerStatefulWidget {
+  const _LoginDialog({required this.parentRef});
   final WidgetRef parentRef;
 
+  @override
+  ConsumerState<_LoginDialog> createState() => _LoginDialogState();
+}
+
+class _LoginDialogState extends ConsumerState<_LoginDialog> {
   final _emailController = TextEditingController(
     text: kDebugMode ? "vosod13349@getasail.com" : null,
   );
@@ -31,9 +36,10 @@ class _LoginDialog extends ConsumerWidget {
   );
 
   final _formKey = GlobalKey<FormState>();
+  String? _errorMessage;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     ref.listen<AuthState>(loginProvider, (_, state) {
       state.when(
         initial: () {},
@@ -42,8 +48,8 @@ class _LoginDialog extends ConsumerWidget {
           final role = await getMyRoleId(ref);
           if (!context.mounted) return;
           // Capture notifier before closing — refs become invalid after pop
-          final roleNotifier = parentRef.read(appRoleProvider.notifier);
-          await _close(parentRef);
+          final roleNotifier = widget.parentRef.read(appRoleProvider.notifier);
+          await _close(widget.parentRef);
           if (role == 'user') {
             roleNotifier.loginAsUser();
           } else {
@@ -56,7 +62,11 @@ class _LoginDialog extends ConsumerWidget {
             );
           }
         },
-        failure: (error) => context.showErrorSnackBar(error.message),
+        failure: (error) {
+          setState(() {
+            _errorMessage = error.message;
+          });
+        },
       );
     });
 
@@ -82,6 +92,30 @@ class _LoginDialog extends ConsumerWidget {
                 ),
               ],
             ),
+
+            if (_errorMessage != null) ...[
+              16.verticalSpace,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: AppText.bodySm(
+                        _errorMessage!,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
 
             24.verticalSpace,
 
@@ -114,7 +148,7 @@ class _LoginDialog extends ConsumerWidget {
                     label: AppLocalizations.of(context)!.forgotPassword,
                     onTap: () {
                       Navigator.of(context).pop();
-                      _showForgotPasswordDialog(parentRef);
+                      _showForgotPasswordDialog(widget.parentRef);
                     },
                   ),
                 ],
@@ -129,6 +163,9 @@ class _LoginDialog extends ConsumerWidget {
               onPressed: isLoading
                   ? null
                   : () {
+                      setState(() {
+                        _errorMessage = null;
+                      });
                       if (!_formKey.currentState!.validate()) return;
                       ref
                           .read(loginProvider.notifier)

@@ -5,7 +5,8 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/featured/favourites/riverpod/favourites_notifire.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
-
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_card.dart';
 import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
@@ -36,6 +37,9 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(favouritesNotifireProvider);
+    final role = ref.watch(appRoleProvider);
+    final isUser = role == AppRole.user;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppAppBar(
@@ -66,20 +70,33 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
               itemCount: favourites.length,
               separatorBuilder: (_, __) => 12.verticalSpace,
               itemBuilder: (_, i) {
-                final p = favourites[i].serviceProvider;
-                if (p == null) return SizedBox.shrink();
+                final fav = favourites[i];
+                final p = fav.serviceProvider;
+                
+                final displayName = isUser 
+                    ? (fav.serviceProviderUser?.name ?? "Unnamed provider")
+                    : (fav.userProfile?.name ?? "Unnamed user");
+
+                final displayImage = isUser
+                    ? (p?.coverImage ?? fav.serviceProviderUser?.profileImage)
+                    : fav.userProfile?.profileImage;
+
+                final avgRating = isUser
+                    ? (fav.serviceProviderUser?.avgRating ?? 0.0)
+                    : (fav.userProfile?.avgRating ?? 0.0);
+
+                final totalReview = isUser
+                    ? (fav.serviceProviderUser?.totalReview ?? 0.0)
+                    : (fav.userProfile?.totalReview ?? 0.0);
+
                 return ProviderCard(
-                  name: favourites[i].userProfile?.name ?? "Unnamed user",
-                  imageUrl: p.coverImage,
+                  name: displayName,
+                  imageUrl: displayImage,
                   isFavorited: true,
-
-                  rating: (favourites[i].userProfile?.avgRating ?? 0.0)
-                      .toDouble(),
-                  reviewCount: (favourites[i].userProfile?.totalReview ?? 0.0)
-                      .toInt(),
+                  rating: avgRating.toDouble(),
+                  reviewCount: totalReview.toInt(),
                   serviceCount: 1,
-                  pricePerHour: p.perHourPrice,
-
+                  pricePerHour: p?.perHourPrice ?? 0.0,
                   hasRepeated: 5 > 0,
                   hasUpdatedSchedule: true,
                   onTap: () {
