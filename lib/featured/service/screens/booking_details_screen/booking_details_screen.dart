@@ -349,7 +349,7 @@ class _BookingDetailBody extends ConsumerWidget {
   // ─── Price breakdown ──────────────────────────────────────────────────────
   Widget _buildPrice(BuildContext context) {
     final rows = [
-      (AppLocalizations.of(context)!.serviceText, '\$${data.price.toStringAsFixed(2)}', false),
+      ('${data.bookingType.titleCase} ${AppLocalizations.of(context)!.serviceText.toLowerCase()}', '\$${data.price.toStringAsFixed(2)}', false),
       (AppLocalizations.of(context)!.bookingHours, '${data.totalHours}h', false),
       (AppLocalizations.of(context)!.subtotal, '\$${data.price.toStringAsFixed(2)}', false),
       (AppLocalizations.of(context)!.clientProtection, AppLocalizations.of(context)!.free, false),

@@ -113,6 +113,10 @@ class _BookingCardState extends ConsumerState<BookingCard>
   Widget build(BuildContext context) {
     final role = ref.watch(appRoleProvider);
 
+    final String name = role == AppRole.provider
+        ? (widget.item.user?.name ?? 'User')
+        : (widget.item.provider?.name ?? 'Provider');
+
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -148,9 +152,6 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         final String? imageUrl = role == AppRole.provider
                             ? widget.item.user?.profile
                             : widget.item.provider?.profile;
-                        final String name = role == AppRole.provider
-                            ? (widget.item.user?.name ?? 'U')
-                            : (widget.item.provider?.name ?? 'P');
                             
                         return (imageUrl != null && imageUrl.isNotEmpty)
                             ? Image.network(
@@ -177,7 +178,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         children: [
                           Expanded(
                             child: AppText.labelLg(
-                              "${widget.item.bookingType.titleCase} Booking",
+                              name,
                               color: AppColors.primary,
                               fontWeight: FontWeight.w700,
                               maxLines: 1,
@@ -193,39 +194,38 @@ class _BookingCardState extends ConsumerState<BookingCard>
                       ),
                       6.verticalSpace,
 
-                      // Row(
-                      //   children: [
-                      //     const Icon(Icons.access_time_rounded, size: 10),
-                      //     4.horizontalSpace,
-                      //     Flexible(
-                      //       child: AppText.bodyXs(
-                      //         "${widget.item.bookingDays.first.startTime!.toDisplayTime} - ${widget.item.bookingDays.first.endTime!.toDisplayTime},",
-                      //       ),
-                      //     ),
-                      //     4.horizontalSpace,
-                      //     if (widget.item.bookingDays.first.startTime != null)
-                      //       Flexible(
-                      //         child: Row(
-                      //           children: [
-                      //             const Icon(Icons.calendar_month_outlined, size: 10),
-                      //             4.horizontalSpace,
-                      //             Flexible(
-                      //               child: AppText.bodyXs(
-                      //                 widget
-                      //                     .item
-                      //                     .bookingDays
-                      //                     .first
-                      //                     .startTime!
-                      //                     .toDisplayDate,
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //   ],
-                      // ),
-
-                      8.verticalSpace,
+                      if (widget.item.bookingDays.isNotEmpty && widget.item.bookingDays.first.startTime != null && widget.item.bookingDays.first.endTime != null) ...[
+                        Row(
+                          children: [
+                            const Icon(Icons.access_time_rounded, size: 14, color: AppColors.textSecondary),
+                            4.horizontalSpace,
+                            Expanded(
+                              child: AppText.bodyXs(
+                                "From ${widget.item.bookingDays.first.startTime!.toDisplayTime} to ${widget.item.bookingDays.first.endTime!.toDisplayTime}",
+                                color: AppColors.textSecondary,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        4.verticalSpace,
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_today_outlined, size: 14, color: AppColors.textSecondary),
+                            4.horizontalSpace,
+                            Expanded(
+                              child: AppText.bodyXs(
+                                "${widget.item.bookingDays.first.startTime!.getDayOfWeek} ${widget.item.bookingDays.first.startTime!.toDisplayDate}",
+                                color: AppColors.textSecondary,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        8.verticalSpace,
+                      ],
 
                       _buildStatusRow(role),
                     ],
