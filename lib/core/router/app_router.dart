@@ -166,7 +166,7 @@ GoRouter appRouter(Ref ref) {
                     final r = ref.watch(appRoleProvider);
                     return r == AppRole.guest
                         ? const GuestInboxScreen()
-                        : const CommunicationAndNotificationScreen();
+                        : const CommunicationAndNotificationScreen(key: ValueKey('user_inbox'));
                   },
                 ),
               ),
@@ -216,7 +216,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.providerInbox,
-                builder: (_, __) => const CommunicationAndNotificationScreen(),
+                builder: (_, __) => const CommunicationAndNotificationScreen(key: ValueKey('provider_inbox')),
               ),
             ],
           ),
@@ -237,6 +237,7 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.providerNotifications,
                 builder: (_, __) => const CommunicationAndNotificationScreen(
+                  key: ValueKey('provider_notifications'),
                   isNotification: true,
                 ),
               ),
@@ -259,6 +260,7 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.userNotifications,
         builder: (_, __) => const CommunicationAndNotificationScreen(
+          key: ValueKey('user_notifications'),
           isNotification: true,
         ),
       ),

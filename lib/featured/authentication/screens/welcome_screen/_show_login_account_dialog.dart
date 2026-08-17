@@ -177,6 +177,29 @@ class _LoginDialogState extends ConsumerState<_LoginDialog> {
             ),
 
             16.verticalSpace,
+
+            AppLinkText(
+              'By logging in, you agree to our Terms & Conditions and Privacy Policy.',
+              textAlign: TextAlign.center,
+              textSize: 12,
+              linkColor: AppColors.primary,
+              links: [
+                AppTextLink(
+                  label: 'Terms & Conditions',
+                  onTap: () {
+                    // Navigate to Terms & Conditions
+                  },
+                ),
+                AppTextLink(
+                  label: 'Privacy Policy',
+                  onTap: () {
+                    // Navigate to Privacy Policy
+                  },
+                ),
+              ],
+            ),
+
+            16.verticalSpace,
           ],
         ),
       ),

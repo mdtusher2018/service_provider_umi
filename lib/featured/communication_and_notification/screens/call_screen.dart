@@ -66,7 +66,12 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
     });
   }
 
-  void _endCall() {
+  bool _hasEnded = false;
+
+  void _performCallCleanup() {
+    if (_hasEnded) return;
+    _hasEnded = true;
+
     final callNotifier = ref.read(callProvider(widget.channelId));
     final isConnected = callNotifier.remoteUid != null;
 
@@ -87,6 +92,10 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
     }
     
     callNotifier.endCall();
+  }
+
+  void _endCall() {
+    _performCallCleanup();
     if (mounted) context.pop();
   }
 
@@ -100,7 +109,15 @@ class _CallScreenState extends ConsumerState<CallScreen> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final callState = ref.watch(callProvider(widget.channelId));
-    return widget.isVideoCall ? _buildVideoCallUI(callState) : _buildAudioCallUI(callState);
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          _performCallCleanup();
+        }
+      },
+      child: widget.isVideoCall ? _buildVideoCallUI(callState) : _buildAudioCallUI(callState),
+    );
   }
 
   Widget _buildAudioCallUI(CallNotifier callState) {

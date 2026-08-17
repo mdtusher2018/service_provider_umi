@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/error/error_handler.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
@@ -11,9 +12,13 @@ mixin SafeCall {
       final result = await operation();
       return Success(result);
     } catch (e, st) {
-      // 🔥 LOG HERE (handled errors)
-      debugPrint('❌ API ERROR: $e');
-      debugPrint('STACK: $st');
+      if (e is DioException && e.type == DioExceptionType.cancel) {
+        // Silently skip noisy cancel/auth errors on logout
+      } else {
+        // 🔥 LOG HERE (handled errors)
+        debugPrint('❌ API ERROR: $e');
+        debugPrint('STACK: $st');
+      }
       return Error(ErrorHandler.handle(e));
     }
   }

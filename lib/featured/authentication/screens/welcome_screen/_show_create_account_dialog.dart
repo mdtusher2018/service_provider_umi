@@ -44,6 +44,40 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
   bool _isGeocoding = false;
   String? _errorMessage;
 
+  final Dio _dio = Dio();
+  Timer? _debounceTimer;
+
+  Future<Iterable<NominatimPlace>> _searchPlaces(String query) async {
+    if (query.length < 3) return const Iterable<NominatimPlace>.empty();
+    
+    // Simple debounce logic within optionsBuilder
+    final completer = Completer<Iterable<NominatimPlace>>();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        final response = await _dio.get(
+          'https://nominatim.openstreetmap.org/search',
+          queryParameters: {
+            'q': query,
+            'format': 'json',
+            'limit': '6',
+            'addressdetails': '0',
+          },
+          options: Options(headers: {'User-Agent': 'service_provider_umi/1.0'}),
+        );
+        if (response.statusCode == 200) {
+          final List data = response.data;
+          completer.complete(data.map((e) => NominatimPlace.fromJson(e)).toList());
+          return;
+        }
+      } catch (e) {
+        AppLogger.error("Nominatim error: $e");
+      }
+      completer.complete(const Iterable<NominatimPlace>.empty());
+    });
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     // ✅ Listen to auth state (same as login)
@@ -204,10 +238,53 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
                     color: AppColors.grey500,
                   ),
                   12.verticalSpace,
-                  AppTextField(
-                    controller: _locationController,
-                    hint: AppLocalizations.of(context)!.searchCitySuburbAddress,
-                    prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.grey500),
+                  Autocomplete<NominatimPlace>(
+                    optionsBuilder: (textEditingValue) {
+                      return _searchPlaces(textEditingValue.text);
+                    },
+                    displayStringForOption: (option) => option.displayName,
+                    onSelected: (option) {
+                      setState(() {
+                        _lat = option.lat;
+                        _lng = option.lon;
+                      });
+                    },
+                    fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                      controller.addListener(() {
+                        _locationController.text = controller.text;
+                      });
+                      return AppTextField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        hint: AppLocalizations.of(context)!.searchCitySuburbAddress,
+                        prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.grey500),
+                      );
+                    },
+                    optionsViewBuilder: (context, onSelected, options) {
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        child: Material(
+                          elevation: 4.0,
+                          borderRadius: BorderRadius.circular(8),
+                          clipBehavior: Clip.antiAlias,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxHeight: 250, maxWidth: MediaQuery.of(context).size.width - (kIsWeb ? 200 : 70)),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              itemCount: options.length,
+                              itemBuilder: (context, index) {
+                                final option = options.elementAt(index);
+                                return ListTile(
+                                  title: AppText.bodySm(option.displayName, maxLines: 2, overflow: TextOverflow.ellipsis),
+                                  onTap: () => onSelected(option),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -242,17 +319,17 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
                     8.horizontalSpace,
                     Expanded(
                       child: AppLinkText(
-                        AppLocalizations.of(context)!.acceptTermsPrivacy,
+                        'By creating an account, you agree to our Terms & Conditions and Privacy Policy.',
                         textSize: 12,
                         links: [
                           AppTextLink(
-                            label: AppLocalizations.of(context)!.termsAndCondition,
+                            label: 'Terms & Conditions',
                             onTap: () {
                               context.push('/profile/terms');
                             },
                           ),
                           AppTextLink(
-                            label: AppLocalizations.of(context)!.privacyPolicy,
+                            label: 'Privacy Policy',
                             onTap: () {
                               context.push('/profile/privacy');
                             },
@@ -300,16 +377,12 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
                 String postalCode = '';
                 String country = '';
 
-                if (_locationController.text.trim().isNotEmpty) {
+                if (_locationController.text.trim().isNotEmpty && _lat != null && _lng != null) {
                   try {
                     setState(() {
                       _isGeocoding = true;
                     });
-                    final locations = await locationFromAddress(_locationController.text.trim());
-                    if (locations.isNotEmpty) {
-                      _lat = locations.first.latitude;
-                      _lng = locations.first.longitude;
-                      
+                    
                       final placemarks = await placemarkFromCoordinates(_lat!, _lng!);
                       if (placemarks.isNotEmpty) {
                         final place = placemarks.first;
@@ -318,7 +391,6 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
                         postalCode = place.postalCode ?? '';
                         country = place.country ?? '';
                       }
-                    }
                   } catch (e) {
                     AppLogger.error("Geocoding error: ${e.toString()}");
                   } finally {
@@ -387,3 +459,22 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
   }
 }
 
+class NominatimPlace {
+  final String displayName;
+  final double lat;
+  final double lon;
+
+  NominatimPlace({
+    required this.displayName,
+    required this.lat,
+    required this.lon,
+  });
+
+  factory NominatimPlace.fromJson(Map<String, dynamic> json) {
+    return NominatimPlace(
+      displayName: json['display_name'] ?? '',
+      lat: double.tryParse(json['lat']?.toString() ?? '0') ?? 0.0,
+      lon: double.tryParse(json['lon']?.toString() ?? '0') ?? 0.0,
+    );
+  }
+}

@@ -227,7 +227,33 @@ class _BookingCardState extends ConsumerState<BookingCard>
                         8.verticalSpace,
                       ],
 
-                      _buildStatusRow(role),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: _buildStatusRow(role),
+                            ),
+                          ),
+                          8.horizontalSpace,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.grey200),
+                            ),
+                            child: const AppText.bodyXs(
+                              'See more',
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -375,7 +401,7 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: 24.circular,
@@ -392,7 +418,7 @@ class _StatusBadge extends StatelessWidget {
                 color: color,
               ),
             )
-          : AppText.bodySm(label, color: color, fontWeight: FontWeight.w600),
+          : AppText.bodyXs(label, color: color, fontWeight: FontWeight.w600),
     );
   }
 }

@@ -68,6 +68,7 @@ class SocketService {
           .setTransports(['websocket'])
           .enableAutoConnect()
           .enableReconnection()
+          .enableForceNew()
           .setReconnectionDelay(reconnectDelay)
           .setAuth({'token': token, ...?extraAuth})
           .setExtraHeaders({'Authorization': 'Bearer $token', ...?extraHeaders})

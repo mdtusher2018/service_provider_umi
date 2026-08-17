@@ -32,6 +32,8 @@ import '../../../../core/utils/helpers/decode_helper.dart';
 import '../../../../core/di/repository_providers.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
 
+import '../../../../shared/widgets/app_error_widget.dart';
+
 part '_congratulations_overlay.dart';
 part '_timeline_row.dart';
 part '_payment_cards.dart';

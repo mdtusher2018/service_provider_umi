@@ -6,9 +6,13 @@ import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/core/services/notification_service.dart';
+import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/repository/auth_repository.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
+import 'package:service_provider_umi/core/config/app_config.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 
 part 'auth_provider.freezed.dart';
 part 'auth_provider.g.dart';
@@ -43,7 +47,13 @@ class LoginNotifier extends _$LoginNotifier {
       LoginEmailRequest(email: email, password: password, fcmToken: fcmToken),
     );
     state = result.when(
-      success: (_) => const AuthState.success(),
+      success: (tokens) {
+        ChatSocketService.instance.init(
+          baseUrl: AppConfig.socketUrl,
+          token: tokens.token,
+        );
+        return const AuthState.success();
+      },
       failure: AuthState.failure,
     );
   }
@@ -57,7 +67,13 @@ class LoginNotifier extends _$LoginNotifier {
     );
     if (!ref.mounted) return;
     state = result.when(
-      success: (_) => const AuthState.success(),
+      success: (data) {
+        ChatSocketService.instance.init(
+          baseUrl: AppConfig.socketUrl,
+          token: data.token,
+        );
+        return const AuthState.success();
+      },
       failure: AuthState.failure,
     );
   }
@@ -97,7 +113,15 @@ class SignupNotifier extends _$SignupNotifier {
       ),
     );
     state = result.when(
-      success: (_) => const AuthState.success(),
+      success: (data) {
+        if (data.token != null) {
+          ChatSocketService.instance.init(
+            baseUrl: AppConfig.socketUrl,
+            token: data.token!,
+          );
+        }
+        return const AuthState.success();
+      },
       failure: AuthState.failure,
     );
   }
@@ -249,6 +273,14 @@ class LogoutNotifier extends _$LogoutNotifier {
     final roleNotifier = ref.read(appRoleProvider.notifier);
 
     await authRepo.logout();
+    
+    // Invalidate profile and booking data to prevent stale state 401s
+    ref.invalidate(myProfileProvider);
+    ref.invalidate(bookingsProvider);
+    
+    // Clear chat cache and disconnect socket
+    ChatSocketService.instance.logoutReset();
+
     await roleNotifier.setRole(AppRole.guest);
 
     if (ref.mounted) {

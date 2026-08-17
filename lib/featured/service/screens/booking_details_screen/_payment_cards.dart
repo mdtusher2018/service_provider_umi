@@ -54,7 +54,20 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
         cardsState.when(
           loading: () => const AppLoader(),
 
-          error: (e, _) => AppText.bodySm(e.toString()),
+          error: (e, _) {
+            final errorString = e.toString();
+            final isNoCustomer = errorString.toLowerCase().contains('no such customer');
+
+            if (isNoCustomer) {
+              return const AppEmptyState(title: 'No cards found');
+            }
+            return AppErrorWidget(
+              error: e,
+              onRetry: () {
+                ref.read(paymentCardsProvider.notifier).fetchCards();
+              },
+            );
+          },
 
           data: (cards) {
             if (cards.isEmpty) {

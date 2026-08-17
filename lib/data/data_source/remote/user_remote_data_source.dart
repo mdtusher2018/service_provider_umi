@@ -150,43 +150,33 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<bool> submitVerification(VerificationRequest request) async {
     final formMap = <String, dynamic>{};
-    final List<MultipartFile> images = [];
 
     if (request.palliativeCare != null) {
-      images.add(
-        await MultipartFile.fromFile(
-          request.palliativeCare!.path,
-          filename: 'palliative_care.jpg',
-        ),
+      formMap['palliativeCare'] = await MultipartFile.fromFile(
+        request.palliativeCare!.path,
+        filename: 'palliative_care.jpg',
       );
     }
     if (request.drivingLicense != null) {
-      images.add(
-        await MultipartFile.fromFile(
-          request.drivingLicense!.path,
-          filename: 'driving_license.jpg',
-        ),
+      formMap['drivingLicense'] = await MultipartFile.fromFile(
+        request.drivingLicense!.path,
+        filename: 'driving_license.jpg',
       );
     }
     if (request.businessProfilesOnly != null) {
-      images.add(
-        await MultipartFile.fromFile(
-          request.businessProfilesOnly!.path,
-          filename: 'business_profile.jpg',
-        ),
+      formMap['businessProfile'] = await MultipartFile.fromFile(
+        request.businessProfilesOnly!.path,
+        filename: 'business_profile.jpg',
       );
     }
     if (request.qualifiedOnly != null) {
-      images.add(
-        await MultipartFile.fromFile(
-          request.qualifiedOnly!.path,
-          filename: 'qualified_carer.jpg',
-        ),
+      formMap['document'] = await MultipartFile.fromFile(
+        request.qualifiedOnly!.path,
+        filename: 'qualified_carer.jpg',
       );
     }
 
     formMap['data'] = jsonEncode({});
-    formMap['images'] = images;
 
     final response = await _dio.post(
       ApiEndpoints.profileVerificationSubmit,

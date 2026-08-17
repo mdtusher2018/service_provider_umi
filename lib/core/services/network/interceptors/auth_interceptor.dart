@@ -28,6 +28,16 @@ class AuthInterceptor extends Interceptor {
       if (token != null && token.isNotEmpty) {
         options.headers['token'] = '$token';
         options.headers['Authorization'] = 'Bearer $token';
+      } else {
+        // No token for protected route, reject immediately to avoid 401s
+        handler.reject(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.cancel,
+            message: 'No auth token found for protected route.',
+          ),
+        );
+        return;
       }
     }
 

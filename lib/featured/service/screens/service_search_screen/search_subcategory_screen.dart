@@ -31,15 +31,16 @@ class SearchSubcategoryScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Logo
-                Image.asset(Assets.logoPng.keyName, height: 160),
+                Image.asset(Assets.logoPng.keyName, height: 48),
                 Row(
                   spacing: 16,
                   children: [
@@ -86,20 +87,23 @@ class SearchSubcategoryScreen extends ConsumerWidget {
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () => context.pop(),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: AppColors.primary,
-                  size: 20,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () => context.pop(),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
                 ),
-              ),
-              8.horizontalSpace,
-              AppText.h2(categoryName, color: AppColors.primary),
-            ],
+                8.horizontalSpace,
+                AppText.h2(categoryName, color: AppColors.primary),
+              ],
+            ),
           ),
           24.verticalSpace,
           Expanded(
@@ -142,6 +146,7 @@ class SearchSubcategoryScreen extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

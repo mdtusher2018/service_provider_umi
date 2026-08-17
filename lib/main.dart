@@ -9,6 +9,8 @@ import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/services/call_kit_service.dart';
 import 'package:service_provider_umi/core/services/notification_service.dart';
 import 'package:service_provider_umi/core/services/storage/local_storage_service_impl.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
+import 'package:service_provider_umi/core/services/socket/chat_socket_service.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -49,6 +51,16 @@ Future<void> main() async {
   // Init LocalStorageService (SharedPreferences + SecureStorage) + Hive
   final localStorage = LocalStorageServiceImpl();
   await localStorage.init();
+
+  // Initialize socket if token exists (for push notifications / background events)
+  final storedToken = await localStorage.read(StorageKey.accessToken);
+  if (storedToken != null && storedToken.isNotEmpty) {
+    ChatSocketService.instance.init(
+      baseUrl: AppConfig.socketUrl,
+      token: storedToken,
+    );
+  }
+
   // Start listening to CallKit accept / decline / end events
   CallKitListenerService.init();
 

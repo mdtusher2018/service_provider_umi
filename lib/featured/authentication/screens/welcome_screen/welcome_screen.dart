@@ -11,6 +11,7 @@ import 'package:service_provider_umi/core/router/app_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';

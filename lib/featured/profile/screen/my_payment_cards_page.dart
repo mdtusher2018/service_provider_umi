@@ -11,6 +11,7 @@ import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:service_provider_umi/l10n/app_localizations.dart';
@@ -95,22 +96,39 @@ class MyPaymentCardsPage extends ConsumerWidget {
         child: cardsState.when(
           loading: () => AppLoader(),
 
-          error: (e, _) => RefreshIndicator(
-            onRefresh: () async {
-              ref.read(paymentCardsProvider.notifier).fetchCards();
-            },
-            child: ListView(
-              children: [
-                Padding(
-                  padding: 40.paddingAll,
-                  child: AppText.bodyMd(
-                    e.toString(),
-                    textAlign: TextAlign.center,
+          error: (e, _) {
+            final errorString = e.toString();
+            final isNoCustomer = errorString.toLowerCase().contains('no such customer');
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.read(paymentCardsProvider.notifier).fetchCards();
+              },
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: isNoCustomer
+                        ? AppEmptyState(
+                            title: AppLocalizations.of(context)!.noCardsFound,
+                            icon: const Icon(
+                              Icons.credit_card_off_rounded,
+                              size: 64,
+                              color: AppColors.grey500,
+                            ),
+                          )
+                        : AppErrorWidget(
+                            error: e,
+                            onRetry: () {
+                              ref.read(paymentCardsProvider.notifier)
+                                  .fetchCards();
+                            },
+                          ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          },
           data: (cards) {
             if (cards.isEmpty) {
               return RefreshIndicator(

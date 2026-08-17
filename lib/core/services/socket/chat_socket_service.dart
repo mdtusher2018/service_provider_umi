@@ -64,11 +64,23 @@ class ChatSocketService {
   int currentPage = 1;
   bool hasMorePages = true;
 
+  bool _isInitialized = false;
+
   // ─── Init ─────────────────────────────────────────────────────────────────
 
   /// Initialise the socket and register persistent chat listeners.
   void init({required String baseUrl, required String token}) {
-    _socket.init(baseUrl: baseUrl, token: token);
+    // ALWAYS re-init the socket to ensure the new token is used for authentication
+    _socket.init(
+        baseUrl: baseUrl,
+        token: token,
+        extraHeaders: {'token': token});
+
+    if (_isInitialized) {
+      log('[ChatSocketService] Already initialised, just updated token');
+      return;
+    }
+    _isInitialized = true;
 
     // chat_list — always active
     _socket.on(ChatEvents.chatList, _onChatList);
@@ -284,7 +296,14 @@ class ChatSocketService {
     );
   }
 
-  // ─── Dispose ──────────────────────────────────────────────────────────────
+  // ─── Dispose & Reset ───────────────────────────────────────────────────────
+
+  /// Called on logout to clear local data and close the connection
+  /// without destroying the StreamControllers (so it can be reused upon next login).
+  void logoutReset() {
+    clearCache();
+    _socket.disconnect();
+  }
 
   void clearCache() {
     _cachedChatList.clear();
