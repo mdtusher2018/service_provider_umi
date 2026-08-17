@@ -181,18 +181,19 @@ class _RadialMenuState extends State<RadialMenu>
   }
 }
 
-class _RadialMenuItem extends StatefulWidget {
+class _RadialMenuItem extends ConsumerStatefulWidget {
   final CategoryModel item;
   final double size;
 
   const _RadialMenuItem({required this.item, required this.size});
 
   @override
-  State<_RadialMenuItem> createState() => _RadialMenuItemState();
+  ConsumerState<_RadialMenuItem> createState() => _RadialMenuItemState();
 }
 
-class _RadialMenuItemState extends State<_RadialMenuItem> {
+class _RadialMenuItemState extends ConsumerState<_RadialMenuItem> {
   double scale = 1.0;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -200,11 +201,27 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
       onTapDown: (_) => setState(() => scale = 0.9),
       onTapUp: (_) => setState(() => scale = 1.0),
       onTapCancel: () => setState(() => scale = 1.0),
-      onTap: () {
-        if (kIsWeb) {
-          context.go(AppRoutes.searchSubcategoryPath(widget.item.id));
-        } else {
-          context.push(AppRoutes.searchSubcategoryPath(widget.item.id));
+      onTap: isLoading ? null : () async {
+        setState(() => isLoading = true);
+        try {
+          final subcategories = await ref.read(subcategoriesProvider(widget.item.id).future);
+          if (!mounted) return;
+          
+          if (subcategories.isNotEmpty) {
+            if (kIsWeb) {
+              context.go(AppRoutes.searchSubcategoryPath(widget.item.id));
+            } else {
+              context.push(AppRoutes.searchSubcategoryPath(widget.item.id));
+            }
+          } else {
+            if (kIsWeb) {
+              context.go(AppRoutes.searchTimePath(widget.item.id));
+            } else {
+              context.push(AppRoutes.searchTimePath(widget.item.id));
+            }
+          }
+        } finally {
+          if (mounted) setState(() => isLoading = false);
         }
       },
       child: AnimatedScale(
@@ -224,12 +241,17 @@ class _RadialMenuItemState extends State<_RadialMenuItem> {
               SizedBox(
                 width: widget.size,
                 height: widget.size,
-                child: Image.network(
-                  widget.item.image ?? "",
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
-                ),
+                child: isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Image.network(
+                        widget.item.image ?? "",
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
+                      ),
               ),
               AppText.bodySm(widget.item.name, fontWeight: FontWeight.w500),
             ],

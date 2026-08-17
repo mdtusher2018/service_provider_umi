@@ -128,11 +128,33 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
 
                         return _ServiceListTile(
                           item: item,
-                          onTap: () {
-                            if (kIsWeb) {
-                              context.go(AppRoutes.searchSubcategoryPath(item.id));
-                            } else {
-                              context.push(AppRoutes.searchSubcategoryPath(item.id));
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => const Center(child: CircularProgressIndicator()),
+                            );
+
+                            try {
+                              final subcategories = await ref.read(subcategoriesProvider(item.id).future);
+                              if (!context.mounted) return;
+                              Navigator.of(context).pop(); // Dismiss loading
+
+                              if (subcategories.isNotEmpty) {
+                                if (kIsWeb) {
+                                  context.go(AppRoutes.searchSubcategoryPath(item.id));
+                                } else {
+                                  context.push(AppRoutes.searchSubcategoryPath(item.id));
+                                }
+                              } else {
+                                if (kIsWeb) {
+                                  context.go(AppRoutes.searchTimePath(item.id));
+                                } else {
+                                  context.push(AppRoutes.searchTimePath(item.id));
+                                }
+                              }
+                            } catch (e) {
+                              if (context.mounted) Navigator.of(context).pop();
                             }
                           },
                         );

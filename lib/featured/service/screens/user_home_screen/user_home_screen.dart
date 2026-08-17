@@ -154,24 +154,40 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
             if (ref.watch(appRoleProvider) == AppRole.user)
               Padding(
                 padding: 16.paddingV,
-                child: TextButton.icon(
-                  onPressed: () {
+                child: InkWell(
+                  onTap: () {
                     showAddAddress(ref);
                   },
-                  icon: const Icon(Icons.add, color: AppColors.primary),
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppText(
-                        AppLocalizations.of(context)!.addAddress,
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AppText(
+                          'Address: ',
+                          style: TextStyle(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      8.horizontalSpace,
-                      Icon(Icons.keyboard_arrow_down_rounded),
-                    ],
+                        AppText(
+                          '+ ${AppLocalizations.of(context)!.addAddress}',
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        4.horizontalSpace,
+                        const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.textSecondary,
+                          size: 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
