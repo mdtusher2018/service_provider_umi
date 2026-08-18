@@ -6,6 +6,7 @@ class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String guestOnboarding = '/guest-onboarding';
+  static const String supportMessage = '/support-message';
 
   // ─── User Shell Tabs ─────────────────────────────────────
   static const String services = '/user/services';

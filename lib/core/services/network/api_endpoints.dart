@@ -36,6 +36,7 @@ class ApiEndpoints {
 
   // ─── Support ────────────────────────────────────────────────────────────────
   static const String support = '/support';
+  static const String supportMessage = '/support-message';
 
   // ─── Favorites ──────────────────────────────────────────────────────────────
   static const String favorites = '/favorites';

@@ -21,6 +21,7 @@ import 'package:service_provider_umi/featured/authentication/screens/welcome_scr
 import 'package:service_provider_umi/featured/communication_and_notification/screens/call_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/chat_screen/chat_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen/communication_and_notification_screen.dart';
+import 'package:service_provider_umi/featured/communication_and_notification/screens/support_message_screen/support_message_screen.dart';
 import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_empty_screen.dart';
 import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
@@ -300,6 +301,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.profilePicture,
         builder: (_, __) => ProfilePictureScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.supportMessage,
+        builder: (_, __) => const SupportMessageScreen(),
       ),
       GoRoute(
         path: AppRoutes.providerOnboarding,

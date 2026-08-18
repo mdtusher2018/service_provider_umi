@@ -23,6 +23,7 @@ import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/shared/enums/all_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
@@ -68,6 +69,8 @@ class _CommunicationAndNotificationScreenState
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final role = ref.read(appRoleProvider);
+      if (role == AppRole.guest) return;
+
       if (widget.isNotification || role == AppRole.user) {
         ref.read(notificationsProvider.notifier).fetch();
       }
@@ -76,11 +79,13 @@ class _CommunicationAndNotificationScreenState
       }
     });
 
-    initializedChatService();
-
-    _chatService.chatListStream.listen(_onChatList);
-    _chatService.fetchChatList(onAck: (response) {});
-    _errorSub = _chatService.errorStream.listen(_onSocketError);
+    final role = ref.read(appRoleProvider);
+    if (role != AppRole.guest) {
+      initializedChatService();
+      _chatService.chatListStream.listen(_onChatList);
+      _chatService.fetchChatList(onAck: (response) {});
+      _errorSub = _chatService.errorStream.listen(_onSocketError);
+    }
   }
 
   Future<void> initializedChatService() async {
@@ -99,7 +104,9 @@ class _CommunicationAndNotificationScreenState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _chatService.fetchChatList(onAck: (response) {});
+      if (ref.read(appRoleProvider) != AppRole.guest) {
+        _chatService.fetchChatList(onAck: (response) {});
+      }
     }
   }
 
@@ -128,8 +135,12 @@ class _CommunicationAndNotificationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final currentRole = ref.watch(appRoleProvider);
+
     ref.listen(inboxRefreshProvider, (_, __) {
       final role = ref.read(appRoleProvider);
+      if (role == AppRole.guest) return;
+
       if (!widget.isNotification || role == AppRole.user) {
         _chatService.fetchChatList(onAck: (response) {});
       }
@@ -166,28 +177,52 @@ class _CommunicationAndNotificationScreenState
             ),
 
             // ─── Tab Bar ────────────────────────────
-            _TabBar(
-              controller: _tabController,
-              isNotification: widget.isNotification,
-            ),
-            16.verticalSpace,
-
-            Expanded(
-              child: TabBarView(
+            if (currentRole == AppRole.guest)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppButton.primary(
+                        label: AppLocalizations.of(context)!.login.toUpperCase(),
+                        textColor: AppColors.white,
+                        onPressed: () {
+                          context.go(AppRoutes.login);
+                        },
+                      ),
+                      12.verticalSpace,
+                      AppButton.outline(
+                        label: AppLocalizations.of(context)!.createAccountBtn,
+                        onPressed: () {
+                          context.go(AppRoutes.login);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else ...[
+              _TabBar(
                 controller: _tabController,
-                children: [
-                  if (!widget.isNotification)
-                    _buildChatTab(),
-                  if (widget.isNotification ||
-                      ref.watch(appRoleProvider) == AppRole.user)
-                    _buildAlertsTab(),
-                  if (!widget.isNotification &&
-                      ref.watch(appRoleProvider) != AppRole.user)
-                    _buildHistoryTab(),
-                  if (widget.isNotification) _buildLastAlertsTab(),
-                ],
+                isNotification: widget.isNotification,
               ),
-            ),
+              16.verticalSpace,
+
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    if (!widget.isNotification) _buildChatTab(),
+                    if (widget.isNotification || currentRole == AppRole.user)
+                      _buildAlertsTab(),
+                    if (!widget.isNotification && currentRole != AppRole.user)
+                      _buildHistoryTab(),
+                    if (widget.isNotification) _buildLastAlertsTab(),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),

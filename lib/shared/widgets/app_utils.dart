@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -243,4 +247,45 @@ class LoaderDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+void showGuestAuthSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: AppColors.background,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 24,
+          bottom: MediaQuery.of(context).padding.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppButton.primary(
+              label: AppLocalizations.of(context)!.login.toUpperCase(),
+              textColor: AppColors.white,
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.go(AppRoutes.login);
+              },
+            ),
+            12.verticalSpace,
+            AppButton.outline(
+              label: AppLocalizations.of(context)!.createAccountBtn,
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.go(AppRoutes.login);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

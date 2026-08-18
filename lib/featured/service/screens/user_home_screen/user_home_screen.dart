@@ -25,7 +25,12 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:service_provider_umi/featured/profile/riverpod/address_provider.dart';
+import 'package:service_provider_umi/data/models/address_model.dart';
+
 part '_radial_menu.dart';
+part '_service_address_bottom_sheet.dart';
 
 class UserHomeScreen extends ConsumerStatefulWidget {
   const UserHomeScreen({super.key});
@@ -40,34 +45,20 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(categoriesProvider.notifier).fetch();
+      ref.read(myProfileProvider.notifier).fetch();
     });
-  }
-
-  final _addressController = TextEditingController();
-  LocationModel? _selectedAddress;
-  Future<void> _buildAddressModelFromLatLng(
-    String address,
-    double lat,
-    double lng,
-  ) async {
-    setState(() {
-      _selectedAddress = LocationModel(
-        type: 'Points',
-        address: address,
-        coordinates: [lng, lat],
-      );
-    });
-  }
-
-  Future<void> _save() async {
-    await ref
-        .read(updateProfileProvider.notifier)
-        .update(UpdateProfileRequest(address: _selectedAddress));
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(categoriesProvider);
+    final myProfileState = ref.watch(myProfileProvider);
+    final userProfile = myProfileState.maybeWhen(
+      success: (profile) => profile,
+      orElse: () => null,
+    );
+    final selectedAddressName = userProfile?.locaation?.address ?? '+ ${AppLocalizations.of(context)!.addAddress}';
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
@@ -97,11 +88,12 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                                   decoration: BoxDecoration(
                                     color: AppColors.white,
                                     shape: BoxShape.circle,
+                                    border: Border.all(color: AppColors.grey200, width: 1),
                                   ),
                                   child: IconButton(
                                     icon: const Icon(
                                       Icons.search,
-                                      color: AppColors.black,
+                                      color: AppColors.grey500,
                                     ),
                                     onPressed: () {
                                       if (kIsWeb) {
@@ -116,19 +108,37 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                                   decoration: BoxDecoration(
                                     color: AppColors.white,
                                     shape: BoxShape.circle,
+                                    border: Border.all(color: AppColors.grey200, width: 1),
                                   ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.notifications_none_sharp,
-                                      color: AppColors.black,
-                                    ),
-                                    onPressed: () {
-                                      if (kIsWeb) {
-                                        context.go(AppRoutes.userNotifications);
-                                      } else {
-                                        context.push(AppRoutes.userNotifications);
-                                      }
-                                    },
+                                  child: Stack(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.notifications_none_sharp,
+                                          color: AppColors.grey500,
+                                        ),
+                                        onPressed: () {
+                                          if (kIsWeb) {
+                                            context.go(AppRoutes.userNotifications);
+                                          } else {
+                                            context.push(AppRoutes.userNotifications);
+                                          }
+                                        },
+                                      ),
+                                      Positioned(
+                                        top: 10,
+                                        right: 12,
+                                        child: Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.success,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(color: AppColors.white, width: 1),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -156,7 +166,15 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                 padding: 16.paddingV,
                 child: InkWell(
                   onTap: () {
-                    showAddAddress(ref);
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: AppColors.background,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (_) => const ServiceAddressBottomSheet(),
+                    );
                   },
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
@@ -173,12 +191,14 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                           ),
                         ),
                         AppText(
-                          '+ ${AppLocalizations.of(context)!.addAddress}',
+                          selectedAddressName,
                           style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         4.horizontalSpace,
                         const Icon(
@@ -192,31 +212,6 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                 ),
               ),
 
-            if (ref.watch(appRoleProvider) == AppRole.guest) ...[
-              Padding(
-                padding: 20.paddingH,
-                child: AppButton.primary(
-                  label: AppLocalizations.of(context)!.login.toUpperCase(),
-                  textColor: AppColors.white,
-                  onPressed: () {
-                    context.go(AppRoutes.login);
-                  },
-                ),
-              ),
-
-              12.verticalSpace,
-
-              Padding(
-                padding: 20.paddingH,
-                child: AppButton.outline(
-                  label: AppLocalizations.of(context)!.createAccountBtn,
-                  onPressed: () {
-                    context.go(AppRoutes.login);
-                  },
-                ),
-              ),
-              20.verticalSpace,
-            ],
             20.verticalSpace,
           ],
         ),
@@ -224,134 +219,5 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     );
   }
 
-  void showAddAddress(WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.background,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        final updateState = ref.watch(updateProfileProvider);
-        final isLoading = updateState is UserStateLoading;
-        return Padding(
-          padding: 20.paddingAll,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText.h2(AppLocalizations.of(context)!.serviceAddress),
-                        AppText.bodyMd(
-                          AppLocalizations.of(context)!.selectWhereYouWantToReceiveService,
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: Navigator.of(context).pop,
-                    child: Icon(Icons.cancel),
-                  ),
-                ],
-              ),
-
-              const AppDivider(height: 20),
-
-              Row(
-                spacing: 8,
-                children: [
-                  Icon(Icons.check_circle),
-                  Expanded(
-                    child: GooglePlaceAutoCompleteTextField(
-                      textEditingController: _addressController,
-                      googleAPIKey: AppConfig.googleMapsApiKey,
-                      inputDecoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.searchYourAddress,
-                        hintStyle: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search_rounded,
-                          color: AppColors.grey400,
-                          size: 20,
-                        ),
-                        suffixIcon: ValueListenableBuilder(
-                          valueListenable: _addressController,
-                          builder: (_, v, __) => v.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.close, size: 18),
-                                  color: AppColors.grey400,
-                                  onPressed: () {
-                                    _addressController.clear();
-                                  },
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-
-                      itemClick: (prediction) {
-                        _addressController.text = prediction.description ?? '';
-                      },
-
-                      getPlaceDetailWithLatLng: (prediction) async {
-                        final lat = double.tryParse(prediction.lat ?? '');
-                        final lng = double.tryParse(prediction.lng ?? '');
-
-                        if (lat == null || lng == null) return;
-
-                        await _buildAddressModelFromLatLng(
-                          prediction.description ?? "N/A",
-                          lat,
-                          lng,
-                        );
-                      },
-
-                      isCrossBtnShown: false,
-                    ),
-                  ),
-                  Icon(Icons.edit),
-                ],
-              ),
-
-              const AppDivider(height: 20),
-              16.verticalSpace,
-
-              AppButton.primary(
-                label: AppLocalizations.of(context)!.save,
-                isLoading: isLoading,
-                onPressed: isLoading ? null : _save,
-              ),
-              16.verticalSpace,
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // Old address widget removed.
 }

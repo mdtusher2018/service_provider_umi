@@ -94,21 +94,40 @@ class _RadialMenuState extends State<RadialMenu>
                 final pulse = 1 + (sin(_controller.value * 2 * pi) * 0.2);
                 return Transform.scale(scale: pulse, child: child);
               },
-              child: ElevatedButton(
-                onPressed: () => showCustomDialog(context),
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: 24.paddingAll,
-                  backgroundColor: AppColors.white,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+              child: SizedBox(
+                width: radiusSize * 2.5,
+                height: radiusSize * 2.5,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
                   children: [
-                    Image.asset(
-                      Assets.icons.support.keyName,
-                      width: radiusSize,
+                    InkWell(
+                      onTap: () => showCustomDialog(context),
+                      customBorder: const CircleBorder(),
+                      child: Container(
+                        width: radiusSize * 2.5,
+                        height: radiusSize * 2.5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.white,
+                          border: Border.all(color: AppColors.primary, width: 2),
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            Assets.icons.support.keyName,
+                            width: radiusSize * 1.2,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
                     ),
-                    AppText.h4(AppLocalizations.of(context)!.support, color: AppColors.secondary),
+                    Positioned(
+                      bottom: -28,
+                      child: AppText.h4(
+                        AppLocalizations.of(context)!.support,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -162,14 +181,13 @@ class _RadialMenuState extends State<RadialMenu>
                 AppButton.primary(
                   label: AppLocalizations.of(context)!.message,
                   prefixIcon: Icon(Icons.message, color: AppColors.white),
-                  onPressed: () async {
-                    const phoneNumber = "iumi@support.com"; // your number
-
-                    await Clipboard.setData(ClipboardData(text: phoneNumber));
+                  onPressed: () {
                     context.pop();
-                    context.showSnackBar(AppLocalizations.of(context)!.emailCopied);
-
-                    print("Message pressed");
+                    if (kIsWeb) {
+                      context.go(AppRoutes.supportMessage);
+                    } else {
+                      context.push(AppRoutes.supportMessage);
+                    }
                   },
                 ),
               ],
@@ -202,6 +220,11 @@ class _RadialMenuItemState extends ConsumerState<_RadialMenuItem> {
       onTapUp: (_) => setState(() => scale = 1.0),
       onTapCancel: () => setState(() => scale = 1.0),
       onTap: isLoading ? null : () async {
+        if (ref.read(appRoleProvider) == AppRole.guest) {
+          _showGuestAuthSheet(context);
+          return;
+        }
+
         setState(() => isLoading = true);
         try {
           final subcategories = await ref.read(subcategoriesProvider(widget.item.id).future);
@@ -227,37 +250,89 @@ class _RadialMenuItemState extends ConsumerState<_RadialMenuItem> {
       child: AnimatedScale(
         scale: scale,
         duration: const Duration(milliseconds: 150),
-        child: Container(
+        child: SizedBox(
           width: widget.size * 2,
           height: widget.size * 2,
-          padding: const EdgeInsets.all(4),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.white,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
             children: [
-              SizedBox(
-                width: widget.size,
-                height: widget.size,
+              Container(
+                width: widget.size * 2,
+                height: widget.size * 2,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.white,
+                  border: Border.all(color: AppColors.grey200, width: 1),
+                ),
                 child: isLoading
                     ? const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Image.network(
-                        widget.item.image ?? "",
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
+                    : Center(
+                        child: Image.network(
+                          widget.item.image ?? "",
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
+                        ),
                       ),
               ),
-              AppText.bodySm(widget.item.name, fontWeight: FontWeight.w500),
+              Positioned(
+                bottom: -24,
+                child: AppText.bodySm(
+                  widget.item.name,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.grey700,
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showGuestAuthSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.background,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 24,
+            bottom: MediaQuery.of(context).padding.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppButton.primary(
+                label: AppLocalizations.of(context)!.login.toUpperCase(),
+                textColor: AppColors.white,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.go(AppRoutes.login);
+                },
+              ),
+              12.verticalSpace,
+              AppButton.outline(
+                label: AppLocalizations.of(context)!.createAccountBtn,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.go(AppRoutes.login);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

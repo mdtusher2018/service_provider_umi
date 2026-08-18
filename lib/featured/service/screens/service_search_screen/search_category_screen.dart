@@ -8,6 +8,8 @@ import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
+import 'package:service_provider_umi/core/di/app_role_provider.dart';
+import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -129,6 +131,11 @@ class _SearchScreenState extends ConsumerState<SearchCategoryScreen> {
                         return _ServiceListTile(
                           item: item,
                           onTap: () async {
+                            if (ref.read(appRoleProvider) == AppRole.guest) {
+                              showGuestAuthSheet(context);
+                              return;
+                            }
+
                             showDialog(
                               context: context,
                               barrierDismissible: false,
