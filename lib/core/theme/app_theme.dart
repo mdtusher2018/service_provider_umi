@@ -61,7 +61,7 @@ class AppTheme {
       bottomNavigationBarTheme: _bottomNavTheme(primary),
       bottomSheetTheme: _bottomSheetTheme(),
       chipTheme: _chipTheme(primary),
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: AppColors.scaffoldBackground,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       fontFamily: 'Poppins',
     );

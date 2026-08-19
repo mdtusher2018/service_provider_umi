@@ -275,6 +275,7 @@ class _RadialMenuItemState extends ConsumerState<_RadialMenuItem> {
                         child: Image.network(
                           widget.item.image ?? "",
                           fit: BoxFit.contain,
+                          scale: 3,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(Icons.image_not_supported, color: AppColors.grey500, size: 24),
                         ),

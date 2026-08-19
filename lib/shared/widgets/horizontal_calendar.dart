@@ -48,7 +48,35 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
         /// Month Row
         Row(
           children: [
-            AppText.h3(_selectedDate.getMonth),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedDate = DateTime(_selectedDate.year, _selectedDate.month - 1, _selectedDate.day);
+                  _dates = List.generate(
+                    widget.daysCount,
+                    (index) => _selectedDate.add(Duration(days: index)),
+                  );
+                });
+                widget.onDateSelected(_selectedDate);
+              },
+              child: const Icon(Icons.chevron_left, color: AppColors.textPrimary, size: 20),
+            ),
+            8.horizontalSpace,
+            AppText.h3('${_selectedDate.getMonth} ${_selectedDate.year}', color: AppColors.textPrimary),
+            8.horizontalSpace,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedDate = DateTime(_selectedDate.year, _selectedDate.month + 1, _selectedDate.day);
+                  _dates = List.generate(
+                    widget.daysCount,
+                    (index) => _selectedDate.add(Duration(days: index)),
+                  );
+                });
+                widget.onDateSelected(_selectedDate);
+              },
+              child: const Icon(Icons.chevron_right, color: AppColors.textPrimary, size: 20),
+            ),
             const Spacer(),
 
             /// Show month button
@@ -60,12 +88,13 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.black),
-                  borderRadius: 12.circular,
+                  border: Border.all(color: AppColors.grey200),
+                  borderRadius: 16.circular,
+                  color: AppColors.white
                 ),
-                child: AppText.labelMd(
+                child: const AppText.labelMd(
                   "Show month",
-                  color: AppColors.textSecondary,
+                  color: AppColors.textgrey,
                 ),
               ),
             ),
@@ -76,7 +105,7 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
 
         /// Horizontal dates
         SizedBox(
-          height: 70,
+          height: 64,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _dates.length,
@@ -94,20 +123,22 @@ class _HorizontalCalendarState extends State<HorizontalCalendar> {
                   widget.onDateSelected(date);
                 },
                 child: Container(
-                  width: 58,
+                  width: 64,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppColors.primary.withValues(alpha: 0.9)
                         : AppColors.white,
                     borderRadius: 14.circular,
-                    border: Border.all(color: AppColors.black),
+                    border: isSelected 
+                        ? Border.all(color: AppColors.primary, width: 1.5) 
+                        : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppText.labelMd(date.getDayOfWeek),
-                      4.verticalSpace,
-                      AppText.h3(date.day.toString()),
+                      AppText.labelMd(date.getDayOfWeek, color: isSelected? AppColors.white : AppColors.textSecondary),
+                      6.verticalSpace,
+                      AppText.h3(date.day.toString(), color: isSelected? AppColors.white : AppColors.textPrimary, fontWeight: FontWeight.w700),
                     ],
                   ),
                 ),

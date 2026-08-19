@@ -68,26 +68,26 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!kIsWeb)
-                    GestureDetector(
-                      onTap: () => context.pop(),
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: AppColors.black,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  8.verticalSpace,
                   Row(
                     children: [
+                      if (!kIsWeb)
+                        GestureDetector(
+                          onTap: () => context.pop(),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: AppColors.black,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                      8.horizontalSpace,
                       AppText.h2(
                         AppLocalizations.of(context)!.whenDoYouNeedIt,
                         color: AppColors.white,
@@ -148,8 +148,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
         Container(
           decoration: BoxDecoration(
             color: AppColors.white,
-            borderRadius: 24.circular,
-            border: Border.all(color: AppColors.border),
+            borderRadius: 12.circular,
           ),
           child: Row(
             children: [
@@ -506,13 +505,13 @@ class _FrequencyCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
 
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppColors.primary.withValues(alpha: 0.1)
               : AppColors.white,
-          borderRadius: 24.circular,
+          borderRadius: 12.circular,
           border: isSelected
               ? Border.all(width: 1, color: AppColors.primary)
               : Border.all(color: Colors.transparent),
@@ -521,10 +520,13 @@ class _FrequencyCard extends StatelessWidget {
           children: [
             AppText.labelLg(
               title,
-              color: AppColors.textPrimary,
+              color: isSelected ? AppColors.primary : AppColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
-            AppText.bodySm(subtitle),
+            AppText.bodySm(
+              subtitle,
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            ),
           ],
         ),
       ),

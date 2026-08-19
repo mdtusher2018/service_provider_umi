@@ -55,6 +55,7 @@ class AppColors {
   static const Color cardSurface = Color(0xFFFFFFFF);
   static const Color shimmer = Color(0xFFE8E8E8);
   static const Color shimmerHighlight = Color(0xFFF5F5F5);
+  static const Color scaffoldBackground = Color(0xFFF5F5F5);
 
   // ─── Text (shared) ───────────────────────────────────────
   static const Color textPrimary = Color(0xFF0D0D0D);
