@@ -7,9 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
-import 'package:service_provider_umi/data/models/category_models.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
-import 'package:service_provider_umi/data/models/service_provider_models.dart';
 import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
@@ -19,6 +17,7 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -41,6 +40,9 @@ class _ProviderListingScreenState
   final Set<String> _selectedTaskIds = {};
   File? _coverImage;
   String? _existingCoverImageUrl;
+
+  final List<File> _galleryImages = [];
+  final List<String> _existingGalleryImageUrls = [];
 
   @override
   void initState() {
@@ -84,6 +86,10 @@ class _ProviderListingScreenState
             if (t.id.isNotEmpty) _selectedTaskIds.add(t.id);
           }
 
+          if (provider.images.isNotEmpty) {
+            _existingGalleryImageUrls.addAll(provider.images.map((e) => e.toString()));
+          }
+
           setState(() {});
         }
       },
@@ -103,6 +109,15 @@ class _ProviderListingScreenState
     if (picked != null) {
       setState(() {
         _coverImage = File(picked.path);
+      });
+    }
+  }
+
+  Future<void> _pickGalleryImages() async {
+    final picked = await ImagePicker().pickMultiImage();
+    if (picked.isNotEmpty) {
+      setState(() {
+        _galleryImages.addAll(picked.map((e) => File(e.path)));
       });
     }
   }
@@ -130,6 +145,7 @@ class _ProviderListingScreenState
       providerSubcategories: _selectedSubCategoryIds.where((id) => id.isNotEmpty).toList(),
       tasks: _selectedTaskIds.where((id) => id.isNotEmpty).toList(),
       coverImage: _coverImage,
+      images: _galleryImages,
     );
 
     await ref.read(updateProviderProvider.notifier).update(request);
@@ -144,6 +160,9 @@ class _ProviderListingScreenState
         );
     final isUpdatingProvider = ref.watch(updateProviderProvider).isLoading;
     final isSaving = isUpdatingUser || isUpdatingProvider;
+
+    final userState = ref.watch(myProfileProvider);
+    final user = userState.maybeWhen(success: (u) => u, orElse: () => null);
 
     ref.listen<AsyncValue<bool>>(updateProviderProvider, (prev, next) {
       if (next is AsyncError) {
@@ -176,57 +195,155 @@ class _ProviderListingScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ─── Cover Photo ───────────────────────────
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey200,
-                      borderRadius: BorderRadius.circular(12),
-                      image: _coverImage != null
-                          ? DecorationImage(
-                              image: FileImage(_coverImage!),
-                              fit: BoxFit.cover,
-                            )
-                          : _existingCoverImageUrl != null
-                              ? DecorationImage(
-                                  image: NetworkImage(
-                                      _existingCoverImageUrl!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                    ),
-                    child: Stack(
-                      children: [
-                        if (_coverImage == null &&
-                            _existingCoverImageUrl == null)
-                          const Center(
-                            child: Icon(
-                              Icons.add_a_photo_outlined,
-                              size: 48,
-                              color: AppColors.grey400,
-                            ),
+                // ─── Cover Photo & Profile Photo ──────────────────
+                SizedBox(
+                  height: 240,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey200,
+                            borderRadius: BorderRadius.circular(12),
+                            image: _coverImage != null
+                                ? DecorationImage(
+                                    image: FileImage(_coverImage!),
+                                    fit: BoxFit.cover,
+                                  )
+                                : _existingCoverImageUrl != null
+                                    ? DecorationImage(
+                                        image: NetworkImage(
+                                            _existingCoverImageUrl!),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
                           ),
-                        Positioned(
-                          bottom: 12,
-                          right: 12,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                          child: Stack(
+                            children: [
+                              if (_coverImage == null &&
+                                  _existingCoverImageUrl == null)
+                                const Center(
+                                  child: Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 48,
+                                    color: AppColors.grey400,
+                                  ),
+                                ),
+                              Positioned(
+                                bottom: 12,
+                                right: 12,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: AppAvatar(
+                          imageUrl: user?.profileImage,
+                          name: user?.name ?? '',
+                          customSize: 80,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                24.verticalSpace,
+
+                // ─── Gallery Images ────────────────────────
+                AppText.labelLg(AppLocalizations.of(context)!.galleryImages, color: AppColors.textPrimary),
+                8.verticalSpace,
+                SizedBox(
+                  height: 100,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      GestureDetector(
+                        onTap: _pickGalleryImages,
+                        child: Container(
+                          width: 100,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            color: AppColors.grey100,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.grey300),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.add_photo_alternate_outlined, color: AppColors.grey500),
+                              4.verticalSpace,
+                              AppText.bodySm('Add', color: AppColors.grey500),
+                            ],
+                          ),
+                        ),
+                      ),
+                      ..._existingGalleryImageUrls.map((url) => Container(
+                            width: 100,
+                            margin: const EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              image: DecorationImage(
+                                image: NetworkImage(url),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )),
+                      ..._galleryImages.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final file = entry.value;
+                        return Container(
+                          width: 100,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: FileImage(file),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 4,
+                                right: 4,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _galleryImages.removeAt(index);
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black54,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.close, color: Colors.white, size: 16),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
                   ),
                 ),
                 24.verticalSpace,

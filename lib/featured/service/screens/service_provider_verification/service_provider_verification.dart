@@ -58,6 +58,11 @@ class _ServiceProviderVerificationState
   }
 
   void _onNext() {
+    if (!_palliativeCare && !_drivingLicence && !_businessProfile && !_qualifiedCarer) {
+      context.showErrorSnackBar('Please select at least one document to proceed.');
+      return;
+    }
+
     if (!_isValid) {
       context.showErrorSnackBar(
         AppLocalizations.of(context)!.pleaseUploadAnImage,

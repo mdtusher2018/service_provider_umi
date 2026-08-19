@@ -13,7 +13,9 @@ class FavouritesNotifire extends _$FavouritesNotifire {
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
   Future<void> fetch() async {
-    state = const AsyncLoading();
+    if (!state.hasValue) {
+      state = const AsyncLoading();
+    }
 
     final result = await _repo.getFavorites();
     if (!ref.mounted) return;
@@ -25,17 +27,32 @@ class FavouritesNotifire extends _$FavouritesNotifire {
   }
 
   Future<void> toggleFavorite(String providerId) async {
+    final currentList = state.value ?? [];
+    final isFavorite = currentList.any((e) => e.serviceProviderId == providerId);
+
     final result = await _repo.toggleFavorite(id: providerId);
 
     if (!ref.mounted) return;
 
     result.when(
-      success: (_) async {
-        // ✅ Always fetch fresh data from server
-        await fetch();
+      success: (_) {
+        // Update local state instantly so UI updates immediately
+        if (isFavorite) {
+          state = AsyncData(currentList.where((e) => e.serviceProviderId != providerId).toList());
+        } else {
+          state = AsyncData([...currentList, FavoriteModel(
+            id: '', 
+            userId: '', 
+            serviceProviderId: providerId,
+            createdAt: DateTime.now(),
+          )]);
+        }
+        
+        // Fetch fresh data in the background
+        fetch();
       },
-      failure: (e) async {
-        await fetch();
+      failure: (e) {
+        fetch();
       },
     );
   }

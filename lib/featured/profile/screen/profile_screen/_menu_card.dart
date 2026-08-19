@@ -37,8 +37,8 @@ class _MenuCard extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: AppColors.primaryFor(
                           ref.watch(appRoleProvider),
-                        ).withOpacity(0.2),
-                        borderRadius: 4.circular,
+                        ).withValues(alpha: 0.1),
+                        borderRadius: 6.circular,
                       ),
                       child: Icon(
                         item.icon,
@@ -64,7 +64,9 @@ class _MenuCard extends ConsumerWidget {
                 ),
               ),
             ),
-            AppDivider(),
+            AppDivider(color: AppColors.primaryFor(
+              ref.watch(appRoleProvider),
+            ).withValues(alpha: 0.3),),
           ],
         );
       }).toList(),

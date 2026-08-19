@@ -178,6 +178,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     formMap['data'] = jsonEncode({});
 
+    if (formMap.keys.where((k) => k != 'data').isEmpty) {
+      throw Exception('Please select at least one document to update.');
+    }
+
     final response = await _dio.post(
       ApiEndpoints.profileVerificationSubmit,
       data: FormData.fromMap(formMap),
@@ -189,9 +193,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     );
 
     if (!apiResponse.success) {
-      throw Exception(
-        apiResponse.error?.message ?? 'Verification submission failed',
-      );
+      final errorMessage = apiResponse.error?.message ?? 'Verification submission failed';
+      if (errorMessage.contains('prisma') || errorMessage.contains('ConnectorError')) {
+        throw Exception('Invalid data provided or missing documents.');
+      }
+      throw Exception(errorMessage);
     }
     return true;
   }

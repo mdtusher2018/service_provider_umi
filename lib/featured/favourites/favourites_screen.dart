@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
 import 'package:service_provider_umi/featured/favourites/riverpod/favourites_notifire.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -45,7 +46,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
       appBar: AppAppBar(
         title: "Favourites",
         centerTitle: false,
-        showBackButton: false,
+        showBackButton: Navigator.of(context).canPop(),
         backgroundColor: AppColors.background,
       ),
       body: state.when(
@@ -106,7 +107,11 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                       ),
                     );
                   },
-                  onFavorite: () {},
+                  addedAt: fav.createdAt,
+                  onFavorite: () {
+                    ref.read(favouritesNotifireProvider.notifier).toggleFavorite(fav.serviceProviderId);
+                    context.showFavoriteToast("Removed from favorites");
+                  },
                 );
               },
             ),

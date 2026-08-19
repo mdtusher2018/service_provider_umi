@@ -38,9 +38,13 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
       if (next.hasError && !next.isLoading) {
         AppLogger.error(next.error.toString());
         context.showErrorSnackBar(
-          (next.error is Failure) ? (next.error as Failure).message : next.error.toString(),
+          (next.error is Failure)
+              ? (next.error as Failure).message
+              : next.error.toString(),
         );
-      } else if (previous?.isLoading == true && next.hasValue && !next.isLoading) {
+      } else if (previous?.isLoading == true &&
+          next.hasValue &&
+          !next.isLoading) {
         context.showSuccessSnackBar("Payment successful");
         Future.delayed(const Duration(milliseconds: 800), () {
           if (context.mounted) context.go(AppRoutes.userHome);
@@ -56,7 +60,9 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
 
           error: (e, _) {
             final errorString = e.toString();
-            final isNoCustomer = errorString.toLowerCase().contains('no such customer');
+            final isNoCustomer = errorString.toLowerCase().contains(
+              'no such customer',
+            );
 
             if (isNoCustomer) {
               return const AppEmptyState(title: 'No cards found');

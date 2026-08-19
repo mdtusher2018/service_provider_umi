@@ -105,7 +105,7 @@ class _ProviderProfileOverviewScreenState
                   vertical: 8,
                 ),
                 child: Column(
-                  spacing: 16,
+                  spacing: 8,
                   children: [
                     _buildProfileHeader(
                       ref: ref,
@@ -114,21 +114,21 @@ class _ProviderProfileOverviewScreenState
                     ),
 
                     _buildAboutSection(profileData),
-                    AppDivider(),
+                    // AppDivider(),
                     _buildGallery(
                       ref,
+                      profileData.id,
                       profileData.serviceProviderInfo?.images ?? [],
                     ),
-
-                    AppDivider(),
+                    // AppDivider(),
                     /// Add faq section here
-                    _buildQaSection(ref, profileData.id),
+                    _buildQaSection(ref, profileData),
                     // AppDivider(),
                     // if (providerProfile.rating != null)
                     //   _buildRatingSection(providerProfile.rating!),
-                    AppDivider(),
+                    // AppDivider(),
                     _buildComments(comments: reviews),
-                    AppDivider(),
+                    // AppDivider(),
                     100.verticalSpace,
                   ],
                 ),
@@ -154,30 +154,45 @@ class _ProviderProfileOverviewScreenState
   }
 
   Widget _buildAboutSection(UserProfile providerProfile) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [AppText.h3('About me')]),
-        10.verticalSpace,
-
-        ReadMoreText(
-          providerProfile.bio ?? 'N/A',
-          trimMode: TrimMode.Line,
-          trimLines: 2,
-          colorClickableText: AppColors.primary,
-
-          trimCollapsedText: '+View more',
-          trimExpandedText: ' View less',
-          moreStyle: AppTextStyles.bodyMd.copyWith(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
           ),
-          lessStyle: AppTextStyles.bodyMd.copyWith(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [AppText.bodyLg('About me', fontWeight: FontWeight.w700, color: AppColors.textPrimary)]),
+          10.verticalSpace,
+          ReadMoreText(
+            providerProfile.bio ?? 'N/A',
+            trimMode: TrimMode.Line,
+            trimLines: 2,
+            colorClickableText: AppColors.primary,
+            trimCollapsedText: '+View more',
+            trimExpandedText: ' View less',
+            moreStyle: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+            lessStyle: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

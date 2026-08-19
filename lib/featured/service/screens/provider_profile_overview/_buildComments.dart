@@ -3,13 +3,38 @@ part of 'provider_profile_screen.dart';
 // ─── Supporting widgets ───────────────────────────────────────
 
 Widget _buildComments({required List<ProviderComment> comments}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      AppText.h3('Comments'),
-      12.verticalSpace,
-      ...comments.map((c) => _CommentTile(comment: c)),
-    ],
+  return Container(
+    width: double.infinity,
+    margin: const EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: AppColors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.border),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 4,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppText.bodyLg('Comments', fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+        12.verticalSpace,
+        if (comments.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: AppText.bodyMd('No comments found', color: AppColors.textSecondary),
+            ),
+          )
+        else
+          ...comments.map((c) => _CommentTile(comment: c)),
+      ],
+    ),
   );
 }
 

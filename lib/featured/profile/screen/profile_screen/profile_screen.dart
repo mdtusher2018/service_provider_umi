@@ -210,6 +210,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           context.push(AppRoutes.providerListing);
                         }
                       }),
+                      _Item(Icons.description_outlined, 'Documents', () {
+                        context.push(AppRoutes.documents);
+                      }),
                       // _Item(Icons.tune, 'Booking preferences', () {
                       //   if (kIsWeb) {
                       //     context.go(AppRoutes.preferences);

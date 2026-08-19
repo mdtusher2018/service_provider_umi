@@ -1,4 +1,5 @@
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
+import 'package:service_provider_umi/data/models/address_model.dart';
 import 'meta_model.dart';
 
 // ── Request ───────────────────────────────────────────────────────────────────
@@ -31,6 +32,7 @@ class CreateBookingRequest {
   final num totalHours;
   final String bookingType; // 'weekly' | 'once'
   final List<BookingDayRequest> bookingDays;
+  final String addressId;
 
   const CreateBookingRequest({
     required this.providerId,
@@ -39,6 +41,7 @@ class CreateBookingRequest {
     required this.totalHours,
     required this.bookingType,
     required this.bookingDays,
+    required this.addressId,
   });
 
   Map<String, dynamic> toJson() => {
@@ -48,6 +51,7 @@ class CreateBookingRequest {
     'totalHours': totalHours,
     'bookingType': bookingType,
     'bookingDays': bookingDays.map((d) => d.toJson()).toList(),
+    'addressId': addressId,
   };
 }
 
@@ -82,6 +86,7 @@ class BookingDetailModel {
   final BookedUserDetailModel? user;
   final BookedProviderDetailModel? provider;
   final List<dynamic> payments;
+  final AddressModel? address;
 
   const BookingDetailModel({
     required this.id,
@@ -103,6 +108,7 @@ class BookingDetailModel {
     required this.provider,
     required this.payments,
     required this.bookingDays,
+    this.address,
   });
 
   factory BookingDetailModel.fromJson(Map<String, dynamic> json) {
@@ -142,6 +148,7 @@ class BookingDetailModel {
               ?.map((e) => BookingTimeScheduleModel.fromJson(e))
               .toList() ??
           [],
+      address: json['address'] != null ? AddressModel.fromJson(json['address']) : null,
     );
   }
 }
@@ -254,6 +261,7 @@ class BookingModel {
   final _BookedUserModel? user;
   final _BookedProviderModel? provider;
   final List<BookingTimeScheduleModel> bookingDays;
+  final AddressModel? address;
 
   BookingModel({
     required this.id,
@@ -272,6 +280,7 @@ class BookingModel {
     this.user,
     this.provider,
     required this.bookingDays,
+    this.address,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) => BookingModel(
@@ -301,6 +310,7 @@ class BookingModel {
             .toList() ??
         [],
     status: BookingStatus.fromString(json['status'] as String),
+    address: json['address'] != null ? AddressModel.fromJson(json['address']) : null,
   );
 }
 

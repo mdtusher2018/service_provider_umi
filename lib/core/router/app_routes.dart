@@ -22,6 +22,8 @@ class AppRoutes {
   static const String providerHome = '/provider/home';
   static const String providerNotifications = '/provider/notifications';
   static const String providerProfile = '/provider/profile';
+  static const String documents = '/documents';
+  static const String verification = '/verification';
 
   // ─── Auth ────────────────────────────────────────────────
   static const String phoneNumber = '/auth/phone';
@@ -36,6 +38,10 @@ class AppRoutes {
   static const String searchResults = '/search-results/:serviceId';
   static const String filter = '/search-results/:serviceId/filter';
   static const String providerProfileView = '/service-provider/:providerId';
+  static const String providerGalleryView = '/service-provider/:providerId/gallery';
+  static String providerGalleryPath(String providerId) =>
+      '/service-provider/$providerId/gallery';
+
   static const searchSubcategory = ':serviceId/subcategory';
   static const searchTime = ':serviceId/search-time';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:google_places_flutter/google_places_flutter.dart';
+
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
@@ -20,6 +20,7 @@ import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
@@ -126,6 +127,10 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
         loading: () {},
         success: (_) {
           context.showSnackBar(AppLocalizations.of(context)!.profileUpdatedSuccessfully);
+          ref.read(myProfileProvider.notifier).fetch();
+          if (context.mounted) {
+            context.pop();
+          }
         },
         failure: (failure) {
           context.showSnackBar(AppLocalizations.of(context)!.failedToUpdateProfile(failure.message ?? 'Unknown error'));
@@ -197,73 +202,132 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
               ),
               12.verticalSpace,
 
-              GooglePlaceAutoCompleteTextField(
+              RawAutocomplete<Map<String, dynamic>>(
                 textEditingController: _addressController,
-                googleAPIKey: AppConfig.googleMapsApiKey,
-                inputDecoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.searchYourAddress,
-                  hintStyle: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 14,
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search_rounded,
-                    color: AppColors.grey400,
-                    size: 20,
-                  ),
-                  suffixIcon: ValueListenableBuilder(
-                    valueListenable: _addressController,
-                    builder: (_, v, __) => v.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.close, size: 18),
-                            color: AppColors.grey400,
-                            onPressed: () {
-                              _addressController.clear();
-                            },
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  filled: true,
-                  fillColor: AppColors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: AppColors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-
-                itemClick: (prediction) {
-                  _addressController.text = prediction.description ?? '';
+                focusNode: FocusNode(),
+                optionsBuilder: (TextEditingValue textEditingValue) async {
+                  if (textEditingValue.text.isEmpty) {
+                    return const Iterable<Map<String, dynamic>>.empty();
+                  }
+                  try {
+                    final response = await Dio().get(
+                      'https://nominatim.openstreetmap.org/search',
+                      queryParameters: {
+                        'q': textEditingValue.text,
+                        'format': 'json',
+                        'addressdetails': 1,
+                        'limit': 5,
+                        'accept-language': 'en',
+                      },
+                      options: Options(
+                        headers: {
+                          'User-Agent': 'ServiceProviderUmi/1.0',
+                        },
+                      ),
+                    );
+                    if (response.statusCode == 200) {
+                      final List data = response.data;
+                      return data.cast<Map<String, dynamic>>();
+                    } else {
+                      debugPrint('Nominatim API error: ${response.statusCode} - ${response.data}');
+                    }
+                  } catch (e) {
+                    debugPrint('Nominatim API exception: $e');
+                  }
+                  return const Iterable<Map<String, dynamic>>.empty();
                 },
-
-                getPlaceDetailWithLatLng: (prediction) async {
-                  final lat = double.tryParse(prediction.lat ?? '');
-                  final lng = double.tryParse(prediction.lng ?? '');
-
-                  if (lat == null || lng == null) return;
-
-                  await _buildAddressModelFromLatLng(
-                    prediction.description ?? "N/A",
-                    lat,
-                    lng,
+                displayStringForOption: (option) => option['display_name'] ?? '',
+                onSelected: (selection) {
+                  final lat = double.tryParse(selection['lat'].toString()) ?? 0.0;
+                  final lon = double.tryParse(selection['lon'].toString()) ?? 0.0;
+                  final address = selection['display_name'] ?? '';
+                  _addressController.text = address;
+                  _buildAddressModelFromLatLng(address, lat, lon);
+                },
+                fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+                  return TextFormField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    onEditingComplete: onEditingComplete,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.searchYourAddress,
+                      hintStyle: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: AppColors.grey400,
+                        size: 20,
+                      ),
+                      suffixIcon: ValueListenableBuilder(
+                        valueListenable: controller,
+                        builder: (_, v, __) => v.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.close, size: 18),
+                                color: AppColors.grey400,
+                                onPressed: () {
+                                  controller.clear();
+                                },
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
                   );
                 },
-
-                isCrossBtnShown: false,
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4,
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.white,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 250,
+                          maxWidth: MediaQuery.of(context).size.width - 40,
+                        ),
+                        child: ListView.separated(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          separatorBuilder: (context, index) => const Divider(height: 1),
+                          itemBuilder: (context, index) {
+                            final option = options.elementAt(index);
+                            return ListTile(
+                              title: Text(
+                                option['display_name'] ?? '',
+                                style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                              ),
+                              onTap: () => onSelected(option),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
 
               12.verticalSpace,

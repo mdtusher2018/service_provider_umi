@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(categoriesProvider.notifier).fetch();
       ref.read(myProfileProvider.notifier).fetch();
+      ref.read(addressProvider.notifier).fetch();
     });
   }
 
@@ -57,7 +59,28 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
       success: (profile) => profile,
       orElse: () => null,
     );
-    final selectedAddressName = userProfile?.locaation?.address ?? '+ ${AppLocalizations.of(context)!.addAddress}';
+
+    final addressesState = ref.watch(addressProvider);
+    final selectedId = ref.watch(selectedAddressIdProvider);
+
+    String? selectedAddressName;
+    if (addressesState is AsyncData) {
+      final addresses = addressesState.value ?? [];
+      if (addresses.isNotEmpty) {
+        AddressModel? current;
+        if (selectedId != null) {
+          current = addresses.firstWhere((a) => a.id == selectedId, orElse: () => addresses.first);
+        } else {
+          current = addresses.firstWhere((a) => a.isDefault, orElse: () => addresses.first);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(selectedAddressIdProvider.notifier).state = current?.id;
+          });
+        }
+        selectedAddressName = current.displayAddress;
+      }
+    }
+
+    selectedAddressName ??= userProfile?.locaation?.address ?? '+ ${AppLocalizations.of(context)!.addAddress}';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -148,7 +171,10 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                       ),
 
                       state.when(
-                        loading: () => const AppLoader(),
+                        loading: () => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: const Center(child: AppLoader()),
+                        ),
                         data: (categories) => RadialMenu(menuItems: categories),
                         error: (e, _) => AppErrorWidget(
                           error: e,

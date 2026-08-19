@@ -20,6 +20,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/horizontal_calendar.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/address_provider.dart';
 
 part '_day_schedule.dart';
 part '_time_picker_panel.dart';
@@ -380,6 +381,13 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
   // ─────────────────────────────────────────────────────────
 
   CreateBookingRequest? _buildPayload() {
+    final addressId = ref.read(selectedAddressIdProvider) ??
+        ref.read(addressProvider).value?.firstWhere(
+              (a) => a.isDefault,
+              orElse: () => ref.read(addressProvider).value!.first,
+            ).id ??
+        '';
+
     if (_mode == BookingFrequency.weekly) {
       final activeDays = _schedule.entries
           .where((e) => e.value != null)
@@ -416,6 +424,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
         totalHours: totalHours,
         bookingType: 'weekly',
         bookingDays: bookingDays,
+        addressId: addressId,
       );
     } else {
       // ── Once ────────────────────────────────────────────
@@ -444,6 +453,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
             durationHours: durationHours,
           ),
         ],
+        addressId: addressId,
       );
     }
   }

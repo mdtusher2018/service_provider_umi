@@ -96,7 +96,9 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
         loading: () => AppLoader(),
         data: (data) {
           if (data == null) {
-            return AppEmptyState(title: AppLocalizations.of(context)!.noDataFound);
+            return AppEmptyState(
+              title: AppLocalizations.of(context)!.noDataFound,
+            );
           }
           return _BookingDetailBody(
             data: data,
@@ -153,14 +155,15 @@ class _BookingDetailBody extends ConsumerWidget {
         },
         data: (_) async {
           if (previous is AsyncLoading) {
-
             // refresh the relevant bookings list(s) before navigating
             // await ref
             //     .read(bookingsNotifierProvider(BookingStatus.pending).notifier)
             //     .fetch(initial: true);
 
             if (context.mounted) {
-              context.showSuccessSnackBar(AppLocalizations.of(context)!.bookingAccepted);
+              context.showSuccessSnackBar(
+                AppLocalizations.of(context)!.bookingAccepted,
+              );
               context.go(AppRoutes.providerHome);
             }
           }
@@ -187,11 +190,20 @@ class _BookingDetailBody extends ConsumerWidget {
             AppLocalizations.of(context)!.serviceBookedSuccess,
           ),
           16.verticalSpace,
-          _buildSection(AppLocalizations.of(context)!.dateAndTime, _buildDateTime(data)),
+          _buildSection(
+            AppLocalizations.of(context)!.dateAndTime,
+            _buildDateTime(data),
+          ),
           16.verticalSpace,
-          _buildSection(AppLocalizations.of(context)!.address, _buildAddress(data, context)),
+          _buildSection(
+            AppLocalizations.of(context)!.address,
+            _buildAddress(data, context),
+          ),
           16.verticalSpace,
-          _buildSection(AppLocalizations.of(context)!.servicePrice, _buildPrice(context)),
+          _buildSection(
+            AppLocalizations.of(context)!.servicePrice,
+            _buildPrice(context),
+          ),
           40.verticalSpace,
 
           // ── Action buttons driven by real status ──────────────────
@@ -243,14 +255,21 @@ class _BookingDetailBody extends ConsumerWidget {
             ),
 
           if (bookingStatus == BookingStatus.complete)
-            AppText.bodyLg(AppLocalizations.of(context)!.bookingHasBeenCompleted),
+            AppText.bodyLg(
+              AppLocalizations.of(context)!.bookingHasBeenCompleted,
+            ),
         ],
       ),
     );
   }
 
   // ─── Provider row ─────────────────────────────────────────────────────────
-  Widget _buildProviderRow(BuildContext context, WidgetRef ref, AppRole role, BookingStatus bookingStatus) {
+  Widget _buildProviderRow(
+    BuildContext context,
+    WidgetRef ref,
+    AppRole role,
+    BookingStatus bookingStatus,
+  ) {
     // Show the other party: if viewing as provider → show user, else → show provider
     final name = (role == AppRole.provider)
         ? data.user?.name ?? '—'
@@ -272,89 +291,124 @@ class _BookingDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.h4(role == AppRole.provider ? AppLocalizations.of(context)!.customer : AppLocalizations.of(context)!.provider, color: AppColors.textPrimary),
+          AppText.h4(
+            role == AppRole.provider
+                ? AppLocalizations.of(context)!.customer
+                : AppLocalizations.of(context)!.provider,
+            color: AppColors.textPrimary,
+          ),
           16.verticalSpace,
           Row(
             children: [
-        CircleAvatar(
-          radius: 40,
-          backgroundImage: profileUrl != null && profileUrl.isNotEmpty
-              ? NetworkImage(profileUrl)
-              : null,
-          child: profileUrl == null || profileUrl.isEmpty
-              ? const Icon(Icons.person, size: 36)
-              : null,
-        ),
-        12.horizontalSpace,
-        Expanded(
-          child: Column(
-            spacing: 2,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [AppText.h4(name), AppText.bodySm(phone)],
+              CircleAvatar(
+                radius: 40,
+                backgroundImage: profileUrl != null && profileUrl.isNotEmpty
+                    ? NetworkImage(profileUrl)
+                    : null,
+                child: profileUrl == null || profileUrl.isEmpty
+                    ? const Icon(Icons.person, size: 36)
+                    : null,
+              ),
+              12.horizontalSpace,
+              Expanded(
+                child: Column(
+                  spacing: 2,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [AppText.h4(name), AppText.bodySm(phone)],
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  if (bookingStatus == BookingStatus.pending ||
+                      bookingStatus == BookingStatus.requested) {
+                    final action = role == AppRole.user
+                        ? AppLocalizations.of(context)!.accepting
+                        : AppLocalizations.of(context)!.creating;
+                    context.showSnackBar(
+                      AppLocalizations.of(
+                        context,
+                      )!.cantChatBeforeAction(action),
+                      showAtTop: true,
+                    );
+                    return;
+                  }
+
+                  final myUserId = await getMyUserId(ref);
+
+                  final otherUserId = (role == AppRole.provider)
+                      ? data.user?.id
+                      : data.provider?.id;
+
+                  if (otherUserId == null) return;
+
+                  if (!context.mounted) return;
+                  context.showLoader();
+
+                  final chatRepo = ref.read(chatRepositoryProvider);
+                  final result = await chatRepo.getChatId(otherUserId);
+
+                  if (!context.mounted) return;
+                  context.hideLoader();
+
+                  result.when(
+                    success: (chatId) {
+                      context.push(
+                        AppRoutes.chatPath(
+                          chatId.isEmpty ? otherUserId : chatId,
+                        ),
+                        extra: {
+                          'otherUserId': otherUserId,
+                          'name': name,
+                          'myId': myUserId,
+                          'imageUrl': profileUrl ?? "",
+                        },
+                      );
+                    },
+                    failure: (e) {
+                      context.showSnackBar(
+                        AppLocalizations.of(
+                          context,
+                        )!.failedToLoadChat(e.message),
+                      );
+                    },
+                  );
+                },
+                child: AppAvatar(
+                  imageUrl: Assets.icons.chatIcon.keyName,
+                  size: AvatarSize.md,
+                  backgroundColor: AppColors.primaryFor(role),
+                ),
+              ),
+            ],
           ),
-        ),
-        GestureDetector(
-          onTap: () async {
-            if (bookingStatus == BookingStatus.pending || bookingStatus == BookingStatus.requested) {
-              final action = role == AppRole.user ? AppLocalizations.of(context)!.accepting : AppLocalizations.of(context)!.creating;
-              context.showSnackBar(AppLocalizations.of(context)!.cantChatBeforeAction(action), showAtTop: true);
-              return;
-            }
-
-            final myUserId = await getMyUserId(ref);
-
-            final otherUserId = (role == AppRole.provider)
-                ? data.user?.id
-                : data.provider?.id;
-
-            if (otherUserId == null) return;
-
-            if (!context.mounted) return;
-            context.showLoader();
-
-            final chatRepo = ref.read(chatRepositoryProvider);
-            final result = await chatRepo.getChatId(otherUserId);
-
-            if (!context.mounted) return;
-            context.hideLoader();
-
-            result.when(
-              success: (chatId) {
-                context.push(
-                  AppRoutes.chatPath(chatId.isEmpty ? otherUserId : chatId),
-                  extra: {
-                    'otherUserId': otherUserId,
-                    'name': name,
-                    'myId': myUserId,
-                    'imageUrl': profileUrl ?? "",
-                  },
-                );
-              },
-              failure: (e) {
-                context.showSnackBar(AppLocalizations.of(context)!.failedToLoadChat(e.message));
-              },
-            );
-          },
-          child: AppAvatar(
-            imageUrl: Assets.icons.chatIcon.keyName,
-            size: AvatarSize.md,
-            backgroundColor: AppColors.primaryFor(role),
-          ),
-        ),
-      ],
-    ),
-  ],
-),
+        ],
+      ),
     );
   }
 
   // ─── Price breakdown ──────────────────────────────────────────────────────
   Widget _buildPrice(BuildContext context) {
     final rows = [
-      ('${data.bookingType.titleCase} ${AppLocalizations.of(context)!.serviceText.toLowerCase()}', '\$${data.price.toStringAsFixed(2)}', false),
-      (AppLocalizations.of(context)!.bookingHours, '${data.totalHours}h', false),
-      (AppLocalizations.of(context)!.subtotal, '\$${data.price.toStringAsFixed(2)}', false),
-      (AppLocalizations.of(context)!.clientProtection, AppLocalizations.of(context)!.free, false),
+      (
+        '${data.bookingType.titleCase} ${AppLocalizations.of(context)!.serviceText.toLowerCase()}',
+        '\$${data.price.toStringAsFixed(2)}',
+        false,
+      ),
+      (
+        AppLocalizations.of(context)!.bookingHours,
+        '${data.totalHours}h',
+        false,
+      ),
+      (
+        AppLocalizations.of(context)!.subtotal,
+        '\$${data.price.toStringAsFixed(2)}',
+        false,
+      ),
+      (
+        AppLocalizations.of(context)!.clientProtection,
+        AppLocalizations.of(context)!.free,
+        false,
+      ),
     ];
 
     return Column(

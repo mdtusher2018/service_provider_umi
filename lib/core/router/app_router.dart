@@ -28,6 +28,7 @@ import 'package:service_provider_umi/featured/guest/guest_onboarding.dart';
 import 'package:service_provider_umi/featured/profile/screen/change_password_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/language_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/add_faq_screen.dart';
+import 'package:service_provider_umi/featured/profile/screen/documents_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/address/my_addresses_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/my_balance_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/payments_screen.dart';
@@ -38,6 +39,7 @@ import 'package:service_provider_umi/featured/profile/screen/preferences/work_ar
 import 'package:service_provider_umi/featured/profile/screen/profile_screen/profile_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/provider_listing_screen/provider_listing_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/provider_profile_overview/provider_profile_screen.dart';
+import 'package:service_provider_umi/featured/service/screens/provider_profile_overview/provider_gallery_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/reviews_screen.dart';
 import 'package:service_provider_umi/featured/profile/screen/static_page_screen.dart';
 import 'package:service_provider_umi/featured/service/screens/booking_details_screen/booking_details_screen.dart';
@@ -390,6 +392,13 @@ GoRouter appRouter(Ref ref) {
           return ProviderProfileOverviewScreen(providerId: id);
         },
       ),
+      GoRoute(
+        path: AppRoutes.providerGalleryView,
+        builder: (context, state) {
+          final id = state.pathParameters['providerId']!;
+          return ProviderGalleryScreen(providerId: id);
+        },
+      ),
 
       // ── Booking flow ─────────────────────────────────────
       GoRoute(
@@ -432,9 +441,13 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.personalDetails,
         builder: (context, state) {
-          final user = state.extra as UserProfile;
-          return PersonalDetailsScreen(user: user);
+          final profile = state.extra as UserProfile;
+          return PersonalDetailsScreen(user: profile);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.documents,
+        builder: (context, state) => const DocumentsScreen(),
       ),
       GoRoute(
         path: AppRoutes.myAddresses,

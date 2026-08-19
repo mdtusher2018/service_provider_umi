@@ -20,6 +20,7 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import 'package:service_provider_umi/l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
+import 'package:service_provider_umi/featured/favourites/favourites_screen.dart';
 
 part '_build_results_list.dart';
 part '_faq_bottom_sheet.dart';
@@ -138,8 +139,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
             Column(
               children: [
                 _buildHeader(context, _searchController, _onSearchChanged),
-                _buildFilterRow(ref, widget.serviceId),
-                _buildFaqBanner(),
+                _buildFilterRow(ref, widget.serviceId, () => setState(() => _showFaqSheet = true)),
                 Expanded(child: _buildResultsList(ref: ref, serviceId: widget.serviceId)),
               ],
             ),
@@ -149,27 +149,6 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
                 hideBottomsheet: () => setState(() => _showFaqSheet = false),
                 serviceId: widget.serviceId,
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFaqBanner() {
-    return GestureDetector(
-      onTap: () => setState(() => _showFaqSheet = true),
-      child: Container(
-        margin: 16.paddingAll,
-        child: Row(
-          children: [
-            const Icon(Icons.info, color: AppColors.primary, size: 18),
-            8.horizontalSpace,
-            AppText.bodyMd(
-              AppLocalizations.of(context)!.howDoesTheServiceWork,
-              fontWeight: FontWeight.w500,
-            ),
-            const Spacer(),
-            const Icon(Icons.arrow_forward, color: AppColors.primary),
           ],
         ),
       ),

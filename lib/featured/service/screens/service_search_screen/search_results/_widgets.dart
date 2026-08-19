@@ -3,10 +3,12 @@ part of "service_search_results_screen.dart";
 class _FilterChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool isPrimary;
   final VoidCallback onTap;
   const _FilterChip({
     required this.icon,
     required this.label,
+    this.isPrimary = false,
     required this.onTap,
   });
 
@@ -17,16 +19,16 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: 8.circular,
-          border: Border.all(color: AppColors.grey800),
+          color: isPrimary ? AppColors.primary.withOpacity(0.1) : AppColors.white,
+          borderRadius: 24.circular,
+          border: Border.all(color: isPrimary ? AppColors.primary : AppColors.grey300),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: AppColors.textPrimary),
+            Icon(icon, size: 16, color: isPrimary ? AppColors.primary : AppColors.grey600),
             6.horizontalSpace,
-            AppText.labelLg(label),
+            AppText.labelMd(label, color: isPrimary ? AppColors.primary : AppColors.grey600, fontWeight: FontWeight.w600),
           ],
         ),
       ),
@@ -58,9 +60,10 @@ Widget _buildHeader(BuildContext context, TextEditingController controller, Valu
         10.horizontalSpace,
         InkWell(
           onTap: () {
-            // context.go(AppRoutes.favourites);
-            context.push(
-              AppRoutes.providerProfilePath("69ca1d079d5373b1fc1189d3"),
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (_) => const FavouritesScreen(),
+              ),
             );
           },
           child: Container(
@@ -83,14 +86,15 @@ Widget _buildHeader(BuildContext context, TextEditingController controller, Valu
   );
 }
 
-Widget _buildFilterRow(WidgetRef ref, String id) {
+Widget _buildFilterRow(WidgetRef ref, String id, VoidCallback onFaqTap) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     child: Row(
       children: [
         _FilterChip(
-          icon: Icons.calendar_today_outlined,
+          icon: Icons.check_circle_outline,
           label: AppLocalizations.of(ref.context)!.whenQuestion,
+          isPrimary: true,
           onTap: () {
             if (kIsWeb) {
               ref.context.go(AppRoutes.searchTimePath("2"));
@@ -111,6 +115,20 @@ Widget _buildFilterRow(WidgetRef ref, String id) {
               ref.context.push(AppRoutes.filterPath(id)).then((value) {});
             }
           },
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: onFaqTap,
+          child: Row(
+            children: [
+              AppText.labelSm(
+                AppLocalizations.of(ref.context)!.howDoesTheServiceWork,
+                color: AppColors.primary,
+              ),
+              4.horizontalSpace,
+              const Icon(Icons.arrow_forward, color: AppColors.primary, size: 16),
+            ],
+          ),
         ),
       ],
     ),

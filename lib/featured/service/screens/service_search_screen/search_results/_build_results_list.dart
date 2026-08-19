@@ -95,6 +95,8 @@ Widget _buildResultsList({required WidgetRef ref, required String serviceId}) {
               isVerified: p.verified,
               hasRepeated: p.repeatedCount > 0,
               isFavorited: p.isLiked,
+              experience: p.experience,
+              expertise: p.expertise,
               hasUpdatedSchedule: true,
               onTap: () {
                 if (kIsWeb) {
@@ -103,7 +105,6 @@ Widget _buildResultsList({required WidgetRef ref, required String serviceId}) {
                   ref.context.push(AppRoutes.providerProfilePath(p.id));
                 }
               },
-              onFavorite: () {},
             );
           },
         ),

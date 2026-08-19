@@ -121,7 +121,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
 
   // ── GET /subcategories ───────────────────────────────────────
   @override
-  Future<List<SubCategoryModel>> getSubCategoriesByQuery(String categoryId) async {
+  Future<List<SubCategoryModel>> getSubCategoriesByQuery(
+    String categoryId,
+  ) async {
     final response = await _dio.get(
       ApiEndpoints.subCategoriesPaginated,
       queryParameters: {
@@ -267,7 +269,10 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   ) async {
     await _dio.post(
       ApiEndpoints.confirmPayment,
-      data: {"bookingId": bookingId, "additionalComment": ?additionalComment},
+      data: {
+        "bookingId": bookingId,
+        "additionalComment": additionalComment,
+      },
     );
   }
 
@@ -290,7 +295,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
           endpoint,
           queryParameters: {
             'page': page,
-            'include': 'user,provider,bookingDays',
+            'include': 'user,provider,bookingDays,address',
             'status': BookingStatus.requested.name,
             if (date != null) 'date': DateTime.parse(date).toLocal(),
           },
@@ -299,7 +304,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
           endpoint,
           queryParameters: {
             'page': page,
-            'include': 'user,provider,bookingDays',
+            'include': 'user,provider,bookingDays,address',
             'status': BookingStatus.pending.name,
             if (date != null) 'date': DateTime.parse(date).toLocal(),
           },
@@ -318,12 +323,13 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     // ✅ NORMAL FLOW
     final queryParams = <String, dynamic>{
       'page': page,
-      'include': 'user,provider,bookingDays',
+      'include': 'user,provider,bookingDays,address',
       if (status == BookingStatus.upcoming)
         'upcoming': true
       else
         'status': status.name,
-      if (date != null) 'date': DateTime.parse(date).toIso8601String().split('.').first,
+      if (date != null)
+        'date': DateTime.parse(date).toIso8601String().split('.').first,
     };
 
     final response = await _dio.get(endpoint, queryParameters: queryParams);
@@ -337,7 +343,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     final url = ApiEndpoints.bookingDetail.replaceFirst('{id}', bookingId);
     final response = await _dio.get(
       url,
-      queryParameters: {'include': 'user,provider,bookingDays'},
+      queryParameters: {'include': 'user,provider,bookingDays,address'},
     );
     return _parse(response, BookingDetailModel.fromJson);
   }
@@ -393,11 +399,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   }) async {
     final response = await _dio.post(
       ApiEndpoints.faqs,
-      data: {
-        "question": question,
-        "answer": answer,
-        "userId": userId,
-      },
+      data: {"question": question, "answer": answer, "userId": userId},
     );
     final apiResponse = ApiResponse<void>.fromJson(
       response.data as Map<String, dynamic>,
@@ -405,7 +407,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     );
     if (!apiResponse.success) {
       throw Exception(
-        apiResponse.error?.message ?? apiResponse.message ?? 'Failed to create FAQ',
+        apiResponse.error?.message ??
+            apiResponse.message ??
+            'Failed to create FAQ',
       );
     }
   }

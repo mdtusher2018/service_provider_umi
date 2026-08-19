@@ -21,7 +21,6 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 part 'service_provider.g.dart';
 
-
 // ── GET /categories ───────────────────────────────────────────────────────────
 
 @riverpod
@@ -101,7 +100,10 @@ class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
 
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
-  Future<void> search([SearchProvidersRequest? request, bool initial = false]) async {
+  Future<void> search([
+    SearchProvidersRequest? request,
+    bool initial = false,
+  ]) async {
     if (_isFetching) return;
 
     final req = request ?? _currentRequest;
@@ -130,16 +132,20 @@ class SearchServiceProvidersNotifier extends _$SearchServiceProvidersNotifier {
       success: (data) {
         final newItems = data.results;
         final currentItems = state.value?.results ?? [];
-        final updatedItems = initial ? newItems : [...currentItems, ...newItems];
+        final updatedItems = initial
+            ? newItems
+            : [...currentItems, ...newItems];
 
         _hasMore = updatedItems.length < data.pagination.totalPage;
         _page++;
         _isFetching = false;
 
-        return AsyncData(SearchProvidersResponse(
-          results: updatedItems,
-          pagination: data.pagination,
-        ));
+        return AsyncData(
+          SearchProvidersResponse(
+            results: updatedItems,
+            pagination: data.pagination,
+          ),
+        );
       },
       failure: (e) {
         _isFetching = false;
@@ -169,7 +175,11 @@ class BookingsNotifier extends _$BookingsNotifier {
     return const AsyncLoading();
   }
 
-  Future<void> fetch({bool initial = false, String? date, bool clearDate = false}) async {
+  Future<void> fetch({
+    bool initial = false,
+    String? date,
+    bool clearDate = false,
+  }) async {
     if (_isFetching) return;
 
     if (initial) {
@@ -186,7 +196,7 @@ class BookingsNotifier extends _$BookingsNotifier {
     if (!_hasMore) return;
 
     _isFetching = true;
-    
+
     if (!initial) {
       state = AsyncLoading<List<BookingModel>>().copyWithPrevious(state);
     }
@@ -213,7 +223,7 @@ class BookingsNotifier extends _$BookingsNotifier {
         } else {
           _hasMore = newItems.isNotEmpty;
         }
-        
+
         _page++;
 
         state = AsyncData(updated);
@@ -476,13 +486,19 @@ class FilterNotifier extends _$FilterNotifier {
   }
 }
 
-final subcategoriesProvider = FutureProvider.family<List<SubCategoryModel>, String>((ref, categoryId) async {
-  final result = await ref.read(serviceRepositoryProvider).getSubCategoriesByQuery(categoryId);
-  return result.when(
-    success: (data) => data,
-    failure: (failure) => throw Exception(failure.message),
-  );
-});
+final subcategoriesProvider =
+    FutureProvider.family<List<SubCategoryModel>, String>((
+      ref,
+      categoryId,
+    ) async {
+      final result = await ref
+          .read(serviceRepositoryProvider)
+          .getSubCategoriesByQuery(categoryId);
+      return result.when(
+        success: (data) => data,
+        failure: (failure) => throw Exception(failure.message),
+      );
+    });
 
 //========================================
 //==========Service Profile API===========

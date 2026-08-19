@@ -7,6 +7,7 @@ class FavoriteModel {
   final ServiceProviderInfo? serviceProvider;
   final UserProfile? userProfile;
   final UserProfile? serviceProviderUser;
+  final DateTime? createdAt;
 
   FavoriteModel({
     required this.id,
@@ -15,6 +16,7 @@ class FavoriteModel {
     this.serviceProvider,
     this.userProfile,
     this.serviceProviderUser,
+    this.createdAt,
   });
 
   factory FavoriteModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class FavoriteModel {
       id: json['id'] ?? '',
       userId: json['userId'] ?? '',
       serviceProviderId: json['serviceProviderId'] ?? '',
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : DateTime.now(),
       serviceProvider: json['serviceProvider'] == null
           ? null
           : ServiceProviderInfo.fromJson(json['serviceProvider']),

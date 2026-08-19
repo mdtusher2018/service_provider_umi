@@ -62,6 +62,7 @@ class _SignupDialogState extends ConsumerState<_SignupDialog> {
             'format': 'json',
             'limit': '6',
             'addressdetails': '0',
+            'accept-language': 'en',
           },
           options: Options(headers: {'User-Agent': 'service_provider_umi/1.0'}),
         );

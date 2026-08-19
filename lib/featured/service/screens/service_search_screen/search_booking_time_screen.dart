@@ -39,14 +39,14 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
   DateTime _selectedDate = DateTime.now();
 
   final _morningSlots = [
-    (Assets.icons.sunrise.keyName, '6 - 9'),
-    (Assets.icons.day.keyName, '9 - 12'),
-    (Assets.icons.day.keyName, '12 - 15'),
+    ('☀️', '6 - 9'),
+    ('☀️', '9 - 12'),
+    ('☀️', '12 - 15'),
   ];
   final _eveningSlots = [
-    (Assets.icons.day.keyName, '15 - 18'),
-    (Assets.icons.sunset.keyName, '18 - 21'),
-    (Assets.icons.night.keyName, '21 - 00'),
+    ('🌙', '15 - 18'),
+    ('🌙', '18 - 21'),
+    ('🌙', '21 - 00'),
   ];
 
   @override
@@ -472,6 +472,9 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
         Expanded(
           child: AppButton.outline(
             label: AppLocalizations.of(context)!.skip,
+            textColor: AppColors.textPrimary,
+            borderColor: AppColors.border,
+            backgroundColor: AppColors.white,
             onPressed: () => _navigate(skip: true),
           ),
         ),
@@ -543,20 +546,21 @@ class _StartTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: 12.paddingV,
+      padding: 8.paddingV,
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.white : Colors.transparent,
+        color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.white,
         borderRadius: 24.circular,
-        boxShadow: [
-          if (isSelected)
-            BoxShadow(
-              color: AppColors.secondary.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-        ],
+        border: isSelected
+            ? Border.all(width: 1, color: AppColors.primary)
+            : Border.all(color: Colors.transparent),
       ),
-      child: Center(child: AppText.labelLg(label, fontWeight: FontWeight.w600)),
+      child: Center(
+        child: AppText.labelLg(
+          label, 
+          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
@@ -581,20 +585,21 @@ class _TimeRangeCard extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: 12.paddingV,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.white,
+          color: AppColors.white,
           borderRadius: 12.circular,
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? AppColors.primary : Colors.transparent,
+            width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Column(
           children: [
-            Image.asset(emoji, width: 24, height: 24),
+            Text(emoji, style: const TextStyle(fontSize: 20)),
             4.verticalSpace,
             AppText.labelMd(
               range,
-              color: isSelected ? AppColors.white : AppColors.textPrimary,
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
             ),
           ],
         ),

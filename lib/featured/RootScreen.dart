@@ -15,6 +15,7 @@ import 'package:service_provider_umi/core/services/socket/socket_service.dart';
 import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/featured/service/screens/user_service_screen/user_service_screen.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/riverpod/socket_signaling_provider.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'dart:convert';
 
 class RootScreen extends ConsumerStatefulWidget {
@@ -93,6 +94,9 @@ class _RootScreenState extends ConsumerState<RootScreen> {
     }
     if ((widget.role == AppRole.provider && index == 1) || (widget.role == AppRole.user && index == 3)) {
       ref.read(inboxRefreshProvider.notifier).state++;
+    }
+    if (index == 4) {
+      ref.read(myProfileProvider.notifier).fetch();
     }
     widget.navigationShell.goBranch(
       index,

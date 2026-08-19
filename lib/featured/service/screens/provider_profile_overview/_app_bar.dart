@@ -46,6 +46,11 @@ AppBar _buildAppBar({
           ref
               .read(favouritesNotifireProvider.notifier)
               .toggleFavorite(providerId);
+          if (isFavorited) {
+            ref.context.showFavoriteToast("Removed from favorites");
+          } else {
+            ref.context.showFavoriteToast("Added to favorites");
+          }
         },
         child: Icon(
           isFavorited ? Icons.favorite_rounded : Icons.favorite_border_rounded,

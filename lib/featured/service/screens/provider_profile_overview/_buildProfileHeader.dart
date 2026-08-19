@@ -12,7 +12,7 @@ Widget _buildProfileHeader({
         imageUrl: data.profileImage,
         size: AvatarSize.xl,
       ),
-      12.verticalSpace,
+      8.verticalSpace,
       AppText.h2(data.name),
       4.verticalSpace,
       AppText.labelLg(
@@ -22,52 +22,60 @@ Widget _buildProfileHeader({
         color: AppColors.primaryFor(ref.watch(appRoleProvider)),
       ),
       16.verticalSpace,
-
-      16.verticalSpace,
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          borderRadius: 16.circular,
-          border: Border.all(color: AppColors.borderFocus),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            AppAvatar(
-              imageUrl: Assets.icons.chatIcon.keyName,
-              size: AvatarSize.md,
+            _StatItem(
+              icon: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.chat_bubble_outline, color: AppColors.primary, size: 22),
+              ),
+              value: '${data.avgRating?.toStringAsFixed(1) ?? '0.0'} ⭐',
+              label: '${data.totalReview ?? 0} reviews',
               onTap: () {
                 ref.context.showSnackBar(
                   showAtTop: true,
                   "You can't chat with provider before booking a job",
                 );
-                // final myUserId = await getMyUserId(ref);
-                //
-                // ref.context.push(
-                //   AppRoutes.chatPath((chatId.isEmpty) ? data.id : chatId),
-                //   extra: {
-                //     'otherUserId': data.id,
-                //     'name': data.name,
-                //     'myId': myUserId,
-                //     'imageUrl': data.profileImage ?? "",
-                //   },
-                // );
               },
-              backgroundColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
             ),
             _StatDivider(),
             _StatItem(
-              value: '${data.avgRating?.toStringAsFixed(2)} ⭐',
-              label: '${data.totalReview} reviews',
+              icon: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.grid_view_outlined, color: AppColors.primary, size: 24),
+              ),
+              value: '1',
+              label: 'Services',
             ),
             _StatDivider(),
-            _StatItem(value: '${1}', label: 'Service'),
-            _StatDivider(),
             _StatItem(
-              value: '',
-              icon: Icon(Icons.verified, color: AppColors.info, size: 40),
-
-              valueColor: AppColors.primaryFor(ref.watch(appRoleProvider)),
+              icon: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.check_circle_outline, color: AppColors.primary, size: 24),
+              ),
+              value: 'Verified',
+              label: 'Profile',
             ),
           ],
         ),
@@ -79,25 +87,41 @@ Widget _buildProfileHeader({
 class _StatItem extends StatelessWidget {
   final String value;
   final String? label;
-  final Color? valueColor;
-  final Widget? icon;
+  final Widget icon;
+  final VoidCallback? onTap;
+
   const _StatItem({
     required this.value,
     this.label,
-    this.valueColor,
-    this.icon,
+    required this.icon,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (value.isNotEmpty)
-          AppText.h3(value, color: valueColor ?? AppColors.textPrimary),
-        ?icon,
-        2.verticalSpace,
-        if (label != null) AppText.bodySm(label!),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        children: [
+          icon,
+          4.verticalSpace,
+          if (value.contains('⭐'))
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.bodyLg(value.replaceAll(' ⭐', ''), fontWeight: FontWeight.w700),
+                4.horizontalSpace,
+                const Icon(Icons.star, color: AppColors.star, size: 16),
+              ],
+            )
+          else
+            AppText.bodyLg(value, fontWeight: FontWeight.w700),
+          if (label != null) ...[
+            AppText.bodySm(label!, color: AppColors.textSecondary),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -105,6 +129,10 @@ class _StatItem extends StatelessWidget {
 class _StatDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 50, color: AppColors.borderFocus);
+    return Container(
+      width: 1,
+      height: 50,
+      color: AppColors.border,
+    );
   }
 }

@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
 
@@ -157,6 +158,12 @@ class UpdateProviderRequest {
         ),
       );
     }
+
+    debugPrint('=== UpdateProviderRequest Payload ===');
+    debugPrint('Data map: $dataMap');
+    debugPrint('Cover Image path: ${coverImage?.path}');
+    debugPrint('Gallery Images (${images.length}): ${images.map((e) => e.path).toList()}');
+    debugPrint('=====================================');
 
     return FormData.fromMap(formMap);
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
@@ -22,6 +23,9 @@ class ProviderCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onFavorite;
   final bool isFavorited;
+  final String? experience;
+  final List<String> expertise;
+  final DateTime? addedAt;
 
   const ProviderCard({
     super.key,
@@ -38,34 +42,26 @@ class ProviderCard extends StatelessWidget {
     this.onTap,
     this.onFavorite,
     this.isFavorited = true,
+    this.experience,
+    this.expertise = const [],
+    this.addedAt,
   });
 
   @override
   Widget build(BuildContext context) {
     return _AppCard(
       onTap: onTap,
-      padding: 12.paddingAll,
+      padding: EdgeInsets.symmetric(horizontal: 12,),
       child: Column(
         children: [
+          12.verticalSpace,
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppAvatar(
                 imageUrl: imageUrl,
                 name: name,
                 size: AvatarSize.md,
-
-                isFavorite: Container(
-                  padding: 4.paddingAll,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey300,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isFavorited ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorited ? AppColors.error : AppColors.grey600,
-                    size: 16,
-                  ),
-                ),
               ),
               12.horizontalSpace,
               Expanded(
@@ -96,11 +92,19 @@ class ProviderCard extends StatelessWidget {
                     2.verticalSpace,
                     Row(
                       children: [
-                        Icon(Icons.star, color: AppColors.star, size: 20),
+                        ...List.generate(5, (index) {
+                          if (index < rating.floor()) {
+                            return const Icon(Icons.star, color: AppColors.star, size: 16);
+                          } else if (index < rating) {
+                            return const Icon(Icons.star_half, color: AppColors.star, size: 16);
+                          } else {
+                            return const Icon(Icons.star_border, color: AppColors.grey400, size: 16);
+                          }
+                        }),
                         6.horizontalSpace,
                         Flexible(
                           child: AppText.labelMd(
-                            '${rating.toStringAsFixed(1)}  (${reviewCount.toString()}) | $serviceCount Services',
+                            '${rating.toStringAsFixed(1)} (${reviewCount.toString()})',
                             color: AppColors.grey500,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -108,51 +112,84 @@ class ProviderCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (addedAt != null) ...[
+                      6.verticalSpace,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: 20.circular,
+                          border: Border.all(color: AppColors.grey300),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.calendar_month_outlined, size: 16, color: AppColors.primary),
+                            6.horizontalSpace,
+                            AppText.labelSm(
+                              'Added ${DateFormat('MMM dd, yyyy').format(addedAt!)}',
+                              color: AppColors.grey600,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     4.verticalSpace,
                   ],
                 ),
               ),
               8.horizontalSpace,
-              AppText(
-                '\$${pricePerHour.toStringAsFixed(0)}/h',
-                style: AppTextStyles.price.copyWith(color: AppColors.secondary),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (onFavorite != null)
+                    GestureDetector(
+                      onTap: onFavorite,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Icon(
+                          isFavorited ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                          color: isFavorited ? AppColors.error : AppColors.grey400,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  AppText(
+                    '\$${pricePerHour.toStringAsFixed(0)}/h',
+                    style: AppTextStyles.price.copyWith(color: AppColors.secondary),
+                  ),
+                ],
               ),
             ],
           ),
-          8.verticalSpace,
-          Row(
+          12.verticalSpace,
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              if (hasRepeated)
-                _buildBadge('$reviewCount has repeated', Icons.sync),
-              if (hasRepeated && hasUpdatedSchedule) 6.horizontalSpace,
-              if (hasUpdatedSchedule)
-                _buildBadge('Updated Schedule', Icons.calendar_today_outlined),
+              if (experience != null && experience!.isNotEmpty)
+                _buildOutlineBadge(experience!),
+              ...expertise.map((exp) => _buildOutlineBadge(exp)),
             ],
           ),
+          8.verticalSpace
         ],
       ),
     );
   }
 
-  Widget _buildBadge(String text, IconData icon) {
+  Widget _buildOutlineBadge(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: 6.circular,
+        color: AppColors.white,
+        borderRadius: 16.circular,
+        border: Border.all(color: AppColors.grey300),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: AppColors.grey600),
-          3.horizontalSpace,
-          AppText.bodyXs(
-            text,
-
-            color: AppColors.black,
-            fontWeight: FontWeight.w500,
-          ),
-        ],
+      child: AppText.labelSm(
+        text,
+        color: AppColors.grey600,
       ),
     );
   }

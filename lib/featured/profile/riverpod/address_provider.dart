@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/data/models/address_model.dart';
@@ -98,3 +99,6 @@ class AddressNotifier extends _$AddressNotifier {
     return updateAddress(address.id, request);
   }
 }
+
+/// ── Selected Address Global State ───────────────────────────────────────────────
+final selectedAddressIdProvider = StateProvider<String?>((ref) => null);

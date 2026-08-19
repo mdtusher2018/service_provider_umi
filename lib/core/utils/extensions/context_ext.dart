@@ -165,6 +165,57 @@ extension BuildContextExtensions on BuildContext {
   void showErrorSnackBar(String message) =>
       showSnackBar(message, isError: true,);
 
+  void showFavoriteToast(String message) {
+    final overlay = Overlay.of(this);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFBBF7D0)),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Color(0xFF16A34A), size: 20),
+                12.horizontalSpace,
+                Expanded(
+                  child: AppText.bodyMd(
+                    message,
+                    color: const Color(0xFF16A34A),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+    Future.delayed(const Duration(seconds: 3), () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
+  }
+
   void showLoader() {
     showDialog(
       context: this,
