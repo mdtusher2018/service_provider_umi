@@ -297,14 +297,14 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
     final totalCost = _mode == BookingFrequency.weekly
         ? _schedule.values.where((v) => v != null).fold<double>(0, (sum, v) {
             final from = _parseTime(v!.from, DateTime.now());
-            final to = _parseTime(v.to, DateTime.now());
+            final to = _parseTime(v.to, DateTime.now(), isEndTime: true);
             final hours = to.difference(from).inMinutes / 60.0;
             return sum + (widget.pricePerHour * hours);
           })
         : _singleFrom != null && _singleTo != null
         ? () {
             final from = _parseTime(_singleFrom!, _selectedDate);
-            final to = _parseTime(_singleTo!, _selectedDate);
+            final to = _parseTime(_singleTo!, _selectedDate, isEndTime: true);
             final hours = to.difference(from).inMinutes / 60.0;
             return widget.pricePerHour * hours;
           }()
@@ -401,7 +401,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
         final sched = entry.value!;
         final date = _nextWeekday(now, _weekdayIndex(entry.key));
         final from = _parseTime(sched.from, date);
-        final to = _parseTime(sched.to, date);
+        final to = _parseTime(sched.to, date, isEndTime: true);
         final durationHours = to.difference(from).inMinutes / 60.0;
 
         return BookingDayRequest(
@@ -431,7 +431,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
       if (_singleFrom == null || _singleTo == null) return null;
 
       final from = _parseTime(_singleFrom!, _selectedDate);
-      final to = _parseTime(_singleTo!, _selectedDate);
+      final to = _parseTime(_singleTo!, _selectedDate, isEndTime: true);
       final durationHours = to.difference(from).inMinutes / 60.0;
 
       // Derive 3-letter abbreviation from the selected date's weekday
@@ -463,15 +463,15 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
   // ─────────────────────────────────────────────────────────
 
   /// Parses "HH:mm" into a full [DateTime] anchored to [date].
-  DateTime _parseTime(String hhmm, DateTime date) {
+  DateTime _parseTime(String hhmm, DateTime date, {bool isEndTime = false}) {
     final parts = hhmm.split(':');
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-      int.parse(parts[0]),
-      int.parse(parts[1]),
-    );
+    final h = int.parse(parts[0]);
+    final m = int.parse(parts[1]);
+    var dt = DateTime(date.year, date.month, date.day, h, m);
+    if (isEndTime && h == 0 && m == 0) {
+      dt = dt.add(const Duration(days: 1));
+    }
+    return dt;
   }
 
   /// Returns the next date whose weekday matches [weekday] (1 = Mon … 7 = Sun).

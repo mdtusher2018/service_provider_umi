@@ -121,16 +121,34 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
                 20.verticalSpace,
 
                 /// ─── Additional Comments ─────────
-                _buildTextContentSection(
-                  "Additional comments",
-                  "Feel free to include any additional details if needed (please avoid contact details)",
-                ),
-
-                8.verticalSpace,
-                AppTextField(
-                  maxLines: 3,
-                  borderRadious: 8,
-                  controller: additionalCommentController,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.h4("Additional comments", color: AppColors.textPrimary),
+                      16.verticalSpace,
+                      const AppText(
+                        "Feel free to include any additional details if needed (please avoid contact details)",
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      16.verticalSpace,
+                      AppTextField(
+                        maxLines: 3,
+                        borderRadious: 8,
+                        controller: additionalCommentController,
+                      ),
+                    ],
+                  ),
                 ),
 
                 20.verticalSpace,
