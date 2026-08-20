@@ -171,7 +171,7 @@ class _CommunicationAndNotificationScreenState
                         child: const Icon(Icons.arrow_back_ios_rounded),
                       ),
                     ),
-                  const AppText.h1('Inbox'),
+                  AppText.h1(AppLocalizations.of(context)!.inbox),
                 ],
               ),
             ),

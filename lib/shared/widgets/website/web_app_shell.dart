@@ -17,6 +17,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/shared/widgets/website/riverpod/website_provider.dart';
 import 'package:service_provider_umi/shared/widgets/website/web_overlay_wrapper.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 part 'website_header.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -412,7 +413,7 @@ class _AboutText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppText.h1('About Us', fontSize: 32),
+        AppText.h1(AppLocalizations.of(context)!.aboutUs, fontSize: 32),
         const SizedBox(height: 16),
         AppText.labelLg(
           'Lorem ipsum dolor sit amet consectetur. Augue non malesuada '

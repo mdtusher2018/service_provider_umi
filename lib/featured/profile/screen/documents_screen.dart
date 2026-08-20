@@ -90,7 +90,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
   void _onUpdate() {
     if (!_palliativeCare && !_drivingLicence && !_businessProfile && !_qualifiedCarer) {
-      context.showErrorSnackBar('Please select at least one document to proceed.');
+      context.showErrorSnackBar(AppLocalizations.of(context)!.pleaseSelectDocument);
       return;
     }
 
@@ -117,7 +117,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       if (next is AsyncError) {
         context.showErrorSnackBar(next.error.toString());
       } else if (next is AsyncData && next.value == true) {
-        context.showSuccessSnackBar('Documents updated successfully');
+        context.showSuccessSnackBar(AppLocalizations.of(context)!.documentsUpdatedSuccessfully);
         ref.read(myProfileProvider.notifier).fetch();
         if (context.canPop()) {
           context.pop();
@@ -130,7 +130,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppAppBar(title: 'Documents'),
+      appBar: AppAppBar(title: AppLocalizations.of(context)!.documents),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),

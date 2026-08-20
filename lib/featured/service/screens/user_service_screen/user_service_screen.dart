@@ -19,6 +19,8 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 part '_rating_dialog.dart';
 part '_segmented_tab_bar.dart';
 
@@ -103,9 +105,9 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
-                  child: AppText.h1('Service'),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                  child: AppText.h1(AppLocalizations.of(context)!.service),
                 ),
                 Padding(
                   padding: 20.paddingRight,

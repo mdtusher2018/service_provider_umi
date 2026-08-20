@@ -71,7 +71,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AppText.h3('Service frequency'),
+              AppText.h3(AppLocalizations.of(context)!.serviceFrequency),
               GestureDetector(
                 onTap: widget.onClose,
                 child: const Icon(
@@ -81,7 +81,7 @@ class _ServiceFrequencySheetState extends State<_ServiceFrequencySheet> {
               ),
             ],
           ),
-          AppText.bodySm('How many times do you want the service?'),
+          AppText.bodySm(AppLocalizations.of(context)!.howManyTimesDoYouWantTheService),
           16.verticalSpace,
 
           // Weekly option

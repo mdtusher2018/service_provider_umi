@@ -6,6 +6,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class ProviderGalleryScreen extends ConsumerWidget {
   final String providerId;
@@ -29,7 +30,7 @@ class ProviderGalleryScreen extends ConsumerWidget {
             size: 20,
           ),
         ),
-        title: AppText.h3('Gallery'),
+        title: AppText.h3(AppLocalizations.of(context)!.gallery),
         centerTitle: true,
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,

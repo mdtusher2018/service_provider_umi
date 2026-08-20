@@ -218,7 +218,7 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save schedule. Try again.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.failedToSaveSchedule)),
       );
     }
   }

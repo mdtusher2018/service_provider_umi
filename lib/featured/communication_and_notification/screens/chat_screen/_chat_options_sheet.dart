@@ -14,7 +14,7 @@ class _ChatOptionsSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.h3("Settings"),
+          AppText.h3(AppLocalizations.of(context)!.settings),
 
           _OptionTile(
             icon: Icons.block_rounded,

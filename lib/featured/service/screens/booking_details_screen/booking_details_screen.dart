@@ -192,7 +192,7 @@ class _BookingDetailBody extends ConsumerWidget {
           16.verticalSpace,
           _buildSection(
             AppLocalizations.of(context)!.dateAndTime,
-            _buildDateTime(data),
+            _buildDateTime(data, context),
           ),
           16.verticalSpace,
           _buildSection(

@@ -1,9 +1,9 @@
 part of 'booking_details_screen.dart';
 
 // ─── Date and time — iterate ALL booking days ─────────────────────────────
-Widget _buildDateTime(BookingDetailModel data) {
+Widget _buildDateTime(BookingDetailModel data, BuildContext context) {
   if (data.bookingDays.isEmpty) {
-    return AppText.bodySm('No schedule available.');
+    return AppText.bodySm(AppLocalizations.of(context)!.noScheduleAvailable);
   }
 
   return Column(

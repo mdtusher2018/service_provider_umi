@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 /// A unified text widget that wraps all app text styles.
-/// Usage: AppText.h1('Hello'), AppText.bodyMd('Description')
+/// Usage: AppText.h1(AppLocalizations.of(context)!.hello), AppText.bodyMd('Description')
 class AppText extends StatelessWidget {
   final String text;
   final TextStyle? style;

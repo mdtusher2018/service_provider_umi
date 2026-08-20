@@ -45,7 +45,7 @@ class _PaymentMethodsSectionState extends ConsumerState<PaymentMethodsSection> {
       } else if (previous?.isLoading == true &&
           next.hasValue &&
           !next.isLoading) {
-        context.showSuccessSnackBar("Payment successful");
+        context.showSuccessSnackBar(AppLocalizations.of(context)!.paymentSuccessful);
         Future.delayed(const Duration(milliseconds: 800), () {
           if (context.mounted) context.go(AppRoutes.userHome);
         });

@@ -5,7 +5,6 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
-import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/data/models/booking_models.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
@@ -14,6 +13,8 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/utils/extensions/context_ext.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 class BookingCard extends ConsumerStatefulWidget {
   final BookingModel item;
@@ -246,8 +247,8 @@ class _BookingCardState extends ConsumerState<BookingCard>
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: AppColors.grey200),
                             ),
-                            child: const AppText.bodyXs(
-                              'See more',
+                            child: AppText.bodyXs(
+                              AppLocalizations.of(context)!.seeMore,
                               color: AppColors.textPrimary,
                               fontWeight: FontWeight.w500,
                             ),

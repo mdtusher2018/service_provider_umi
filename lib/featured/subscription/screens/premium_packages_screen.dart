@@ -9,7 +9,7 @@ import 'package:service_provider_umi/featured/subscription/riverpod/subscription
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
-
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 /// ─────────────────────────────────────────────────────────────────────────────
 /// Backend Package Model
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -144,9 +144,9 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF334155)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const AppText.h3(
-          'Choose Your Plan',
-          color: Color(0xFF1E293B),
+        title: AppText.h3(
+          AppLocalizations.of(context)!.chooseYourPlan,
+          color: const Color(0xFF1E293B),
           fontWeight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -171,15 +171,15 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                     children: [
                       Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey.shade400),
                       16.verticalSpace,
-                      const AppText.bodyLg(
-                        'No plans available right now.',
-                        color: Color(0xFF64748B),
+                      AppText.bodyLg(
+                        AppLocalizations.of(context)!.noPlansAvailable,
+                        color: const Color(0xFF64748B),
                         fontWeight: FontWeight.w500,
                       ),
                       8.verticalSpace,
-                      const AppText.bodySm(
-                        'Please check back later or contact support.',
-                        color: Color(0xFF94A3B8),
+                      AppText.bodySm(
+                        AppLocalizations.of(context)!.checkBackLater,
+                        color: const Color(0xFF94A3B8),
                       ),
                     ],
                   ),
@@ -194,15 +194,15 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                   /// Header
                   const Icon(Icons.workspace_premium, size: 56, color: _cyanColor),
                   12.verticalSpace,
-                  const AppText.h2(
-                    'Upgrade to Premium',
+                  AppText.h2(
+                    AppLocalizations.of(context)!.upgradeToPremium,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: const Color(0xFF1E293B),
                   ),
                   8.verticalSpace,
-                  const AppText.bodySm(
-                    'Unlock all features and grow your business.',
-                    color: Color(0xFF94A3B8),
+                  AppText.bodySm(
+                    AppLocalizations.of(context)!.unlockAllFeatures,
+                    color: const Color(0xFF94A3B8),
                   ),
                   32.verticalSpace,
 
@@ -222,11 +222,11 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                           final monthlyAnnualCost = monthlyPkg.price * 12;
                           if (monthlyAnnualCost > package.price) {
                             final savings = ((monthlyAnnualCost - package.price) / monthlyAnnualCost * 100).round();
-                            savingsBadge = 'Save $savings%';
+                            savingsBadge = AppLocalizations.of(context)!.savePercent(savings.toString());
                           }
                         }
                         if (package.savingsPercent != null && package.savingsPercent! > 0) {
-                          savingsBadge = 'Save ${package.savingsPercent}%';
+                          savingsBadge = AppLocalizations.of(context)!.savePercent(package.savingsPercent.toString());
                         }
 
                         return GestureDetector(
@@ -370,8 +370,8 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                                 if (currentProductId == selectedPackage.productId) {
                                   if (mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('You are already subscribed to this plan.'),
+                                      SnackBar(
+                                        content: Text(AppLocalizations.of(context)!.alreadySubscribed),
                                         backgroundColor: Colors.orange,
                                       ),
                                     );
@@ -409,8 +409,8 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                                   debugPrint('❌ [Packages] No matching RevenueCat package found for productId: ${selectedPackage.productId}');
                                   if (mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('This plan is not available for purchase on this platform yet. Please try again later.'),
+                                      SnackBar(
+                                        content: Text(AppLocalizations.of(context)!.planNotAvailable),
                                         backgroundColor: Colors.red,
                                       ),
                                     );
@@ -426,7 +426,7 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                                 if (mounted && success) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Successfully subscribed to ${selectedPackage.name}!'),
+                                      content: Text(AppLocalizations.of(context)!.successfullySubscribed(selectedPackage.name)),
                                       backgroundColor: Colors.green,
                                     ),
                                   );
@@ -455,8 +455,8 @@ class _PremiumPackagesScreenState extends ConsumerState<PremiumPackagesScreen> {
                               height: 24,
                               child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                             )
-                          : const AppText.bodyLg(
-                              'Subscribe Now',
+                          : AppText.bodyLg(
+                              AppLocalizations.of(context)!.subscribeNow,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),

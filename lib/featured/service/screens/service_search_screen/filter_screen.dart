@@ -311,7 +311,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                         const AppDivider(height: 40, color: AppColors.grey400),
 
                         // ─── Specialists in ────────────────────────────
-                        AppText.h3('Show specialists in:'),
+                        AppText.h3(AppLocalizations.of(context)!.showSpecialistsIn),
                         12.verticalSpace,
                         ...categories.map(
                           (c) => Column(

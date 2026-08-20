@@ -1,5 +1,6 @@
 part of 'user_home_screen.dart';
 
+
 class ServiceAddressBottomSheet extends ConsumerStatefulWidget {
   const ServiceAddressBottomSheet({super.key});
 
@@ -32,7 +33,7 @@ class _ServiceAddressBottomSheetState extends ConsumerState<ServiceAddressBottom
 
     if (street.isEmpty || city.isEmpty || stateStr.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all fields.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseFillOutAllFields)),
       );
       return;
     }
@@ -258,7 +259,7 @@ class _ServiceAddressBottomSheetState extends ConsumerState<ServiceAddressBottom
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const SizedBox(width: 24), // For balance with close button
-                    const AppText.h3('Delete this address?'),
+                    AppText.h3(AppLocalizations.of(context)!.deleteThisAddress),
                     InkWell(
                       onTap: () => Navigator.pop(context),
                       child: const Icon(Icons.close),
@@ -426,7 +427,7 @@ class _ServiceAddressBottomSheetState extends ConsumerState<ServiceAddressBottom
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.h2('Service address'),
+                    AppText.h2(AppLocalizations.of(context)!.serviceAddress),
                     AppText.bodyMd('Select where you want to receive the service', color: AppColors.textSecondary),
                   ],
                 ),

@@ -125,7 +125,7 @@ class _ProviderListingScreenState
   void _save() async {
     final double? hourlyRate = double.tryParse(_priceController.text);
     if (hourlyRate == null) {
-      context.showErrorSnackBar('Please enter a valid price per hour');
+      context.showErrorSnackBar(AppLocalizations.of(context)!.pleaseEnterValidPricePerHour);
       return;
     }
 
@@ -169,7 +169,7 @@ class _ProviderListingScreenState
         context.showErrorSnackBar(next.error.toString());
       }
       if (next is AsyncData && next.value == true) {
-        context.showSuccessSnackBar('Listing updated successfully');
+        context.showSuccessSnackBar(AppLocalizations.of(context)!.listingUpdatedSuccessfully);
         ref.read(myProfileProvider.notifier).fetch();
         if (context.canPop()) {
           context.pop();
@@ -289,7 +289,7 @@ class _ProviderListingScreenState
                             children: [
                               const Icon(Icons.add_photo_alternate_outlined, color: AppColors.grey500),
                               4.verticalSpace,
-                              AppText.bodySm('Add', color: AppColors.grey500),
+                              AppText.bodySm(AppLocalizations.of(context)!.add, color: AppColors.grey500),
                             ],
                           ),
                         ),

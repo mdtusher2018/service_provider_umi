@@ -431,7 +431,7 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
 
       // If user hasn't selected a time slot for flexible search, show a snackbar
       // if (_startTimeType == StartTimeType.flexible && resolvedFlexibleSlot == null) {
-      //   context.showErrorSnackBar("Please select a flexible start time slot or use 'Skip'.");
+      //   context.showErrorSnackBar(AppLocalizations.of(context)!.pleaseSelectFlexibleStartTime);
       //   return;
       // }
 

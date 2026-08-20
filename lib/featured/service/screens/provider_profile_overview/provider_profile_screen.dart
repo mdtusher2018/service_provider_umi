@@ -31,6 +31,8 @@ import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 import 'package:readmore/readmore.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 part '_buildComments.dart';
 part '../../../guest/guest_login_dialog.dart';
 part '_buildProfileHeader.dart';

@@ -10,6 +10,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class SupportMessageScreen extends ConsumerStatefulWidget {
   const SupportMessageScreen({super.key});
@@ -54,11 +55,11 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
       );
 
       if (!mounted) return;
-      context.showSnackBar('Your message has been sent successfully.');
+      context.showSnackBar(AppLocalizations.of(context)!.messageSentSuccessfully);
       context.pop();
     } catch (e) {
       if (!mounted) return;
-      context.showErrorSnackBar('Failed to send message. Please try again.');
+      context.showErrorSnackBar(AppLocalizations.of(context)!.failedToSendMessage);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -90,7 +91,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
                   children: [
                     const Icon(Icons.arrow_back_ios_rounded, size: 14, color: AppColors.textPrimary),
                     4.horizontalSpace,
-                    const AppText.bodySm('Go back', fontWeight: FontWeight.w600),
+                    AppText.bodySm(AppLocalizations.of(context)!.goBack, fontWeight: FontWeight.w600),
                   ],
                 ),
               ),
@@ -106,7 +107,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AppText.h1('Iumi Admin Support', textAlign: TextAlign.center),
+                AppText.h1(AppLocalizations.of(context)!.iumiAdminSupport, textAlign: TextAlign.center),
                 8.verticalSpace,
                 const AppText.bodyMd(
                   'Have a question or need assistance? Send us a message and we\'ll get back to you.',
@@ -116,7 +117,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
                 32.verticalSpace,
 
                 // Full name
-                const AppText.bodySm('Full name', fontWeight: FontWeight.w600),
+                AppText.bodySm(AppLocalizations.of(context)!.fullName, fontWeight: FontWeight.w600),
                 8.verticalSpace,
                 AppTextField(
                   controller: _nameController,
@@ -129,7 +130,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
                 20.verticalSpace,
 
                 // Email
-                const AppText.bodySm('Email address', fontWeight: FontWeight.w600),
+                AppText.bodySm(AppLocalizations.of(context)!.emailAddress, fontWeight: FontWeight.w600),
                 8.verticalSpace,
                 AppTextField(
                   controller: _emailController,
@@ -144,7 +145,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
                 20.verticalSpace,
 
                 // Subject
-                const AppText.bodySm('Subject', fontWeight: FontWeight.w600),
+                AppText.bodySm(AppLocalizations.of(context)!.subject, fontWeight: FontWeight.w600),
                 8.verticalSpace,
                 AppTextField(
                   controller: _subjectController,
@@ -157,7 +158,7 @@ class _SupportMessageScreenState extends ConsumerState<SupportMessageScreen> {
                 20.verticalSpace,
 
                 // Message
-                const AppText.bodySm('Your message', fontWeight: FontWeight.w600),
+                AppText.bodySm(AppLocalizations.of(context)!.yourMessage, fontWeight: FontWeight.w600),
                 8.verticalSpace,
                 AppTextField(
                   controller: _messageController,

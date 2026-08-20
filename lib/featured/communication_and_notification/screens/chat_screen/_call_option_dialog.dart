@@ -28,7 +28,7 @@ class _CallOptionDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText.h3('Choose option'),
+                AppText.h3(AppLocalizations.of(context)!.chooseOption),
                 GestureDetector(
                   onTap: () => context.pop(),
                   child: const Icon(

@@ -35,13 +35,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noProvidersFound => 'Aucun fournisseur trouvé';
 
   @override
-  String get calendar => 'Calendar';
+  String get calendar => 'Calendrier';
 
   @override
   String get service => 'Service';
 
   @override
-  String get favourites => 'Favourites';
+  String get favourites => 'Favoris';
 
   @override
   String get notification => 'Notification';
@@ -51,111 +51,112 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get minimumPriceSavedSuccessfully =>
-      'Minimum price saved successfully';
+      'Prix minimum enregistré avec succès';
 
   @override
-  String get minimumPriceTitle => 'Minimum price';
+  String get minimumPriceTitle => 'Prix minimum';
 
   @override
   String get minimumPriceQuestion =>
-      'What is the minimum price a client must pay to book your service?  +info';
+      'Quel est le prix minimum qu\'un client doit payer pour réserver votre service ?  +info';
 
   @override
-  String get minimumPriceLabel => 'Minimum price:';
+  String get minimumPriceLabel => 'Prix minimum :';
 
   @override
   String get minimumPriceTip =>
-      'This will avoid being booked for a price so low that it\'s not worth your time to commute to the service';
+      'Cela évitera d\'être réservé pour un prix si bas qu\'il ne vaut pas votre temps de vous déplacer pour le service';
 
   @override
-  String get upcomingBookings => 'Upcoming Bookings';
+  String get upcomingBookings => 'Réservations à venir';
 
   @override
-  String get dateFilter => 'Date Filter';
+  String get dateFilter => 'Filtre de date';
 
   @override
-  String get noBookingsFound => 'No bookings found';
+  String get noBookingsFound => 'Aucune réservation trouvée';
 
   @override
-  String get request => 'Request';
+  String get request => 'Demande';
 
   @override
-  String get completed => 'Completed';
+  String get completed => 'Terminé';
 
   @override
-  String get ongoing => 'Ongoing';
+  String get ongoing => 'En cours';
 
   @override
-  String get cancelled => 'Cancelled';
+  String get cancelled => 'Annulé';
 
   @override
-  String get completedServices => 'Completed Services';
+  String get completedServices => 'Services terminés';
 
   @override
-  String get accountSettings => 'Account Settings';
+  String get accountSettings => 'Paramètres du compte';
 
   @override
-  String get personalDetails => 'Personal details';
+  String get personalDetails => 'Informations personnelles';
 
   @override
-  String get myAddresses => 'My addresses';
+  String get myAddresses => 'Mes adresses';
 
   @override
-  String get paymentsAndRefunds => 'Payments and refunds';
+  String get paymentsAndRefunds => 'Paiements et remboursements';
 
   @override
-  String get mySubscription => 'My Subscription';
+  String get mySubscription => 'Mon abonnement';
 
   @override
-  String get myListing => 'My Listing';
+  String get myListing => 'Mon annonce';
 
   @override
-  String get mySchedule => 'My schedule';
+  String get mySchedule => 'Mon planning';
 
   @override
-  String get minimumBookingAmount => 'Minimum booking amount';
+  String get minimumBookingAmount => 'Montant minimum de réservation';
 
   @override
-  String get myReview => 'My Review';
+  String get myReview => 'Mon avis';
 
   @override
-  String get addFaq => 'Add FAQ';
+  String get addFaq => 'Ajouter FAQ';
 
   @override
-  String get changePassword => 'Change Password';
+  String get changePassword => 'Changer le mot de passe';
 
   @override
-  String get language => 'Language';
+  String get language => 'Langue';
 
   @override
-  String get aboutUs => 'About Us';
+  String get aboutUs => 'À propos de nous';
 
   @override
-  String get termsAndConditions => 'Terms and conditions';
+  String get termsAndConditions => 'Termes et conditions';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'Politique de confidentialité';
 
   @override
-  String get logout => 'Logout';
+  String get logout => 'Se déconnecter';
 
   @override
-  String get failedToLoadProfile => 'Failed to load profile';
+  String get failedToLoadProfile => 'Échec du chargement du profil';
 
   @override
-  String get pullToRefresh => 'Pull to refresh';
+  String get pullToRefresh => 'Tirer pour actualiser';
 
   @override
-  String get areYouSureToLogout => 'Are you sure you want to log out?';
+  String get areYouSureToLogout =>
+      'Êtes-vous sûr de vouloir vous déconnecter ?';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Annuler';
 
   @override
-  String get notConnected => 'Not Connected';
+  String get notConnected => 'Non connecté';
 
   @override
-  String get connected => 'Connected';
+  String get connected => 'Connecté';
 
   @override
   String stripe(String status) {
@@ -163,1030 +164,1245 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get areYouSureToDeleteAccount => 'Are you sure you want to delete ?';
+  String get areYouSureToDeleteAccount =>
+      'Êtes-vous sûr de vouloir supprimer ?';
 
   @override
-  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+  String get profileUpdatedSuccessfully => 'Profil mis à jour avec succès';
 
   @override
   String failedToUpdateProfile(String message) {
-    return 'Failed to update profile: $message';
+    return 'Échec de la mise à jour du profil : $message';
   }
 
   @override
   String failedToDeleteAccount(String message) {
-    return 'Failed to delete account: $message';
+    return 'Échec de la suppression du compte : $message';
   }
 
   @override
-  String get fullName => 'Full name';
+  String get fullName => 'Nom complet';
 
   @override
-  String get aboutMe => 'About me';
+  String get aboutMe => 'À propos de moi';
 
   @override
-  String get searchYourAddress => 'Search your address…';
+  String get searchYourAddress => 'Recherchez votre adresse…';
 
   @override
-  String get phoneNumber => 'Phone number';
+  String get phoneNumber => 'Numéro de téléphone';
 
   @override
-  String get deleteAccountPermanently => 'Delete account permanently';
+  String get deleteAccountPermanently => 'Supprimer le compte définitivement';
 
   @override
-  String get yesDelete => 'YES, DELETE';
+  String get yesDelete => 'OUI, SUPPRIMER';
 
   @override
-  String get noDontDelete => 'NO, DON\'T DELETE';
+  String get noDontDelete => 'NON, NE PAS SUPPRIMER';
 
   @override
-  String get myAddress => 'My Address';
+  String get myAddress => 'Mon adresse';
 
   @override
-  String get yourAddresses => 'Your Addresses';
+  String get yourAddresses => 'Vos adresses';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Réessayer';
 
   @override
-  String get noAddresses => 'No addresses';
+  String get noAddresses => 'Aucune adresse';
 
   @override
-  String get addYourFirstAddressBelow => 'Add your first address below';
+  String get addYourFirstAddressBelow =>
+      'Ajoutez votre première adresse ci-dessous';
 
   @override
-  String get addNewAddress => 'Add New Address';
+  String get addNewAddress => 'Ajouter une nouvelle adresse';
 
   @override
-  String get defaultAddressUpdated => 'Default address updated';
+  String get defaultAddressUpdated => 'Adresse par défaut mise à jour';
 
   @override
-  String get defaultString => 'Default';
+  String get defaultString => 'Par défaut';
 
   @override
   String addressLabel(String address) {
-    return 'Address: $address';
+    return 'Adresse : $address';
   }
 
   @override
-  String get setAsDefault => 'Set as Default';
+  String get setAsDefault => 'Définir par défaut';
 
   @override
-  String get edit => 'Edit';
+  String get edit => 'Modifier';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Supprimer';
 
   @override
-  String get areYouSureToDelete => 'Are you sure you want to delete?';
+  String get areYouSureToDelete => 'Êtes-vous sûr de vouloir supprimer ?';
 
   @override
   String get thisAddressWillBeRemoved =>
-      'This address will be permanently removed.';
+      'Cette adresse sera définitivement supprimée.';
 
   @override
   String get pleaseSearchAndSelectAddress =>
-      'Please search and select an address first.';
+      'Veuillez d\'abord rechercher et sélectionner une adresse.';
 
   @override
-  String get editAddress => 'Edit Address';
+  String get editAddress => 'Modifier l\'adresse';
 
   @override
-  String get addAddress => 'Add address';
+  String get addAddress => 'Ajouter une adresse';
 
   @override
-  String get searchAddress => 'Search Address';
+  String get searchAddress => 'Rechercher une adresse';
 
   @override
   String latLng(String lat, String lng) {
-    return 'Lat: $lat,  Lng: $lng';
+    return 'Lat : $lat, Lng : $lng';
   }
 
   @override
-  String get reviewAndAdjust => 'Review & adjust if needed';
+  String get reviewAndAdjust => 'Vérifier et ajuster si nécessaire';
 
   @override
-  String get addressLine1 => 'Address Line 1 *';
+  String get addressLine1 => 'Ligne d\'adresse 1 *';
 
   @override
-  String get streetNumberAndName => 'Street number & name';
+  String get streetNumberAndName => 'Numéro et nom de rue';
 
   @override
-  String get required => 'Required';
+  String get required => 'Obligatoire';
 
   @override
-  String get addressLine2 => 'Address Line 2';
+  String get addressLine2 => 'Ligne d\'adresse 2';
 
   @override
-  String get areaNeighbourhood => 'Area / neighbourhood (optional)';
+  String get areaNeighbourhood => 'Quartier / zone (optionnel)';
 
   @override
-  String get city => 'City';
+  String get city => 'Ville';
 
   @override
-  String get state => 'State';
+  String get state => 'État';
 
   @override
-  String get postalCode => 'Postal Code';
+  String get postalCode => 'Code postal';
 
   @override
   String get postal => 'Postal';
 
   @override
-  String get country => 'Country';
+  String get country => 'Pays';
 
   @override
-  String get updateAddress => 'Update Address';
+  String get updateAddress => 'Mettre à jour l\'adresse';
 
   @override
-  String get saveAddress => 'Save Address';
+  String get saveAddress => 'Enregistrer l\'adresse';
 
   @override
-  String get myCards => 'My Cards';
+  String get myCards => 'Mes cartes';
 
   @override
-  String get addNew => 'Add New';
+  String get addNew => 'Ajouter';
 
   @override
-  String get failedToGetAddCardLink => 'Failed to get add card link';
+  String get failedToGetAddCardLink =>
+      'Échec de l\'obtention du lien d\'ajout de carte';
 
   @override
-  String get noCardsFound => 'No cards found';
+  String get noCardsFound => 'Aucune carte trouvée';
 
   @override
-  String get cardDeletedSuccessfully => 'Card deleted successfully';
+  String get cardDeletedSuccessfully => 'Carte supprimée avec succès';
 
   @override
-  String get setAsDefaultCardSuccessfully => 'Set as default card successfully';
+  String get setAsDefaultCardSuccessfully =>
+      'Carte par défaut définie avec succès';
 
   @override
-  String get failedToSetDefaultCard => 'Failed to set default card';
+  String get failedToSetDefaultCard =>
+      'Échec de la définition de la carte par défaut';
 
   @override
-  String get setAsDefaultCard => 'Set as Default Card';
+  String get setAsDefaultCard => 'Définir comme carte par défaut';
 
   @override
-  String get myBalance => 'My Balance';
+  String get myBalance => 'Mon solde';
 
   @override
-  String get availableBalance => 'Available balance';
+  String get availableBalance => 'Solde disponible';
 
   @override
-  String get paymentAndRefunds => 'Payment and refunds';
+  String get paymentAndRefunds => 'Paiements et remboursements';
 
   @override
-  String get paymentMethods => 'Payments methods';
+  String get paymentMethods => 'Méthodes de paiement';
 
   @override
-  String get myBooking => 'My booking';
+  String get myBooking => 'Ma réservation';
 
   @override
   String paidOn(String date) {
-    return 'Paid on $date';
+    return 'Payé le $date';
   }
 
   @override
   String serviceDate(String date) {
-    return 'Service date: $date';
+    return 'Date du service : $date';
   }
 
   @override
-  String get passwordChangedSuccessfully => 'Password changed successfully';
+  String get passwordChangedSuccessfully => 'Mot de passe changé avec succès';
 
   @override
-  String get currentPassword => 'Current password';
+  String get currentPassword => 'Mot de passe actuel';
 
   @override
-  String get oldPassword => 'Old password';
+  String get oldPassword => 'Ancien mot de passe';
 
   @override
-  String get enterOldPassword => 'Enter old password';
+  String get enterOldPassword => 'Entrez l\'ancien mot de passe';
 
   @override
-  String get newPassword => 'New password';
+  String get newPassword => 'Nouveau mot de passe';
 
   @override
-  String get confirmNewPassword => 'Confirm new password';
+  String get confirmNewPassword => 'Confirmer le nouveau mot de passe';
 
   @override
-  String get confirmPassword => 'Confirm Password';
+  String get confirmPassword => 'Confirmer le mot de passe';
 
   @override
-  String get faqAddedSuccessfully => 'FAQ added successfully';
+  String get faqAddedSuccessfully => 'FAQ ajoutée avec succès';
 
   @override
   String get question => 'Question';
 
   @override
-  String get enterYourQuestion => 'Enter your question';
+  String get enterYourQuestion => 'Entrez votre question';
 
   @override
-  String get pleaseEnterQuestion => 'Please enter a question';
+  String get pleaseEnterQuestion => 'Veuillez entrer une question';
 
   @override
-  String get answer => 'Answer';
+  String get answer => 'Réponse';
 
   @override
-  String get enterYourAnswer => 'Enter your answer';
+  String get enterYourAnswer => 'Entrez votre réponse';
 
   @override
-  String get pleaseEnterAnswer => 'Please enter an answer';
+  String get pleaseEnterAnswer => 'Veuillez entrer une réponse';
 
   @override
-  String get submitFaq => 'Submit FAQ';
+  String get submitFaq => 'Soumettre FAQ';
 
   @override
-  String get reviews => 'Reviews';
+  String get reviews => 'Avis';
 
   @override
-  String get noReviewsFound => 'No reviews found';
+  String get noReviewsFound => 'Aucun avis trouvé';
 
   @override
-  String get noContentAvailable => 'No content available.';
+  String get noContentAvailable => 'Aucun contenu disponible.';
 
   @override
-  String get tryAgain => 'Try Again';
+  String get tryAgain => 'Réessayer';
 
   @override
-  String get createAccountBtn => 'Create Account';
+  String get createAccountBtn => 'Créer un compte';
 
   @override
-  String get logIn => 'Log in';
+  String get logIn => 'Se connecter';
 
   @override
-  String get continueAsGuest => 'Continue as a guest';
+  String get continueAsGuest => 'Continuer en tant qu\'invité';
 
   @override
-  String get whatWillYouDoOnIumi => 'What will you do on iumi?';
+  String get whatWillYouDoOnIumi => 'Que ferez-vous sur iumi ?';
 
   @override
   String get roleDecisionNotFinal =>
-      'This decision is not final. You can later be both a client\nand a professional from the account if you wish.';
+      'Cette décision n\'est pas définitive. Vous pourrez être à la fois client et professionnel plus tard.';
 
   @override
-  String get bookAService => 'Book a service';
+  String get bookAService => 'Réserver un service';
 
   @override
-  String get iAmAClient => 'I am a Client';
+  String get iAmAClient => 'Je suis client';
 
   @override
-  String get offerServices => 'Offer services';
+  String get offerServices => 'Offrir des services';
 
   @override
-  String get iAmAProfessional => 'I am a Professional';
+  String get iAmAProfessional => 'Je suis professionnel';
 
   @override
-  String get createAccountTitle => 'Create account';
+  String get createAccountTitle => 'Créer un compte';
 
   @override
-  String get enterYourName => 'Enter your name';
+  String get enterYourName => 'Entrez votre nom';
 
   @override
-  String get enterEmail => 'Enter email';
+  String get enterEmail => 'Entrez votre e-mail';
 
   @override
-  String get password => 'Password';
+  String get password => 'Mot de passe';
 
   @override
-  String get serviceLocation => 'Service location';
+  String get serviceLocation => 'Lieu du service';
 
   @override
-  String get yourLocation => 'Your Location';
+  String get yourLocation => 'Votre emplacement';
 
   @override
   String get searchAndSelectServiceArea =>
-      'Search and select your service area so clients can find you.';
+      'Recherchez et sélectionnez votre zone de service pour que les clients puissent vous trouver.';
 
   @override
   String get weUseLocationForServices =>
-      'We use your location to show you relevant services nearby.';
+      'Nous utilisons votre emplacement pour vous montrer les services pertinents à proximité.';
 
   @override
-  String get searchCitySuburbAddress => 'Search city, suburb or address...';
+  String get searchCitySuburbAddress =>
+      'Rechercher ville, quartier ou adresse...';
 
   @override
   String get acceptTermsPrivacy =>
-      'By creating an account, I accept the Terms and Condition and confirm that I have read the Privacy Policy';
+      'En créant un compte, j\'accepte les Conditions Générales et confirme avoir lu la Politique de Confidentialité';
 
   @override
-  String get termsAndCondition => 'Terms and Condition';
+  String get termsAndCondition => 'Conditions Générales';
 
   @override
   String get pleaseAcceptTerms =>
-      'Please accept the Terms and Conditions to proceed';
+      'Veuillez accepter les conditions générales pour continuer';
 
   @override
-  String get haveAccountLogin => 'Do you have an account?  Log in';
+  String get haveAccountLogin => 'Vous avez un compte ? Se connecter';
 
   @override
-  String get login => 'Login';
+  String get login => 'Connexion';
 
   @override
-  String get forgotPassword => 'Forgot password?';
+  String get forgotPassword => 'Mot de passe oublié ?';
 
   @override
   String get enterEmailSendOtp =>
-      'Enter your email and we\'ll send you a reset OTP.';
+      'Entrez votre e-mail et nous vous enverrons un OTP de réinitialisation.';
 
   @override
-  String get enterYourEmail => 'Enter your email';
+  String get enterYourEmail => 'Entrez votre e-mail';
 
   @override
-  String get sendOtp => 'Send OTP';
+  String get sendOtp => 'Envoyer OTP';
 
   @override
-  String get otpVerifiedSuccessfully => 'OTP Verified Successfully';
+  String get otpVerifiedSuccessfully => 'OTP vérifié avec succès';
 
   @override
-  String get otpResentSuccessfully => 'OTP resent successfully';
+  String get otpResentSuccessfully => 'OTP renvoyé avec succès';
 
   @override
-  String get verifyOtp => 'Verify OTP';
+  String get verifyOtp => 'Vérifier OTP';
 
   @override
   String enterOtpSentTo(String email) {
-    return 'Enter the OTP sent to $email';
+    return 'Entrez l\'OTP envoyé à $email';
   }
 
   @override
-  String get enterTheOtp => 'Enter the OTP';
+  String get enterTheOtp => 'Entrez l\'OTP';
 
   @override
-  String get verify => 'Verify';
+  String get verify => 'Vérifier';
 
   @override
-  String get didNotReceiveOtpResend => 'Didn\'t receive OTP?  Resend';
+  String get didNotReceiveOtpResend => 'OTP non reçu ? Renvoyer';
 
   @override
-  String get resend => 'Resend';
+  String get resend => 'Renvoyer';
 
   @override
   String resendOtpInSeconds(int seconds) {
-    return 'Resend OTP in ${seconds}s';
+    return 'Renvoyer OTP dans ${seconds}s';
   }
 
   @override
   String get passwordResetSuccessfully =>
-      'Password reset successfully. Please log in.';
+      'Mot de passe réinitialisé avec succès. Veuillez vous connecter.';
 
   @override
-  String get resetPassword => 'Reset Password';
+  String get resetPassword => 'Réinitialiser le mot de passe';
 
   @override
-  String get continueWithGoogle => 'Continue with Google';
+  String get continueWithGoogle => 'Continuer avec Google';
 
   @override
-  String get or => 'or';
+  String get or => 'ou';
 
   @override
-  String get loginWithEmail => 'Login with email';
+  String get loginWithEmail => 'Se connecter avec e-mail';
 
   @override
-  String get createWithEmail => 'Create with email';
+  String get createWithEmail => 'Créer avec e-mail';
 
   @override
-  String get weValueYourPrivacy => 'We value your privacy';
+  String get weValueYourPrivacy => 'Nous respectons votre vie privée';
 
   @override
   String get cookiePolicyMsg =>
-      'Webel uses cookies to analyse advertising campaign performance, improve app ads, and personalize the experience based on user preference.';
+      'Webel utilise des cookies pour analyser les performances publicitaires, améliorer les annonces et personnaliser l\'expérience selon les préférences.';
 
   @override
-  String get accept => 'Accept';
+  String get accept => 'Accepter';
 
   @override
-  String get serviceAddress => 'Service address';
+  String get serviceAddress => 'Adresse du service';
 
   @override
   String get selectWhereYouWantToReceiveService =>
-      'Select where you want to receive the service';
+      'Sélectionnez où vous souhaitez recevoir le service';
 
   @override
   String get support => 'Support';
 
   @override
-  String get call => 'Call';
+  String get call => 'Appeler';
 
   @override
-  String get phoneNumberCopied => 'Phone number copied to clipboard';
+  String get phoneNumberCopied =>
+      'Numéro de téléphone copié dans le presse-papiers';
 
   @override
   String get message => 'Message';
 
   @override
-  String get emailCopied => 'Email copied to clipboard';
+  String get emailCopied => 'E-mail copié dans le presse-papiers';
 
   @override
-  String get verificationPending => 'Verification Pending';
+  String get verificationPending => 'Vérification en attente';
 
   @override
   String get verificationPendingDesc =>
-      'Your account is pending verification. Some features may be limited until your account is verified.';
+      'Votre compte est en attente de vérification. Certaines fonctionnalités peuvent être limitées.';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'Actualiser';
 
   @override
-  String get whenDoYouNeedIt => 'When do you need it?';
+  String get whenDoYouNeedIt => 'Quand en avez-vous besoin ?';
 
   @override
-  String get frequency => 'Frequency';
+  String get frequency => 'Fréquence';
 
   @override
-  String get justOnce => 'Just once';
+  String get justOnce => 'Juste une fois';
 
   @override
-  String get oneTime => 'One-Time';
+  String get oneTime => 'Ponctuel';
 
   @override
-  String get weekly => 'Weekly';
+  String get weekly => 'Hebdomadaire';
 
   @override
-  String get recurring => 'Recurring';
+  String get recurring => 'Récurrent';
 
   @override
-  String get daysOfTheWeek => 'Day(s) of the week';
+  String get daysOfTheWeek => 'Jour(s) de la semaine';
 
   @override
-  String get startTime => 'Start time';
+  String get startTime => 'Heure de début';
 
   @override
-  String get flexibleStart => 'Flexible start';
+  String get flexibleStart => 'Début flexible';
 
   @override
-  String get exactStart => 'Exact start';
+  String get exactStart => 'Début exact';
 
   @override
-  String get morning => 'Morning';
+  String get morning => 'Matin';
 
   @override
-  String get evening => 'Evening';
+  String get evening => 'Soir';
 
   @override
-  String get selectExactTime => 'Select exact time';
+  String get selectExactTime => 'Sélectionner l\'heure exacte';
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'Ignorer';
 
   @override
-  String get search => 'Search';
+  String get search => 'Rechercher';
 
   @override
-  String get back => 'Back';
+  String get back => 'Retour';
 
   @override
-  String get clearFilters => 'Clear filters';
+  String get clearFilters => 'Effacer les filtres';
 
   @override
-  String get palliativeCare => 'Palliative care';
+  String get palliativeCare => 'Soins palliatifs';
 
   @override
   String get palliativeCareDesc =>
-      'Only show professionals specialising in palliative care.';
+      'Afficher uniquement les professionnels spécialisés en soins palliatifs.';
 
   @override
-  String get drivingLicence => 'Driving licence';
+  String get drivingLicence => 'Permis de conduire';
 
   @override
   String get drivingLicenceDesc =>
-      'Only show professionals with a driving licence';
+      'Afficher uniquement les professionnels avec un permis de conduire';
 
   @override
-  String get businessProfiles => 'Business profiles';
+  String get businessProfiles => 'Profils professionnels';
 
   @override
   String get businessProfilesDesc =>
-      'Only profiles that correspond to a validated business or self employed professional.';
+      'Uniquement les profils correspondant à une entreprise ou un professionnel indépendant validé.';
 
   @override
-  String get qualifiedCarer => 'Qualified carer';
+  String get qualifiedCarer => 'Soignant qualifié';
 
   @override
   String get qualifiedCarerDesc =>
-      'Only show caregivers with a qualification, diploma or degree as health personal';
+      'Afficher uniquement les soignants avec une qualification, un diplôme en tant que personnel de santé';
 
   @override
-  String get priceRange => 'Price range';
+  String get priceRange => 'Fourchette de prix';
 
   @override
-  String get hourlyRate => 'Hourly rate';
+  String get hourlyRate => 'Tarif horaire';
 
   @override
-  String get maxPriceWillingToPay => 'Maximum price you are willing to pay.';
+  String get maxPriceWillingToPay => 'Prix maximum que vous êtes prêt à payer.';
 
   @override
-  String get experienceLevel => 'Experience level';
+  String get experienceLevel => 'Niveau d\'expérience';
 
   @override
-  String get specificTasksRequirements => 'Specific tasks / Requirements';
+  String get specificTasksRequirements => 'Tâches spécifiques / Exigences';
 
   @override
-  String get updatedSuccessfully => 'Updated successfully';
+  String get updatedSuccessfully => 'Mis à jour avec succès';
 
   @override
   String get images => 'Images';
 
   @override
-  String get coverImage => 'Cover Image';
+  String get coverImage => 'Image de couverture';
 
   @override
-  String get galleryImages => 'Gallery Images';
+  String get galleryImages => 'Images de la galerie';
 
   @override
-  String get add => 'Add';
+  String get add => 'Ajouter';
 
   @override
-  String get palliativeCareImage => 'Palliative Care Image';
+  String get palliativeCareImage => 'Image soins palliatifs';
 
   @override
-  String get drivingLicenceImage => 'Driving Licence Image';
+  String get drivingLicenceImage => 'Image permis de conduire';
 
   @override
-  String get businessProfileImage => 'Business Profile Image';
+  String get businessProfileImage => 'Image profil professionnel';
 
   @override
-  String get qualificationCertificate => 'Qualification Certificate';
+  String get qualificationCertificate => 'Certificat de qualification';
 
   @override
-  String get submit => 'Submit';
+  String get submit => 'Soumettre';
 
   @override
-  String get update => 'Update';
+  String get update => 'Mettre à jour';
 
   @override
-  String get applyFilters => 'Apply filters';
+  String get applyFilters => 'Appliquer les filtres';
 
   @override
-  String get verificationSubmitted => 'Verification Submitted';
+  String get verificationSubmitted => 'Vérification soumise';
 
   @override
   String get verificationSubmittedDesc =>
-      'Your request has been submitted successfully.\n\nPlease login again with another account.';
+      'Votre demande a été soumise avec succès.\n\nVeuillez vous reconnecter avec un autre compte.';
 
   @override
-  String get findTheServiceYouNeed => 'Find the service you need';
+  String get findTheServiceYouNeed =>
+      'Trouvez le service dont vous avez besoin';
 
   @override
-  String get mostPopularInYourArea => 'Most popular in your area';
+  String get mostPopularInYourArea => 'Les plus populaires dans votre région';
 
   @override
-  String get searchResults => 'Search results';
+  String get searchResults => 'Résultats de recherche';
 
   @override
-  String get noServicesFound => 'No services found';
+  String get noServicesFound => 'Aucun service trouvé';
 
   @override
-  String get tryADifferentSearchTerm => 'Try a different search term';
+  String get tryADifferentSearchTerm => 'Essayez un autre terme de recherche';
 
   @override
-  String get howDoesTheServiceWork => 'How does the service work?';
+  String get howDoesTheServiceWork => 'Comment fonctionne le service ?';
 
   @override
-  String get finding => 'Finding ';
+  String get finding => 'Recherche de ';
 
   @override
-  String get professionals => 'professionals';
+  String get professionals => 'professionnels';
 
   @override
-  String get whenQuestion => 'When?';
+  String get whenQuestion => 'Quand ?';
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Filtres';
 
   @override
   String get howDoesTheServiceWorkTitle =>
-      'How does the Elderly care\nservice work?';
+      'Comment fonctionne le service de soins aux personnes âgées ?';
 
   @override
-  String get noFaqsAvailable => 'No FAQs available';
+  String get noFaqsAvailable => 'Aucune FAQ disponible';
 
   @override
-  String get bookingAccepted => 'Booking accepted';
+  String get bookingAccepted => 'Réservation acceptée';
 
   @override
-  String get comment => 'Comment';
+  String get comment => 'Commentaire';
 
   @override
   String get serviceBookedSuccess =>
-      'Service booked successfully for elder care. Please ensure assistance includes daily check-ins, medication reminders, and help with mobility as discussed.';
+      'Service réservé avec succès pour les soins aux personnes âgées. Veuillez vous assurer que l\'assistance comprend des contrôles quotidiens, des rappels de médicaments et une aide à la mobilité.';
 
   @override
-  String get dateAndTime => 'Date and time';
+  String get dateAndTime => 'Date et heure';
 
   @override
-  String get address => 'Address';
+  String get address => 'Adresse';
 
   @override
-  String get servicePrice => 'Service price';
+  String get servicePrice => 'Prix du service';
 
   @override
-  String get complete => 'Complete';
+  String get complete => 'Terminer';
 
   @override
-  String get bookingHasBeenCompleted => 'This Booking has been Completed';
+  String get bookingHasBeenCompleted => 'Cette réservation a été terminée';
 
   @override
-  String get customer => 'Customer:';
+  String get customer => 'Client :';
 
   @override
-  String get provider => 'Provider:';
+  String get provider => 'Prestataire :';
 
   @override
   String cantChatBeforeAction(String action) {
-    return 'You can\'t chat before $action the booking';
+    return 'Vous ne pouvez pas chatter avant d\'$action la réservation';
   }
 
   @override
-  String get accepting => 'accepting';
+  String get accepting => 'accepter';
 
   @override
-  String get creating => 'creating';
+  String get creating => 'créer';
 
   @override
   String failedToLoadChat(String message) {
-    return 'Failed to load chat: $message';
+    return 'Échec du chargement du chat : $message';
   }
 
   @override
   String get serviceText => 'Service';
 
   @override
-  String get bookingHours => 'Booking hours';
+  String get bookingHours => 'Heures de réservation';
 
   @override
-  String get subtotal => 'Subtotal';
+  String get subtotal => 'Sous-total';
 
   @override
-  String get clientProtection => 'Client protection';
+  String get clientProtection => 'Protection client';
 
   @override
   String get total => 'Total';
 
   @override
-  String get free => 'Free';
+  String get free => 'Gratuit';
 
   @override
-  String get details => 'Details';
+  String get details => 'Détails';
 
   @override
-  String get noDataFound => 'No data found';
+  String get noDataFound => 'Aucune donnée trouvée';
 
   @override
-  String get addressNotAvailable => 'Address not available';
+  String get addressNotAvailable => 'Adresse non disponible';
 
   @override
   String addressCoordsLabel(String lat, String lng) {
-    return 'Address: Lat: $lat, Lng: $lng';
+    return 'Adresse : Lat : $lat, Lng : $lng';
   }
 
   @override
-  String get congratulations => 'Congratulations';
+  String get congratulations => 'Félicitations';
 
   @override
   String get congratulationsDesc =>
-      'Congratulations on achieving this milestone in your professional journey! Your dedication, expertise, and hard work are truly commendable.';
+      'Félicitations pour cette étape de votre parcours professionnel ! Votre dévouement, votre expertise et votre travail acharné sont vraiment remarquables.';
 
   @override
-  String get done => 'Done';
+  String get done => 'Terminé';
 
   @override
-  String get setUpAtLeastOneDay => 'Set up at least one day';
+  String get setUpAtLeastOneDay => 'Configurez au moins un jour';
 
   @override
-  String get selectATimeSlot => 'Select a time slot';
+  String get selectATimeSlot => 'Sélectionnez un créneau horaire';
 
   @override
-  String get bookingDotDot => 'Booking…';
+  String get bookingDotDot => 'Réservation…';
 
   @override
   String continueForAmountPerWeek(String price) {
-    return 'Continue for \$$price/week';
+    return 'Continuer pour \$$price/semaine';
   }
 
   @override
   String bookForAmount(String price) {
-    return 'Book for \$$price';
+    return 'Réserver pour \$$price';
   }
 
   @override
   String get couldNotLoadAvailableSlots =>
-      'Could not load available slots. Tap retry above.';
+      'Impossible de charger les créneaux disponibles. Appuyez sur Réessayer.';
 
   @override
   String get noAvailableSlotsForDuration =>
-      'No available slots for this duration.';
+      'Aucun créneau disponible pour cette durée.';
 
   @override
-  String get selectATime => 'Select a time';
+  String get selectATime => 'Sélectionnez une heure';
 
   @override
   String saveTimeDuration(String start, String end, String duration) {
-    return 'Save $start - $end · ${duration}h';
+    return 'Enregistrer $start - $end · ${duration}h';
   }
 
   @override
   String get chat => 'Chat';
 
   @override
-  String get history => 'History';
+  String get history => 'Historique';
 
   @override
-  String get alerts => 'Alerts';
+  String get alerts => 'Alertes';
 
   @override
-  String get newAlerts => 'New Alerts';
+  String get newAlerts => 'Nouvelles alertes';
 
   @override
-  String get searchFriends => 'Search friends';
+  String get searchFriends => 'Rechercher des amis';
 
   @override
-  String get noUnreadAlerts => 'No Unread Alerts';
+  String get noUnreadAlerts => 'Aucune alerte non lue';
 
   @override
-  String get paymentPending => 'Payment Pending';
+  String get paymentPending => 'Paiement en attente';
 
   @override
-  String get pendingAcceptance => 'Pending acceptance';
+  String get pendingAcceptance => 'En attente d\'acceptation';
 
   @override
-  String get payNow => 'Pay now';
+  String get payNow => 'Payer maintenant';
 
   @override
-  String get pending => 'Pending';
+  String get pending => 'En attente';
 
   @override
-  String get serviceInProgress => 'Service in progress';
+  String get serviceInProgress => 'Service en cours';
 
   @override
-  String get rating => 'Rating';
+  String get rating => 'Évaluation';
 
   @override
-  String get needSupportImmediately => 'Need Support Immediately';
+  String get needSupportImmediately => 'Besoin d\'aide immédiatement';
 
   @override
-  String get manageSubscription => 'Manage Subscription';
+  String get manageSubscription => 'Gérer l\'abonnement';
 
   @override
-  String get subscriptionStatus => 'Subscription Status';
+  String get subscriptionStatus => 'Statut de l\'abonnement';
 
   @override
   String freeTrialDaysLeft(String daysLeft) {
-    return '30-Day Free Trial ($daysLeft days left)';
+    return 'Essai gratuit de 30 jours ($daysLeft jours restants)';
   }
 
   @override
   String get cancelledActiveTillPeriodEnd =>
-      'Cancelled (Active till period end)';
+      'Annulé (Actif jusqu\'à la fin de la période)';
 
   @override
-  String get activePremium => 'Active Premium';
+  String get activePremium => 'Premium actif';
 
   @override
-  String get expired => 'Expired';
+  String get expired => 'Expiré';
 
   @override
-  String get currentPlan => 'Current Plan';
+  String get currentPlan => 'Forfait actuel';
 
   @override
-  String get subscriptionPrice => 'Subscription Price';
+  String get subscriptionPrice => 'Prix de l\'abonnement';
 
   @override
-  String get activationDate => 'Activation Date';
+  String get activationDate => 'Date d\'activation';
 
   @override
-  String get nextBillingRenewal => 'Next Billing / Renewal';
+  String get nextBillingRenewal => 'Prochaine facturation / Renouvellement';
 
   @override
-  String get purchasePlatform => 'Purchase Platform';
+  String get purchasePlatform => 'Plateforme d\'achat';
 
   @override
-  String get annualPremium => 'Annual Premium';
+  String get annualPremium => 'Premium annuel';
 
   @override
-  String get monthlyPremium => 'Monthly Premium';
+  String get monthlyPremium => 'Premium mensuel';
 
   @override
-  String get noSubscriptionPurchased => 'No Subscription Purchased';
+  String get noSubscriptionPurchased => 'Aucun abonnement acheté';
 
   @override
-  String get yourValueThisMonth => 'Your Value This Month';
+  String get yourValueThisMonth => 'Votre valeur ce mois-ci';
 
   @override
   String thisMonthRequestsBookings(String requests, String bookings) {
-    return 'This month you received $requests requests and accepted $bookings bookings.';
+    return 'Ce mois-ci, vous avez reçu $requests demandes et accepté $bookings réservations.';
   }
 
   @override
-  String get requestsReceived => 'Requests Received';
+  String get requestsReceived => 'Demandes reçues';
 
   @override
-  String get bookingsAccepted => 'Bookings Accepted';
+  String get bookingsAccepted => 'Réservations acceptées';
 
   @override
-  String get acceptanceRate => 'Acceptance Rate';
+  String get acceptanceRate => 'Taux d\'acceptation';
 
   @override
-  String get upgradeToPremiumNow => 'Upgrade to Premium Now';
+  String get upgradeToPremiumNow => 'Passer au Premium maintenant';
 
   @override
-  String get restorePurchase => 'Restore Purchase';
+  String get restorePurchase => 'Restaurer l\'achat';
 
   @override
   String get subscriptionRestoredSuccessfully =>
-      'Subscription restored successfully!';
+      'Abonnement restauré avec succès !';
 
   @override
   String get noActiveSubscriptionFoundToRestore =>
-      'No active subscription found to restore.';
+      'Aucun abonnement actif trouvé à restaurer.';
 
   @override
-  String get cancelSubscription => 'Cancel Subscription';
+  String get cancelSubscription => 'Annuler l\'abonnement';
 
   @override
-  String get cancelSubscriptionQuestion => 'Cancel Subscription?';
+  String get cancelSubscriptionQuestion => 'Annuler l\'abonnement ?';
 
   @override
   String ifYouCancelTodayPremiumAccess(String date) {
-    return 'If you cancel today, your premium access will remain active until $date.\n\nPlease let us know why you are leaving:';
+    return 'Si vous annulez aujourd\'hui, votre accès Premium restera actif jusqu\'au $date.\n\nVeuillez nous dire pourquoi vous partez :';
   }
 
   @override
-  String get tooExpensive => 'Too expensive';
+  String get tooExpensive => 'Trop cher';
 
   @override
   String get notGettingEnoughClientRequests =>
-      'Not getting enough client requests';
+      'Pas assez de demandes de clients';
 
   @override
-  String get usingADifferentPlatform => 'Using a different platform';
+  String get usingADifferentPlatform => 'J\'utilise une autre plateforme';
 
   @override
-  String get other => 'Other';
+  String get other => 'Autre';
 
   @override
   String get stayWithUsGet20Off =>
-      'Stay with us! Get 20% OFF your next billing cycle instead of cancelling.';
+      'Restez avec nous ! Obtenez 20% de réduction sur votre prochain cycle de facturation au lieu d\'annuler.';
 
   @override
-  String get keepMySubscription => 'Keep My Subscription';
+  String get keepMySubscription => 'Garder mon abonnement';
 
   @override
-  String get confirmCancellation => 'Confirm Cancellation';
+  String get confirmCancellation => 'Confirmer l\'annulation';
 
   @override
   String get pleaseCancelViaStore =>
-      'Please cancel via your Google Play or App Store subscriptions page.';
+      'Veuillez annuler via votre page d\'abonnements Google Play ou App Store.';
 
   @override
-  String get bio => 'Bio';
+  String get bio => 'Biographie';
 
   @override
-  String get writeSomethingAboutYourself => 'Write something about yourself...';
+  String get writeSomethingAboutYourself => 'Écrivez quelque chose sur vous...';
 
   @override
-  String get pricePerHour => 'Price per hour';
+  String get pricePerHour => 'Prix de l\'heure';
 
   @override
-  String get experience => 'Experience';
+  String get experience => 'Expérience';
 
   @override
-  String get selectExperience => 'Select experience';
+  String get selectExperience => 'Sélectionner l\'expérience';
 
   @override
-  String get specialties => 'Specialties';
+  String get specialties => 'Spécialités';
 
   @override
-  String get otherTasksOffered => 'Other tasks offered';
+  String get otherTasksOffered => 'Autres tâches proposées';
 
   @override
-  String get workSchedule => 'Work schedule';
+  String get workSchedule => 'Horaire de travail';
 
   @override
   String get whenAreYouAvailable =>
-      'When are you available to offer your services?';
+      'Quand êtes-vous disponible pour offrir vos services ?';
 
   @override
-  String get monday => 'Monday';
+  String get monday => 'Lundi';
 
   @override
-  String get tuesday => 'Tuesday';
+  String get tuesday => 'Mardi';
 
   @override
-  String get wednesday => 'Wednesday';
+  String get wednesday => 'Mercredi';
 
   @override
-  String get thursday => 'Thursday';
+  String get thursday => 'Jeudi';
 
   @override
-  String get friday => 'Friday';
+  String get friday => 'Vendredi';
 
   @override
-  String get saturday => 'Saturday';
+  String get saturday => 'Samedi';
 
   @override
-  String get sunday => 'Sunday';
+  String get sunday => 'Dimanche';
 
   @override
-  String get available => 'Available';
+  String get available => 'Disponible';
 
   @override
-  String get notAvailable => 'Not available';
+  String get notAvailable => 'Non disponible';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Confirmer';
 
   @override
   String get pleaseUploadAnImage =>
-      'Please upload an image for each selected option.';
+      'Veuillez télécharger une image pour chaque option sélectionnée.';
 
   @override
   String get ifYouAlreadySubmitARequest =>
-      'If you already submit a request please login with another account';
+      'Si vous avez déjà soumis une demande, veuillez vous connecter avec un autre compte';
 
   @override
-  String get preferences => 'Preferences';
+  String get preferences => 'Préférences';
 
   @override
-  String get myWorkAreas => 'My work areas';
+  String get myWorkAreas => 'Mes zones de travail';
 
   @override
-  String get currentLocationMap => 'Current Location Map';
+  String get currentLocationMap => 'Carte de localisation actuelle';
 
   @override
-  String get next => 'Next';
+  String get next => 'Suivant';
 
   @override
-  String get pleaseSelectYourRole => 'Please select your role';
+  String get pleaseSelectYourRole => 'Veuillez sélectionner votre rôle';
 
   @override
   String get micAndCameraPermissionsRequired =>
-      'Microphone and Camera permissions are required';
+      'Les permissions du microphone et de la caméra sont requises';
 
   @override
-  String get userIsBusyOrUnavailable => 'User is busy or unavailable';
+  String get userIsBusyOrUnavailable =>
+      'L\'utilisateur est occupé ou indisponible';
 
   @override
-  String get paymentSuccessful => 'Payment successful';
+  String get paymentSuccessful => 'Paiement réussi';
 
   @override
-  String get accessLocked => 'ACCESS LOCKED';
+  String get accessLocked => 'ACCÈS VERROUILLÉ';
 
   @override
-  String get subscriptionRequired => 'Subscription required';
+  String get subscriptionRequired => 'Abonnement requis';
 
   @override
   String get startFreeTrialToReceiveRequests =>
-      'Start your 30-day free trial to receive\nand manage customer requests.';
+      'Commencez votre essai gratuit de 30 jours pour recevoir et gérer les demandes des clients.';
 
   @override
-  String get startFreeTrial => 'Start Free Trial';
+  String get startFreeTrial => 'Commencer l\'essai gratuit';
 
   @override
   String get youCanStillManageProfile =>
-      'You can still manage your profile,\nservices and schedule.';
+      'Vous pouvez toujours gérer votre profil, vos services et votre planning.';
 
   @override
-  String get tryIumiProviderFree => 'Try IUMI Provider free';
+  String get tryIumiProviderFree => 'Essayez IUMI Provider gratuitement';
 
   @override
-  String get unlockEveryFeature => 'Unlock every provider feature for 30 days.';
+  String get unlockEveryFeature =>
+      'Débloquez toutes les fonctionnalités prestataire pendant 30 jours.';
 
   @override
-  String get thirtyDaysFree => '30 DAYS FREE';
+  String get thirtyDaysFree => '30 JOURS GRATUITS';
 
   @override
-  String get receiveCustomerRequests => 'Receive customer requests';
+  String get receiveCustomerRequests => 'Recevoir les demandes des clients';
 
   @override
-  String get acceptOrDeclineBookings => 'Accept or decline bookings';
+  String get acceptOrDeclineBookings => 'Accepter ou refuser les réservations';
 
   @override
   String get contactCustomersAfterAcceptance =>
-      'Contact customers after acceptance';
+      'Contacter les clients après acceptation';
 
   @override
-  String get manageYourSchedule => 'Manage your schedule';
+  String get manageYourSchedule => 'Gérer votre planning';
 
   @override
-  String get freeFor30Days => 'Free for 30 days';
+  String get freeFor30Days => 'Gratuit pendant 30 jours';
 
   @override
   String get then4999RonMonthCancelAnytime =>
-      'Then 49.99 RON/month. Cancel anytime.';
+      'Puis 49,99 RON/mois. Annulez à tout moment.';
 
   @override
-  String get start30DayFreeTrial => 'Start 30-Day Free Trial';
+  String get start30DayFreeTrial => 'Commencer l\'essai gratuit de 30 jours';
 
   @override
-  String get upgradePremium => 'Upgrade Premium';
+  String get upgradePremium => 'Passer à Premium';
 
   @override
-  String get notNow => 'Not now';
+  String get notNow => 'Pas maintenant';
 
   @override
   String get noPaymentToday =>
-      'No payment today. Works across\niOS, Android and web.';
+      'Aucun paiement aujourd\'hui. Fonctionne sur iOS, Android et web.';
 
   @override
-  String get somethingWentWrong => 'Something went wrong';
+  String get somethingWentWrong => 'Quelque chose s\'est mal passé';
+
+  @override
+  String get seeMore => 'Voir plus';
+
+  @override
+  String get documents => 'Documents';
+
+  @override
+  String get chooseYourPlan => 'Choisissez votre forfait';
+
+  @override
+  String get noPlansAvailable => 'Aucun forfait disponible pour le moment.';
+
+  @override
+  String get checkBackLater =>
+      'Veuillez revenir plus tard ou contacter l\'assistance.';
+
+  @override
+  String get upgradeToPremium => 'Passer au Premium';
+
+  @override
+  String get unlockAllFeatures =>
+      'Débloquez toutes les fonctionnalités et développez votre activité.';
+
+  @override
+  String savePercent(String percent) {
+    return 'Économisez $percent%';
+  }
+
+  @override
+  String get alreadySubscribed => 'Vous êtes déjà abonné à ce forfait.';
+
+  @override
+  String get planNotAvailable =>
+      'Ce forfait n\'est pas encore disponible sur cette plateforme. Veuillez réessayer plus tard.';
+
+  @override
+  String successfullySubscribed(String planName) {
+    return 'Abonnement réussi à $planName !';
+  }
+
+  @override
+  String get subscribeNow => 'S\'abonner maintenant';
+
+  @override
+  String get messageSentSuccessfully =>
+      'Votre message a été envoyé avec succès.';
+
+  @override
+  String get failedToSendMessage =>
+      'Échec de l\'envoi du message. Veuillez réessayer.';
+
+  @override
+  String get pleaseSelectDocument =>
+      'Veuillez sélectionner au moins un document pour continuer.';
+
+  @override
+  String get documentsUpdatedSuccessfully => 'Documents mis à jour avec succès';
+
+  @override
+  String get pleaseEnterValidPricePerHour =>
+      'Veuillez entrer un prix valide par heure';
+
+  @override
+  String get listingUpdatedSuccessfully => 'Annonce mise à jour avec succès';
+
+  @override
+  String get failedToSubmitReview => 'Échec de la soumission de l\'avis';
+
+  @override
+  String get reviewSubmittedSuccessfully => 'Avis soumis avec succès';
+
+  @override
+  String get failedToSaveSchedule =>
+      'Échec de l\'enregistrement de l\'horaire. Réessayez.';
+
+  @override
+  String get pleaseFillOutAllFields => 'Veuillez remplir tous les champs.';
+
+  @override
+  String get pleaseSelectFlexibleStartTime =>
+      'Veuillez sélectionner une heure de début flexible ou utiliser \'Ignorer\'.';
+
+  @override
+  String get outstanding => 'Exceptionnel';
+
+  @override
+  String get hello => 'Bonjour';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get copyrightIBadi => 'Copyright iBadi';
+
+  @override
+  String get badi => 'Badi';
+
+  @override
+  String get download => 'Télécharger';
+
+  @override
+  String get end => 'Fin';
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get goBack => 'Retour';
+
+  @override
+  String get iumiAdminSupport => 'Support Admin Iumi';
+
+  @override
+  String get emailAddress => 'Adresse e-mail';
+
+  @override
+  String get subject => 'Objet';
+
+  @override
+  String get yourMessage => 'Votre message';
+
+  @override
+  String get sayHello => 'Dites bonjour 👋';
+
+  @override
+  String get chooseOption => 'Choisir une option';
+
+  @override
+  String get settings => 'Paramètres';
+
+  @override
+  String get completePayment => 'Finaliser le paiement';
+
+  @override
+  String get noMessages => 'Aucun message';
+
+  @override
+  String get noNotification => 'Aucune notification';
+
+  @override
+  String get noScheduleAvailable => 'Aucun planning disponible.';
+
+  @override
+  String get additionalComments => 'Commentaires supplémentaires';
+
+  @override
+  String get gallery => 'Galerie';
+
+  @override
+  String get failedToLoadGallery => 'Échec du chargement de la galerie';
+
+  @override
+  String get noImagesAvailable => 'Aucune image disponible';
+
+  @override
+  String get viewGallery => 'Voir la galerie';
+
+  @override
+  String get noGalleryImageFound => 'Aucune image de galerie trouvée';
+
+  @override
+  String get comments => 'Commentaires';
+
+  @override
+  String get noCommentsFound => 'Aucun commentaire trouvé';
+
+  @override
+  String get serviceFrequency => 'Fréquence du service';
+
+  @override
+  String get howManyTimesDoYouWantTheService =>
+      'Combien de fois souhaitez-vous le service ?';
+
+  @override
+  String get rateYourExperience => 'Évaluez votre expérience';
+
+  @override
+  String get deleteThisAddress => 'Supprimer cette adresse ?';
+
+  @override
+  String get showSpecialistsIn => 'Afficher les spécialistes dans :';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get chooseFromGallery => 'Choisir dans la galerie';
+
+  @override
+  String get takeAPhoto => 'Prendre une photo';
+
+  @override
+  String get profilePicture => 'Photo de profil';
+
+  @override
+  String get doYouWantToGoBack => 'Voulez-vous revenir en arrière ?';
+
+  @override
+  String get startYour30DayFreeTrialToReceiveAndManageCustomerRequests =>
+      'Commencez votre essai gratuit de 30 jours pour recevoir et gérer les demandes des clients.';
+
+  @override
+  String get youCanStillManageYourProfileServicesAndSchedule =>
+      'Vous pouvez toujours gérer votre profil, vos services et votre planning.';
 }

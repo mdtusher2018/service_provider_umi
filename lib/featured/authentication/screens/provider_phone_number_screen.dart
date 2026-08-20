@@ -11,6 +11,7 @@ import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 /// Local provider (only used in this file)
 final _loadingProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -59,7 +60,7 @@ class _PhoneNumberScreenState extends ConsumerState<ProviderPhoneNumberScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ─── Title ──────────────────────────────
-              AppText('Phone number', style: AppTextStyles.h1),
+              AppText(AppLocalizations.of(context)!.phoneNumber, style: AppTextStyles.h1),
               8.verticalSpace,
               AppText(
                 "Let's verify your phone number. We will send you an "

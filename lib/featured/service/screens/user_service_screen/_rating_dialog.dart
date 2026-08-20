@@ -1,5 +1,6 @@
 part of 'user_service_screen.dart';
 
+
 // ─── Rating Dialog ────────────────────────────────────────────
 class RatingDialog extends ConsumerStatefulWidget {
   final String providerId;
@@ -39,9 +40,9 @@ class _RatingDialogState extends ConsumerState<RatingDialog> {
       if (previous?.isLoading == true && next.isLoading == false) {
         if (next.hasError) {
           AppLogger.error("Failed to submit review: ${next.error}");
-          context.showErrorSnackBar('Failed to submit review');
+          context.showErrorSnackBar(AppLocalizations.of(context)!.failedToSubmitReview);
         } else {
-          context.showSuccessSnackBar("Review submitted successfully");
+          context.showSuccessSnackBar(AppLocalizations.of(context)!.reviewSubmittedSuccessfully);
         }
       }
     });
@@ -59,7 +60,7 @@ class _RatingDialogState extends ConsumerState<RatingDialog> {
             // ─── Header ─────────────────────────────
             Row(
               children: [
-                const Expanded(child: AppText.h3('Rate Your Experience')),
+                Expanded(child: AppText.h3(AppLocalizations.of(context)!.rateYourExperience)),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: const Icon(

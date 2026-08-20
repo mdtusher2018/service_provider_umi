@@ -14,6 +14,7 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import '../../../../../../core/di/app_role_provider.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 part '_example_avatar.dart';
 part '_go_back_dialog.dart';
 part '_show_image_picker_pptions.dart';
@@ -68,7 +69,7 @@ class _ProfilePictureScreenState extends ConsumerState<ProfilePictureScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // ─── Title ──────────────────────
-                        AppText('Profile picture', style: AppTextStyles.h1),
+                        AppText(AppLocalizations.of(context)!.profilePicture, style: AppTextStyles.h1),
                         6.verticalSpace,
                         AppText.bodySm(
                           'This will be the picture that clients will see of you. '

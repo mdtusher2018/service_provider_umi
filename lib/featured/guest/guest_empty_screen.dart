@@ -7,6 +7,7 @@ import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class GuestServicesScreen extends StatelessWidget {
   const GuestServicesScreen({super.key});
@@ -49,7 +50,7 @@ class GuestInboxScreen extends StatelessWidget {
               /// Header
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
-                child: Row(children: [AppText.h2("Inbox")]),
+                child: Row(children: [AppText.h2(AppLocalizations.of(context)!.inbox)]),
               ),
 
               /// Tabs
@@ -106,7 +107,7 @@ class _ChatGuestTab extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppText.h3("No messages", color: AppColors.textSecondary),
+                  AppText.h3(AppLocalizations.of(context)!.noMessages, color: AppColors.textSecondary),
 
                   20.verticalSpace,
 
@@ -166,7 +167,7 @@ class _AlertsGuestTab extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppText.h3("No Notification", color: AppColors.textSecondary),
+                  AppText.h3(AppLocalizations.of(context)!.noNotification, color: AppColors.textSecondary),
 
                   20.verticalSpace,
 

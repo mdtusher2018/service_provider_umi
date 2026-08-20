@@ -2317,6 +2317,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong'**
   String get somethingWentWrong;
+
+  /// No description provided for @seeMore.
+  ///
+  /// In en, this message translates to:
+  /// **'See more'**
+  String get seeMore;
+
+  /// No description provided for @documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documents;
+
+  /// No description provided for @chooseYourPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Plan'**
+  String get chooseYourPlan;
+
+  /// No description provided for @noPlansAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans available right now.'**
+  String get noPlansAvailable;
+
+  /// No description provided for @checkBackLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check back later or contact support.'**
+  String get checkBackLater;
+
+  /// No description provided for @upgradeToPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium'**
+  String get upgradeToPremium;
+
+  /// No description provided for @unlockAllFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock all features and grow your business.'**
+  String get unlockAllFeatures;
+
+  /// No description provided for @savePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String savePercent(String percent);
+
+  /// No description provided for @alreadySubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'You are already subscribed to this plan.'**
+  String get alreadySubscribed;
+
+  /// No description provided for @planNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan is not available for purchase on this platform yet. Please try again later.'**
+  String get planNotAvailable;
+
+  /// No description provided for @successfullySubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully subscribed to {planName}!'**
+  String successfullySubscribed(String planName);
+
+  /// No description provided for @subscribeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe Now'**
+  String get subscribeNow;
+
+  /// No description provided for @messageSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message has been sent successfully.'**
+  String get messageSentSuccessfully;
+
+  /// No description provided for @failedToSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send message. Please try again.'**
+  String get failedToSendMessage;
+
+  /// No description provided for @pleaseSelectDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one document to proceed.'**
+  String get pleaseSelectDocument;
+
+  /// No description provided for @documentsUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents updated successfully'**
+  String get documentsUpdatedSuccessfully;
+
+  /// No description provided for @pleaseEnterValidPricePerHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid price per hour'**
+  String get pleaseEnterValidPricePerHour;
+
+  /// No description provided for @listingUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing updated successfully'**
+  String get listingUpdatedSuccessfully;
+
+  /// No description provided for @failedToSubmitReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit review'**
+  String get failedToSubmitReview;
+
+  /// No description provided for @reviewSubmittedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Review submitted successfully'**
+  String get reviewSubmittedSuccessfully;
+
+  /// No description provided for @failedToSaveSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save schedule. Try again.'**
+  String get failedToSaveSchedule;
+
+  /// No description provided for @pleaseFillOutAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out all fields.'**
+  String get pleaseFillOutAllFields;
+
+  /// No description provided for @pleaseSelectFlexibleStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a flexible start time slot or use \'Skip\'.'**
+  String get pleaseSelectFlexibleStartTime;
+
+  /// No description provided for @outstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding'**
+  String get outstanding;
+
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @copyrightIBadi.
+  ///
+  /// In en, this message translates to:
+  /// **'Copyright iBadi'**
+  String get copyrightIBadi;
+
+  /// No description provided for @badi.
+  ///
+  /// In en, this message translates to:
+  /// **'Badi'**
+  String get badi;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @end.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get end;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All Read'**
+  String get markAllRead;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get goBack;
+
+  /// No description provided for @iumiAdminSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Iumi Admin Support'**
+  String get iumiAdminSupport;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get emailAddress;
+
+  /// No description provided for @subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subject;
+
+  /// No description provided for @yourMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message'**
+  String get yourMessage;
+
+  /// No description provided for @sayHello.
+  ///
+  /// In en, this message translates to:
+  /// **'Say hello 👋'**
+  String get sayHello;
+
+  /// No description provided for @chooseOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose option'**
+  String get chooseOption;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @completePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Payment'**
+  String get completePayment;
+
+  /// No description provided for @noMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages'**
+  String get noMessages;
+
+  /// No description provided for @noNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'No Notification'**
+  String get noNotification;
+
+  /// No description provided for @noScheduleAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No schedule available.'**
+  String get noScheduleAvailable;
+
+  /// No description provided for @additionalComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional comments'**
+  String get additionalComments;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @failedToLoadGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load gallery'**
+  String get failedToLoadGallery;
+
+  /// No description provided for @noImagesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No images available'**
+  String get noImagesAvailable;
+
+  /// No description provided for @viewGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'View gallery'**
+  String get viewGallery;
+
+  /// No description provided for @noGalleryImageFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No gallery image found'**
+  String get noGalleryImageFound;
+
+  /// No description provided for @comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
+
+  /// No description provided for @noCommentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments found'**
+  String get noCommentsFound;
+
+  /// No description provided for @serviceFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Service frequency'**
+  String get serviceFrequency;
+
+  /// No description provided for @howManyTimesDoYouWantTheService.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times do you want the service?'**
+  String get howManyTimesDoYouWantTheService;
+
+  /// No description provided for @rateYourExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Your Experience'**
+  String get rateYourExperience;
+
+  /// No description provided for @deleteThisAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this address?'**
+  String get deleteThisAddress;
+
+  /// No description provided for @showSpecialistsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Show specialists in:'**
+  String get showSpecialistsIn;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @takeAPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takeAPhoto;
+
+  /// No description provided for @profilePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture'**
+  String get profilePicture;
+
+  /// No description provided for @doYouWantToGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to go back?'**
+  String get doYouWantToGoBack;
+
+  /// No description provided for @startYour30DayFreeTrialToReceiveAndManageCustomerRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your 30-day free trial to receive\n.and manage customer requests'**
+  String get startYour30DayFreeTrialToReceiveAndManageCustomerRequests;
+
+  /// No description provided for @youCanStillManageYourProfileServicesAndSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **',You can still manage your profile\n.services and schedule'**
+  String get youCanStillManageYourProfileServicesAndSchedule;
 }
 
 class _AppLocalizationsDelegate

@@ -210,7 +210,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           context.push(AppRoutes.providerListing);
                         }
                       }),
-                      _Item(Icons.description_outlined, 'Documents', () {
+                      _Item(Icons.description_outlined, AppLocalizations.of(context)!.documents, () {
                         context.push(AppRoutes.documents);
                       }),
                       // _Item(Icons.tune, 'Booking preferences', () {

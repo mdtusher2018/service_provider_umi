@@ -9,6 +9,7 @@ import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class GuestOnboardingScreen extends ConsumerStatefulWidget {
   const GuestOnboardingScreen({super.key});
@@ -70,7 +71,7 @@ class _GuestOnboardingScreenState extends ConsumerState<GuestOnboardingScreen> {
             /// Skip
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(onPressed: skip, child: AppText("Skip")),
+              child: TextButton(onPressed: skip, child: AppText(AppLocalizations.of(context)!.skip)),
             ),
 
             /// Pages

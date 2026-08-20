@@ -1189,4 +1189,205 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get seeMore => 'See more';
+
+  @override
+  String get documents => 'Documents';
+
+  @override
+  String get chooseYourPlan => 'Choose Your Plan';
+
+  @override
+  String get noPlansAvailable => 'No plans available right now.';
+
+  @override
+  String get checkBackLater => 'Please check back later or contact support.';
+
+  @override
+  String get upgradeToPremium => 'Upgrade to Premium';
+
+  @override
+  String get unlockAllFeatures => 'Unlock all features and grow your business.';
+
+  @override
+  String savePercent(String percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get alreadySubscribed => 'You are already subscribed to this plan.';
+
+  @override
+  String get planNotAvailable =>
+      'This plan is not available for purchase on this platform yet. Please try again later.';
+
+  @override
+  String successfullySubscribed(String planName) {
+    return 'Successfully subscribed to $planName!';
+  }
+
+  @override
+  String get subscribeNow => 'Subscribe Now';
+
+  @override
+  String get messageSentSuccessfully =>
+      'Your message has been sent successfully.';
+
+  @override
+  String get failedToSendMessage => 'Failed to send message. Please try again.';
+
+  @override
+  String get pleaseSelectDocument =>
+      'Please select at least one document to proceed.';
+
+  @override
+  String get documentsUpdatedSuccessfully => 'Documents updated successfully';
+
+  @override
+  String get pleaseEnterValidPricePerHour =>
+      'Please enter a valid price per hour';
+
+  @override
+  String get listingUpdatedSuccessfully => 'Listing updated successfully';
+
+  @override
+  String get failedToSubmitReview => 'Failed to submit review';
+
+  @override
+  String get reviewSubmittedSuccessfully => 'Review submitted successfully';
+
+  @override
+  String get failedToSaveSchedule => 'Failed to save schedule. Try again.';
+
+  @override
+  String get pleaseFillOutAllFields => 'Please fill out all fields.';
+
+  @override
+  String get pleaseSelectFlexibleStartTime =>
+      'Please select a flexible start time slot or use \'Skip\'.';
+
+  @override
+  String get outstanding => 'Outstanding';
+
+  @override
+  String get hello => 'Hello';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get copyrightIBadi => 'Copyright iBadi';
+
+  @override
+  String get badi => 'Badi';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get end => 'End';
+
+  @override
+  String get markAllRead => 'Mark All Read';
+
+  @override
+  String get goBack => 'Go back';
+
+  @override
+  String get iumiAdminSupport => 'Iumi Admin Support';
+
+  @override
+  String get emailAddress => 'Email address';
+
+  @override
+  String get subject => 'Subject';
+
+  @override
+  String get yourMessage => 'Your message';
+
+  @override
+  String get sayHello => 'Say hello 👋';
+
+  @override
+  String get chooseOption => 'Choose option';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get completePayment => 'Complete Payment';
+
+  @override
+  String get noMessages => 'No messages';
+
+  @override
+  String get noNotification => 'No Notification';
+
+  @override
+  String get noScheduleAvailable => 'No schedule available.';
+
+  @override
+  String get additionalComments => 'Additional comments';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get failedToLoadGallery => 'Failed to load gallery';
+
+  @override
+  String get noImagesAvailable => 'No images available';
+
+  @override
+  String get viewGallery => 'View gallery';
+
+  @override
+  String get noGalleryImageFound => 'No gallery image found';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get noCommentsFound => 'No comments found';
+
+  @override
+  String get serviceFrequency => 'Service frequency';
+
+  @override
+  String get howManyTimesDoYouWantTheService =>
+      'How many times do you want the service?';
+
+  @override
+  String get rateYourExperience => 'Rate Your Experience';
+
+  @override
+  String get deleteThisAddress => 'Delete this address?';
+
+  @override
+  String get showSpecialistsIn => 'Show specialists in:';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get chooseFromGallery => 'Choose from gallery';
+
+  @override
+  String get takeAPhoto => 'Take a photo';
+
+  @override
+  String get profilePicture => 'Profile picture';
+
+  @override
+  String get doYouWantToGoBack => 'Do you want to go back?';
+
+  @override
+  String get startYour30DayFreeTrialToReceiveAndManageCustomerRequests =>
+      'Start your 30-day free trial to receive\n.and manage customer requests';
+
+  @override
+  String get youCanStillManageYourProfileServicesAndSchedule =>
+      ',You can still manage your profile\n.services and schedule';
 }

@@ -170,7 +170,7 @@ class AppDrawer extends ConsumerWidget {
               },
             ),
 
-            ListTile(title: const Text('Download'), onTap: () {}),
+            ListTile(title: Text(AppLocalizations.of(context)!.download), onTap: () {}),
           ],
         ),
       ),

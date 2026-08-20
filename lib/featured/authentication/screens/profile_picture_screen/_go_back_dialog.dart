@@ -26,7 +26,7 @@ class _GoBackDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AppText.h3('Do you want to go back?'),
+                    AppText.h3(AppLocalizations.of(context)!.doYouWantToGoBack),
                     GestureDetector(
                       onTap: onStay,
                       child: const Icon(

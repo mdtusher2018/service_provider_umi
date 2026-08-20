@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 class ExitConfirmationWrapper extends StatelessWidget {
   final Widget child;
@@ -41,7 +42,7 @@ class ExitConfirmationWrapper extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),

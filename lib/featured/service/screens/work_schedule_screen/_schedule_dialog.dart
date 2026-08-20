@@ -143,7 +143,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: 10.circular),
                 ),
-                child: AppText('Confirm', style: AppTextStyles.buttonMd),
+                child: AppText(AppLocalizations.of(context)!.confirm, style: AppTextStyles.buttonMd),
               ),
             ),
           ],
