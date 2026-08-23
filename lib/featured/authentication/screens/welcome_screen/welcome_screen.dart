@@ -170,7 +170,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                     offset: Offset(0, _logoMoveUp.value),
                     child: Transform.scale(
                       scale: _logoScale.value,
-                      child: Image.asset(Assets.logoPng.keyName, height: 180),
+                      child: Image.asset(Assets.logo.keyName, height: 180),
                     ),
                   ),
                 );

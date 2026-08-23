@@ -5,6 +5,7 @@ import 'package:service_provider_umi/data/models/api_response.dart';
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
+import 'package:service_provider_umi/data/models/user_document_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/verification_provider.dart';
 
@@ -25,6 +26,9 @@ abstract class UserRemoteDataSource {
   Future<SupportResponse> getSupport();
   Future<String> getStripeConnetedUrl();
   Future<bool> submitVerification(VerificationRequest request);
+
+  // ── Documents ──────────────────────────────────────────────────────────────
+  Future<List<UserDocumentModel>> getMyDocuments();
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -200,5 +204,20 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       throw Exception(errorMessage);
     }
     return true;
+  }
+
+  // ── GET /users/my-documents ──────────────────────────────────────────────
+  @override
+  Future<List<UserDocumentModel>> getMyDocuments() async {
+    final response = await _dio.get(ApiEndpoints.myDocuments);
+    final raw = response.data as Map<String, dynamic>;
+    final success = raw['success'] as bool? ?? false;
+    if (!success) {
+      throw Exception(raw['message'] ?? 'Failed to fetch documents');
+    }
+    final list = raw['data'] as List? ?? [];
+    return list
+        .map((e) => UserDocumentModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

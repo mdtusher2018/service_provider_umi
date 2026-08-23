@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/di/repository_providers.dart';
 import 'package:service_provider_umi/core/error/failure.dart';
 import 'package:service_provider_umi/data/models/provider_models.dart';
+import 'package:service_provider_umi/data/models/user_document_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/data/repository/user_repository.dart';
@@ -235,4 +236,24 @@ class AddFaqNotifier extends _$AddFaqNotifier {
   }
 
   void reset() => state = const ActionState.initial();
+}
+
+// ── GET /users/my-documents ──────────────────────────────────────────────────
+
+@riverpod
+class MyDocumentsNotifier extends _$MyDocumentsNotifier {
+  @override
+  AsyncValue<List<UserDocumentModel>> build() => const AsyncData([]);
+
+  UserRepository get _repo => ref.read(userRepositoryProvider);
+
+  Future<void> fetch() async {
+    state = const AsyncLoading();
+    final result = await _repo.getMyDocuments();
+    if (!ref.mounted) return;
+    state = result.when(
+      success: (docs) => AsyncData(docs),
+      failure: (e) => AsyncError(e, StackTrace.current),
+    );
+  }
 }

@@ -200,14 +200,14 @@ class $AssetsWelcomeGen {
 class Assets {
   const Assets._();
 
+  static const AssetGenImage appIcon = AssetGenImage('assets/appIcon.png');
   static const $AssetsCardsGen cards = $AssetsCardsGen();
   static const AssetGenImage elderlyCare = AssetGenImage(
     'assets/elderly_care.png',
   );
   static const $AssetsGuestImagesGen guestImages = $AssetsGuestImagesGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
-  static const AssetGenImage logoJpg = AssetGenImage('assets/logo.jpg');
-  static const AssetGenImage logoPng = AssetGenImage('assets/logo.png');
+  static const AssetGenImage logo = AssetGenImage('assets/logo.png');
   static const $AssetsServiceProviderImagesGen serviceProviderImages =
       $AssetsServiceProviderImagesGen();
   static const AssetGenImage support = AssetGenImage('assets/support.png');
@@ -216,9 +216,9 @@ class Assets {
 
   /// List of all assets
   static List<AssetGenImage> get values => [
+    appIcon,
     elderlyCare,
-    logoJpg,
-    logoPng,
+    logo,
     support,
   ];
 }

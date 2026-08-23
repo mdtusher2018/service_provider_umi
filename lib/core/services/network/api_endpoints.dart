@@ -21,6 +21,7 @@ class ApiEndpoints {
   static const String deleteMyAccount = '/users/delete-my-account';
   static String profileVerified(String id) => '/verification-request/$id';
   static const String profileVerificationSubmit = '/verification-request';
+  static const String myDocuments = '/users/my-documents';
 
   // ─── Notifications ──────────────────────────────────────────────────────────
   static const String notifications = '/notifications';

@@ -46,30 +46,33 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initFromProfile();
+      // Fetch documents from API
+      ref.read(myDocumentsProvider.notifier).fetch();
     });
   }
 
-  void _initFromProfile() {
-    final userState = ref.read(myProfileProvider);
-    userState.whenOrNull(
-      success: (user) {
-        final provider = user.serviceProviderInfo;
-        if (provider != null) {
-          _existingPalliativeImage = provider.palliativeCare;
-          _existingDrivingImage = provider.drivingLicense;
-          _existingBusinessImage = provider.businessProfiles;
-          _existingQualifiedImage = provider.qualifiedCarer;
+  /// Populate toggle and image state from the API response.
+  void _applyDocuments() {
+    final docsState = ref.read(myDocumentsProvider);
+    final docs = docsState.value ?? [];
 
-          _palliativeCare = _existingPalliativeImage != null && _existingPalliativeImage!.isNotEmpty;
-          _drivingLicence = _existingDrivingImage != null && _existingDrivingImage!.isNotEmpty;
-          _businessProfile = _existingBusinessImage != null && _existingBusinessImage!.isNotEmpty;
-          _qualifiedCarer = _existingQualifiedImage != null && _existingQualifiedImage!.isNotEmpty;
-
-          setState(() {});
-        }
-      },
-    );
+    for (final doc in docs) {
+      switch (doc.type) {
+        case 'palliativeCare':
+          _palliativeCare = true;
+          _existingPalliativeImage = doc.url;
+        case 'drivingLicense':
+          _drivingLicence = true;
+          _existingDrivingImage = doc.url;
+        case 'businessProfiles' || 'businessProfile':
+          _businessProfile = true;
+          _existingBusinessImage = doc.url;
+        case 'qualifiedCarer':
+          _qualifiedCarer = true;
+          _existingQualifiedImage = doc.url;
+      }
+    }
+    setState(() {});
   }
 
   Future<void> _pickImage(Function(File) onPicked) async {
@@ -113,6 +116,15 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to documents fetch — apply state when data arrives
+    ref.listen(myDocumentsProvider, (previous, next) {
+      if (next is AsyncData) {
+        _applyDocuments();
+      } else if (next is AsyncError) {
+        context.showErrorSnackBar(next.error.toString());
+      }
+    });
+
     ref.listen(verificationProvider, (previous, next) {
       if (next is AsyncError) {
         context.showErrorSnackBar(next.error.toString());
@@ -128,117 +140,122 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     final verificationState = ref.watch(verificationProvider);
     final isUpdating = verificationState is AsyncLoading;
 
+    final docsState = ref.watch(myDocumentsProvider);
+    final isLoadingDocs = docsState is AsyncLoading;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppAppBar(title: AppLocalizations.of(context)!.documents),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppToggleTile(
-                label: AppLocalizations.of(context)!.palliativeCare,
-                subtitle: AppLocalizations.of(context)!.palliativeCareDesc,
-                value: _palliativeCare,
-                onChanged: (v) => setState(() {
-                  _palliativeCare = v;
-                  if (!v) {
-                    _palliativeImage = null;
-                    _existingPalliativeImage = null;
-                  }
-                }),
-              ),
-              if (_palliativeCare) ...[
-                16.verticalSpace,
-                _buildImageTile(
-                  title: AppLocalizations.of(context)!.palliativeCareImage,
-                  imageFile: _palliativeImage,
-                  existingUrl: _existingPalliativeImage,
-                  onTap: () => _pickImage((f) => _palliativeImage = f),
-                ),
-              ],
-              const AppDivider(height: 40, color: AppColors.grey400),
-              AppToggleTile(
-                label: AppLocalizations.of(context)!.drivingLicence,
-                subtitle: AppLocalizations.of(context)!.drivingLicenceDesc,
-                value: _drivingLicence,
-                onChanged: (v) => setState(() {
-                  _drivingLicence = v;
-                  if (!v) {
-                    _drivingImage = null;
-                    _existingDrivingImage = null;
-                  }
-                }),
-              ),
-              if (_drivingLicence) ...[
-                16.verticalSpace,
-                _buildImageTile(
-                  title: AppLocalizations.of(context)!.drivingLicenceImage,
-                  imageFile: _drivingImage,
-                  existingUrl: _existingDrivingImage,
-                  onTap: () => _pickImage((f) => _drivingImage = f),
-                ),
-              ],
-              const AppDivider(height: 40, color: AppColors.grey400),
-              AppToggleTile(
-                label: AppLocalizations.of(context)!.businessProfiles,
-                subtitle: AppLocalizations.of(context)!.businessProfilesDesc,
-                value: _businessProfile,
-                onChanged: (v) => setState(() {
-                  _businessProfile = v;
-                  if (!v) {
-                    _businessImage = null;
-                    _existingBusinessImage = null;
-                  }
-                }),
-              ),
-              if (_businessProfile) ...[
-                16.verticalSpace,
-                _buildImageTile(
-                  title: AppLocalizations.of(context)!.businessProfileImage,
-                  imageFile: _businessImage,
-                  existingUrl: _existingBusinessImage,
-                  onTap: () => _pickImage((f) => _businessImage = f),
-                ),
-              ],
-              const AppDivider(height: 40, color: AppColors.grey400),
-              AppToggleTile(
-                label: AppLocalizations.of(context)!.qualifiedCarer,
-                subtitle: AppLocalizations.of(context)!.qualifiedCarerDesc,
-                value: _qualifiedCarer,
-                onChanged: (v) => setState(() {
-                  _qualifiedCarer = v;
-                  if (!v) {
-                    _qualifiedImage = null;
-                    _existingQualifiedImage = null;
-                  }
-                }),
-              ),
-              if (_qualifiedCarer) ...[
-                16.verticalSpace,
-                _buildImageTile(
-                  title: AppLocalizations.of(context)!.qualificationCertificate,
-                  imageFile: _qualifiedImage,
-                  existingUrl: _existingQualifiedImage,
-                  onTap: () => _pickImage((f) => _qualifiedImage = f),
-                ),
-              ],
-              32.verticalSpace,
+      body: isLoadingDocs
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppToggleTile(
+                      label: AppLocalizations.of(context)!.palliativeCare,
+                      subtitle: AppLocalizations.of(context)!.palliativeCareDesc,
+                      value: _palliativeCare,
+                      onChanged: (v) => setState(() {
+                        _palliativeCare = v;
+                        if (!v) {
+                          _palliativeImage = null;
+                          _existingPalliativeImage = null;
+                        }
+                      }),
+                    ),
+                    if (_palliativeCare) ...[
+                      16.verticalSpace,
+                      _buildImageTile(
+                        title: AppLocalizations.of(context)!.palliativeCareImage,
+                        imageFile: _palliativeImage,
+                        existingUrl: _existingPalliativeImage,
+                        onTap: () => _pickImage((f) => _palliativeImage = f),
+                      ),
+                    ],
+                    const AppDivider(height: 40, color: AppColors.grey400),
+                    AppToggleTile(
+                      label: AppLocalizations.of(context)!.drivingLicence,
+                      subtitle: AppLocalizations.of(context)!.drivingLicenceDesc,
+                      value: _drivingLicence,
+                      onChanged: (v) => setState(() {
+                        _drivingLicence = v;
+                        if (!v) {
+                          _drivingImage = null;
+                          _existingDrivingImage = null;
+                        }
+                      }),
+                    ),
+                    if (_drivingLicence) ...[
+                      16.verticalSpace,
+                      _buildImageTile(
+                        title: AppLocalizations.of(context)!.drivingLicenceImage,
+                        imageFile: _drivingImage,
+                        existingUrl: _existingDrivingImage,
+                        onTap: () => _pickImage((f) => _drivingImage = f),
+                      ),
+                    ],
+                    const AppDivider(height: 40, color: AppColors.grey400),
+                    AppToggleTile(
+                      label: AppLocalizations.of(context)!.businessProfiles,
+                      subtitle: AppLocalizations.of(context)!.businessProfilesDesc,
+                      value: _businessProfile,
+                      onChanged: (v) => setState(() {
+                        _businessProfile = v;
+                        if (!v) {
+                          _businessImage = null;
+                          _existingBusinessImage = null;
+                        }
+                      }),
+                    ),
+                    if (_businessProfile) ...[
+                      16.verticalSpace,
+                      _buildImageTile(
+                        title: AppLocalizations.of(context)!.businessProfileImage,
+                        imageFile: _businessImage,
+                        existingUrl: _existingBusinessImage,
+                        onTap: () => _pickImage((f) => _businessImage = f),
+                      ),
+                    ],
+                    const AppDivider(height: 40, color: AppColors.grey400),
+                    AppToggleTile(
+                      label: AppLocalizations.of(context)!.qualifiedCarer,
+                      subtitle: AppLocalizations.of(context)!.qualifiedCarerDesc,
+                      value: _qualifiedCarer,
+                      onChanged: (v) => setState(() {
+                        _qualifiedCarer = v;
+                        if (!v) {
+                          _qualifiedImage = null;
+                          _existingQualifiedImage = null;
+                        }
+                      }),
+                    ),
+                    if (_qualifiedCarer) ...[
+                      16.verticalSpace,
+                      _buildImageTile(
+                        title: AppLocalizations.of(context)!.qualificationCertificate,
+                        imageFile: _qualifiedImage,
+                        existingUrl: _existingQualifiedImage,
+                        onTap: () => _pickImage((f) => _qualifiedImage = f),
+                      ),
+                    ],
+                    32.verticalSpace,
 
-              SizedBox(
-                width: double.infinity,
-                child: AppButton.primary(
-                  label: AppLocalizations.of(context)!.update,
-                  isLoading: isUpdating,
-                  onPressed: _onUpdate,
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppButton.primary(
+                        label: AppLocalizations.of(context)!.update,
+                        isLoading: isUpdating,
+                        onPressed: _onUpdate,
+                      ),
+                    ),
+                    32.verticalSpace,
+                  ],
                 ),
               ),
-              32.verticalSpace,
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

@@ -103,7 +103,7 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // Logo
-                            Image.asset(Assets.logoPng.keyName, height: 180),
+                            Image.asset(Assets.logo.keyName, height: 180),
                             Row(
                               spacing: 16,
                               children: [

@@ -41,7 +41,7 @@ final class LoginNotifierProvider
   }
 }
 
-String _$loginNotifierHash() => r'da1a4b3eb4c11bb4d786dbbf134fee0af9c14ac9';
+String _$loginNotifierHash() => r'fb6790268d6bb6b0edc6e9c1e26a496e1bcc7e63';
 
 abstract class _$LoginNotifier extends $Notifier<AuthState> {
   AuthState build();
@@ -93,7 +93,7 @@ final class SignupNotifierProvider
   }
 }
 
-String _$signupNotifierHash() => r'0315df44b862af5827a858fc607116a09b3b5956';
+String _$signupNotifierHash() => r'421d05613d97e1b41bf0423ff26bf864a414b053';
 
 abstract class _$SignupNotifier extends $Notifier<AuthState> {
   AuthState build();
@@ -408,7 +408,7 @@ final class LogoutNotifierProvider
   }
 }
 
-String _$logoutNotifierHash() => r'143de7a6598304783ec46bcabfbebfb87653513f';
+String _$logoutNotifierHash() => r'311b9c4298ed35728733daa19ef440af68cb46e9';
 
 abstract class _$LogoutNotifier extends $Notifier<AuthState> {
   AuthState build();

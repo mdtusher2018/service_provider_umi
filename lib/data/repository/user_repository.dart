@@ -5,6 +5,7 @@ import 'package:service_provider_umi/data/data_source/remote/user_remote_data_so
 import 'package:service_provider_umi/data/models/auth_models.dart';
 import 'package:service_provider_umi/data/models/favorites_model.dart';
 import 'package:service_provider_umi/data/models/mock_misc_models.dart';
+import 'package:service_provider_umi/data/models/user_document_model.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
 import 'package:service_provider_umi/featured/service/riverpod/verification_provider.dart';
 
@@ -53,4 +54,8 @@ class UserRepository with SafeCall {
   Future<Result<bool, Failure>> submitVerification(
     VerificationRequest request,
   ) => asyncGuard(() => _remote.submitVerification(request));
+
+  // ── GET /users/my-documents ──────────────────────────────────────────────
+  Future<Result<List<UserDocumentModel>, Failure>> getMyDocuments() =>
+      asyncGuard(() => _remote.getMyDocuments());
 }

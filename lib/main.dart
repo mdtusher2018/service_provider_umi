@@ -63,9 +63,6 @@ Future<void> main() async {
 
   // Start listening to CallKit accept / decline / end events
   CallKitListenerService.init();
-
-  // Stripe.publishableKey =
-  //     "pk_test_51QThD1QBqUnkaNjmyEqpPBiRlHVBNAmKPAVOCqLEJp5xWEu9o6d65h21lLZNtr7V6ACNG9AkMh8qMUZUIVFTwYNj00xFV4BmxB";
   Stripe.publishableKey = AppConfig.stripePublishableKey;
   if (!kIsWeb) {
     await Stripe.instance.applySettings();

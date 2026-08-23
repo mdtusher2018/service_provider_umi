@@ -40,7 +40,7 @@ class SearchSubcategoryScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Logo
-                Image.asset(Assets.logoPng.keyName, height: 48),
+                Image.asset(Assets.logo.keyName, height: 48),
                 Row(
                   spacing: 16,
                   children: [
