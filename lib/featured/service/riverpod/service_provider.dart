@@ -212,7 +212,13 @@ class BookingsNotifier extends _$BookingsNotifier {
 
     result.when(
       success: (res) {
-        final newItems = res.bookings;
+        var newItems = res.bookings;
+
+        if (bookingStatus == BookingStatus.upcoming) {
+          newItems = newItems
+              .where((b) => b.status != BookingStatus.canceled)
+              .toList();
+        }
 
         final current = state.value ?? [];
 

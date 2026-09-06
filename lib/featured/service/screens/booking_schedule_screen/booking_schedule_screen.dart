@@ -335,7 +335,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
         border: const Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, -3),
           ),
@@ -367,12 +367,14 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
     if (message != null && !message.contains("Successfully Booked")) {
       context.showErrorSnackBar(message);
     } else if (message != null) {
-       if (kIsWeb) {
-      context.go(AppRoutes.bookingDetailPath(message.split(" ").last));
-    } else {
-      context.push(AppRoutes.bookingDetailPath(message.split(" ").last));
-    }
-    
+      // if (kIsWeb) {
+      //   context.go(AppRoutes.bookingDetailPath(message.split(" ").last));
+      // } else {
+      //   context.push(AppRoutes.bookingDetailPath(message.split(" ").last));
+      // }
+      
+      context.showSuccessSnackBar("Bookings created successfully");
+      context.go(AppRoutes.userHome);
     }
   }
 
