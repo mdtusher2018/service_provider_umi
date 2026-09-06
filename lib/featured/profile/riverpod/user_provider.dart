@@ -142,7 +142,7 @@ class MyReviewNotifier extends _$MyReviewNotifier {
 
     state = const AsyncLoading();
 
-    final result = await _repo.getProviderReviews(providerId, page: _page);
+    final result = await _repo.getProviderReviews(providerId, page: _page, limit: 10);
 
     if (!ref.mounted) return;
 
@@ -164,7 +164,7 @@ class MyReviewNotifier extends _$MyReviewNotifier {
 
     final current = state.value ?? [];
 
-    final result = await _repo.getProviderReviews(providerId, page: _page);
+    final result = await _repo.getProviderReviews(providerId, page: _page, limit: 10);
 
     if (!ref.mounted) return;
 

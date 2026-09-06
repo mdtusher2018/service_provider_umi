@@ -110,8 +110,6 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
 
           if (!isVerified && !isPending) {
             context.go(AppRoutes.providerOnboarding);
-          } else if (isVerified) {
-            ref.read(bookingsProvider(BookingStatus.upcoming).notifier).fetch(initial: true);
           }
         },
       );

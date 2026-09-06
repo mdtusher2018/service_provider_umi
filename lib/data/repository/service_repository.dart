@@ -53,8 +53,9 @@ class ServiceRepository with SafeCall {
   Future<Result<List<ProviderComment>, Failure>> getProviderReviews(
     String providerId, {
     int page = 1,
+    int limit = 10,
   }) {
-    return asyncGuard(() => _remote.getProviderReviews(providerId, page: page));
+    return asyncGuard(() => _remote.getProviderReviews(providerId, page: page, limit: limit));
   }
 
   // ── POST /bookings ────────────────────────────────────────────────────────────

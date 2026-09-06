@@ -29,6 +29,7 @@ abstract class ServiceRemoteDataSource {
   Future<List<ProviderComment>> getProviderReviews(
     String providerId, {
     int page = 1,
+    int limit = 10,
   });
 
   // ── Bookings ─────────────────────────────────────────────────────────────────
@@ -210,10 +211,11 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   Future<List<ProviderComment>> getProviderReviews(
     String providerId, {
     int page = 1,
+    int limit = 10,
   }) async {
     final responses = await _dio.get(
       ApiEndpoints.providerReviews(providerId),
-      queryParameters: {"page": page},
+      queryParameters: {"page": page, "limit" : limit, "sort" : "-createdAt"},
     );
 
     final parsed = ApiResponse<List<ProviderComment>>.fromJson(

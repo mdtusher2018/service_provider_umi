@@ -7,6 +7,9 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:service_provider_umi/core/services/network/dio_client.dart';
 import 'package:service_provider_umi/core/services/revenuecat_service.dart';
+import 'package:service_provider_umi/core/services/storage/local_storage_service.dart';
+import 'package:service_provider_umi/core/services/storage/storage_key.dart';
+import 'package:service_provider_umi/core/di/core_providers.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// Subscription State Model
@@ -76,8 +79,12 @@ class SubscriptionState {
 class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
   StreamSubscription<CustomerInfo>? _infoSub;
 
-  SubscriptionNotifier(this._dio) : super(const SubscriptionState());
+  SubscriptionNotifier(this._dio, this._storage) : super(SubscriptionState(
+    hasActiveAccess: _storage.readSync(StorageKey.hasActiveSubscription) ?? false,
+  ));
+  
   final Dio _dio;
+  final LocalStorageService _storage;
 
   /// 1. Initialize for current Provider ID
   Future<void> init(String providerId) async {
@@ -105,7 +112,11 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 
     _updateFromCustomerInfo(info, offerings: offerings);
     await fetchBackendSubscription();
+    _backendCheckCompleted = true;
+    _evaluateOverallAccess();
   }
+
+  bool _backendCheckCompleted = false;
 
   /// Fetch current subscription from backend and update state accordingly
   Future<void> fetchBackendSubscription() async {
@@ -131,12 +142,13 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
           }
           
           state = state.copyWith(
-            hasActiveAccess: state.hasActiveAccess || hasActiveSubscription,
             isInTrial: state.isInTrial || isTrial,
             remainingTrialDays: state.remainingTrialDays > 0 ? state.remainingTrialDays : daysLeft,
             isEligibleForTrial: subscription == null && !hasActiveSubscription,
             backendSubscription: subscription,
           );
+          
+          _evaluateOverallAccess();
           
           debugPrint('✅ [SubscriptionProvider] Merged backend status. Active: \${state.hasActiveAccess}, Trial: \${state.isInTrial}, Days: \${state.remainingTrialDays}');
         }
@@ -163,16 +175,38 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     debugPrint('   - In Trial: $inTrial');
     debugPrint('   - Eligible for Trial: $eligible');
     debugPrint('   - Days Left: $daysLeft');
-
     state = state.copyWith(
       isLoading: false,
-      hasActiveAccess: rcHasAccess || backendHasAccess || state.hasActiveAccess,
       isInTrial: inTrial || state.isInTrial,
       isEligibleForTrial: eligible,
       remainingTrialDays: daysLeft > 0 ? daysLeft : state.remainingTrialDays,
       customerInfo: info,
       offerings: offerings ?? state.offerings,
     );
+    
+    _evaluateOverallAccess();
+  }
+
+  void _evaluateOverallAccess() {
+    final rcHasAccess = RevenueCatService.instance.hasActiveAccess(state.customerInfo);
+    final backendHasAccess = state.backendSubscription != null && 
+        (state.backendSubscription!['isActive'] == true || state.backendSubscription!['isPaid'] == true);
+
+    // If the backend check hasn't completed yet, trust the optimistic cache or RC
+    if (!_backendCheckCompleted) {
+      state = state.copyWith(
+        hasActiveAccess: rcHasAccess || state.hasActiveAccess,
+      );
+    } else {
+      // Once both RC and backend are fully loaded, strictly evaluate the true access
+      final hasTrueAccess = rcHasAccess || backendHasAccess;
+      if (state.hasActiveAccess != hasTrueAccess) {
+        state = state.copyWith(hasActiveAccess: hasTrueAccess);
+      }
+    }
+    
+    // Always keep cache in sync with state
+    _storage.write(StorageKey.hasActiveSubscription, state.hasActiveAccess);
   }
 
   /// 2. Activate 30-Day Free Trial
@@ -306,5 +340,6 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
 /// Global Provider for Subscription State
 final subscriptionProvider = StateNotifierProvider<SubscriptionNotifier, SubscriptionState>((ref) {
   final dio = ref.watch(dioClientProvider);
-  return SubscriptionNotifier(dio);
+  final storage = ref.watch(localStorageProvider);
+  return SubscriptionNotifier(dio, storage);
 });

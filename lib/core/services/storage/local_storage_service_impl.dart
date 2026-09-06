@@ -32,6 +32,7 @@ final class LocalStorageServiceImpl implements LocalStorageService {
     // Preload SharedPreferences keys
     _cache[StorageKey.selectedLocale.key] = _prefs.getString(StorageKey.selectedLocale.key);
     _cache[StorageKey.userRole.key] = _prefs.getString(StorageKey.userRole.key);
+    _cache[StorageKey.hasActiveSubscription.key] = _prefs.getBool(StorageKey.hasActiveSubscription.key);
 
     // Preload secure storage keys (needed for sync reads on startup)
     _cache[StorageKey.accessToken.key] = await _secureStorage.read(key: StorageKey.accessToken.key);

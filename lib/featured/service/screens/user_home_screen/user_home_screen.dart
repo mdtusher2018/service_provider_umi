@@ -216,15 +216,17 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        AppText(
-                          selectedAddressName,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        Flexible(
+                          child: AppText(
+                            selectedAddressName,
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         4.horizontalSpace,
                         const Icon(
