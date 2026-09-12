@@ -660,18 +660,21 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: AppText(AppLocalizations.of(context)!.verificationSubmitted),
+      builder: (dialogContext) => AlertDialog(
+        title: AppText(AppLocalizations.of(dialogContext)!.verificationSubmitted),
         content: AppText(
-          AppLocalizations.of(context)!.verificationSubmittedDesc,
+          AppLocalizations.of(dialogContext)!.verificationSubmittedDesc,
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              ref.read(logoutProvider.notifier).logout();
-              context.go(AppRoutes.login);
+            onPressed: () async {
+              Navigator.of(dialogContext).pop(); // close the dialog
+              await ref.read(logoutProvider.notifier).logout();
+              if (mounted) {
+                context.go(AppRoutes.login);
+              }
             },
-            child: AppText(AppLocalizations.of(context)!.logout),
+            child: AppText(AppLocalizations.of(dialogContext)!.logout),
           ),
         ],
       ),

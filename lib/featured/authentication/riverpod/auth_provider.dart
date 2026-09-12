@@ -261,7 +261,7 @@ class ChangePasswordNotifier extends _$ChangePasswordNotifier {
 
 // ── Logout ────────────────────────────────────────────────────────────────────
 
-@riverpod
+@Riverpod(keepAlive: true)
 class LogoutNotifier extends _$LogoutNotifier {
   @override
   AuthState build() => const AuthState.initial();

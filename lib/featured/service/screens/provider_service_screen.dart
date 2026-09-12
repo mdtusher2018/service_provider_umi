@@ -15,11 +15,14 @@ import 'package:service_provider_umi/shared/enums/booking_status.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
+import 'package:service_provider_umi/shared/widgets/app_button.dart';
+import 'package:service_provider_umi/featured/profile/riverpod/user_provider.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
 
 import '../../../l10n/app_localizations.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 import 'package:service_provider_umi/featured/subscription/screens/subscription_screen.dart';
+import 'package:service_provider_umi/featured/subscription/screens/premium_packages_screen.dart';
 import 'package:service_provider_umi/featured/subscription/widgets/subscription_required_card.dart';
 part 'provider_completed_service_screen.dart';
 
@@ -103,6 +106,11 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
   Widget build(BuildContext context) {
     final state = ref.watch(bookingsProvider(_currentStatus));
     final subState = ref.watch(subscriptionProvider);
+    final profileState = ref.watch(myProfileProvider);
+    final hasUsedFreeTrial = profileState.maybeWhen(
+      success: (profile) => profile.serviceProviderInfo?.hasUsedFreeTrial ?? false,
+      orElse: () => false,
+    );
     
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -142,6 +150,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                   ? SingleChildScrollView(
                       padding: const EdgeInsets.all(16.0),
                       child: SubscriptionRequiredCard(
+                        hasUsedFreeTrial: hasUsedFreeTrial,
                         isEligibleForTrial: subState.isEligibleForTrial,
                         onStartTrialTapped: () {
                           Navigator.of(context).push(
@@ -150,7 +159,7 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
                         },
                         onUpgradeTapped: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+                            MaterialPageRoute(builder: (_) => const PremiumPackagesScreen()),
                           );
                         },
                       ),

@@ -592,5 +592,6 @@
   "profilePicture": "Profile picture",
   "doYouWantToGoBack": "Do you want to go back?",
   "startYour30DayFreeTrialToReceiveAndManageCustomerRequests": "Start your 30-day free trial to receive\n.and manage customer requests",
-  "youCanStillManageYourProfileServicesAndSchedule": ",You can still manage your profile\n.services and schedule"
+  "youCanStillManageYourProfileServicesAndSchedule": ",You can still manage your profile\n.services and schedule",
+  "freeTrialExpiredText": "You free trial has been expired, Use premium to receive and manage customer requests"
 }

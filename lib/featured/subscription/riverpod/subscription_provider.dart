@@ -248,7 +248,20 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionState> {
     } catch (e, stacktrace) {
       debugPrint('❌ [SubscriptionProvider] Error in activateFreeTrial: $e');
       debugPrint('$stacktrace');
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      
+      String errorMessage = e.toString();
+      if (e is DioException) {
+        if (e.response?.data != null && e.response!.data is Map) {
+          final data = e.response!.data as Map;
+          if (data['message'] != null) {
+            errorMessage = data['message'].toString();
+          }
+        } else if (e.message != null) {
+          errorMessage = e.message!;
+        }
+      }
+      
+      state = state.copyWith(isLoading: false, errorMessage: errorMessage);
       return false;
     }
   }

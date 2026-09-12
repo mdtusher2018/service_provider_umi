@@ -11,12 +11,14 @@ class SubscriptionRequiredCard extends StatelessWidget {
   final VoidCallback onStartTrialTapped;
   final VoidCallback? onUpgradeTapped;
   final bool isEligibleForTrial;
+  final bool hasUsedFreeTrial;
 
   const SubscriptionRequiredCard({
     super.key,
     required this.onStartTrialTapped,
     this.onUpgradeTapped,
     this.isEligibleForTrial = true,
+    this.hasUsedFreeTrial = false,
   });
 
   static const Color _cyanColor = Color(0xFF00B4D8);
@@ -80,7 +82,9 @@ class SubscriptionRequiredCard extends StatelessWidget {
 
               // Subtitle
               AppText.bodyMd(
-                AppLocalizations.of(context)!.startFreeTrialToReceiveRequests,
+                hasUsedFreeTrial 
+                    ? AppLocalizations.of(context)!.freeTrialExpiredText
+                    : AppLocalizations.of(context)!.startFreeTrialToReceiveRequests,
                 textAlign: TextAlign.center,
                 color: const Color(0xFF64748B),
               ),
@@ -100,9 +104,11 @@ class SubscriptionRequiredCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  onPressed: onStartTrialTapped,
+                  onPressed: hasUsedFreeTrial ? onUpgradeTapped : onStartTrialTapped,
                   child: AppText.bodyLg(
-                    isEligibleForTrial ? AppLocalizations.of(context)!.startFreeTrial : AppLocalizations.of(context)!.upgradePremium,
+                    hasUsedFreeTrial 
+                        ? AppLocalizations.of(context)!.upgradePremium 
+                        : (isEligibleForTrial ? AppLocalizations.of(context)!.startFreeTrial : AppLocalizations.of(context)!.upgradePremium),
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

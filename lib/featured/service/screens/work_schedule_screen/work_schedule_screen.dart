@@ -7,6 +7,7 @@ import 'package:service_provider_umi/core/services/storage/storage_key.dart';
 import 'package:service_provider_umi/core/utils/animations.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:service_provider_umi/core/utils/helpers/decode_helper.dart';
 import 'package:service_provider_umi/core/utils/extensions/string_ext.dart';
 import 'package:service_provider_umi/data/models/work_schedule_model.dart';
 import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
@@ -337,16 +338,11 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
               onPressed: (isSaving || isLoading)
                   ? null
                   : () async {
-                      final token =
-                          await ref
-                                  .read(localStorageProvider)
-                                  .read(StorageKey.accessToken)
-                              as String? ??
-                          "";
+                      final userId = await getMyUserId(ref);
 
                       _onConfirm(
                         isUpdate: isUpdate,
-                        userId: token.decodeJwt['userId'],
+                        userId: userId,
                       );
                     },
             ),

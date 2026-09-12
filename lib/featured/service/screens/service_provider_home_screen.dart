@@ -23,6 +23,7 @@ import '../../../l10n/app_localizations.dart';
 import 'package:service_provider_umi/shared/widgets/app_button.dart';
 import 'package:service_provider_umi/featured/subscription/riverpod/subscription_provider.dart';
 import 'package:service_provider_umi/featured/subscription/screens/subscription_screen.dart';
+import 'package:service_provider_umi/featured/subscription/screens/premium_packages_screen.dart';
 import 'package:service_provider_umi/featured/subscription/widgets/subscription_required_card.dart';
 
 final providerHomeRefreshProvider = StateProvider<int>((ref) => 0);
@@ -152,10 +153,17 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
     
     // If not active, show the restriction card
     if (!subState.hasActiveAccess) {
+      final profileState = ref.watch(myProfileProvider);
+      final hasUsedFreeTrial = profileState.maybeWhen(
+        success: (profile) => profile.serviceProviderInfo?.hasUsedFreeTrial ?? false,
+        orElse: () => false,
+      );
+      
       return SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: SubscriptionRequiredCard(
           isEligibleForTrial: subState.isEligibleForTrial,
+          hasUsedFreeTrial: hasUsedFreeTrial,
           onStartTrialTapped: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
@@ -163,7 +171,7 @@ class _CalendarScreenState extends ConsumerState<ServiceProviderHomeScreen> {
           },
           onUpgradeTapped: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SubscriptionScreen()),
+              MaterialPageRoute(builder: (_) => const PremiumPackagesScreen()),
             );
           },
         ),

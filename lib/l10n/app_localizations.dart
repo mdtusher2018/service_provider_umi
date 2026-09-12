@@ -2695,6 +2695,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **',You can still manage your profile\n.services and schedule'**
   String get youCanStillManageYourProfileServicesAndSchedule;
+
+  /// No description provided for @freeTrialExpiredText.
+  ///
+  /// In en, this message translates to:
+  /// **'You free trial has been expired, Use premium to receive and manage customer requests'**
+  String get freeTrialExpiredText;
 }
 
 class _AppLocalizationsDelegate

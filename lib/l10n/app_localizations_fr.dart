@@ -1405,4 +1405,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get youCanStillManageYourProfileServicesAndSchedule =>
       'Vous pouvez toujours gérer votre profil, vos services et votre planning.';
+
+  @override
+  String get freeTrialExpiredText =>
+      'You free trial has been expired, Use premium to receive and manage customer requests';
 }

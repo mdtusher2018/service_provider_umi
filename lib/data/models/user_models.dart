@@ -103,6 +103,7 @@ class ServiceProviderInfo {
   final String? qualifiedCarer;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final bool hasUsedFreeTrial;
 
   final List<dynamic> images;
   final List<FilterOptionModel> otherTasks;
@@ -128,6 +129,7 @@ class ServiceProviderInfo {
     required this.specialists,
     this.subcategories = const [],
     this.experience,
+    this.hasUsedFreeTrial = false,
   });
 
   factory ServiceProviderInfo.fromJson(Map<String, dynamic> json) {
@@ -148,6 +150,7 @@ class ServiceProviderInfo {
       updatedAt: json['updatedAt'] != null
           ? DateTime.tryParse(json['updatedAt'])
           : null,
+      hasUsedFreeTrial: json['hasUsedFreeTrial'] ?? false,
 
       images:
           (json['images'] as List?)?.map((e) => e['url'] ?? "").toList() ?? [],

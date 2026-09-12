@@ -387,7 +387,7 @@ final class LogoutNotifierProvider
         argument: null,
         retry: null,
         name: r'logoutProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -408,7 +408,7 @@ final class LogoutNotifierProvider
   }
 }
 
-String _$logoutNotifierHash() => r'311b9c4298ed35728733daa19ef440af68cb46e9';
+String _$logoutNotifierHash() => r'e4744d65341ee724f6cbb781d4435fbafbf10b46';
 
 abstract class _$LogoutNotifier extends $Notifier<AuthState> {
   AuthState build();
