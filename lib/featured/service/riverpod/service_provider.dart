@@ -552,7 +552,7 @@ class ProviderProfileNotifier extends _$ProviderProfileNotifier {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class UpdateProviderNotifier extends _$UpdateProviderNotifier {
   @override
   AsyncValue<bool> build() {

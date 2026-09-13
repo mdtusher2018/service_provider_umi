@@ -237,13 +237,14 @@ class _BookingDetailBody extends ConsumerWidget {
             Row(
               spacing: 16,
               children: [
-                Expanded(
-                  child: AppButton.primary(
-                    label: AppLocalizations.of(context)!.complete,
-                    onPressed: onComplete,
-                    isLoading: ref.watch(completeBookingProvider).isLoading,
+                if (ref.read(appRoleProvider) == AppRole.provider)
+                  Expanded(
+                    child: AppButton.primary(
+                      label: AppLocalizations.of(context)!.complete,
+                      onPressed: onComplete,
+                      isLoading: ref.watch(completeBookingProvider).isLoading,
+                    ),
                   ),
-                ),
                 Expanded(
                   child: AppButton.outline(
                     label: AppLocalizations.of(context)!.cancel,
@@ -302,11 +303,15 @@ class _BookingDetailBody extends ConsumerWidget {
             children: [
               CircleAvatar(
                 radius: 40,
+                backgroundColor: AppColors.primaryLightFor(ref.read(appRoleProvider)),
                 backgroundImage: profileUrl != null && profileUrl.isNotEmpty
                     ? NetworkImage(profileUrl)
                     : null,
                 child: profileUrl == null || profileUrl.isEmpty
-                    ? const Icon(Icons.person, size: 36)
+                    ? AppText.h1(
+                        name.isNotEmpty && name != '—' ? name[0].toUpperCase() : '?',
+                        color: AppColors.primaryFor(ref.read(appRoleProvider)),
+                      )
                     : null,
               ),
               12.horizontalSpace,

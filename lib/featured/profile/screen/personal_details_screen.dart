@@ -10,6 +10,7 @@ import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
 import 'package:service_provider_umi/data/models/user_models.dart';
+import 'package:service_provider_umi/featured/authentication/riverpod/auth_provider.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/shared/widgets/app_appbar.dart';
 import 'package:service_provider_umi/shared/widgets/app_avatar.dart';
@@ -52,7 +53,12 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
     _nameController.text = widget.user.name;
     _phoneController.text = widget.user.phoneNumber ?? "";
     _bioController.text = widget.user.bio ?? "";
-    _addressController.text = widget.user.locaation?.address ?? "";
+    
+    String initialAddress = widget.user.locaation?.address ?? "";
+    if (initialAddress.isEmpty && widget.user.address != null && widget.user.address!.isNotEmpty) {
+      initialAddress = widget.user.address!.first.displayAddress;
+    }
+    _addressController.text = initialAddress;
   }
 
   @override
@@ -98,17 +104,19 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   }
 
   void _confirmDeleteAccount() {
+    final title = AppLocalizations.of(context)!.areYouSureToDeleteAccount;
+    
     showGeneralDialog(
       context: context,
       transitionDuration: dialogSlidingFadeTransitionDuration,
       transitionBuilder: dialogSlideFadeTransition,
       barrierColor: Colors.black.withOpacity(0.4),
-      pageBuilder: (_, _, _) => _DeleteDialog(
-        title: AppLocalizations.of(context)!.areYouSureToDeleteAccount,
+      pageBuilder: (dialogContext, _, _) => _DeleteDialog(
+        title: title,
         onYes: () async {
           await ref.read(deleteAccountProvider.notifier).deleteAccount();
         },
-        onNo: () => context.pop(),
+        onNo: () => dialogContext.pop(),
       ),
     );
   }
@@ -142,7 +150,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
         initial: () {},
         loading: () {},
         success: () {
-          context.go(AppRoutes.login);
+          ref.read(logoutProvider.notifier).logout();
         },
         failure: (failure) {
           context.showSnackBar(AppLocalizations.of(context)!.failedToDeleteAccount(failure.message ?? 'Unknown error'));

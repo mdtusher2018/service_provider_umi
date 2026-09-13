@@ -556,7 +556,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                                       experience: _selectedExperiences?.id,
                                       palliativeCare: _palliativeImage,
                                       qualifiedOnly: _qualifiedImage,
-                                      coverImage: _businessImage,
+                                      coverImage: _coverImage,
                                       minimumPrice: _hourlyPrice,
                                       images: _images,
                                       specializations: _selectedCategories

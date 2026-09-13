@@ -12,6 +12,9 @@ import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_text_field.dart';
 import '../../../../core/di/app_role_provider.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../riverpod/user_provider.dart';
+import '../../../../data/models/provider_models.dart';
+import '../../../service/riverpod/service_provider.dart';
 
 // ════════════════════════════════════════════════════════════
 //  3. Minimum Price Screen
@@ -27,14 +30,45 @@ class MinimumPriceScreen extends ConsumerStatefulWidget {
 
 class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
   double _price = 15;
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final profileState = ref.read(myProfileProvider);
+    profileState.whenOrNull(
+      success: (profile) {
+        if (profile.serviceProviderInfo != null) {
+          _price = profile.serviceProviderInfo!.perHourPrice;
+        }
+      },
+    );
+    _controller = TextEditingController(text: _price.toInt().toString());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> _save() async {
     ref.read(_isloadingProvider.notifier).state = true;
-    await Future.delayed(const Duration(milliseconds: 700));
+    
+    final success = await ref.read(updateProviderProvider.notifier).update(
+      UpdateProviderRequest(hourlyRate: _price),
+    );
+    
     if (!mounted) return;
     ref.read(_isloadingProvider.notifier).state = false;
-    context.showSnackBar(AppLocalizations.of(context)!.minimumPriceSavedSuccessfully);
-    context.pop();
+    
+    if (success) {
+      ref.read(myProfileProvider.notifier).fetch();
+      context.showSnackBar(AppLocalizations.of(context)!.minimumPriceSavedSuccessfully);
+      context.pop();
+    } else {
+      context.showSnackBar('Failed to update minimum price');
+    }
   }
 
   @override
@@ -87,12 +121,28 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                       spacing: 4,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: AppTextField()),
+                        Expanded(
+                          child: AppTextField(
+                            controller: _controller,
+                            keyboardType: TextInputType.number,
+                            onChanged: (val) {
+                              final numVal = double.tryParse(val);
+                              if (numVal != null) {
+                                _price = numVal;
+                              }
+                            },
+                          ),
+                        ),
                         // Stepper controls
                         Column(
                           children: [
                             GestureDetector(
-                              onTap: () => setState(() => _price += 1),
+                              onTap: () {
+                                setState(() {
+                                  _price += 1;
+                                  _controller.text = _price.toInt().toString();
+                                });
+                              },
                               child: Icon(
                                 Icons.keyboard_arrow_up_rounded,
                                 color: AppColors.grey400,
@@ -117,9 +167,12 @@ class _MinimumPriceScreenState extends ConsumerState<MinimumPriceScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => setState(() {
-                                if (_price > 1) _price -= 1;
-                              }),
+                              onTap: () {
+                                setState(() {
+                                  if (_price > 1) _price -= 1;
+                                  _controller.text = _price.toInt().toString();
+                                });
+                              },
                               child: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppColors.grey400,
