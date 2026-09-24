@@ -80,7 +80,22 @@ class _TimePickerPanelState extends ConsumerState<_TimePickerPanel> {
     final slotsAsync = availState.slots;
 
     final availableStartTimes = slotsAsync.maybeWhen(
-      data: (slots) => slots.map((s) => s.startTime).toSet(),
+      data: (slots) {
+        final now = DateTime.now();
+        final isToday = widget.date.year == now.year &&
+            widget.date.month == now.month &&
+            widget.date.day == now.day;
+
+        return slots.where((s) {
+          if (!isToday) return true;
+          final parts = s.startTime.split(':');
+          if (parts.length < 2) return true;
+          final h = int.parse(parts[0]);
+          final m = int.parse(parts[1]);
+          final slotTime = DateTime(now.year, now.month, now.day, h, m);
+          return slotTime.isAfter(now);
+        }).map((s) => s.startTime).toSet();
+      },
       orElse: () => <String>{},
     );
     final isLoading = slotsAsync is AsyncLoading;

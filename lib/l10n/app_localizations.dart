@@ -2701,6 +2701,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You free trial has been expired, Use premium to receive and manage customer requests'**
   String get freeTrialExpiredText;
+
+  /// No description provided for @noFavoritesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Favorites Found'**
+  String get noFavoritesFound;
+
+  /// No description provided for @removedFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favorites'**
+  String get removedFromFavorites;
+
+  /// No description provided for @unnamedProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed provider'**
+  String get unnamedProvider;
+
+  /// No description provided for @unnamedUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed user'**
+  String get unnamedUser;
 }
 
 class _AppLocalizationsDelegate

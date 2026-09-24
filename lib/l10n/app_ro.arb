@@ -437,5 +437,9 @@
   "loginWithEmail": "Autentifică-te cu email",
   "createWithEmail": "Creează cu email",
   "weValueYourPrivacy": "Respectăm confidențialitatea ta",
-  "cookiePolicyMsg": "Webel folosește cookie-uri pentru a analiza performanța campaniilor publicitare, pentru a îmbunătăți reclamele și pentru a personaliza experiența."
+  "cookiePolicyMsg": "Webel folosește cookie-uri pentru a analiza performanța campaniilor publicitare, pentru a îmbunătăți reclamele și pentru a personaliza experiența.",
+  "noFavoritesFound": "No Favorites Found",
+  "removedFromFavorites": "Removed from favorites",
+  "unnamedProvider": "Unnamed provider",
+  "unnamedUser": "Unnamed user"
 }

@@ -275,7 +275,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
               GestureDetector(
                 onTap: _accept,
                 child: _StatusBadge(
-                  label: 'Accept',
+                  label: AppLocalizations.of(context)!.accept,
                   color: AppColors.primary,
                   backgroundColor: AppColors.primaryLight,
                   isInteractive: true,
@@ -286,7 +286,7 @@ class _BookingCardState extends ConsumerState<BookingCard>
               GestureDetector(
                 onTap: _cancel,
                 child: _StatusBadge(
-                  label: 'Cancel',
+                  label: AppLocalizations.of(context)!.cancel,
                   color: AppColors.error,
                   backgroundColor: AppColors.errorLight,
                   isLoading: _isRejecting,
@@ -296,8 +296,8 @@ class _BookingCardState extends ConsumerState<BookingCard>
           );
         }
 
-        return const _StatusBadge(
-          label: 'Pending acceptance',
+        return _StatusBadge(
+          label: AppLocalizations.of(context)!.pendingAcceptance,
           color: AppColors.primary,
           backgroundColor: AppColors.primaryLight,
         );
@@ -306,29 +306,29 @@ class _BookingCardState extends ConsumerState<BookingCard>
         if (role == AppRole.user) {
           return Row(
             children: [
-              const _StatusBadge(
-                label: 'Pay now',
+              _StatusBadge(
+                label: AppLocalizations.of(context)!.payNow,
                 color: AppColors.success,
                 backgroundColor: AppColors.successLight,
               ),
               8.horizontalSpace,
-              const _StatusBadge(
-                label: 'Pending',
+              _StatusBadge(
+                label: AppLocalizations.of(context)!.pending,
                 color: AppColors.primary,
                 backgroundColor: AppColors.primaryLight,
               ),
             ],
           );
         }
-        return const _StatusBadge(
-          label: 'Payment Pending',
+        return _StatusBadge(
+          label: AppLocalizations.of(context)!.paymentPending,
           color: AppColors.primary,
           backgroundColor: AppColors.primaryLight,
         );
 
       case BookingStatus.ongoing:
-        return const _StatusBadge(
-          label: 'ongoing',
+        return _StatusBadge(
+          label: AppLocalizations.of(context)!.ongoing,
           color: AppColors.primary,
           backgroundColor: AppColors.primaryLight,
         );
@@ -341,31 +341,31 @@ class _BookingCardState extends ConsumerState<BookingCard>
             children: [
               GestureDetector(
                 onTap: widget.onRatingTap,
-                child: const _StatusBadge(
-                  label: 'Rating',
+                child: _StatusBadge(
+                  label: AppLocalizations.of(context)!.rating,
                   color: AppColors.primary,
                   backgroundColor: AppColors.primaryLight,
                   isInteractive: true,
                 ),
               ),
-              _StatusBadge(
-                label: 'Need Support Immediately',
-                color: AppColors.textSecondary,
-                backgroundColor: AppColors.info.withOpacity(0.3),
-              ),
+              // _StatusBadge(
+              //   label: 'Need Support Immediately',
+              //   color: AppColors.textSecondary,
+              //   backgroundColor: AppColors.info.withValues(alpha: 0.3),
+              // ),
             ],
           );
         }
 
-        return const _StatusBadge(
-          label: 'Completed',
+        return _StatusBadge(
+          label: AppLocalizations.of(context)!.completed,
           color: AppColors.primary,
           backgroundColor: AppColors.primaryLight,
         );
 
       case BookingStatus.canceled:
-        return const _StatusBadge(
-          label: 'Cancelled',
+        return _StatusBadge(
+          label: AppLocalizations.of(context)!.cancelled,
           color: AppColors.error,
           backgroundColor: AppColors.errorLight,
         );

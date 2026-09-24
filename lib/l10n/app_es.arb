@@ -482,5 +482,9 @@
   "loginWithEmail": "Iniciar sesión con email",
   "createWithEmail": "Crear con email",
   "weValueYourPrivacy": "Valoramos tu privacidad",
-  "cookiePolicyMsg": "Webel usa cookies para analizar el rendimiento de campañas publicitarias, mejorar anuncios y personalizar la experiencia según las preferencias del usuario."
+  "cookiePolicyMsg": "Webel usa cookies para analizar el rendimiento de campañas publicitarias, mejorar anuncios y personalizar la experiencia según las preferencias del usuario.",
+  "noFavoritesFound": "No Favorites Found",
+  "removedFromFavorites": "Removed from favorites",
+  "unnamedProvider": "Unnamed provider",
+  "unnamedUser": "Unnamed user"
 }

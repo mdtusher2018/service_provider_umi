@@ -13,6 +13,7 @@ import 'package:service_provider_umi/shared/widgets/app_error_widget.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/shared/widgets/app_text.dart';
 import 'package:service_provider_umi/shared/widgets/app_utils.dart';
+import 'package:service_provider_umi/l10n/app_localizations.dart';
 
 // ─── Screen ───────────────────────────────────────────────────
 class FavouritesScreen extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppAppBar(
-        title: "Favourites",
+        title: AppLocalizations.of(context)!.favourites,
         centerTitle: false,
         showBackButton: Navigator.of(context).canPop(),
         backgroundColor: AppColors.background,
@@ -58,7 +59,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
         data: (favourites) {
           if (favourites.isEmpty) {
             return AppEmptyState(
-              title: "No Favorites Found",
+              title: AppLocalizations.of(context)!.noFavoritesFound,
               icon: Icon(Icons.favorite),
             );
           }
@@ -75,8 +76,8 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                 final p = fav.serviceProvider;
                 
                 final displayName = isUser 
-                    ? (fav.serviceProviderUser?.name ?? "Unnamed provider")
-                    : (fav.userProfile?.name ?? "Unnamed user");
+                    ? (fav.serviceProviderUser?.name ?? AppLocalizations.of(context)!.unnamedProvider)
+                    : (fav.userProfile?.name ?? AppLocalizations.of(context)!.unnamedUser);
 
                 final displayImage = isUser
                     ? (p?.coverImage ?? fav.serviceProviderUser?.profileImage)
@@ -110,7 +111,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                   addedAt: fav.createdAt,
                   onFavorite: () {
                     ref.read(favouritesNotifireProvider.notifier).toggleFavorite(fav.serviceProviderId);
-                    context.showFavoriteToast("Removed from favorites");
+                    context.showFavoriteToast(AppLocalizations.of(context)!.removedFromFavorites);
                   },
                 );
               },

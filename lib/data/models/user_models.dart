@@ -169,7 +169,7 @@ class ServiceProviderInfo {
 
       subcategories:
           (json['providerSubcategories'] as List?)
-              ?.map((e) => SubCategoryModel.fromJson(e['subCategory'] ?? e))
+              ?.map((e) => SubCategoryModel.fromJson(e['subCategory'] ?? e['subcategory'] ?? e))
               .toList() ??
           [],
 

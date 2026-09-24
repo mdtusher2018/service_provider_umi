@@ -149,7 +149,8 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
   // ─────────────────────────────────────────────────────────
 
   Widget _buildSingleBooking() {
-    return Column(
+    return SingleChildScrollView(
+      child: Column(
       children: [
         10.verticalSpace,
         Padding(
@@ -223,6 +224,7 @@ class _BookingScheduleScreenState extends ConsumerState<BookingScheduleScreen> {
           ),
         ],
       ],
+    ),
     );
   }
 

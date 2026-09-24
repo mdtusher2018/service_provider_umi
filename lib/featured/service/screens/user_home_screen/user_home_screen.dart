@@ -208,9 +208,9 @@ class _HomeScreenState extends ConsumerState<UserHomeScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const AppText(
-                          'Address: ',
-                          style: TextStyle(
+                        AppText(
+                          '${AppLocalizations.of(context)!.address}: ',
+                          style: const TextStyle(
                             color: AppColors.secondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,

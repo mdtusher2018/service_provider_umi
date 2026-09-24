@@ -104,6 +104,23 @@ class _BookingDetailScreenState extends ConsumerState<BookingDetailScreen> {
             data: data,
             primary: primary,
             onComplete: () async {
+              DateTime? earliestStartTime;
+              for (final day in data.bookingDays) {
+                if (day.startTime != null) {
+                  if (earliestStartTime == null || day.startTime!.isBefore(earliestStartTime)) {
+                    earliestStartTime = day.startTime;
+                  }
+                }
+              }
+
+              if (earliestStartTime != null && DateTime.now().isBefore(earliestStartTime)) {
+                context.showSnackBar(
+                  'You cannot complete the job before the start time.',
+                  showAtTop: true,
+                );
+                return;
+              }
+
               await ref
                   .read(completeBookingProvider.notifier)
                   .complete(widget.bookingId);

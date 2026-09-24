@@ -19,9 +19,11 @@ class _SegmentedTabBar extends StatelessWidget {
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
-            children: ['Requested', 'Upcoming', 'Cancelled'].asMap().entries.map((
-              e,
-            ) {
+            children: [
+              AppLocalizations.of(context)!.request,
+              AppLocalizations.of(context)!.ongoing,
+              AppLocalizations.of(context)!.cancelled
+            ].asMap().entries.map((e) {
               final isSelected = controller.index == e.key;
               return Expanded(
                 child: GestureDetector(

@@ -32,7 +32,11 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
   BookingFrequency _frequency = BookingFrequency.once;
   StartTimeType _startTimeType = StartTimeType.flexible;
   double _duration = 2;
-  String? _selectedTimeSlot;
+  String? _selectedTimeSlot = '6 - 9';
+
+  String _exactHour = '01';
+  String _exactMinute = '00';
+  String _exactPeriod = 'am';
 
   final Set<String> _selectedWeekDays = {};
 
@@ -344,12 +348,19 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
             children: [
               _TimeSpinner(
                 values: List.generate(12, (i) => '${i + 1}'.padLeft(2, '0')),
+                onChanged: (v) => _exactHour = v,
               ),
               AppText.h1(' : '),
-              _TimeSpinner(values: ['00', '15', '30', '45']),
+              _TimeSpinner(
+                values: const ['00', '15', '30', '45'],
+                onChanged: (v) => _exactMinute = v,
+              ),
 
               16.horizontalSpace,
-              _TimeSpinner(values: ['am', 'pm']),
+              _TimeSpinner(
+                values: const ['am', 'pm'],
+                onChanged: (v) => _exactPeriod = v,
+              ),
             ],
           ),
         ),
@@ -429,14 +440,32 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
         return;
       }
 
-      // If user hasn't selected a time slot for flexible search, show a snackbar
-      // if (_startTimeType == StartTimeType.flexible && resolvedFlexibleSlot == null) {
-      //   context.showErrorSnackBar(AppLocalizations.of(context)!.pleaseSelectFlexibleStartTime);
-      //   return;
-      // }
-
       final daysNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       final String oneTimeDay = daysNames[_selectedDate.weekday - 1];
+
+      // Convert local time to UTC for exact time
+      int h = int.parse(_exactHour);
+      if (_exactPeriod == 'pm' && h != 12) h += 12;
+      if (_exactPeriod == 'am' && h == 12) h = 0;
+      int m = int.parse(_exactMinute);
+      
+      final localDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        h,
+        m,
+      );
+      final utcDateTime = localDateTime.toUtc();
+
+      final String finalDateStr = _startTimeType == StartTimeType.exact 
+          ? utcDateTime.toIso8601String().split('T').first 
+          : _selectedDate.toIso8601String().split('T').first;
+          
+      final String exactStartTimeStr = '${utcDateTime.hour.toString().padLeft(2, '0')}:${utcDateTime.minute.toString().padLeft(2, '0')}';
+
+      // Duration should be positive number in hours (e.g. 2 or 1.5)
+      final String durationHoursStr = _duration.toStringAsFixed(1).replaceAll(RegExp(r'\.0$'), '');
 
       context.go(
         AppRoutes.searchResultPath(
@@ -445,8 +474,9 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
           bookingType: _frequency == BookingFrequency.once
               ? 'one_time'
               : 'weekly',
+          date: _frequency == BookingFrequency.once ? finalDateStr : null,
           days: _frequency == BookingFrequency.once
-              ? oneTimeDay
+              ? null
               : (_selectedWeekDays.isNotEmpty ? _selectedWeekDays.join(',') : null),
           startTimeType: _startTimeType == StartTimeType.flexible
               ? 'flexible'
@@ -454,10 +484,8 @@ class _BookingTimeScreenState extends ConsumerState<SearchBookingTimeScreen> {
           flexibleSlot: _startTimeType == StartTimeType.flexible
               ? resolvedFlexibleSlot
               : null,
-          // For exact time you would read the _TimeSpinner state;
-          // wire those controllers and pass here:
-          // startTime: _startTimeType == StartTimeType.exact ? _exactStartTime : null,
-          duration: durationMinutes,
+          startTime: _startTimeType == StartTimeType.exact ? exactStartTimeStr : null,
+          duration: durationHoursStr,
           // ── Pagination defaults ──────────────────────
           page: '1',
           limit: '10',
@@ -610,7 +638,8 @@ class _TimeRangeCard extends StatelessWidget {
 
 class _TimeSpinner extends StatefulWidget {
   final List<String> values;
-  const _TimeSpinner({required this.values});
+  final ValueChanged<String>? onChanged;
+  const _TimeSpinner({required this.values, this.onChanged});
 
   @override
   State<_TimeSpinner> createState() => _TimeSpinnerState();
@@ -624,10 +653,14 @@ class _TimeSpinnerState extends State<_TimeSpinner> {
     return Column(
       children: [
         GestureDetector(
-          onTap: () => setState(
-            () => _current =
-                (_current - 1 + widget.values.length) % widget.values.length,
-          ),
+          onTap: () {
+            setState(() {
+              _current = (_current - 1 + widget.values.length) % widget.values.length;
+              if (widget.onChanged != null) {
+                widget.onChanged!(widget.values[_current]);
+              }
+            });
+          },
           child: const Icon(
             Icons.keyboard_arrow_up_rounded,
             color: AppColors.textSecondary,
@@ -645,8 +678,14 @@ class _TimeSpinnerState extends State<_TimeSpinner> {
           child: Center(child: AppText.h3(widget.values[_current])),
         ),
         GestureDetector(
-          onTap: () =>
-              setState(() => _current = (_current + 1) % widget.values.length),
+          onTap: () {
+            setState(() {
+              _current = (_current + 1) % widget.values.length;
+              if (widget.onChanged != null) {
+                widget.onChanged!(widget.values[_current]);
+              }
+            });
+          },
           child: const Icon(
             Icons.keyboard_arrow_down_rounded,
             color: AppColors.textSecondary,

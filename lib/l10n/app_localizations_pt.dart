@@ -1404,4 +1404,16 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get freeTrialExpiredText =>
       'You free trial has been expired, Use premium to receive and manage customer requests';
+
+  @override
+  String get noFavoritesFound => 'No Favorites Found';
+
+  @override
+  String get removedFromFavorites => 'Removed from favorites';
+
+  @override
+  String get unnamedProvider => 'Unnamed provider';
+
+  @override
+  String get unnamedUser => 'Unnamed user';
 }

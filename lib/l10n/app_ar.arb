@@ -437,5 +437,9 @@
   "profilePicture": "صورة الملف الشخصي",
   "doYouWantToGoBack": "هل تريد العودة؟",
   "startYour30DayFreeTrialToReceiveAndManageCustomerRequests": "ابدأ تجربتك المجانية لمدة 30 يومًا لتلقيها\n.وإدارة طلبات العملاء",
-  "youCanStillManageYourProfileServicesAndSchedule": ",لا يزال بإمكانك إدارة ملفك الشخصي\n.الخدمات والجدول الزمني"
+  "youCanStillManageYourProfileServicesAndSchedule": ",لا يزال بإمكانك إدارة ملفك الشخصي\n.الخدمات والجدول الزمني",
+  "noFavoritesFound": "No Favorites Found",
+  "removedFromFavorites": "Removed from favorites",
+  "unnamedProvider": "Unnamed provider",
+  "unnamedUser": "Unnamed user"
 }

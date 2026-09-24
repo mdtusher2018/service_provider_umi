@@ -437,5 +437,9 @@
   "loginWithEmail": "Mit E-Mail anmelden",
   "createWithEmail": "Mit E-Mail erstellen",
   "weValueYourPrivacy": "Wir schätzen Ihre Privatsphäre",
-  "cookiePolicyMsg": "Webel verwendet Cookies zur Analyse der Werbekampagnenleistung, zur Verbesserung der App-Werbung und zur Personalisierung basierend auf Benutzereinstellungen."
+  "cookiePolicyMsg": "Webel verwendet Cookies zur Analyse der Werbekampagnenleistung, zur Verbesserung der App-Werbung und zur Personalisierung basierend auf Benutzereinstellungen.",
+  "noFavoritesFound": "No Favorites Found",
+  "removedFromFavorites": "Removed from favorites",
+  "unnamedProvider": "Unnamed provider",
+  "unnamedUser": "Unnamed user"
 }

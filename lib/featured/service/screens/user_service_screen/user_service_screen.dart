@@ -114,7 +114,7 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
                   child:  InkWell(
                     onTap: _openCompleted,
                     child: _StatusBadge(
-                      label: 'Completed',
+                      label: AppLocalizations.of(context)!.completed,
                       color: AppColors.success,
                       backgroundColor: AppColors.white,
                     ),

@@ -47,8 +47,8 @@ List<WorkScheduleModel> _buildDayList(List<WorkScheduleModel> apiData) {
           id: '',
           userId: '',
           day: meta.code,
-          startTime: DateTime.utc(2026, 3, 30, 9, 0), // 09:00 default
-          endTime: DateTime.utc(2026, 3, 30, 18, 0), // 18:00 default
+          startTime: DateTime.utc(2026, 3, 30, 3, 0), // 03:00 default
+          endTime: DateTime.utc(2026, 3, 30, 0, 0), // 00:00 default
           status: false,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
@@ -122,8 +122,8 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
   Future<void> _openSchedulePicker(int index) async {
     if (_days == null) return;
     final d = _days![index];
-    final localStart = d.startTime.toLocal();
-    final localEnd = d.endTime.toLocal();
+    final utcStart = d.startTime.toUtc();
+    final utcEnd = d.endTime.toUtc();
 
     final result = await showGeneralDialog<_TimeRange>(
       context: context,
@@ -133,31 +133,31 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
       pageBuilder: (_, _, _) => _ScheduleDialog(
         dayName: _kDayMeta.firstWhere((m) => m.code == d.day).label,
         initialFrom: TimeOfDay(
-          hour: localStart.hour,
-          minute: localStart.minute,
+          hour: utcStart.hour,
+          minute: utcStart.minute,
         ),
-        initialTo: TimeOfDay(hour: localEnd.hour, minute: localEnd.minute),
+        initialTo: TimeOfDay(hour: utcEnd.hour, minute: utcEnd.minute),
       ),
     );
 
     if (result != null) {
       setState(() {
         // Keep same calendar date; only replace hour/minute.
-        final newStart = DateTime(
-          localStart.year,
-          localStart.month,
-          localStart.day,
+        final newStart = DateTime.utc(
+          utcStart.year,
+          utcStart.month,
+          utcStart.day,
           result.from.hour,
           result.from.minute,
-        ).toUtc();
+        );
 
-        final newEnd = DateTime(
-          localEnd.year,
-          localEnd.month,
-          localEnd.day,
+        final newEnd = DateTime.utc(
+          utcEnd.year,
+          utcEnd.month,
+          utcEnd.day,
           result.to.hour,
           result.to.minute,
-        ).toUtc();
+        );
 
         _days![index] = WorkScheduleModel(
           id: d.id,
@@ -309,20 +309,20 @@ class _WorkScheduleScreenState extends ConsumerState<WorkScheduleScreen> {
                         break;
                     }
 
-                    final localStart = d.startTime.toLocal();
-                    final localEnd = d.endTime.toLocal();
+                    final utcStart = d.startTime.toUtc();
+                    final utcEnd = d.endTime.toUtc();
 
                     return _DayRow(
                       // Adapt these named params to match your _DayRow widget.
                       dayLabel: localizedLabel,
                       isAvailable: d.status,
                       from: TimeOfDay(
-                        hour: localStart.hour,
-                        minute: localStart.minute,
+                        hour: utcStart.hour,
+                        minute: utcStart.minute,
                       ),
                       to: TimeOfDay(
-                        hour: localEnd.hour,
-                        minute: localEnd.minute,
+                        hour: utcEnd.hour,
+                        minute: utcEnd.minute,
                       ),
                       primary: primary,
                       onToggle: (v) => _toggleDay(i, v),
