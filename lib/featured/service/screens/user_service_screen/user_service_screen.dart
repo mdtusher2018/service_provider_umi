@@ -94,6 +94,13 @@ class _UserServiceScreenState extends ConsumerState<UserServiceScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(serviceRefreshProvider, (_, __) {
+      if (_tabController.index != 0) {
+        _tabController.animateTo(0);
+      }
+      _loadData();
+    });
+
     final state = ref.watch(bookingsProvider(_currentStatus));
 
     return Scaffold(

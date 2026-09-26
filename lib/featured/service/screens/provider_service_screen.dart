@@ -104,6 +104,13 @@ class _ProviderServiceScreenState extends ConsumerState<ProviderServiceScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(serviceRefreshProvider, (_, __) {
+      if (_tabController.index != 0) {
+        _tabController.animateTo(0);
+      }
+      _loadData();
+    });
+
     final state = ref.watch(bookingsProvider(_currentStatus));
     final subState = ref.watch(subscriptionProvider);
     final profileState = ref.watch(myProfileProvider);

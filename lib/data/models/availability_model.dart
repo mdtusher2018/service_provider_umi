@@ -12,12 +12,12 @@ class AvailabilitySlot {
 
   /// "09:00"
   String get startTime {
-    final local = start.toLocal();
+    final local = start.toUtc();
     return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   }
 
   String get endTime {
-    final local = end.toLocal();
+    final local = end.toUtc();
     return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   }
 }

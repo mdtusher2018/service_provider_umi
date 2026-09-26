@@ -8,6 +8,7 @@ import 'package:service_provider_umi/gen/assets.gen.dart';
 import 'package:service_provider_umi/shared/enums/app_enums.dart';
 import 'package:service_provider_umi/core/theme/app_colors.dart';
 import 'package:service_provider_umi/featured/communication_and_notification/screens/communication_and_notification_screen/communication_and_notification_screen.dart';
+import 'package:service_provider_umi/featured/service/riverpod/service_provider.dart';
 import 'package:service_provider_umi/featured/service/screens/service_provider_home_screen.dart';
 
 import '../l10n/app_localizations.dart';
@@ -91,6 +92,9 @@ class _RootScreenState extends ConsumerState<RootScreen> {
   void _onTap(int index, WidgetRef ref) {
     if (widget.role == AppRole.provider && index == 0) {
       ref.read(providerHomeRefreshProvider.notifier).state++;
+    }
+    if ((widget.role == AppRole.provider && index == 2) || (widget.role == AppRole.user && index == 0)) {
+      ref.read(serviceRefreshProvider.notifier).state++;
     }
     if ((widget.role == AppRole.provider && index == 1) || (widget.role == AppRole.user && index == 3)) {
       ref.read(inboxRefreshProvider.notifier).state++;

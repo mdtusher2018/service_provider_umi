@@ -35,7 +35,7 @@ abstract class ServiceRemoteDataSource {
   // ── Bookings ─────────────────────────────────────────────────────────────────
   Future<String> createBooking(CreateBookingRequest request);
   Future<void> acceptBooking(String bookingId);
-  Future<void> rejectBooking(String bookingId);
+  Future<String> rejectBooking(String bookingId);
   Future<void> completeBooking(String bookingId);
   Future<void> confirmPayment(String bookingId, String? additionalComment);
   Future<void> giveReview(String userId, String review, double rating);
@@ -247,8 +247,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<void> rejectBooking(String bookingId) async {
-    await _dio.patch(ApiEndpoints.cancelBooking(bookingId));
+  Future<String> rejectBooking(String bookingId) async {
+    final response = await _dio.patch(ApiEndpoints.cancelBooking(bookingId));
+    return response.data['message'] ?? 'Successfully cancelled';
   }
 
   @override

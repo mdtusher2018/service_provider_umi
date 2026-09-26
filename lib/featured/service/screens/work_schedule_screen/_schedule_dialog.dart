@@ -90,36 +90,37 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
               children: [
                 // From
                 Expanded(
-                  child: _TimeSpinner(
-                    hour: _fromHour,
-                    minute: _fromMinute,
-                    primary: primary,
-                    onHourUp: () =>
-                        setState(() => _fromHour = (_fromHour + 1) % 24),
-                    onHourDown: () =>
-                        setState(() => _fromHour = (_fromHour - 1 + 24) % 24),
-                    onMinuteUp: () =>
-                        setState(() => _fromMinute = (_fromMinute + 15) % 60),
-                    onMinuteDown: () => setState(
-                      () => _fromMinute = (_fromMinute - 15 + 60) % 60,
+                  child: SizedBox(
+                    height: 120,
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.time,
+                      use24hFormat: true,
+                      initialDateTime: DateTime(2026, 1, 1, _fromHour, _fromMinute),
+                      onDateTimeChanged: (time) {
+                        setState(() {
+                          _fromHour = time.hour;
+                          _fromMinute = time.minute;
+                        });
+                      },
                     ),
                   ),
                 ),
                 16.horizontalSpace,
                 // To
                 Expanded(
-                  child: _TimeSpinner(
-                    hour: _toHour,
-                    minute: _toMinute,
-                    primary: primary,
-                    onHourUp: () =>
-                        setState(() => _toHour = (_toHour + 1) % 24),
-                    onHourDown: () =>
-                        setState(() => _toHour = (_toHour - 1 + 24) % 24),
-                    onMinuteUp: () =>
-                        setState(() => _toMinute = (_toMinute + 15) % 60),
-                    onMinuteDown: () =>
-                        setState(() => _toMinute = (_toMinute - 15 + 60) % 60),
+                  child: SizedBox(
+                    height: 120,
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.time,
+                      use24hFormat: true,
+                      initialDateTime: DateTime(2026, 1, 1, _toHour, _toMinute),
+                      onDateTimeChanged: (time) {
+                        setState(() {
+                          _toHour = time.hour;
+                          _toMinute = time.minute;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -131,12 +132,22 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: () => context.pop(
-                  _TimeRange(
-                    TimeOfDay(hour: _fromHour, minute: _fromMinute),
-                    TimeOfDay(hour: _toHour, minute: _toMinute),
-                  ),
-                ),
+                onPressed: () {
+                  final fromMin = _fromHour * 60 + _fromMinute;
+                  final toMin = _toHour * 60 + _toMinute;
+                  if (fromMin >= toMin) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Start time must be before end time')),
+                    );
+                    return;
+                  }
+                  context.pop(
+                    _TimeRange(
+                      TimeOfDay(hour: _fromHour, minute: _fromMinute),
+                      TimeOfDay(hour: _toHour, minute: _toMinute),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primary,
                   foregroundColor: AppColors.white,
@@ -153,111 +164,4 @@ class _ScheduleDialogState extends State<_ScheduleDialog> {
   }
 }
 
-// ─── Time Spinner ─────────────────────────────────────────────
-class _TimeSpinner extends StatelessWidget {
-  final int hour;
-  final int minute;
-  final Color primary;
-  final VoidCallback onHourUp;
-  final VoidCallback onHourDown;
-  final VoidCallback onMinuteUp;
-  final VoidCallback onMinuteDown;
 
-  const _TimeSpinner({
-    required this.hour,
-    required this.minute,
-    required this.primary,
-    required this.onHourUp,
-    required this.onHourDown,
-    required this.onMinuteUp,
-    required this.onMinuteDown,
-  });
-
-  String _fmt(int v) => v.toString().padLeft(2, '0');
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Hour column
-        _SpinColumn(
-          value: _fmt(hour),
-          onUp: onHourUp,
-          onDown: onHourDown,
-          primary: primary,
-        ),
-        Padding(
-          padding: 6.paddingH,
-          child: AppText.h2(':', color: AppColors.textPrimary),
-        ),
-        // Minute column
-        _SpinColumn(
-          value: _fmt(minute),
-          onUp: onMinuteUp,
-          onDown: onMinuteDown,
-          primary: primary,
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Spin Column (up / value / down) ─────────────────────────
-class _SpinColumn extends StatelessWidget {
-  final String value;
-  final VoidCallback onUp;
-  final VoidCallback onDown;
-  final Color primary;
-
-  const _SpinColumn({
-    required this.value,
-    required this.onUp,
-    required this.onDown,
-    required this.primary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Up arrow
-        GestureDetector(
-          onTap: onUp,
-          child: Icon(
-            Icons.keyboard_arrow_up_rounded,
-            color: AppColors.grey500,
-            size: 26,
-          ),
-        ),
-        // Value box
-        Container(
-          width: 52,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: 8.circular,
-            border: Border.all(color: AppColors.grey200, width: 1.5),
-          ),
-          alignment: Alignment.center,
-          child: AppText.h3(
-            value,
-
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        // Down arrow
-        GestureDetector(
-          onTap: onDown,
-          child: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: AppColors.grey500,
-            size: 26,
-          ),
-        ),
-      ],
-    );
-  }
-}

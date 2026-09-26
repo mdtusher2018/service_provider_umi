@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:service_provider_umi/core/di/core_providers.dart';
 import 'package:service_provider_umi/core/router/app_routes.dart';
@@ -47,8 +48,8 @@ List<WorkScheduleModel> _buildDayList(List<WorkScheduleModel> apiData) {
           id: '',
           userId: '',
           day: meta.code,
-          startTime: DateTime.utc(2026, 3, 30, 3, 0), // 03:00 default
-          endTime: DateTime.utc(2026, 3, 30, 0, 0), // 00:00 default
+          startTime: DateTime.utc(2026, 3, 30, 15, 0), // 15:00 default
+          endTime: DateTime.utc(2026, 3, 30, 23, 59), // 23:59 default
           status: false,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),

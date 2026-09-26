@@ -192,6 +192,12 @@ class _BookingDetailBody extends ConsumerWidget {
         error: (failure, _) {
           context.showErrorSnackBar(failure.toString());
         },
+        data: (msg) {
+          if (msg != null && context.mounted) {
+            context.showSuccessSnackBar(msg);
+            context.go(AppRoutes.providerHome);
+          }
+        },
       );
     });
 
@@ -248,6 +254,14 @@ class _BookingDetailBody extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+
+          if (bookingStatus == BookingStatus.requested &&
+              ref.read(appRoleProvider) == AppRole.user)
+            AppButton.outline(
+              label: AppLocalizations.of(context)!.cancel,
+              onPressed: onCancel,
+              isLoading: rejectState.isLoading,
             ),
 
           if (bookingStatus == BookingStatus.ongoing)

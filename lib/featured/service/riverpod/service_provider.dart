@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:service_provider_umi/core/base/result.dart';
 import 'package:service_provider_umi/core/di/app_role_provider.dart';
@@ -20,6 +21,8 @@ import 'package:service_provider_umi/data/repository/service_repository.dart';
 import 'package:service_provider_umi/shared/enums/booking_status.dart';
 
 part 'service_provider.g.dart';
+
+final serviceRefreshProvider = StateProvider<int>((ref) => 0);
 
 // ── GET /categories ───────────────────────────────────────────────────────────
 
@@ -309,7 +312,7 @@ class RejectBooking extends _$RejectBooking {
   ServiceRepository get _repo => ref.read(serviceRepositoryProvider);
 
   @override
-  FutureOr<void> build() {}
+  FutureOr<String?> build() => null;
 
   Future<void> reject(String bookingId) async {
     state = const AsyncLoading();
@@ -317,7 +320,7 @@ class RejectBooking extends _$RejectBooking {
     final result = await _repo.rejectBooking(bookingId);
 
     state = result.when(
-      success: (_) => const AsyncData(null),
+      success: (msg) => AsyncData(msg),
       failure: (e) => AsyncError(e, StackTrace.current),
     );
 
