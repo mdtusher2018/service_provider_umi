@@ -40,6 +40,7 @@ class PersonalDetailsScreen extends ConsumerStatefulWidget {
 
 class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _bioController = TextEditingController();
   final _addressController = TextEditingController();
@@ -51,6 +52,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   void initState() {
     super.initState();
     _nameController.text = widget.user.name;
+    _emailController.text = widget.user.email;
     _phoneController.text = widget.user.phoneNumber ?? "";
     _bioController.text = widget.user.bio ?? "";
     
@@ -64,6 +66,7 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _emailController.dispose();
     _phoneController.dispose();
     _bioController.dispose();
     _addressController.dispose();
@@ -198,6 +201,13 @@ class _PersonalDetailsScreenState extends ConsumerState<PersonalDetailsScreen> {
               ),
             ),
             28.verticalSpace,
+
+            AppTextField(
+              hint: AppLocalizations.of(context)!.emailAddress,
+              controller: _emailController,
+              readOnly: true,
+            ),
+            12.verticalSpace,
 
             AppTextField(hint: AppLocalizations.of(context)!.fullName, controller: _nameController),
             12.verticalSpace,

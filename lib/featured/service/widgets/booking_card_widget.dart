@@ -1,5 +1,7 @@
 // ─── Booking Card ─────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:service_provider_umi/core/router/app_routes.dart';
 import 'package:service_provider_umi/core/utils/extensions/datetime_ext.dart';
 import 'package:service_provider_umi/core/utils/extensions/num_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -348,11 +350,16 @@ class _BookingCardState extends ConsumerState<BookingCard>
                   isInteractive: true,
                 ),
               ),
-              // _StatusBadge(
-              //   label: 'Need Support Immediately',
-              //   color: AppColors.textSecondary,
-              //   backgroundColor: AppColors.info.withValues(alpha: 0.3),
-              // ),
+              GestureDetector(
+                onTap: () {
+                  context.push(AppRoutes.providerProfilePath(widget.item.providerId));
+                },
+                child: _StatusBadge(
+                  label: 'Need Support Immediately',
+                  color: AppColors.textSecondary,
+                  backgroundColor: AppColors.info.withValues(alpha: 0.3),
+                ),
+              ),
             ],
           );
         }
