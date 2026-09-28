@@ -116,87 +116,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
     }
   }
 
-  Future<void> _fillAddressFromLatLng(double lat, double lng) async {
-    final url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${AppConfig.googleMapsApiKey}";
-
-    final response = await ref.read(dioClientProvider).get(url);
-    final data = response.data;
-
-    if (data["status"] != "OK") return;
-
-    final results = data["results"] as List;
-    if (results.isEmpty) return;
-
-    // 🔥 STEP 1: pick best result
-    Map<String, dynamic>? bestResult;
-
-    for (final r in results) {
-      final types = List<String>.from(r["types"]);
-
-      if (types.contains("street_address")) {
-        bestResult = r;
-        break;
-      } else if (types.contains("premise")) {
-        bestResult ??= r;
-      } else if (types.contains("route")) {
-        bestResult ??= r;
-      }
-    }
-
-    bestResult ??= results.first;
-
-    final components = bestResult?["address_components"] ?? [];
-
-    // 🔥 STEP 2: smarter extractor (multi-type fallback)
-    String? getComponent(List<String> types) {
-      for (final type in types) {
-        for (final c in components) {
-          if ((c["types"] as List).contains(type)) {
-            return c["long_name"];
-          }
-        }
-      }
-      return null;
-    }
-
-    // 🔥 STEP 3: extract everything safely
-    final streetNumber = getComponent(["street_number"]);
-    final route = getComponent(["route"]);
-    final subLocality = getComponent([
-      "sublocality",
-      "sublocality_level_1",
-      "neighborhood",
-    ]);
-    final city = getComponent(["locality"]);
-    final state = getComponent(["administrative_area_level_1"]);
-    final country = getComponent(["country"]);
-    final postal = getComponent(["postal_code"]);
-
-    // 🔥 STEP 4: fallback strategy
-    final line1 = [
-      streetNumber,
-      route,
-    ].where((e) => e != null && e.isNotEmpty).join(' ');
-
-    setState(() {
-      _line1Ctrl.text = line1.isNotEmpty ? line1 : (route ?? '');
-
-      _line2Ctrl.text = subLocality ?? '';
-
-      _cityCtrl.text =
-          city ?? getComponent(["administrative_area_level_2"]) ?? '';
-
-      _stateCtrl.text = state ?? '';
-
-      _countryCtrl.text = country ?? '';
-
-      _postalCtrl.text = postal ?? '';
-
-      _lat = lat;
-      _lng = lng;
-    });
-  }
+  // Removing _fillAddressFromLatLng as it's no longer used.
 
   @override
   Widget build(BuildContext context) {
@@ -224,78 +144,146 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
             // ── Google Places autocomplete ─────────────────────────────────────
             AppText.labelMd(AppLocalizations.of(context)!.searchAddress),
             6.verticalSpace,
-            GooglePlaceAutoCompleteTextField(
-              textEditingController: _searchCtrl,
-              googleAPIKey: AppConfig.googleMapsApiKey,
-              inputDecoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.searchYourAddress,
-                hintStyle: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                ),
-                prefixIcon: const Icon(
-                  Icons.search_rounded,
-                  color: AppColors.grey400,
-                  size: 20,
-                ),
-                suffixIcon: ValueListenableBuilder(
-                  valueListenable: _searchCtrl,
-                  builder: (_, v, __) => v.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.close, size: 18),
-                          color: AppColors.grey400,
-                          onPressed: () {
-                            _searchCtrl.clear();
-                            // Clear the coordinates so user can't save stale data
-                            setState(() {
-                              _lat = null;
-                              _lng = null;
-                            });
-                          },
-                        )
-                      : const SizedBox.shrink(),
-                ),
-                filled: true,
-                fillColor: AppColors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppColors.primary,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-
-              itemClick: (prediction) {
-                _searchCtrl.text = prediction.description ?? '';
+            RawAutocomplete<Map<String, dynamic>>(
+              textEditingController: _line1Ctrl,
+              focusNode: FocusNode(),
+              optionsBuilder: (TextEditingValue textEditingValue) async {
+                if (textEditingValue.text.isEmpty) {
+                  return const Iterable<Map<String, dynamic>>.empty();
+                }
+                try {
+                  final response = await ref.read(dioClientProvider).get(
+                    'https://nominatim.openstreetmap.org/search',
+                    queryParameters: {
+                      'q': textEditingValue.text,
+                      'format': 'json',
+                      'addressdetails': 1,
+                      'limit': 5,
+                      'accept-language': 'en',
+                    },
+                    options: Options(
+                      headers: {
+                        'User-Agent': 'ServiceProviderUmi/1.0',
+                      },
+                    ),
+                  );
+                  if (response.statusCode == 200) {
+                    final List data = response.data;
+                    return data.cast<Map<String, dynamic>>();
+                  }
+                } catch (e) {
+                  debugPrint('Nominatim API exception: $e');
+                }
+                return const Iterable<Map<String, dynamic>>.empty();
               },
-              getPlaceDetailWithLatLng: (prediction) async {
-                final lat = double.tryParse(prediction.lat ?? '');
-                final lng = double.tryParse(prediction.lng ?? '');
+              displayStringForOption: (option) => option['display_name'] ?? '',
+              onSelected: (selection) {
+                final addressDetails = selection['address'] ?? {};
+                final address = selection['display_name'] ?? '';
+                final lat = double.tryParse(selection['lat'].toString()) ?? 0.0;
+                final lon = double.tryParse(selection['lon'].toString()) ?? 0.0;
 
-                AppLogger.info("LAT: $lat LNG: $lng");
-                if (lat == null || lng == null) return;
                 setState(() {
                   _lat = lat;
-                  _lng = lng;
+                  _lng = lon;
+                  _line1Ctrl.text = address;
+                  _cityCtrl.text = addressDetails['city'] ?? addressDetails['town'] ?? addressDetails['village'] ?? '';
+                  _stateCtrl.text = addressDetails['state'] ?? '';
+                  // Clear unused fields since they're not shown
+                  _line2Ctrl.clear();
+                  _postalCtrl.clear();
+                  _countryCtrl.clear();
                 });
-
-                await _fillAddressFromLatLng(lat, lng);
               },
-
-              isCrossBtnShown: false,
+              fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+                return TextFormField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  onEditingComplete: onEditingComplete,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? AppLocalizations.of(context)!.required : null,
+                  decoration: InputDecoration(
+                    hintText: 'Street address',
+                    hintStyle: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      color: AppColors.grey400,
+                      size: 20,
+                    ),
+                    suffixIcon: ValueListenableBuilder(
+                      valueListenable: controller,
+                      builder: (_, v, __) => v.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.close, size: 18),
+                              color: AppColors.grey400,
+                              onPressed: () {
+                                controller.clear();
+                                setState(() {
+                                  _lat = null;
+                                  _lng = null;
+                                });
+                              },
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    filled: true,
+                    fillColor: AppColors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              optionsViewBuilder: (context, onSelected, options) {
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    elevation: 4,
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.white,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: 250,
+                        maxWidth: MediaQuery.of(context).size.width - 40,
+                      ),
+                      child: ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: options.length,
+                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final option = options.elementAt(index);
+                          return ListTile(
+                            title: Text(
+                              option['display_name'] ?? '',
+                              style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                            ),
+                            onTap: () => onSelected(option),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
 
             // ── Coordinates confirmed pill ────────────────────────────────────
@@ -343,24 +331,6 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
             ),
             14.verticalSpace,
 
-            // ── Address Line 1 ────────────────────────────────────────────────
-            _field(
-              label: AppLocalizations.of(context)!.addressLine1,
-              hint: AppLocalizations.of(context)!.streetNumberAndName,
-              ctrl: _line1Ctrl,
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? AppLocalizations.of(context)!.required : null,
-            ),
-            12.verticalSpace,
-
-            // ── Address Line 2 ────────────────────────────────────────────────
-            _field(
-              label: AppLocalizations.of(context)!.addressLine2,
-              hint: AppLocalizations.of(context)!.areaNeighbourhood,
-              ctrl: _line2Ctrl,
-            ),
-            12.verticalSpace,
-
             // ── City & State ──────────────────────────────────────────────────
             Row(
               children: [
@@ -373,29 +343,6 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                     label: AppLocalizations.of(context)!.state,
                     hint: AppLocalizations.of(context)!.state,
                     ctrl: _stateCtrl,
-                  ),
-                ),
-              ],
-            ),
-            12.verticalSpace,
-
-            // ── Postal & Country ──────────────────────────────────────────────
-            Row(
-              children: [
-                Expanded(
-                  child: _field(
-                    label: AppLocalizations.of(context)!.postalCode,
-                    hint: AppLocalizations.of(context)!.postal,
-                    ctrl: _postalCtrl,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                12.horizontalSpace,
-                Expanded(
-                  child: _field(
-                    label: AppLocalizations.of(context)!.country,
-                    hint: AppLocalizations.of(context)!.country,
-                    ctrl: _countryCtrl,
                   ),
                 ),
               ],

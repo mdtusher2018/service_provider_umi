@@ -311,26 +311,105 @@ class _ServiceAddressBottomSheetState extends ConsumerState<ServiceAddressBottom
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TextField(
-          controller: _streetCtrl,
-          decoration: InputDecoration(
-            hintText: 'Street address',
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-            ),
-          ),
+        RawAutocomplete<Map<String, dynamic>>(
+          textEditingController: _streetCtrl,
+          focusNode: FocusNode(),
+          optionsBuilder: (TextEditingValue textEditingValue) async {
+            if (textEditingValue.text.isEmpty) {
+              return const Iterable<Map<String, dynamic>>.empty();
+            }
+            try {
+              final response = await Dio().get(
+                'https://nominatim.openstreetmap.org/search',
+                queryParameters: {
+                  'q': textEditingValue.text,
+                  'format': 'json',
+                  'addressdetails': 1,
+                  'limit': 5,
+                  'accept-language': 'en',
+                },
+                options: Options(
+                  headers: {
+                    'User-Agent': 'ServiceProviderUmi/1.0',
+                  },
+                ),
+              );
+              if (response.statusCode == 200) {
+                final List data = response.data;
+                return data.cast<Map<String, dynamic>>();
+              } else {
+                debugPrint('Nominatim API error: ${response.statusCode} - ${response.data}');
+              }
+            } catch (e) {
+              debugPrint('Nominatim API exception: $e');
+            }
+            return const Iterable<Map<String, dynamic>>.empty();
+          },
+          displayStringForOption: (option) => option['display_name'] ?? '',
+          onSelected: (selection) {
+            final addressDetails = selection['address'] ?? {};
+            final address = selection['display_name'] ?? '';
+            _streetCtrl.text = address;
+            _cityCtrl.text = addressDetails['city'] ?? addressDetails['town'] ?? addressDetails['village'] ?? '';
+            _stateCtrl.text = addressDetails['state'] ?? '';
+          },
+          fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+            return TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              onEditingComplete: onEditingComplete,
+              decoration: InputDecoration(
+                hintText: 'Street address',
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                ),
+              ),
+            );
+          },
+          optionsViewBuilder: (context, onSelected, options) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(12),
+                color: AppColors.white,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 250,
+                    maxWidth: MediaQuery.of(context).size.width - 40,
+                  ),
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    separatorBuilder: (context, index) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final option = options.elementAt(index);
+                      return ListTile(
+                        title: Text(
+                          option['display_name'] ?? '',
+                          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                        ),
+                        onTap: () => onSelected(option),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: 12),
         Row(
