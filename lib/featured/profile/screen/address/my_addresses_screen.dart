@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:dio/dio.dart';
 import 'package:service_provider_umi/core/config/app_config.dart';
 import 'package:service_provider_umi/core/logger/app_logger.dart';
 import 'package:service_provider_umi/core/services/network/dio_client.dart';
